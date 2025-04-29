@@ -113,6 +113,10 @@
   <ItemGroup>
     <ClCompile Include="CourseraCloneApp.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ExtendedFunctions.h" />
+    <ClInclude Include="UI_Ascii.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
