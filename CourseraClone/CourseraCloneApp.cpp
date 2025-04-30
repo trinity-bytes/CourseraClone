@@ -10,10 +10,8 @@ void main()
 	ConfigurarConsola();
 
 	system("cls");
-	UI_LandingPage();
-	system("pause");
-
-	system("cls");
-	UI_Login();
+	//UI_LandingPage();
+	//UI_Login();
+	UI_Signup();
 	system("pause");
 }
