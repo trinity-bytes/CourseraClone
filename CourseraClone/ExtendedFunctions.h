@@ -29,7 +29,7 @@ void ConfigurarConsola()
 	Console::BackgroundColor = ConsoleColor::White;
 	Console::ForegroundColor = ConsoleColor::Black;
 
-	Console::SetWindowSize(120, 33);
+	Console::SetWindowSize(120, 35);
 
 	SetConsoleTitle(L"Coursera Clone | Alpha 1");
 }

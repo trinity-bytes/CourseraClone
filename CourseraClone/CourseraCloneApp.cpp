@@ -12,6 +12,8 @@ void main()
 	system("cls");
 	//UI_LandingPage();
 	//UI_Login();
-	UI_Signup();
+	//UI_Signup();
+	//UI_StudentDashboard();
+	UI_OrganizationDashboard();
 	system("pause");
 }
