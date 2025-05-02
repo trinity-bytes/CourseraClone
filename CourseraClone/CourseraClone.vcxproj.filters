@@ -26,5 +26,17 @@
     <ClInclude Include="ExtendedFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Usuario.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Estudiante.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Empresa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Archivo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
