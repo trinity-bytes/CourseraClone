@@ -114,10 +114,18 @@
     <ClCompile Include="CourseraCloneApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actividad.h" />
+    <ClInclude Include="algoritmosOrdenamiento.h" />
     <ClInclude Include="Archivo.h" />
+    <ClInclude Include="Boleta.h" />
+    <ClInclude Include="Controladora.h" />
+    <ClInclude Include="Curso.h" />
     <ClInclude Include="Empresa.h" />
+    <ClInclude Include="Especializacion.h" />
     <ClInclude Include="Estudiante.h" />
     <ClInclude Include="ExtendedFunctions.h" />
+    <ClInclude Include="Inscripcion.h" />
+    <ClInclude Include="Instructor.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="PriorityQueue.h" />
@@ -126,6 +134,7 @@
     <ClInclude Include="UI_Ascii.h" />
     <ClInclude Include="UI_Menu_LandingPage.h" />
     <ClInclude Include="Usuario.h" />
+    <ClInclude Include="Venta.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
