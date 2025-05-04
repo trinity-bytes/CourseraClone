@@ -12,6 +12,7 @@
 #include "fstream"    // ifstream, ofstream
 #include "windows.h"  // COORD, GetAsyncKeyState, VK_ESCAPE, Sleep (Necesario para GetAsyncKeyState y COORD)
 #include "cstdlib"    // Para system("pause>0")
+#include "sstream"    // Para stringstream (usado en formatearDescripcion)
 
 using namespace std;
 
@@ -32,6 +33,10 @@ const int MAX_ELEMENTOS_CABECERA = 3;
 const int MAX_ELEMENTOS_ESPECIALIDAD = 3; // 3 rectangulos visibles en el layout
 const int MAX_ELEMENTOS_CURSO = 3;    // 3 rectangulos visibles en el layout
 
+// Caracteres maximos que pueden entrar por cuadro de especialidad o curso
+const int MAX_ANCHO_CARACTERES_CUADRO = 30; // Maximo de caracteres por linea
+const int MAX_ALTO_CARACTERES_CUADRO = 4;   // Maximo de saltos de linea
+
 /// Estructuras de datos
 struct ElementoMenu {
     string titulo;
@@ -40,11 +45,11 @@ struct ElementoMenu {
 
 /// Variables globales (para simplicidad en este ejemplo)
 // Coordenadas para dibujar contenido dinamico (ajusta segun tu arte ASCII)
-COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {10, 4}, {40, 4}, {70, 4} };
-COORD coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {10, 9}, {50, 9}, {90, 9} };
-COORD coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {10, 10}, {50, 10}, {90, 10} };
-COORD coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { {10, 20}, {50, 20}, {90, 20} };
-COORD coordsDescCurso[MAX_ELEMENTOS_CURSO] = { {10, 21}, {50, 21}, {90, 21} };
+COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {65, 3}, {82, 3}, {96, 3} };
+COORD coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 15}, {45, 15}, {79, 15} };
+COORD coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 17}, {45, 17}, {79, 17} };
+COORD coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { {11, 25}, {45, 25}, {79, 25} };
+COORD coordsDescCurso[MAX_ELEMENTOS_CURSO] = { {11, 27}, {45, 27}, {79, 27} };
 
 // Datos cargados
 vector<ElementoMenu> especialidades;
@@ -62,6 +67,7 @@ void cargarDatos(const string& nombreArchivo, vector<ElementoMenu>& datos, const
 void cargarPersistencia();
 void guardarPersistencia();
 int obtenerMaxElementosEnSeccion(int seccion);
+string formatearDescripcion(const string& texto, int anchoMax, int altoMax);
 
 // --- Función Principal del Menú Landing Page ---
 // Retorna:
@@ -264,18 +270,40 @@ void dibujarInterfaz()
             cout << string(20, ' '); gotoXY(coordsTituloEspecialidad[i].X, coordsTituloEspecialidad[i].Y);
             cout << especialidades[i].titulo;
 
-            // Dibujar Descripción
-            gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
-            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i)
+            /// Formatear y dibujar Descripción
+            string descripcionFormateada = formatearDescripcion(especialidades[i].descripcion, MAX_ANCHO_CARACTERES_CUADRO, MAX_ALTO_CARACTERES_CUADRO);
+            vector<string> lineas;
+            stringstream ss(descripcionFormateada);
+            string linea;
+
+            // Separar por líneas
+            while (getline(ss, linea, '\n')) 
             {
-                // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                lineas.push_back(linea);
             }
-            else {
-                // restablecerColorTexto();
+
+            // Dibujar cada línea de la descripción
+            for (int j = 0; j < lineas.size(); ++j) {
+                gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y + j);
+
+                if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) {
+                    // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                }
+                else {
+                    // restablecerColorTexto();
+                }
+
+                // Limpiar espacio antes de escribir
+                cout << string(30, ' ');
+                gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y + j);
+                cout << lineas[j];
             }
-            // Limpiar espacio antes de escribir
-            cout << string(20, ' '); gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
-            cout << especialidades[i].descripcion;
+
+            // Limpiar cualquier línea restante (si hay menos de 4 líneas)
+            for (int j = lineas.size(); j < 4; ++j) {
+                gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y + j);
+                cout << string(30, ' ');
+            }
 
             // Dibujar Marcador de Selección
             if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i)
@@ -531,4 +559,63 @@ void manejarNavegacion()
             break;
         }
     }
+}
+
+// Función auxiliar para formatear texto en múltiples líneas
+string formatearDescripcion(const string& texto, int anchoMax, int altoMax) 
+{
+    string resultado;
+    string textoRestante = texto;
+
+    for (int linea = 0; linea < altoMax; ++linea) 
+    {
+        if (textoRestante.empty()) // Si ya no queda texto, terminar
+        {
+            break;
+        }
+
+        // Si estamos en la última línea y queda más texto del que cabe
+        if (linea == altoMax - 1 && textoRestante.length() > anchoMax) 
+        {
+            // Añadir texto truncado con "..."
+            resultado += textoRestante.substr(0, anchoMax - 3) + "...";
+            break;
+        }
+
+        // Para líneas normales, tomar solo hasta anchoMax caracteres
+        if (textoRestante.length() <= anchoMax) 
+        {
+            resultado += textoRestante;
+            textoRestante.clear();
+        }
+        else 
+        {
+            // Buscar el último espacio dentro del límite para cortar por palabras
+            int posCorte = anchoMax;
+
+            // Intentar cortar por un espacio para no dividir palabras
+            while (posCorte > 0 && textoRestante[posCorte] != ' ' && textoRestante[posCorte - 1] != ' ') {
+                posCorte--;
+            }
+
+            // Si no se encontró un espacio adecuado, cortar en el límite máximo
+            if (posCorte <= 0) {
+                posCorte = anchoMax;
+            }
+
+            resultado += textoRestante.substr(0, posCorte);
+            textoRestante = textoRestante.substr(posCorte);
+
+            // Eliminar espacios al inicio de la siguiente línea
+            textoRestante.erase(0, textoRestante.find_first_not_of(" "));
+        }
+
+        // Añadir salto de línea si no es la última línea y hay más texto
+        if (linea < altoMax - 1 && !textoRestante.empty()) 
+        {
+            resultado += "\n";
+        }
+    }
+
+    return resultado;
 }
