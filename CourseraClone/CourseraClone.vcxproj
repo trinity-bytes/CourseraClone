@@ -115,6 +115,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExtendedFunctions.h" />
+    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="Nodo.h" />
+    <ClInclude Include="PriorityQueue.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="Stack.h" />
     <ClInclude Include="UI_Ascii.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
