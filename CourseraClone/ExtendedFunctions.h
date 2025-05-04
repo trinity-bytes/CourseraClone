@@ -9,6 +9,9 @@ using namespace System;
 const int ANCHO_CONSOLA = 120;
 const int ALTO_CONSOLA = 35;
 
+// Define
+#define nl '\n' // Nueva linea
+
 void gotoXY(int x, int y) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;

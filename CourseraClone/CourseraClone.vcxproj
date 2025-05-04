@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actividad.h" />
+    <ClInclude Include="algoritmosBusqueda.h" />
     <ClInclude Include="algoritmosOrdenamiento.h" />
     <ClInclude Include="Archivo.h" />
     <ClInclude Include="Boleta.h" />
