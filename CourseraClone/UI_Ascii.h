@@ -264,7 +264,7 @@ void UI_UserProfile()
 }
 
 /// UI Organization Profile View
-void UI_UserProfile()
+void UI_OrganizationProfile()
 {
     string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
