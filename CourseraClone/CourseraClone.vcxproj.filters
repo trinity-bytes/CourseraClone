@@ -26,22 +26,6 @@
     <ClInclude Include="ExtendedFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="LinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PriorityQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Queue.h">
-      <Filter>Header Files</Filter>
-=======
     <ClInclude Include="Usuario.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -59,7 +43,6 @@
     </ClInclude>
     <ClInclude Include="UI_Menu_LandingPage.h">
       <Filter>Header Files\MenusInteractivos</Filter>
->>>>>>> a648e3642384ceedce7e604870d21365b3ba2a49
     </ClInclude>
   </ItemGroup>
 </Project>
