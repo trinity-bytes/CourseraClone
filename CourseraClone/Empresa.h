@@ -3,13 +3,13 @@
 
 class Empresa: public Usuario{
 private:
-	string razonSocial;
 	//LinkedList<Actividad> actividades;
 	//LinkedList<Instructor> instructores;
 public:
-	Empresa(string _razonSocial): Usuario(id, tipoUsuario, nickName, contrasena) {
-		razonSocial = _razonSocial;
+	Empresa(): Usuario(id, tipoUsuario, nickName, contrasena) {
+		
 	}
+
 	int crearCurso(){
 
 	}
