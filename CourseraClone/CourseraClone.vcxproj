@@ -119,6 +119,7 @@
     <ClInclude Include="Estudiante.h" />
     <ClInclude Include="ExtendedFunctions.h" />
     <ClInclude Include="UI_Ascii.h" />
+    <ClInclude Include="UI_Menu_LandingPage.h" />
     <ClInclude Include="Usuario.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

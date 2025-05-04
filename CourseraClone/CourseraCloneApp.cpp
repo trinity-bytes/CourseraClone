@@ -1,19 +1,31 @@
 #include "iostream"
 #include "ExtendedFunctions.h"
-#include "UI_Ascii.h"
+#include "UI_Menu_LandingPage.h"
 
 using namespace std;
 using namespace System;
 
+// maquetacion de funciones
+void SecuenciaInicializacion();
+
 void main()
 {
-	ConfigurarConsola();
+	short opc;
 
+	SecuenciaInicializacion();
 	system("cls");
-	//UI_LandingPage();
-	//UI_Login();
-	//UI_Signup();
-	//UI_StudentDashboard();
-	UI_OrganizationDashboard();
+
+	opc = MostrarMenu_LandingPage();
+
+	switch (opc)
+	{
+	default:
+		break;
+	}
 	system("pause");
+}
+
+void SecuenciaInicializacion()
+{
+	ConfigurarConsola();
 }
