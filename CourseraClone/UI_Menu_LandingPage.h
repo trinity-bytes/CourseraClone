@@ -1,11 +1,17 @@
 #pragma once
-#include "ExtendedFunctions.h"
-#include "UI_Ascii.h"
-#include "vector"
-#include "string"
-#include "conio.h"  // interaccion de menus
-#include "fstream"  // interactuar con txt
-#include "limits"   // numeric_limits
+
+// headers externos
+#include "ExtendedFunctions.h" // gotoXY, ANCHO_CONSOLA, ALTO_CONSOLA, etc.
+#include "UI_Ascii.h"          // UI_LandingPage()
+
+// Headers estándar necesarios para este archivo
+#include <iostream> // Para cout
+#include <vector>
+#include <string>
+#include <conio.h>  // _kbhit, _getch
+#include <fstream>  // ifstream, ofstream
+#include <windows.h> // COORD, GetAsyncKeyState, VK_ESCAPE, Sleep (Necesario para GetAsyncKeyState y COORD)
+#include <cstdlib>  // Para system("pause>0")
 
 using namespace std;
 
@@ -21,10 +27,10 @@ const string ARCHIVO_PERSISTENCIA = "ultima_posi.txt";
 const string ARCHIVO_ESPECIALIDADES = "especialidades_muestra.txt";
 const string ARCHIVO_CURSOS = "cursos_muestra.txt";
 
-// Items max visibles por seccion
+// Items max visibles por seccion (basado en el diseño ASCII)
 const int MAX_ELEMENTOS_CABECERA = 3;
-const int MAX_ELEMENTOS_ESPECIALIDAD = 3; // 3 rectangulos
-const int MAX_ELEMENTOS_CURSO = 3;   // 3 rectangulos
+const int MAX_ELEMENTOS_ESPECIALIDAD = 3; // 3 rectangulos visibles en el layout
+const int MAX_ELEMENTOS_CURSO = 3;    // 3 rectangulos visibles en el layout
 
 /// Estructuras de datos
 struct ElementoMenu {
@@ -32,16 +38,19 @@ struct ElementoMenu {
     string descripcion; // Usado para especialidades y cursos
 };
 
-/// Variables globales
-// Coordenadas para dibujar contenido dinamico
-COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {10, 4}, {40, 4}, {70, 4} }; 
+/// Variables globales (para simplicidad en este ejemplo)
+// Coordenadas para dibujar contenido dinamico (ajusta segun tu arte ASCII)
+COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {10, 4}, {40, 4}, {70, 4} };
 COORD coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {10, 9}, {50, 9}, {90, 9} };
-COORD coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {10, 10}, {50, 10}, {90, 10} }; 
-COORD coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { {10, 20}, {50, 20}, {90, 20} }; 
-COORD coordsDescCurso[MAX_ELEMENTOS_CURSO] = { {10, 21}, {50, 21}, {90, 21} }; 
+COORD coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {10, 10}, {50, 10}, {90, 10} };
+COORD coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { {10, 20}, {50, 20}, {90, 20} };
+COORD coordsDescCurso[MAX_ELEMENTOS_CURSO] = { {10, 21}, {50, 21}, {90, 21} };
 
+// Datos cargados
 vector<ElementoMenu> especialidades;
 vector<ElementoMenu> cursos;
+
+// Estado actual del menu
 int seccionActual = SECCION_CABECERA;
 int elementoActual = 0;
 
@@ -52,18 +61,23 @@ void cargarDatos(const string& nombreArchivo, vector<ElementoMenu>& datos, const
 void cargarPersistencia();
 void guardarPersistencia();
 int obtenerMaxElementosEnSeccion(int seccion);
-void manejarEntrada();
-void manejarSeleccion(int seccion, int elemento);
-void mostrarMensaje(const string& msg);
 
-short MostrarMenu_LandingPage()
+// --- Función Principal del Menú Landing Page ---
+// Retorna:
+// 0 = Salir (ESC presionado)
+// 1 = Iniciar Sesion
+// 2 = Registrarse
+// 3 = Sobre Nosotros
+// (Otras secciones no retornan, la funcion espera una seleccion de cabecera o ESC)
+int MostrarMenu_LandingPage()
 {
-	short opc = 0;
+    int opc = 0; // Valor por defecto: salir o quedarse en la landing page
 
     // Datos por defecto si los archivos faltan o están vacíos
+    // Se pueden mover a un archivo de configuracion si crecen mucho
     vector<ElementoMenu> especialidadesDefecto = {
         {"Desarrollo Web", "Frontend & Backend"},
-        {"Ciencia de Datos", "Análisis y ML"},
+        {"Ciencia de Datos", "Analisis y ML"},
         {"Marketing Digital", "SEO, SEM & Ads"}
     };
     vector<ElementoMenu> cursosDefecto = {
@@ -79,279 +93,21 @@ short MostrarMenu_LandingPage()
     // Cargar última posición seleccionada
     cargarPersistencia();
 
-    bool ejecutando = true;
-    while (ejecutando) 
+    bool ejecutandoMenu = true; // Controla el bucle de este menu
+    while (ejecutandoMenu)
     {
-        dibujarInterfaz();
-        manejarEntrada();
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { // Verificar si Esc fue presionado durante manejarEntrada
-            ejecutando = false;
-        }
-        // Pequeño retraso para prevenir alto uso de CPU
-        Sleep(50);
-    }
+        dibujarInterfaz(); // Dibuja la interfaz en cada iteracion
 
-    // Guardar última posición seleccionada antes de salir
-    guardarPersistencia();
-
-    return opc;
-}
-
-// Dibuja la interfaz completa incluyendo ASCII base y datos/selección dinámicos
-void dibujarInterfaz() 
-{
-	UI_LandingPage(); // Llamar a la función de dibujo ASCII
-
-    // Dibujar Elementos de Cabecera
-    vector<string> elementosCabecera = { 
-        " Iniciar Sesion ", 
-        " Registrarse ", 
-        " Sobre Nosotros " 
-    };
-
-    for (int i = 0; i < MAX_ELEMENTOS_CABECERA; ++i) 
-    {
-        if (i < elementosCabecera.size()) 
+        // Manejo de entrada dentro del bucle para controlar el retorno
+        if (_kbhit()) // Verificar si se ha pulsado una tecla
         {
-            gotoXY(coordsElementosCabecera[i].X, coordsElementosCabecera[i].Y);
-            if (seccionActual == SECCION_CABECERA && elementoActual == i) 
+            int tecla = _getch(); // Obtener el carácter
+
+            if (tecla == 224) // Tecla extendida (teclas de flecha, etc.)
             {
-                cout << "-> ";
-            }
-            else {
-                cout << "   "; // Espacio para marcador
-            }
-            cout << elementosCabecera[i];
-        }
-    }
-
-    // Dibujar Especialidades
-    for (int i = 0; i < MAX_ELEMENTOS_ESPECIALIDAD; ++i) 
-    {
-        if (i < especialidades.size()) 
-        {
-            // Dibujar Título
-            gotoXY(coordsTituloEspecialidad[i].X, coordsTituloEspecialidad[i].Y);
-            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) 
-            {
-                // cambiar color texto
-            }
-            else 
-            {
-                // reestablecer color
-            }
-            cout << especialidades[i].titulo;
-
-            // Dibujar Descripción (dividir en líneas si es necesario, o simplemente imprimir)
-            gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
-            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) 
-            {
-                // cambiar color texto
-            }
-            else 
-            {
-                // reestablecer color
-            }
-            cout << especialidades[i].descripcion;
-
-            // Dibujar Marcador de Selección
-            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) 
-            {
-                gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y); // Marcador a la izquierda del título
-                cout << "->";
-            }
-            else {
-                gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y);
-                cout << "  ";
-            }
-
-			// Restablecer color
-        }
-        else {
-            // Limpiar área si no existe elemento
-            gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y);
-            cout << "                                    "; // Limpiar marcador + área de título/desc
-            gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
-            cout << "                                    ";
-        }
-    }
-
-    // Dibujar Cursos
-    for (int i = 0; i < MAX_ELEMENTOS_CURSO; ++i) 
-    {
-        if (i < cursos.size()) 
-        {
-            // Dibujar Título
-            gotoXY(coordsTituloCurso[i].X, coordsTituloCurso[i].Y);
-            if (seccionActual == SECCION_CURSOS && elementoActual == i) 
-            {
-				// cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-            }
-            else 
-            {
-				// restablecerColorTexto();
-            }
-            cout << cursos[i].titulo;
-
-            // Dibujar Descripción (dividir en líneas si es necesario, o simplemente imprimir)
-            gotoXY(coordsDescCurso[i].X, coordsDescCurso[i].Y);
-            if (seccionActual == SECCION_CURSOS && elementoActual == i) 
-            {
-				// cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-            }
-            else 
-            {
-                // restablecerColorTexto();
-            }
-            cout << cursos[i].descripcion;
-
-            // Dibujar Marcador de Selección
-            if (seccionActual == SECCION_CURSOS && elementoActual == i) 
-            {
-                gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y); // Marcador a la izquierda del título
-                //establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-                cout << "->";
-            }
-            else 
-            {
-                gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y);
-               // restablecerColorTexto();
-                cout << "  ";
-            }
-
-            //restablecerColorTexto();
-        }
-        else 
-        {
-            // Limpiar área si no existe elemento
-            gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y);
-            cout << "                                    "; // Limpiar marcador + área de título/desc
-            gotoXY(coordsDescCurso[i].X, coordsDescCurso[i].Y);
-            cout << "                                    ";
-        }
-    }
-
-    // Asegurar que el cursor esté en una posición no obstructiva después de dibujar
-    gotoXY(0, ALTO_CONSOLA - 1);
-}
-
-// Carga datos desde un archivo, usa datos por defecto si el archivo no se encuentra o está vacío
-void cargarDatos(const string& nombreArchivo, vector<ElementoMenu>& datos, const vector<ElementoMenu>& datosDefecto) 
-{
-    ifstream archivo(nombreArchivo);
-    datos.clear(); // Limpiar datos existentes
-
-    if (archivo.is_open()) 
-    {
-        string linea;
-        bool datosCargadosDesdeArchivo = false;
-        while (getline(archivo, linea)) 
-        {
-            size_t posFlecha = linea.find("->");
-            if (posFlecha != string::npos) 
-            {
-                ElementoMenu elemento;
-                elemento.titulo = linea.substr(0, posFlecha);
-                elemento.descripcion = linea.substr(posFlecha + 2);
-                datos.push_back(elemento);
-                datosCargadosDesdeArchivo = true;
-            }
-        }
-        archivo.close();
-
-        if (!datosCargadosDesdeArchivo && datosDefecto.empty()) 
-        {
-            // Si el archivo estaba vacío y no hay datos por defecto, añadir un marcador
-            datos.push_back({ "No se encontraron datos", "" });
-        }
-        else if (!datosCargadosDesdeArchivo && !datosDefecto.empty()) 
-        {
-            // El archivo estaba vacío, usar datos por defecto
-            datos = datosDefecto;
-        }
-
-    }
-    else {
-        // Archivo no encontrado, usar datos por defecto
-        datos = datosDefecto;
-    }
-
-    // Asegurar que el tamaño de datos no exceda el espacio asignado en la UI
-    if (datos.size() > (nombreArchivo == ARCHIVO_ESPECIALIDADES ? MAX_ELEMENTOS_ESPECIALIDAD : MAX_ELEMENTOS_CURSO)) 
-    {
-        datos.resize(nombreArchivo == ARCHIVO_ESPECIALIDADES ? MAX_ELEMENTOS_ESPECIALIDAD : MAX_ELEMENTOS_CURSO);
-    }
-}
-
-// Carga la última sección y elemento guardados del archivo de persistencia
-void cargarPersistencia() 
-{
-    ifstream archivo(ARCHIVO_PERSISTENCIA);
-    if (archivo.is_open()) 
-    {
-        int seccionCargada, elementoCargado;
-        if (archivo >> seccionCargada >> elementoCargado) 
-        {
-            // Validar valores cargados contra límites de datos reales
-            if (seccionCargada >= 0 && seccionCargada < TOTAL_SECCIONES) 
-            {
-                seccionActual = seccionCargada;
-                if (elementoCargado >= 0 && elementoCargado < obtenerMaxElementosEnSeccion(seccionActual)) 
+                tecla = _getch(); // Obtener el código de tecla real
+                switch (tecla)
                 {
-                    elementoActual = elementoCargado;
-                }
-                else 
-                {
-                    elementoActual = 0; // Reiniciar elemento si está fuera de límites
-                }
-            }
-            else 
-            {
-                seccionActual = SECCION_CABECERA; // Reiniciar sección si está fuera de límites
-                elementoActual = 0;
-            }
-        }
-        archivo.close();
-    }
-    // Si el archivo no existe o está vacío/inválido, se usa la posición por defecto (0, 0).
-}
-
-// Guarda la sección y elemento actuales en el archivo de persistencia
-void guardarPersistencia() 
-{
-    ofstream archivo(ARCHIVO_PERSISTENCIA);
-    if (archivo.is_open()) 
-    {
-        archivo << seccionActual << endl;
-        archivo << elementoActual << endl;
-        archivo.close();
-    }
-}
-
-// Devuelve el número máximo de elementos visibles para una sección dada
-int obtenerMaxElementosEnSeccion(int seccion) 
-{
-    switch (seccion) 
-    {
-        case SECCION_CABECERA: return MAX_ELEMENTOS_CABECERA;
-        case SECCION_ESPECIALIDADES: return static_cast<int>(especialidades.size()); // Aca el máximo de elementos está limitado por datos cargados Y espacio UI
-        case SECCION_CURSOS: return static_cast<int>(cursos.size());
-        default: return 0;
-    }
-}
-
-// Maneja la entrada de teclado para navegación y selección
-void manejarEntrada() 
-{
-    if (_kbhit()) // Verificar si se ha pulsado una tecla
-    { 
-        int tecla = _getch(); // Obtener el carácter
-
-        if (tecla == 224) // Tecla extendida (teclas de flecha, etc.)
-        { 
-            tecla = _getch(); // Obtener el código de tecla real
-            switch (tecla) 
-            {
                 case 72: // Flecha arriba
                     seccionActual--;
                     if (seccionActual < 0) seccionActual = 0;
@@ -368,90 +124,411 @@ void manejarEntrada()
                     break;
                 case 77: // Flecha derecha
                     elementoActual++;
-                    if (elementoActual >= obtenerMaxElementosEnSeccion(seccionActual)) 
+                    if (elementoActual >= obtenerMaxElementosEnSeccion(seccionActual))
                     {
                         elementoActual = obtenerMaxElementosEnSeccion(seccionActual) > 0 ? obtenerMaxElementosEnSeccion(seccionActual) - 1 : 0;
                     }
                     break;
+                }
             }
+            else if (tecla == 13) // Tecla Enter
+            {
+                // Manejar selección: Si es de cabecera, retornar opc y salir del bucle.
+                // Si es de otra sección, mostrar mensaje temporal y continuar en el menu.
+                switch (seccionActual)
+                {
+                case SECCION_CABECERA:
+                    if (elementoActual >= 0 && elementoActual < MAX_ELEMENTOS_CABECERA) {
+                        opc = elementoActual + 1; // 1=Iniciar, 2=Registrarse, 3=Sobre Nosotros
+                        ejecutandoMenu = false; // Salir del bucle principal del menu
+                    }
+                    break;
+                case SECCION_ESPECIALIDADES:
+                    if (elementoActual >= 0 && elementoActual < especialidades.size()) {
+                        // Acción placeholder para especialidad
+                        gotoXY(2, ALTO_CONSOLA - 2); // Posicionar para mensaje
+                        cout << "Seleccionada Especialidad: " << especialidades[elementoActual].titulo << "       "; // Mensaje temporal, limpiar con espacios
+                        gotoXY(2, ALTO_CONSOLA - 1);
+                        system("pause>0"); // Esperar tecla
+                        // Limpiar mensajes
+                        gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
+                        gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                    }
+                    else {
+                        // Elemento fuera de rango (no deberia pasar con la navegacion clamped)
+                        gotoXY(2, ALTO_CONSOLA - 2);
+                        cout << "Seleccion de especialidad no valida." << string(80, ' ');
+                        gotoXY(2, ALTO_CONSOLA - 1);
+                        system("pause>0"); // Esperar tecla
+                        // Limpiar mensajes
+                        gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
+                        gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                    }
+                    break;
+                case SECCION_CURSOS:
+                    if (elementoActual >= 0 && elementoActual < cursos.size()) {
+                        // Acción placeholder para curso
+                        gotoXY(2, ALTO_CONSOLA - 2); // Posicionar para mensaje
+                        cout << "Seleccionado Curso: " << cursos[elementoActual].titulo << "       "; // Mensaje temporal, limpiar con espacios
+                        gotoXY(2, ALTO_CONSOLA - 1);
+                        system("pause>0"); // Esperar tecla
+                        // Limpiar mensajes
+                        gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
+                        gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                    }
+                    else {
+                        // Elemento fuera de rango
+                        gotoXY(2, ALTO_CONSOLA - 2);
+                        cout << "Seleccion de curso no valida." << string(80, ' ');
+                        gotoXY(2, ALTO_CONSOLA - 1);
+                        system("pause>0"); // Esperar tecla
+                        // Limpiar mensajes
+                        gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
+                        gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                    }
+                    break;
+                }
+            }
+            // GetAsyncKeyState(VK_ESCAPE) se usa en el bucle principal para salir
+            // directamente en lugar de _getch() == 27
         }
-        else if (tecla == 13) // Tecla Enter
-        { 
-            manejarSeleccion(seccionActual, elementoActual);
+
+        // Verificar si Esc fue presionado (permite salir incluso sin _kbhit)
+        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+            opc = 0; // Opcion 0 para salir
+            ejecutandoMenu = false;
         }
-        else if (tecla == 27) // Tecla Esc
-        { 
-            // El bucle principal verifica GetAsyncKeyState(VK_ESCAPE) para salir
-        }
+
+        // Pequeño retraso para prevenir alto uso de CPU
+        Sleep(50);
     }
+
+    // Guardar última posición seleccionada antes de salir del menu
+    guardarPersistencia();
+
+    return opc; // Retorna la opcion seleccionada (0 para salir/otra cosa, 1-3 para cabecera)
 }
 
-// Función de marcador de posición para manejar la acción de selección
-void manejarSeleccion(int seccion, int elemento) 
+// Dibuja la interfaz completa incluyendo ASCII base y datos/selección dinámicos
+void dibujarInterfaz()
 {
-    string mensaje = "Seleccionado: ";
-    switch (seccion) 
+    //system("cls"); // Asumiendo que UI_LandingPage() ya limpia la pantalla
+    UI_LandingPage(); // Llama a la función de dibujo ASCII base
+
+    // Dibujar Elementos de Cabecera
+    // Estos se dibujan directamente ya que no vienen de archivos de datos cargables
+    vector<string> elementosCabecera = {
+        " Iniciar Sesion ",
+        " Registrarse ",
+        " Sobre Nosotros "
+    };
+
+    for (int i = 0; i < MAX_ELEMENTOS_CABECERA; ++i)
     {
-        case SECCION_CABECERA:
-            if (elemento == 0) mensaje += "Iniciar Sesion";
-            else if (elemento == 1) mensaje += "Registrarse";
-            else if (elemento == 2) mensaje += "Sobre Nosotros";
-            break;
-        case SECCION_ESPECIALIDADES:
-            if (elemento >= 0 && elemento < especialidades.size()) {
-                mensaje += "Especialidad: " + especialidades[elemento].titulo;
+        if (i < elementosCabecera.size()) // Asegurar que no excedemos los elementos definidos
+        {
+            gotoXY(coordsElementosCabecera[i].X, coordsElementosCabecera[i].Y);
+            if (seccionActual == SECCION_CABECERA && elementoActual == i)
+            {
+                // Si ExtendedFunctions.h tiene cambiarColorTexto
+                // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                cout << "->"; // Indicador de seleccion
             }
             else {
-                mensaje += "Especialidad no valida";
+                // Si ExtendedFunctions.h tiene restablecerColorTexto
+                // restablecerColorTexto();
+                cout << "  "; // Espacio para marcador
             }
-            break;
-        case SECCION_CURSOS:
-            if (elemento >= 0 && elemento < cursos.size()) {
-                mensaje += "Curso: " + cursos[elemento].titulo;
-            }
-            else {
-                mensaje += "Curso no valido";
-            }
-            break;
+            cout << elementosCabecera[i];
+            // Si ExtendedFunctions.h tiene restablecerColorTexto
+            // restablecerColorTexto();
+        }
     }
 
-    mostrarMensaje(mensaje); // Mostrar el mensaje de selección temporalmente
+    // Dibujar Especialidades
+    for (int i = 0; i < MAX_ELEMENTOS_ESPECIALIDAD; ++i)
+    {
+        // Solo dibujar si tenemos suficientes datos Y espacio en la UI
+        if (i < especialidades.size())
+        {
+            // Dibujar Título
+            gotoXY(coordsTituloEspecialidad[i].X, coordsTituloEspecialidad[i].Y);
+            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i)
+            {
+                // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            }
+            else {
+                // restablecerColorTexto();
+            }
+            // Limpiar espacio antes de escribir (manejar titulos de diferente longitud)
+            cout << string(20, ' '); gotoXY(coordsTituloEspecialidad[i].X, coordsTituloEspecialidad[i].Y);
+            cout << especialidades[i].titulo;
+
+            // Dibujar Descripción
+            gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
+            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i)
+            {
+                // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            }
+            else {
+                // restablecerColorTexto();
+            }
+            // Limpiar espacio antes de escribir
+            cout << string(20, ' '); gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
+            cout << especialidades[i].descripcion;
+
+            // Dibujar Marcador de Selección
+            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i)
+            {
+                gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y); // Marcador a la izquierda del título
+                //establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                cout << "->";
+            }
+            else {
+                gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y);
+                // restablecerColorTexto();
+                cout << "  ";
+            }
+
+            // restablecerColorTexto(); // Restablecer color después de dibujar elemento
+        }
+        else {
+            // Limpiar área si no existe elemento de datos para ese slot de UI
+            gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y);
+            cout << string(30, ' '); // Limpiar marcador + área de título/desc
+            gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
+            cout << string(30, ' ');
+        }
+    }
+
+    // Dibujar Cursos
+    for (int i = 0; i < MAX_ELEMENTOS_CURSO; ++i)
+    {
+        // Solo dibujar si tenemos suficientes datos Y espacio en la UI
+        if (i < cursos.size())
+        {
+            // Dibujar Título
+            gotoXY(coordsTituloCurso[i].X, coordsTituloCurso[i].Y);
+            if (seccionActual == SECCION_CURSOS && elementoActual == i)
+            {
+                // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            }
+            else {
+                // restablecerColorTexto();
+            }
+            // Limpiar espacio antes de escribir
+            cout << string(20, ' '); gotoXY(coordsTituloCurso[i].X, coordsTituloCurso[i].Y);
+            cout << cursos[i].titulo;
+
+            // Dibujar Descripción
+            gotoXY(coordsDescCurso[i].X, coordsDescCurso[i].Y);
+            if (seccionActual == SECCION_CURSOS && elementoActual == i)
+            {
+                // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            }
+            else {
+                // restablecerColorTexto();
+            }
+            // Limpiar espacio antes de escribir
+            cout << string(20, ' '); gotoXY(coordsDescCurso[i].X, coordsDescCurso[i].Y);
+            cout << cursos[i].descripcion;
+
+            // Dibujar Marcador de Selección
+            if (seccionActual == SECCION_CURSOS && elementoActual == i)
+            {
+                gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y); // Marcador a la izquierda del título
+                //establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                cout << "->";
+            }
+            else {
+                gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y);
+                // restablecerColorTexto();
+                cout << "  ";
+            }
+
+            // restablecerColorTexto(); // Restablecer color después de dibujar elemento
+        }
+        else {
+            // Limpiar área si no existe elemento de datos para ese slot de UI
+            gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y);
+            cout << string(30, ' '); // Limpiar marcador + área de título/desc
+            gotoXY(coordsDescCurso[i].X, coordsDescCurso[i].Y);
+            cout << string(30, ' ');
+        }
+    }
+
+    // Asegurar que el cursor esté en una posición no obstructiva después de dibujar
+    gotoXY(0, ALTO_CONSOLA - 1);
 }
 
-// Muestra un mensaje temporal en la parte inferior de la pantalla
-void mostrarMensaje(const string& msg) 
+// Carga datos desde un archivo, usa datos por defecto si el archivo no se encuentra o está vacío
+void cargarDatos(const string& nombreArchivo, vector<ElementoMenu>& datos, const vector<ElementoMenu>& datosDefecto)
 {
-    // Guardar posición actual del cursor y atributos de texto
-    //CONSOLE_SCREEN_BUFFER_INFO csbi;
-    //GetConsoleScreenBufferInfo(manejadorConsola, &csbi);
-    //COORD posOriginal = csbi.dwCursorPosition;
-    //WORD atributosOriginales = csbi.wAttributes;
+    ifstream archivo(nombreArchivo);
+    datos.clear(); // Limpiar datos existentes
 
-    // Limpiar la línea de mensaje
-    gotoXY(0, ALTO_CONSOLA - 2);
-    for (int i = 0; i < ANCHO_CONSOLA; ++i) cout << " ";
+    if (archivo.is_open())
+    {
+        string linea;
+        bool datosCargadosDesdeArchivo = false;
+        while (getline(archivo, linea))
+        {
+            size_t posFlecha = linea.find("->");
+            if (posFlecha != string::npos)
+            {
+                ElementoMenu elemento;
+                elemento.titulo = linea.substr(0, posFlecha);
+                // Eliminar posibles espacios en blanco al inicio/fin del título
+                size_t first = elemento.titulo.find_first_not_of(' ');
+                if (string::npos != first) {
+                    size_t last = elemento.titulo.find_last_not_of(' ');
+                    elemento.titulo = elemento.titulo.substr(first, (last - first + 1));
+                }
+                else {
+                    elemento.titulo = ""; // Título vacío si solo son espacios
+                }
 
-    // Imprimir el mensaje
-    gotoXY(2, ALTO_CONSOLA - 2); // Imprimir cerca de la parte inferior
-    //establecerColorTexto(FOREGROUND_YELLOW | FOREGROUND_INTENSITY); // Resaltar mensaje
-    cout << msg;
-    //restablecerColorTexto();
+                elemento.descripcion = linea.substr(posFlecha + 2);
+                // Eliminar posibles espacios en blanco al inicio/fin de la descripcion
+                first = elemento.descripcion.find_first_not_of(' ');
+                if (string::npos != first) {
+                    size_t last = elemento.descripcion.find_last_not_of(' ');
+                    elemento.descripcion = elemento.descripcion.substr(first, (last - first + 1));
+                }
+                else {
+                    elemento.descripcion = ""; // Descripcion vacia si solo son espacios
+                }
 
-    // Restaurar posición del cursor y atributos
-    //gotoXY(posOriginal.X, posOriginal.Y);
-    //SetConsoleTextAttribute(manejadorConsola, atributosOriginales);
 
-    // Esperar una pulsación de tecla para continuar (simular entrada a una nueva pantalla)
-    gotoXY(2, ALTO_CONSOLA - 1);
-    cout << "Presione cualquier tecla para continuar...";
-    system("pause>0"); // Esperar pulsación de tecla
+                if (!elemento.titulo.empty()) { // Solo agregar si tiene titulo (evitar lineas vacias o invalidas)
+                    datos.push_back(elemento);
+                    datosCargadosDesdeArchivo = true;
+                }
 
-    // Limpiar las líneas de mensaje y prompt
-    gotoXY(0, ALTO_CONSOLA - 2);
-    for (int i = 0; i < ANCHO_CONSOLA; ++i) cout << " ";
-    gotoXY(0, ALTO_CONSOLA - 1);
-    for (int i = 0; i < ANCHO_CONSOLA; ++i) cout << " ";
+            }
+        }
+        archivo.close();
 
-    // Restaurar posición original (puede ser complicado, más simple simplemente redibujar la UI después)
-    // Para este ejemplo, simplemente limpiamos las áreas de mensaje y prompt.
+        if (!datosCargadosDesdeArchivo) // Si despues de leer el archivo, no se cargo ningun dato valido
+        {
+            if (datosDefecto.empty()) {
+                // Si el archivo estaba vacío y no hay datos por defecto, añadir un marcador
+                datos.push_back({ "No se encontraron datos", "" });
+            }
+            else {
+                // El archivo estaba vacío, usar datos por defecto
+                datos = datosDefecto;
+            }
+        }
+
+    }
+    else {
+        // Archivo no encontrado, usar datos por defecto
+        datos = datosDefecto;
+    }
+
+    // Asegurar que el tamaño de datos no exceda el espacio asignado en la UI
+    // Esto es importante para que obtenerMaxElementosEnSeccion no devuelva un valor mayor al que la UI puede mostrar
+    if (nombreArchivo == ARCHIVO_ESPECIALIDADES && datos.size() > MAX_ELEMENTOS_ESPECIALIDAD) {
+        datos.resize(MAX_ELEMENTOS_ESPECIALIDAD);
+    }
+    else if (nombreArchivo == ARCHIVO_CURSOS && datos.size() > MAX_ELEMENTOS_CURSO) {
+        datos.resize(MAX_ELEMENTOS_CURSO);
+    }
+}
+
+// Carga la última sección y elemento guardados del archivo de persistencia
+void cargarPersistencia()
+{
+    ifstream archivo(ARCHIVO_PERSISTENCIA);
+    if (archivo.is_open())
+    {
+        int seccionCargada, elementoCargado;
+        if (archivo >> seccionCargada >> elementoCargado)
+        {
+            // Validar valores cargados contra límites de datos reales
+            if (seccionCargada >= 0 && seccionCargada < TOTAL_SECCIONES)
+            {
+                seccionActual = seccionCargada;
+                // Validar elemento dentro de los límites de la sección cargada
+                int maxElementos = obtenerMaxElementosEnSeccion(seccionActual);
+                if (elementoCargado >= 0 && elementoCargado < maxElementos)
+                {
+                    elementoActual = elementoCargado;
+                }
+                else
+                {
+                    elementoActual = 0; // Reiniciar elemento si está fuera de límites
+                }
+            }
+            else
+            {
+                seccionActual = SECCION_CABECERA; // Reiniciar sección si está fuera de límites
+                elementoActual = 0;
+            }
+        }
+        archivo.close();
+    }
+    // Si el archivo no existe o está vacío/inválido, se usa la posición por defecto (0, 0).
+}
+
+// Guarda la sección y elemento actuales en el archivo de persistencia
+void guardarPersistencia()
+{
+    ofstream archivo(ARCHIVO_PERSISTENCIA);
+    if (archivo.is_open())
+    {
+        archivo << seccionActual << endl;
+        archivo << elementoActual << endl;
+        archivo.close();
+    }
+}
+
+// Devuelve el número máximo de elementos *visibles* para una sección dada
+// Para especialidades/cursos, es el mínimo entre los datos cargados y el espacio UI
+int obtenerMaxElementosEnSeccion(int seccion)
+{
+    switch (seccion)
+    {
+    case SECCION_CABECERA: return MAX_ELEMENTOS_CABECERA;
+    case SECCION_ESPECIALIDADES: return min(static_cast<int>(especialidades.size()), MAX_ELEMENTOS_ESPECIALIDAD);
+    case SECCION_CURSOS: return min(static_cast<int>(cursos.size()), MAX_ELEMENTOS_CURSO);
+    default: return 0;
+    }
+}
+
+// Función para manejar solo la navegación (flechas)
+// El manejo de Enter y Esc se hace en MostrarMenu_LandingPage
+void manejarNavegacion()
+{
+    int tecla = _getch(); // Obtener el carácter
+
+    if (tecla == 224) // Tecla extendida (teclas de flecha, etc.)
+    {
+        tecla = _getch(); // Obtener el código de tecla real
+        switch (tecla)
+        {
+        case 72: // Flecha arriba
+            seccionActual--;
+            if (seccionActual < 0) seccionActual = 0;
+            elementoActual = 0; // Reiniciar elemento al cambiar de sección
+            break;
+        case 80: // Flecha abajo
+            seccionActual++;
+            if (seccionActual >= TOTAL_SECCIONES) seccionActual = TOTAL_SECCIONES - 1;
+            elementoActual = 0; // Reiniciar elemento al cambiar de sección
+            break;
+        case 75: // Flecha izquierda
+            elementoActual--;
+            if (elementoActual < 0) elementoActual = 0;
+            break;
+        case 77: // Flecha derecha
+            elementoActual++;
+            if (elementoActual >= obtenerMaxElementosEnSeccion(seccionActual))
+            {
+                elementoActual = obtenerMaxElementosEnSeccion(seccionActual) > 0 ? obtenerMaxElementosEnSeccion(seccionActual) - 1 : 0;
+            }
+            break;
+        }
+    }
 }

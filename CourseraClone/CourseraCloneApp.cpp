@@ -10,21 +10,13 @@ void SecuenciaInicializacion();
 
 void main()
 {
-	short opc;
+	int opc;
 
 	SecuenciaInicializacion();
 	system("cls");
 
 	opc = MostrarMenu_LandingPage();
 
-	switch (opc)
-	{
-	case 1:
-		cout << "Iniciar Sesion" << endl;
-		break;
-	default:
-		break;
-	}
 	system("pause");
 }
 
