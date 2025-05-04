@@ -1,17 +1,17 @@
 #pragma once
 
-// headers externos
+// headers propios
 #include "ExtendedFunctions.h" // gotoXY, ANCHO_CONSOLA, ALTO_CONSOLA, etc.
 #include "UI_Ascii.h"          // UI_LandingPage()
 
-// Headers estándar necesarios para este archivo
-#include <iostream> // Para cout
-#include <vector>
-#include <string>
-#include <conio.h>  // _kbhit, _getch
-#include <fstream>  // ifstream, ofstream
-#include <windows.h> // COORD, GetAsyncKeyState, VK_ESCAPE, Sleep (Necesario para GetAsyncKeyState y COORD)
-#include <cstdlib>  // Para system("pause>0")
+// Headers estándar 
+#include "iostream"
+#include "vector"
+#include "string"
+#include "conio.h"    // _kbhit, _getch
+#include "fstream"    // ifstream, ofstream
+#include "windows.h"  // COORD, GetAsyncKeyState, VK_ESCAPE, Sleep (Necesario para GetAsyncKeyState y COORD)
+#include "cstdlib"    // Para system("pause>0")
 
 using namespace std;
 
@@ -23,9 +23,9 @@ const int SECCION_CURSOS = 2;
 const int TOTAL_SECCIONES = 3;
 
 // Archivos de persistencia
-const string ARCHIVO_PERSISTENCIA = "ultima_posi.txt";
-const string ARCHIVO_ESPECIALIDADES = "especialidades_muestra.txt";
-const string ARCHIVO_CURSOS = "cursos_muestra.txt";
+const string ARCHIVO_PERSISTENCIA = "Resources/Data/ultima_posi.txt";
+const string ARCHIVO_ESPECIALIDADES = "Resources/Data/especialidades_muestra.txt";
+const string ARCHIVO_CURSOS = "Resources/Data/cursos_muestra.txt";
 
 // Items max visibles por seccion (basado en el diseño ASCII)
 const int MAX_ELEMENTOS_CABECERA = 3;
@@ -56,6 +56,7 @@ int elementoActual = 0;
 
 
 // --- Prototipos de Funciones ---
+int MostrarMenu_LandingPage();
 void dibujarInterfaz();
 void cargarDatos(const string& nombreArchivo, vector<ElementoMenu>& datos, const vector<ElementoMenu>& datosDefecto);
 void cargarPersistencia();
@@ -74,7 +75,6 @@ int MostrarMenu_LandingPage()
     int opc = 0; // Valor por defecto: salir o quedarse en la landing page
 
     // Datos por defecto si los archivos faltan o están vacíos
-    // Se pueden mover a un archivo de configuracion si crecen mucho
     vector<ElementoMenu> especialidadesDefecto = {
         {"Desarrollo Web", "Frontend & Backend"},
         {"Ciencia de Datos", "Analisis y ML"},
