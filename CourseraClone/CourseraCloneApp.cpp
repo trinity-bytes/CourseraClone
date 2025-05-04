@@ -13,7 +13,6 @@ void main()
 	int opc;
 
 	SecuenciaInicializacion();
-	system("cls");
 
 	opc = MostrarMenu_LandingPage();
 
