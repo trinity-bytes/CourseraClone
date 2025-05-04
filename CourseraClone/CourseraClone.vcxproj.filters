@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\MenusInteractivos">
+      <UniqueIdentifier>{de2c495b-f5a8-4c10-84ab-d97f6c0c7831}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CourseraCloneApp.cpp">
@@ -20,12 +23,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UI_Ascii.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ExtendedFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="LinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -40,6 +41,25 @@
     </ClInclude>
     <ClInclude Include="Queue.h">
       <Filter>Header Files</Filter>
+=======
+    <ClInclude Include="Usuario.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Estudiante.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Empresa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Archivo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Ascii.h">
+      <Filter>Header Files\MenusInteractivos</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Menu_LandingPage.h">
+      <Filter>Header Files\MenusInteractivos</Filter>
+>>>>>>> a648e3642384ceedce7e604870d21365b3ba2a49
     </ClInclude>
   </ItemGroup>
 </Project>
