@@ -100,9 +100,14 @@ int MostrarMenu_LandingPage()
     cargarPersistencia();
 
     bool ejecutandoMenu = true; // Controla el bucle de este menu
+	bool necesitaRedibujar = false; // Flag para redibujar la interfaz solo cuando sea necesario
+    
+    // Dibujar interfaz inicial antes de entrar al bucle
+    dibujarInterfaz();
+    
     while (ejecutandoMenu)
     {
-        dibujarInterfaz(); // Dibuja la interfaz en cada iteracion
+        necesitaRedibujar = false; // Reiniciar flag al inicio de cada iteración
 
         // Manejo de entrada dentro del bucle para controlar el retorno
         if (_kbhit()) // Verificar si se ha pulsado una tecla
@@ -118,15 +123,18 @@ int MostrarMenu_LandingPage()
                     seccionActual--;
                     if (seccionActual < 0) seccionActual = 0;
                     elementoActual = 0; // Reiniciar elemento al cambiar de sección
+                    necesitaRedibujar = true;
                     break;
                 case 80: // Flecha abajo
                     seccionActual++;
                     if (seccionActual >= TOTAL_SECCIONES) seccionActual = TOTAL_SECCIONES - 1;
                     elementoActual = 0; // Reiniciar elemento al cambiar de sección
+                    necesitaRedibujar = true;
                     break;
                 case 75: // Flecha izquierda
                     elementoActual--;
                     if (elementoActual < 0) elementoActual = 0;
+                    necesitaRedibujar = true;
                     break;
                 case 77: // Flecha derecha
                     elementoActual++;
@@ -134,6 +142,7 @@ int MostrarMenu_LandingPage()
                     {
                         elementoActual = obtenerMaxElementosEnSeccion(seccionActual) > 0 ? obtenerMaxElementosEnSeccion(seccionActual) - 1 : 0;
                     }
+                    necesitaRedibujar = true;
                     break;
                 }
             }
@@ -159,6 +168,7 @@ int MostrarMenu_LandingPage()
                         // Limpiar mensajes
                         gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
                         gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                        necesitaRedibujar = true; // Redibujar después de limpiar mensajes
                     }
                     else {
                         // Elemento fuera de rango (no deberia pasar con la navegacion clamped)
@@ -169,6 +179,7 @@ int MostrarMenu_LandingPage()
                         // Limpiar mensajes
                         gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
                         gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                        necesitaRedibujar = true; // Redibujar después de limpiar mensajes
                     }
                     break;
                 case SECCION_CURSOS:
@@ -181,6 +192,7 @@ int MostrarMenu_LandingPage()
                         // Limpiar mensajes
                         gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
                         gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                        necesitaRedibujar = true; // Redibujar después de limpiar mensajes
                     }
                     else {
                         // Elemento fuera de rango
@@ -191,18 +203,23 @@ int MostrarMenu_LandingPage()
                         // Limpiar mensajes
                         gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
                         gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                        necesitaRedibujar = true; // Redibujar después de limpiar mensajes
                     }
                     break;
                 }
             }
-            // GetAsyncKeyState(VK_ESCAPE) se usa en el bucle principal para salir
-            // directamente en lugar de _getch() == 27
         }
 
         // Verificar si Esc fue presionado (permite salir incluso sin _kbhit)
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
             opc = 0; // Opcion 0 para salir
             ejecutandoMenu = false;
+        }
+
+        // Solo redibujar la interfaz cuando sea necesario
+        if (necesitaRedibujar) {
+            system("cls"); // Opcional: limpiar toda la pantalla antes de redibujar
+            dibujarInterfaz();
         }
 
         // Pequeño retraso para prevenir alto uso de CPU
