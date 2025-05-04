@@ -80,7 +80,8 @@ short MostrarMenu_LandingPage()
     cargarPersistencia();
 
     bool ejecutando = true;
-    while (ejecutando) {
+    while (ejecutando) 
+    {
         dibujarInterfaz();
         manejarEntrada();
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { // Verificar si Esc fue presionado durante manejarEntrada
@@ -232,4 +233,225 @@ void dibujarInterfaz()
 
     // Asegurar que el cursor esté en una posición no obstructiva después de dibujar
     gotoXY(0, ALTO_CONSOLA - 1);
+}
+
+// Carga datos desde un archivo, usa datos por defecto si el archivo no se encuentra o está vacío
+void cargarDatos(const string& nombreArchivo, vector<ElementoMenu>& datos, const vector<ElementoMenu>& datosDefecto) 
+{
+    ifstream archivo(nombreArchivo);
+    datos.clear(); // Limpiar datos existentes
+
+    if (archivo.is_open()) 
+    {
+        string linea;
+        bool datosCargadosDesdeArchivo = false;
+        while (getline(archivo, linea)) 
+        {
+            size_t posFlecha = linea.find("->");
+            if (posFlecha != string::npos) 
+            {
+                ElementoMenu elemento;
+                elemento.titulo = linea.substr(0, posFlecha);
+                elemento.descripcion = linea.substr(posFlecha + 2);
+                datos.push_back(elemento);
+                datosCargadosDesdeArchivo = true;
+            }
+        }
+        archivo.close();
+
+        if (!datosCargadosDesdeArchivo && datosDefecto.empty()) 
+        {
+            // Si el archivo estaba vacío y no hay datos por defecto, añadir un marcador
+            datos.push_back({ "No se encontraron datos", "" });
+        }
+        else if (!datosCargadosDesdeArchivo && !datosDefecto.empty()) 
+        {
+            // El archivo estaba vacío, usar datos por defecto
+            datos = datosDefecto;
+        }
+
+    }
+    else {
+        // Archivo no encontrado, usar datos por defecto
+        datos = datosDefecto;
+    }
+
+    // Asegurar que el tamaño de datos no exceda el espacio asignado en la UI
+    if (datos.size() > (nombreArchivo == ARCHIVO_ESPECIALIDADES ? MAX_ELEMENTOS_ESPECIALIDAD : MAX_ELEMENTOS_CURSO)) 
+    {
+        datos.resize(nombreArchivo == ARCHIVO_ESPECIALIDADES ? MAX_ELEMENTOS_ESPECIALIDAD : MAX_ELEMENTOS_CURSO);
+    }
+}
+
+// Carga la última sección y elemento guardados del archivo de persistencia
+void cargarPersistencia() 
+{
+    ifstream archivo(ARCHIVO_PERSISTENCIA);
+    if (archivo.is_open()) 
+    {
+        int seccionCargada, elementoCargado;
+        if (archivo >> seccionCargada >> elementoCargado) 
+        {
+            // Validar valores cargados contra límites de datos reales
+            if (seccionCargada >= 0 && seccionCargada < TOTAL_SECCIONES) 
+            {
+                seccionActual = seccionCargada;
+                if (elementoCargado >= 0 && elementoCargado < obtenerMaxElementosEnSeccion(seccionActual)) 
+                {
+                    elementoActual = elementoCargado;
+                }
+                else 
+                {
+                    elementoActual = 0; // Reiniciar elemento si está fuera de límites
+                }
+            }
+            else 
+            {
+                seccionActual = SECCION_CABECERA; // Reiniciar sección si está fuera de límites
+                elementoActual = 0;
+            }
+        }
+        archivo.close();
+    }
+    // Si el archivo no existe o está vacío/inválido, se usa la posición por defecto (0, 0).
+}
+
+// Guarda la sección y elemento actuales en el archivo de persistencia
+void guardarPersistencia() 
+{
+    ofstream archivo(ARCHIVO_PERSISTENCIA);
+    if (archivo.is_open()) 
+    {
+        archivo << seccionActual << endl;
+        archivo << elementoActual << endl;
+        archivo.close();
+    }
+}
+
+// Devuelve el número máximo de elementos visibles para una sección dada
+int obtenerMaxElementosEnSeccion(int seccion) 
+{
+    switch (seccion) 
+    {
+        case SECCION_CABECERA: return MAX_ELEMENTOS_CABECERA;
+        case SECCION_ESPECIALIDADES: return static_cast<int>(especialidades.size()); // Aca el máximo de elementos está limitado por datos cargados Y espacio UI
+        case SECCION_CURSOS: return static_cast<int>(cursos.size());
+        default: return 0;
+    }
+}
+
+// Maneja la entrada de teclado para navegación y selección
+void manejarEntrada() 
+{
+    if (_kbhit()) // Verificar si se ha pulsado una tecla
+    { 
+        int tecla = _getch(); // Obtener el carácter
+
+        if (tecla == 224) // Tecla extendida (teclas de flecha, etc.)
+        { 
+            tecla = _getch(); // Obtener el código de tecla real
+            switch (tecla) 
+            {
+                case 72: // Flecha arriba
+                    seccionActual--;
+                    if (seccionActual < 0) seccionActual = 0;
+                    elementoActual = 0; // Reiniciar elemento al cambiar de sección
+                    break;
+                case 80: // Flecha abajo
+                    seccionActual++;
+                    if (seccionActual >= TOTAL_SECCIONES) seccionActual = TOTAL_SECCIONES - 1;
+                    elementoActual = 0; // Reiniciar elemento al cambiar de sección
+                    break;
+                case 75: // Flecha izquierda
+                    elementoActual--;
+                    if (elementoActual < 0) elementoActual = 0;
+                    break;
+                case 77: // Flecha derecha
+                    elementoActual++;
+                    if (elementoActual >= obtenerMaxElementosEnSeccion(seccionActual)) 
+                    {
+                        elementoActual = obtenerMaxElementosEnSeccion(seccionActual) > 0 ? obtenerMaxElementosEnSeccion(seccionActual) - 1 : 0;
+                    }
+                    break;
+            }
+        }
+        else if (tecla == 13) // Tecla Enter
+        { 
+            manejarSeleccion(seccionActual, elementoActual);
+        }
+        else if (tecla == 27) // Tecla Esc
+        { 
+            // El bucle principal verifica GetAsyncKeyState(VK_ESCAPE) para salir
+        }
+    }
+}
+
+// Función de marcador de posición para manejar la acción de selección
+void manejarSeleccion(int seccion, int elemento) 
+{
+    string mensaje = "Seleccionado: ";
+    switch (seccion) 
+    {
+        case SECCION_CABECERA:
+            if (elemento == 0) mensaje += "Iniciar Sesion";
+            else if (elemento == 1) mensaje += "Registrarse";
+            else if (elemento == 2) mensaje += "Sobre Nosotros";
+            break;
+        case SECCION_ESPECIALIDADES:
+            if (elemento >= 0 && elemento < especialidades.size()) {
+                mensaje += "Especialidad: " + especialidades[elemento].titulo;
+            }
+            else {
+                mensaje += "Especialidad no valida";
+            }
+            break;
+        case SECCION_CURSOS:
+            if (elemento >= 0 && elemento < cursos.size()) {
+                mensaje += "Curso: " + cursos[elemento].titulo;
+            }
+            else {
+                mensaje += "Curso no valido";
+            }
+            break;
+    }
+
+    mostrarMensaje(mensaje); // Mostrar el mensaje de selección temporalmente
+}
+
+// Muestra un mensaje temporal en la parte inferior de la pantalla
+void mostrarMensaje(const string& msg) 
+{
+    // Guardar posición actual del cursor y atributos de texto
+    //CONSOLE_SCREEN_BUFFER_INFO csbi;
+    //GetConsoleScreenBufferInfo(manejadorConsola, &csbi);
+    //COORD posOriginal = csbi.dwCursorPosition;
+    //WORD atributosOriginales = csbi.wAttributes;
+
+    // Limpiar la línea de mensaje
+    gotoXY(0, ALTO_CONSOLA - 2);
+    for (int i = 0; i < ANCHO_CONSOLA; ++i) cout << " ";
+
+    // Imprimir el mensaje
+    gotoXY(2, ALTO_CONSOLA - 2); // Imprimir cerca de la parte inferior
+    //establecerColorTexto(FOREGROUND_YELLOW | FOREGROUND_INTENSITY); // Resaltar mensaje
+    cout << msg;
+    //restablecerColorTexto();
+
+    // Restaurar posición del cursor y atributos
+    //gotoXY(posOriginal.X, posOriginal.Y);
+    //SetConsoleTextAttribute(manejadorConsola, atributosOriginales);
+
+    // Esperar una pulsación de tecla para continuar (simular entrada a una nueva pantalla)
+    gotoXY(2, ALTO_CONSOLA - 1);
+    cout << "Presione cualquier tecla para continuar...";
+    system("pause>0"); // Esperar pulsación de tecla
+
+    // Limpiar las líneas de mensaje y prompt
+    gotoXY(0, ALTO_CONSOLA - 2);
+    for (int i = 0; i < ANCHO_CONSOLA; ++i) cout << " ";
+    gotoXY(0, ALTO_CONSOLA - 1);
+    for (int i = 0; i < ANCHO_CONSOLA; ++i) cout << " ";
+
+    // Restaurar posición original (puede ser complicado, más simple simplemente redibujar la UI después)
+    // Para este ejemplo, simplemente limpiamos las áreas de mensaje y prompt.
 }

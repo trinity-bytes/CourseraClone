@@ -19,6 +19,9 @@ void main()
 
 	switch (opc)
 	{
+	case 1:
+		cout << "Iniciar Sesion" << endl;
+		break;
 	default:
 		break;
 	}
