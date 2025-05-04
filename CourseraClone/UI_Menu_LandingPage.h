@@ -102,7 +102,12 @@ void dibujarInterfaz()
 	UI_LandingPage(); // Llamar a la función de dibujo ASCII
 
     // Dibujar Elementos de Cabecera
-    vector<string> elementosCabecera = { " Iniciar Sesion ", " Registrarse ", " Sobre Nosotros " };
+    vector<string> elementosCabecera = { 
+        " Iniciar Sesion ", 
+        " Registrarse ", 
+        " Sobre Nosotros " 
+    };
+
     for (int i = 0; i < MAX_ELEMENTOS_CABECERA; ++i) 
     {
         if (i < elementosCabecera.size()) 
@@ -116,46 +121,50 @@ void dibujarInterfaz()
                 cout << "   "; // Espacio para marcador
             }
             cout << elementosCabecera[i];
-            restablecerColorTexto(); // Restablecer después de potencialmente resaltar
         }
     }
 
     // Dibujar Especialidades
-    for (int i = 0; i < MAX_ELEMENTOS_ESPECIALIDAD; ++i) {
-        if (i < especialidades.size()) {
+    for (int i = 0; i < MAX_ELEMENTOS_ESPECIALIDAD; ++i) 
+    {
+        if (i < especialidades.size()) 
+        {
             // Dibujar Título
             gotoXY(coordsTituloEspecialidad[i].X, coordsTituloEspecialidad[i].Y);
-            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) {
-                establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) 
+            {
+                // cambiar color texto
             }
-            else {
-                restablecerColorTexto();
+            else 
+            {
+                // reestablecer color
             }
             cout << especialidades[i].titulo;
 
             // Dibujar Descripción (dividir en líneas si es necesario, o simplemente imprimir)
             gotoXY(coordsDescEspecialidad[i].X, coordsDescEspecialidad[i].Y);
-            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) {
-                establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) 
+            {
+                // cambiar color texto
             }
-            else {
-                restablecerColorTexto();
+            else 
+            {
+                // reestablecer color
             }
             cout << especialidades[i].descripcion;
 
             // Dibujar Marcador de Selección
-            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) {
+            if (seccionActual == SECCION_ESPECIALIDADES && elementoActual == i) 
+            {
                 gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y); // Marcador a la izquierda del título
-                establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
                 cout << "->";
             }
             else {
                 gotoXY(coordsTituloEspecialidad[i].X - 3, coordsTituloEspecialidad[i].Y);
-                restablecerColorTexto();
                 cout << "  ";
             }
 
-            restablecerColorTexto();
+			// Restablecer color
         }
         else {
             // Limpiar área si no existe elemento
@@ -167,43 +176,52 @@ void dibujarInterfaz()
     }
 
     // Dibujar Cursos
-    for (int i = 0; i < MAX_ELEMENTOS_CURSO; ++i) {
-        if (i < cursos.size()) {
+    for (int i = 0; i < MAX_ELEMENTOS_CURSO; ++i) 
+    {
+        if (i < cursos.size()) 
+        {
             // Dibujar Título
             gotoXY(coordsTituloCurso[i].X, coordsTituloCurso[i].Y);
-            if (seccionActual == SECCION_CURSOS && elementoActual == i) {
-                establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            if (seccionActual == SECCION_CURSOS && elementoActual == i) 
+            {
+				// cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             }
-            else {
-                restablecerColorTexto();
+            else 
+            {
+				// restablecerColorTexto();
             }
             cout << cursos[i].titulo;
 
             // Dibujar Descripción (dividir en líneas si es necesario, o simplemente imprimir)
             gotoXY(coordsDescCurso[i].X, coordsDescCurso[i].Y);
-            if (seccionActual == SECCION_CURSOS && elementoActual == i) {
-                establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+            if (seccionActual == SECCION_CURSOS && elementoActual == i) 
+            {
+				// cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             }
-            else {
-                restablecerColorTexto();
+            else 
+            {
+                // restablecerColorTexto();
             }
             cout << cursos[i].descripcion;
 
             // Dibujar Marcador de Selección
-            if (seccionActual == SECCION_CURSOS && elementoActual == i) {
+            if (seccionActual == SECCION_CURSOS && elementoActual == i) 
+            {
                 gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y); // Marcador a la izquierda del título
-                establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+                //establecerColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
                 cout << "->";
             }
-            else {
+            else 
+            {
                 gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y);
-                restablecerColorTexto();
+               // restablecerColorTexto();
                 cout << "  ";
             }
 
-            restablecerColorTexto();
+            //restablecerColorTexto();
         }
-        else {
+        else 
+        {
             // Limpiar área si no existe elemento
             gotoXY(coordsTituloCurso[i].X - 3, coordsTituloCurso[i].Y);
             cout << "                                    "; // Limpiar marcador + área de título/desc
@@ -211,7 +229,6 @@ void dibujarInterfaz()
             cout << "                                    ";
         }
     }
-
 
     // Asegurar que el cursor esté en una posición no obstructiva después de dibujar
     gotoXY(0, ALTO_CONSOLA - 1);
