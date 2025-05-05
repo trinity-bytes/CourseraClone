@@ -315,7 +315,7 @@ void actualizarElementoCabecera(int indice, bool seleccionado)
 
     gotoXY(coordsElementosCabecera[indice].X, coordsElementosCabecera[indice].Y);
 
-    if (seleccionado) SetConsoleColor(1, 15); // Color de texto SELECCION
+    if (seleccionado) SetConsoleColor(1, 4); // Color de texto SELECCION
     else SetConsoleColor(15, 1); // Color por defecto
 
     cout << ELEMENTOS_CABECERA[indice];
@@ -357,7 +357,7 @@ void actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc
     cout << string(20, ' ');
     gotoXY(coordTitulo.X, coordTitulo.Y);
 
-    if (seleccionado) SetConsoleColor(1, 15); // Color de SELECCIONADO
+    if (seleccionado) SetConsoleColor(1, 13); // Color de SELECCIONADO
     else SetConsoleColor(15, 1); // Color por defecto
 
     cout << elemento.titulo;
