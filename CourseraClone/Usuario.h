@@ -1,27 +1,67 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 class Usuario{
 protected:
 	int id, tipoUsuario;
-	string nickName, contrasena;
+	char nombreDeUsuario[30];
+	char contrasena[30];
+
 public:
-	Usuario(int _id, int _tipoUsuario, string _nickName, string _contrasena) {
+	Usuario() {};
+
+	Usuario(int _id, int _tipoUsuario, string _userName, string _contrasena) {
 		id = _id;
 		tipoUsuario = _tipoUsuario;
-		nickName = _nickName;
-		contrasena = _contrasena;
+		strncpy(nombreDeUsuario, _userName.c_str(), sizeof(nombreDeUsuario));
+		strncpy(contrasena, _contrasena.c_str(), sizeof(contrasena));
 	}
 
-	bool validarUsuario() {
-
+	bool validarUsuario(const string& input) {
+		return input == nombreDeUsuario;
 	}
-	bool validarContrasena() {
 
+	bool validarContrasena(const string& input) {
+		return input == contrasena;
 	}
+
 	virtual void mostrarPerfil() {
-
+		cout << "ID: " << id << endl;
+		cout << "Username: " << nombreDeUsuario << endl;
+		cout << "Tipo de Usuario: " << tipoUsuario << endl;
 	}
+
+	static bool login(const string& filename, Usuario& usuarioLogueado) {
+		string userInput, passInput;
+
+		cout << "Username: ";
+		cin >> userInput;
+		cout << "Password: ";
+		cin >> passInput;
+
+		ifstream file(filename, ios::binary);
+		if (!file.is_open()) {
+			cout << "No se pudo abrir el archivo." << endl;
+			return false;
+		}
+
+		Usuario temp;
+		while (file.read(reinterpret_cast<char*>(&temp), sizeof(Usuario))) {
+			if (temp.validarUsuario(userInput) && temp.validarContrasena(passInput)) {
+				usuarioLogueado = temp; // Copy matched user to reference
+				file.close();
+				cout << "Logeo exitoso!" << endl;
+				return true;
+			}
+		}
+
+		file.close();
+		cout << "Usuario o contrasena invalido" << endl;
+		return false;
+	}
+
+
 
 };

@@ -35,14 +35,56 @@
     <ClInclude Include="Empresa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Archivo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UI_Ascii.h">
       <Filter>Header Files\MenusInteractivos</Filter>
     </ClInclude>
     <ClInclude Include="UI_Menu_LandingPage.h">
       <Filter>Header Files\MenusInteractivos</Filter>
+    </ClInclude>
+    <ClInclude Include="Actividad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="algoritmosBusqueda.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="algoritmosOrdenamiento.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Boleta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Controladora.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Curso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Especializacion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inscripcion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Instructor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Venta.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -25,4 +25,12 @@ public:
 	}
 
 	virtual void mostrar() {}
+
+	int getId() const {
+		return id;
+	}
+
+	int getTipo() const {
+		return tipo;
+	}
 };
