@@ -11,13 +11,35 @@ void SecuenciaInicializacion();
 
 void main(){
 	int opc;
+	bool ejecutando = true;
 
 	SecuenciaInicializacion();
 
-	opc = MostrarMenu_LandingPage();
-	
+	do
+	{
+		opc = MostrarMenu_LandingPage();
 
-	system("pause");
+		switch (opc)
+		{
+		case 1: // Iniciar Sesion
+			system("cls");
+			UI_Login();
+			break;
+		case 2: // Registrarse
+			system("cls");
+			UI_Signup();
+			break;
+		case 3: // Sobre Nosotros
+			// ui about us
+			break;
+		case 0: // Salir
+			ejecutando = false;
+			break;
+		default:
+			break;
+		}
+		system("pause");
+	} while (ejecutando);
 }
 
 void SecuenciaInicializacion(){

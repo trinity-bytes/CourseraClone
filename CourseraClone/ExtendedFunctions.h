@@ -8,7 +8,7 @@ using namespace System;
 
 /// Constantes
 const int ANCHO_CONSOLA = 120;
-const int ALTO_CONSOLA = 33;
+const int ALTO_CONSOLA = 35;
 
 struct Color 
 {
