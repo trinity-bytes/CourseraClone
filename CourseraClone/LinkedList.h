@@ -22,6 +22,17 @@ public:
 		return tamano;
 	}
 
+	vector<int> getID() {
+		Nodo<T>* current = head;
+		vector<int> ids;
+
+		if (current != nullptr) {
+			ids.push_back(current->data.getId());
+			current = current->next;
+		}
+		return ids;
+	}
+
 	void agregarAlInicio(T value) {
 		Nodo<T>* nuevoNodo = new Nodo<T>(value);
 		nuevoNodo->next = head;
