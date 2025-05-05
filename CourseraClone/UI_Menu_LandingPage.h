@@ -53,7 +53,7 @@ struct ElementoMenu {
 
 /// Variables globales (para simplicidad en este ejemplo)
 // Coordenadas para dibujar contenido dinamico (ajusta segun tu arte ASCII)
-COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {65, 3}, {82, 3}, {96, 3} };
+COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {67, 3}, {84, 3}, {98, 3} };
 COORD coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 15}, {45, 15}, {79, 15} };
 COORD coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 17}, {45, 17}, {79, 17} };
 COORD coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { {11, 25}, {45, 25}, {79, 25} };
@@ -314,34 +314,18 @@ void actualizarElementoCabecera(int indice, bool seleccionado)
     if (indice < 0 || indice >= MAX_ELEMENTOS_CABECERA) return;
 
     gotoXY(coordsElementosCabecera[indice].X, coordsElementosCabecera[indice].Y);
-    if (seleccionado)
-    {
-        // Si hay manejo de color, usarlo aquí
-        // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    }
-    else
-    {
-        // restablecerColorTexto();
-    }
-    cout << (seleccionado ? "->" : "  ") << ELEMENTOS_CABECERA[indice];
-    // restablecerColorTexto();
+
+    if (seleccionado) SetConsoleColor(1, 15); // Color de texto SELECCION
+    else SetConsoleColor(15, 1); // Color por defecto
+
+    cout << ELEMENTOS_CABECERA[indice];
+	SetConsoleColor(15, 1); // Restablecer color por defecto
 }
 
 void actualizarElementoEspecialidad(int indice, bool seleccionado)
 {
     if (indice < 0 || indice >= especialidades.size())
         return;
-
-    // Actualizar título y marcador
-    gotoXY(coordsTituloEspecialidad[indice].X - 3, coordsTituloEspecialidad[indice].Y);
-    if (seleccionado) {
-        // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-        cout << "->";
-    }
-    else {
-        // restablecerColorTexto();
-        cout << "  ";
-    }
 
     // Actualizar contenido usando función genérica
     actualizarElementoGenerico(
@@ -350,25 +334,12 @@ void actualizarElementoEspecialidad(int indice, bool seleccionado)
         especialidades[indice],
         seleccionado
     );
-
-    // restablecerColorTexto();
 }
 
 void actualizarElementoCurso(int indice, bool seleccionado)
 {
     if (indice < 0 || indice >= cursos.size())
         return;
-
-    // Actualizar marcador
-    gotoXY(coordsTituloCurso[indice].X - 3, coordsTituloCurso[indice].Y);
-    if (seleccionado) {
-        // cambiarColorTexto(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-        cout << "->";
-    }
-    else {
-        // restablecerColorTexto();
-        cout << "  ";
-    }
 
     // Actualizar contenido usando función genérica
     actualizarElementoGenerico(
@@ -377,8 +348,6 @@ void actualizarElementoCurso(int indice, bool seleccionado)
         cursos[indice],
         seleccionado
     );
-
-    // restablecerColorTexto();
 }
 
 void actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, const ElementoMenu& elemento, bool seleccionado) 
@@ -387,7 +356,13 @@ void actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc
     gotoXY(coordTitulo.X, coordTitulo.Y);
     cout << string(20, ' ');
     gotoXY(coordTitulo.X, coordTitulo.Y);
+
+    if (seleccionado) SetConsoleColor(1, 15); // Color de SELECCIONADO
+    else SetConsoleColor(15, 1); // Color por defecto
+
     cout << elemento.titulo;
+
+    SetConsoleColor(15, 1); // Color por defecto
 
     // Formatear y actualizar descripción
     string descFormateada = formatearDescripcion(
