@@ -3,11 +3,16 @@
 
 class Empresa: public Usuario{
 private:
-	//LinkedList<Actividad> actividades;
+
+	LinkedList<Actividad> actividades;
 	//LinkedList<Instructor> instructores;
 public:
-	Empresa(): Usuario(id, tipoUsuario, nickName, contrasena) {
-		
+	void cargarDatos() {
+
+	}
+
+	Empresa(): Usuario(id, 2, nickName, contrasena) {
+		cargarDatos();
 	}
 
 	int crearCurso(){

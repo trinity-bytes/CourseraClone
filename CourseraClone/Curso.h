@@ -5,8 +5,11 @@
 #include <fstream>
 
 struct CursoIndex {
-	int idCurso;     
+	int idEmpresa;     
 	int offset;   
+
+	CursoIndex(int _idEmpresa, int _offset) : idEmpresa(_idEmpresa), offset(_offset) {}
+	CursoIndex() : idEmpresa(0), offset(0) {}
 };
 
 class Curso : public Actividad {
@@ -47,7 +50,24 @@ public:
 				return idEmpresa >= idEmpresaAhora;
 				};
 
-			int pos = busquedaBinaria(1, cantidad, busqueda);
+			int pos = busquedaBinaria(0, cantidad - 1, busqueda);
+			pos++;
+
+			for (int i = cantidad - 1; i >= pos; --i) {
+				CursoIndex temp;
+				archivoOrden.seekg(i * sizeof(CursoIndex), std::ios::beg);
+				archivoOrden.read(reinterpret_cast<char*>(&temp), sizeof(CursoIndex));
+
+				archivoOrden.seekp((i + 1) * sizeof(CursoIndex), std::ios::beg);
+				archivoOrden.write(reinterpret_cast<char*>(&temp), sizeof(CursoIndex));
+			}
+
+			// Escribir el nuevo elemento en la posición encontrada
+			archivo.seekp(pos * sizeof(CursoIndex), std::ios::beg);
+			CursoIndex nuevo(idEmpresa, cantidad + 1);
+			archivo.write(reinterpret_cast<char*>(&nuevo), sizeof(CursoIndex));
+
+			archivo.close();
 		}
 	}
 };
