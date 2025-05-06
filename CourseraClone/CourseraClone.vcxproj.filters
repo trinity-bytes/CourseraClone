@@ -89,5 +89,8 @@
     <ClInclude Include="Clase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI_MenuLanding_State.h">
+      <Filter>Header Files\MenusInteractivos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
