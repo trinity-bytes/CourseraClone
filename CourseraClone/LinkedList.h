@@ -22,15 +22,15 @@ public:
 		return tamano;
 	}
 
-	vector<int> getID() {
+	template <typename valor, typename metodoConseguir>
+	vector<valor> extraerDato(metodoConseguir requerido) {
+		vector<valor> datos;
 		Nodo<T>* current = head;
-		vector<int> ids;
-
-		if (current != nullptr) {
-			ids.push_back(current->data.getId());
+		while (current) {
+			datos.push_back(requerido(current->data));
 			current = current->next;
 		}
-		return ids;
+		return res;
 	}
 
 	void agregarAlInicio(T value) {
@@ -40,7 +40,7 @@ public:
 		tamano++;
 	}
 
-	void agregarAlFinal() {
+	void agregarAlFinal(T value) {
 		Nodo<T>* nuevoNodo = new Nodo<T>(value);
 		if (head == nullptr) {
 			head = nuevoNodo;

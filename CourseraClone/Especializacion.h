@@ -6,19 +6,25 @@
 
 class Especializacion : public Actividad {
 private:
-	LinkedList<Curso> cursos;
+	LinkedList<Curso*> cursos;
 
 public:
 	void guardar() {
-		ofstream archivo("Resources/Data/especialidades_muestra.txt", ios::app);
+		ofstream archivo("Resources/Data/actividades.txt", ios::app);
 		if (archivo.is_open()) {
 			archivo << id << '\n';
+			archivo << idEmpresa << '\n';
 			archivo << nombreEmpresa << '\n';
 			archivo << titulo << '\n';
 			archivo << descripcion << '\n';
+			archivo << tipo << '\n';
 			archivo << int(cursos.getTamano()) << '\n';
 
-			vector<int> ids = cursos.getID();
+			auto conseguirIDs = [](Curso* c) {
+				return c->getId();
+				};
+
+			vector<int> ids = cursos.extraerDato<int>(conseguirIDs);
 
 			for (int i = 0; i < int(cursos.getTamano()); i++) {
 				if (i != 0) archivo << " ";

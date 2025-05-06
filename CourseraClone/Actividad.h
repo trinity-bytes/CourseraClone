@@ -24,6 +24,8 @@ public:
 		descripcion = _descripcion;
 	}
 
+	virtual void guardar() {}
+
 	virtual void mostrar() {}
 
 	int getId() const {
