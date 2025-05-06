@@ -24,12 +24,11 @@ public:
 	void guardar() override {
 		ofstream archivo("Resources/Data/actividades.txt", ios::app);
 		if (archivo.is_open()) {
-			archivo << id << '\n';
 			archivo << idEmpresa << '\n';
+			archivo << tipo << '\n';
 			archivo << nombreEmpresa << '\n';
 			archivo << titulo << '\n';
 			archivo << descripcion << '\n';
-			archivo << tipo << '\n';
 			archivo << instructor << '\n';
 
 			auto conseguirTitulo = [](const Clase& c) {
@@ -57,9 +56,11 @@ public:
 	string getTitulo() {
 		return titulo;
 	}
-	int getCantidadModulo() {
-		return cantidadModulo;
+
+	LinkedList<Clase> getClases() {
+		return clases;
 	}
+
 	int getId() {
 		return id;
 	}

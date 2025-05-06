@@ -60,7 +60,7 @@ public:
 		nuevaInscripcion.guardar();
 
 		// 3. Agregar a la lista del estudiante
-		inscripciones.agregarAlFinal(); 
+		inscripciones.agregarAlFinal(nuevaInscripcion); 
 
 		//actividadesInscritas.push(nuevaInscripcion);
 
