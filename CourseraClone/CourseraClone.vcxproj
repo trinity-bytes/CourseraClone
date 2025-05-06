@@ -118,6 +118,7 @@
     <ClInclude Include="algoritmosBusqueda.h" />
     <ClInclude Include="algoritmosOrdenamiento.h" />
     <ClInclude Include="Boleta.h" />
+    <ClInclude Include="Clase.h" />
     <ClInclude Include="Controladora.h" />
     <ClInclude Include="Curso.h" />
     <ClInclude Include="Empresa.h" />

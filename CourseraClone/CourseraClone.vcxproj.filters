@@ -86,5 +86,8 @@
     <ClInclude Include="Venta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Clase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

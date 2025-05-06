@@ -33,6 +33,18 @@ public:
 		cout << "Tipo de Usuario: " << tipoUsuario << endl;
 	}
 
+	static bool registrar(const string& filename, const Usuario& usuario) {
+		ofstream file(filename, ios::binary | ios::app);
+		if (!file.is_open()) {
+			cout << "No se pudo abrir el archivo." << endl;
+			return false;
+		}
+		file.write(reinterpret_cast<const char*>(&usuario), sizeof(Usuario));
+		file.close();
+		cout << "Usuario registrado exitosamente!" << endl;
+		return true;
+	}
+
 	static bool login(const string& filename, Usuario& usuarioLogueado) {
 		string userInput, passInput;
 
@@ -50,7 +62,7 @@ public:
 		Usuario temp;
 		while (file.read(reinterpret_cast<char*>(&temp), sizeof(Usuario))) {
 			if (temp.validarUsuario(userInput) && temp.validarContrasena(passInput)) {
-				usuarioLogueado = temp; // Copy matched user to reference
+				usuarioLogueado = temp; 
 				file.close();
 				cout << "Logeo exitoso!" << endl;
 				return true;
