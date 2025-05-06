@@ -7,6 +7,7 @@
 
 // Librerias
 #include "iostream"
+#include "conio.h" // Para _kbhit() y _getch()
 #include "memory"
 
 using namespace std;

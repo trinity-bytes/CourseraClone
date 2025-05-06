@@ -1,20 +1,23 @@
 #pragma once
+// Headers propios
 #include "LinkedList.h"
 #include "Actividad.h"
 #include "PriorityQueue.h"
 #include "Especializacion.h"
 #include "UI_Menu_LandingPage.h"
 #include "Inscripcion.h"
-#include <fstream>
+
+// librerias
+#include "fstream"
 
 class Controladora {
 private:
-	Usuario* usuario;
+	//Usuario* usuario;
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
 	
-	vector<ElementoMenu> cursosPopularesLandingPage;
-	vector<ElementoMenu> especializacionesPopularesLandingPage;
+	//vector<ElementoMenu> cursosPopularesLandingPage;
+	//vector<ElementoMenu> especializacionesPopularesLandingPage;
 	
 	vector<Actividad*> actividades;
 
@@ -84,8 +87,8 @@ private:
 		}
 	}
 	void cargarDatosLanding(int maximo) {
-		cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
-		especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
+		//cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
+		//especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
 
 		PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
 		PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
@@ -110,10 +113,10 @@ private:
 		descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
 
 		for (int i = 0; i < maximo; i++) {
-			cursosPopularesLandingPage[i].titulo = titulosCursos[i];
-			cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
-			especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
-			especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
+			//cursosPopularesLandingPage[i].titulo = titulosCursos[i];
+			//cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
+			//especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
+			//especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
 		}
 	}
 
@@ -127,7 +130,7 @@ public:
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
 		cargarDatosLanding(0);
-		usuario = new Usuario();
+		//usuario = new Usuario();
 	}
 
 	Controladora() {
