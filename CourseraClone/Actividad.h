@@ -43,4 +43,12 @@ public:
 	int getCantidadAlumnos() {
 		return cantidadAlumnos;
 	}
+
+	string getTitulo() {
+		return titulo;
+	}
+
+	string getDescripcion() {
+		return descripcion;
+	}
 };

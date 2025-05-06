@@ -25,8 +25,8 @@ public:
 		ofstream archivo("Resources/Data/actividades.txt", ios::app);
 		if (archivo.is_open()) {
 			archivo << idEmpresa << '\n';
-			archivo << tipo << '\n';
-			archivo << nombreEmpresa << '\n';
+			archivo << Actividad::tipo << '\n';
+			archivo << Actividad::nombreEmpresa << '\n';
 			archivo << titulo << '\n';
 			archivo << descripcion << '\n';
 			archivo << instructor << '\n';

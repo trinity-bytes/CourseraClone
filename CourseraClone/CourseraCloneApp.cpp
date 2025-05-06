@@ -29,6 +29,7 @@ void main() {
 	while (ejecutando) {
 		// Renderizar el estado actual
 		currentState->render();
+	Controladora* controladora = new Controladora();
 
 		// Manejar input
 		if (_kbhit()) {
@@ -68,9 +69,9 @@ void ManejarRegistro(Controladora& controladora) {
 	string nombre, apellido, username, password;
 	int tipoUsuario;
 
-	// Aquí iría la lógica para obtener los datos del formulario
+	// Aqu� ir�a la l�gica para obtener los datos del formulario
 	// Por ahora usamos valores de prueba
-	cout << "Tipo de usuario (1: Estudiante, 2: Organización): ";
+	cout << "Tipo de usuario (1: Estudiante, 2: Organizaci�n): ";
 	cin >> tipoUsuario;
 	cout << "Nombre: ";
 	cin >> nombre;

@@ -5,6 +5,7 @@
 #include "Especializacion.h"
 #include <string>
 #include "algoritmosOrdenamiento.h"
+#include "UI_Menu_LandingPage.h"
 #include <fstream>
 #include "Usuario.h"
 #include "Estudiante.h"
@@ -16,6 +17,10 @@ private:
 	Usuario* usuarioActual;
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
+	
+	vector<ElementoMenu> cursosPopularesLandingPage;
+	vector<ElementoMenu> especializacionesPopularesLandingPage;
+	
 	PriorityQueue<Actividad*> actividadesLandingPage;
 	vector<Actividad*> actividades;
 
@@ -43,9 +48,10 @@ private:
 						string tituloClase, descripcionClase;
 						getline(ruta, tituloClase);
 						getline(ruta, descripcionClase);
-						nuevoCurso->añadirClases(tituloClase, descripcionClase);
+						nuevoCurso->a�adirClases(tituloClase, descripcionClase);
 					}
 					actividades.push_back(nuevoCurso);
+					cursosTodos.agregarAlFinal(nuevoCurso);
 				}
 				else if (tipo == 2) {
 					int cantidadCursos;
@@ -54,9 +60,10 @@ private:
 					for (int i = 0; i < cantidadCursos; i++) {
 						int idCurso;
 						ruta >> idCurso; ruta.ignore();
-						nuevaEspecializacion->añadirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
+						nuevaEspecializacion->a�adirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
 					}
 					actividades.push_back(nuevaEspecializacion);
+					especializacionesTodos.agregarAlFinal(nuevaEspecializacion);
 				}
 				else {
 					cout << "Tipo de actividad no reconocido." << endl;
@@ -80,16 +87,46 @@ private:
 			cout << "Error al abrir el archivo de inscripciones." << endl;
 		}
 	}
-	void cargarCursosPopulares(int maximo) {
-		PriorityQueue<Curso*> actividadesLandingPage(maximo);
+	void cargarDatosLanding(int maximo) {
+		cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
+		especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
 
+		PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
+		PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
 		auto cantidad = [](Actividad* a) {
 			return a->getCantidadAlumnos();
 			};
-		actividadesLandingPage.llenarDesde<int>(cursosTodos, cantidad);
+		priorityCursosLandingPage.llenarDesde<int>(cursosTodos, cantidad);
+		priorityEspecializacionesLandingPage.llenarDesde<int>(especializacionesTodos, cantidad);
+
+		vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
+		auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
+			return a->getTitulo();
+			};
+		auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripci�n
+			return a->getDescripcion();
+			};
+
+		// obtener datos
+		titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
+		titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
+		descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
+		descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
+
+		for (int i = 0; i < maximo; i++) {
+			cursosPopularesLandingPage[i].titulo = titulosCursos[i];
+			cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
+			especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
+			especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
+		}
 	}
 
+
 public:
+	void cargarTodosDatos() {
+		actividades = vector<Actividad*>();
+		cursosTodos = LinkedList<Curso*>();
+		especializacionesTodos = LinkedList<Especializacion*>();
 	Controladora() : actividadesLandingPage(3) {
 		usuarioActual = nullptr;
 		vector<Actividad*> actividades;
@@ -98,7 +135,12 @@ public:
 
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
-		cargarCursosPopulares(3);
+		cargarDatosLanding(3);
+		usuario = new Usuario();
+	}
+
+	Controladora() {
+		cargarTodosDatos();
 	}
 
 	~Controladora() 
@@ -115,11 +157,11 @@ public:
 				case 1: // Estudiante
 					usuarioActual = new Estudiante(temp.getNombre(), temp.getApellido());
 					break;
-				case 2: // Organización
+				case 2: // Organizaci�n
 					usuarioActual = new Empresa();
 					break;
 				default:
-					cout << "Tipo de usuario no válido" << endl;
+					cout << "Tipo de usuario no v�lido" << endl;
 					return false;
 			}
 			return true;
