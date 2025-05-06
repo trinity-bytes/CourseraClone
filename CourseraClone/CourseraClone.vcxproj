@@ -128,7 +128,6 @@
     <ClInclude Include="Estudiante.h" />
     <ClInclude Include="ExtendedFunctions.h" />
     <ClInclude Include="Inscripcion.h" />
-    <ClInclude Include="Instructor.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="PriorityQueue.h" />

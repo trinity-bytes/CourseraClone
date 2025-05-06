@@ -8,6 +8,6 @@ int busquedaBinaria(int l, int r, Pred pred)
 	if (l > r) return -1;
 	if (l == r) return l;
 	
-	if (pred(m)) return busquedaBinaria(l, m - 1);
-	return busquedaBinaria(m + 1, r);
+	if (pred(m)) return busquedaBinaria<Pred>(l, m - 1);
+	return busquedaBinaria<Pred>(m + 1, r);
 }

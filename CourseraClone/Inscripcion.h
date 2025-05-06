@@ -1,6 +1,5 @@
 #pragma once
 #include "Actividad.h"
-#include "Instructor.h"
 #include "algoritmosBusqueda.h"
 #include <fstream>
 
