@@ -126,6 +126,8 @@ void actualizarElementoGenerico(
 // 1 = Iniciar Sesion
 // 2 = Registrarse
 // 3 = Sobre Nosotros
+// 4 = Especialidad seleccionada (placeholder)
+// 5 = Curso seleccionado (placeholder)
 // (Otras secciones no retornan, la funcion espera una seleccion de cabecera o ESC)
 int MostrarMenu_LandingPage()
 {
@@ -204,26 +206,13 @@ int MostrarMenu_LandingPage()
                     if (elementoActual >= 0 && elementoActual < especialidades.size()) 
                     {
                         // Acción placeholder para especialidad
-                        gotoXY(2, ALTO_CONSOLA - 2);
-                        cout << "Seleccionada Especialidad: " << especialidades[elementoActual].titulo << "       ";
-                        gotoXY(2, ALTO_CONSOLA - 1);
-                        system("pause>0");
-                        // Limpiar mensajes
-                        gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
-                        gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                        
                     }
                     break;
                 case SECCION_CURSOS:
                     if (elementoActual >= 0 && elementoActual < cursos.size()) 
                     {
-                        // Acción placeholder para curso
-                        gotoXY(2, ALTO_CONSOLA - 2);
-                        cout << "Seleccionado Curso: " << cursos[elementoActual].titulo << "       ";
-                        gotoXY(2, ALTO_CONSOLA - 1);
-                        system("pause>0");
-                        // Limpiar mensajes
-                        gotoXY(2, ALTO_CONSOLA - 2); cout << string(80, ' ');
-                        gotoXY(2, ALTO_CONSOLA - 1); cout << string(80, ' ');
+                        
                     }
                     break;
                 }
