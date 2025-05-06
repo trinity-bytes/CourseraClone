@@ -1,9 +1,11 @@
 #pragma once
 #include "Empresa.h"
-#include <iostream>
+#include "iostream"
+
 using namespace std;
 
-class Actividad {
+class Actividad 
+{
 protected:
 	int id;
 	int idEmpresa;
@@ -28,31 +30,16 @@ public:
 		descripcion = _descripcion;
 	}
 
-	void aumentarAlumno(int cantidad) {
+	void aumentarAlumno(int cantidad) 
+	{
 		cantidadAlumnos += cantidad;
 	}
 
 	virtual void guardar() {}
-
 	virtual void mostrar() {}
 
-	int getId(){
-		return id;
-	}
-
-	int getTipo(){
-		return tipo;
-	}
-
-	int getCantidadAlumnos() {
-		return cantidadAlumnos;
-	}
-
-	string getTitulo() {
-		return titulo;
-	}
-
-	string getDescripcion() {
-		return descripcion;
-	}
-};
+	int getId(){ return id; }
+	int getTipo(){ return tipo; }
+	int getCantidadAlumnos() { return cantidadAlumnos; }
+	string getTitulo() { return titulo; }
+	string getDescripcion() { return descripcion; }};

@@ -237,7 +237,7 @@ public:
     }
 };
 
-// Estado de Login
+/// Estado de Login
 class LoginState : public MenuState 
 {
 private:
@@ -247,7 +247,9 @@ private:
     int campoActual; // 0: username, 1: password
 
 public:
-    LoginState(Controladora* ctrl) : MenuState(ctrl), primeraRenderizacion(true), campoActual(0) {}
+    // Constructor por defecto
+    LoginState(Controladora* ctrl) : MenuState(ctrl), 
+        primeraRenderizacion(true), campoActual(0) {}
 
     void handleInput(int tecla) override 
     {
