@@ -78,6 +78,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>User32.lib</AdditionalDependencies>
@@ -126,7 +128,6 @@
     <ClInclude Include="Estudiante.h" />
     <ClInclude Include="ExtendedFunctions.h" />
     <ClInclude Include="Inscripcion.h" />
-    <ClInclude Include="Instructor.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="PriorityQueue.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="Stack.h" />
     <ClInclude Include="UI_Ascii.h" />
     <ClInclude Include="UI_Menu_LandingPage.h" />
+    <ClInclude Include="UI_MenuLanding_State.h" />
     <ClInclude Include="Usuario.h" />
     <ClInclude Include="Venta.h" />
   </ItemGroup>

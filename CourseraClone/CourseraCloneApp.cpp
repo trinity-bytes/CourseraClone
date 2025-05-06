@@ -1,51 +1,57 @@
-#include "iostream"
-#include "Usuario.h"
+// Cabeceras propias
 #include "ExtendedFunctions.h"
-#include "UI_Menu_LandingPage.h"
+//#include "UI_Menu_LandingPage.h"
+#include "UI_Ascii.h"
 #include "Controladora.h"
+#include "UI_MenuLanding_State.h"
+
+// Librerias
+#include "iostream"
+#include "memory"
 
 using namespace std;
 using namespace System;
 
 // maquetacion de funciones
 void SecuenciaInicializacion();
+// ------------------------
 
-void main(){
-	int opc;
+void main() {
+	SecuenciaInicializacion();
+	
+	// Crear la controladora y el estado inicial
+	Controladora* controladora = new Controladora();
+	unique_ptr<MenuState> currentState = make_unique<LandingPageState>(controladora);
 	bool ejecutando = true;
 
-	
-	SecuenciaInicializacion();
-	Controladora* controladora = new Controladora();
-
-	do
+	while (ejecutando) 
 	{
-		controladora->cargarTodosDatos();
-		opc = MostrarMenu_LandingPage();
+		currentState->render(); // Renderizar el estado actual
 
-		switch (opc)
+		if (_kbhit()) // Manejar input
 		{
-		case 1: // Iniciar Sesion
-			system("cls");
-			UI_Login();
-			break;
-		case 2: // Registrarse
-			system("cls");
-			UI_Signup();
-			break;
-		case 3: // Sobre Nosotros
-			// ui about us
-			break;
-		case 0: // Salir
-			ejecutando = false;
-			break;
-		default:
-			break;
+			int tecla = _getch();
+			
+			if (tecla == 27) // Verificar si se presionó ESC
+			{
+				ejecutando = false;
+				continue;
+			}
+						
+			currentState->handleInput(tecla); // Manejar la tecla en el estado actual
+						
+			auto nextState = currentState->getNextState(); // Verificar si hay un nuevo estado
+			if (nextState) 
+			{
+				currentState = move(nextState);
+			}
 		}
-		system("pause");
-	} while (ejecutando);
+
+		Sleep(50); // Retraso para no saturar la CPU
+	}
 }
 
-void SecuenciaInicializacion(){
+void SecuenciaInicializacion() 
+{
 	ConfigurarConsola();
 }

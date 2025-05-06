@@ -1,5 +1,8 @@
 #pragma once
 #include "Nodo.h"
+#include "vector"
+
+using namespace std;
 
 template <typename T>
 class LinkedList {
