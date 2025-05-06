@@ -43,7 +43,7 @@ public:
 		}
 	}
 
-	void añadirCurso(Curso* _curso) {
+	void anadirCurso(Curso* _curso) {
 		cursos.agregarAlFinal(_curso);
 	}
 };

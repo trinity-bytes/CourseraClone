@@ -41,8 +41,7 @@ public:
 
 	template <typename valor, typename metodoOrden>
 	void enqueue(T nodoAgregar, metodoOrden requerido) {
-		Nodo<T>* nuevoNodo = new Nodo<T>;
-		nuevoNodo->data = nodoAgregar;
+		Nodo<T>* nuevoNodo = new Nodo<T>(nodoAgregar);
 		valor val = requerido(nuevoNodo->data);
 
 		if (head == nullptr || requerido(head->data) < val) {
@@ -66,10 +65,11 @@ public:
 	void llenarDesde(LinkedList<T>& lista, metodoOrden requerido) {
 		Nodo<T>* current = lista.getHead();
 		while (current != nullptr) {
-			enqueue(current->data, requerido);
+			enqueue<valor>(current->data, requerido);
 			current = current->next;
 		}
 	}
+
 
 	template <typename valor, typename metodoConseguir>
 	vector<valor> extraerDato(metodoConseguir requerido) {

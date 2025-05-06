@@ -34,7 +34,7 @@ public:
 			datos.push_back(requerido(current->data));
 			current = current->next;
 		}
-		return res;
+		return datos;
 	}
 
 	void agregarAlInicio(T value) {

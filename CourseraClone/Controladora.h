@@ -3,9 +3,8 @@
 #include "Actividad.h"
 #include "PriorityQueue.h"
 #include "Especializacion.h"
-#include <string>
-#include "algoritmosOrdenamiento.h"
 #include "UI_Menu_LandingPage.h"
+#include "Inscripcion.h"
 #include <fstream>
 
 class Controladora {
@@ -21,9 +20,11 @@ private:
 
 private:
 	void cargarDatosArchivo() {
+
+
 		ifstream ruta("Resources/Data/actividades.txt");
 		if (ruta.is_open()) {
-			int id = 1, idEmpresa, tipo;
+			int id = 0, idEmpresa, tipo;
 			string nombreEmpresa, titulo, descripcion;
 
 			while (ruta.peek() != EOF) {
@@ -38,12 +39,12 @@ private:
 					getline(ruta, instructor);
 					int cantidadClases;
 					ruta >> cantidadClases; ruta.ignore();
-					Curso* nuevoCurso = new Curso(id, idEmpresa, titulo, nombreEmpresa, cantidadClases, instructor, descripcion);
+					Curso* nuevoCurso = new Curso(id, idEmpresa, nombreEmpresa, titulo, descripcion, instructor, cantidadClases);
 					for (int i = 0; i < cantidadClases; i++) {
 						string tituloClase, descripcionClase;
 						getline(ruta, tituloClase);
 						getline(ruta, descripcionClase);
-						nuevoCurso->añadirClases(tituloClase, descripcionClase);
+						nuevoCurso->anadirClases(tituloClase, descripcionClase);
 					}
 					actividades.push_back(nuevoCurso);
 					cursosTodos.agregarAlFinal(nuevoCurso);
@@ -53,9 +54,9 @@ private:
 					ruta >> cantidadCursos; ruta.ignore();
 					Especializacion* nuevaEspecializacion = new Especializacion(id, idEmpresa, nombreEmpresa, titulo, cantidadCursos, descripcion);
 					for (int i = 0; i < cantidadCursos; i++) {
-						int idCurso;
+						int idCurso = 0;
 						ruta >> idCurso; ruta.ignore();
-						nuevaEspecializacion->añadirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
+						nuevaEspecializacion->anadirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
 					}
 					actividades.push_back(nuevaEspecializacion);
 					especializacionesTodos.agregarAlFinal(nuevaEspecializacion);
@@ -63,9 +64,9 @@ private:
 				else {
 					cout << "Tipo de actividad no reconocido." << endl;
 				}
+				id++;
 			}
-			id++;
-
+		
 		}
 	}
 	void cargarDatosInscripciones() {
@@ -125,7 +126,7 @@ public:
 
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
-		cargarDatosLanding(3);
+		cargarDatosLanding(0);
 		usuario = new Usuario();
 	}
 
@@ -138,14 +139,15 @@ public:
 
 	LinkedList<Actividad> buscarActividades() {
 		vector<int> idCursos, idEspecializacion;
-		usuario.getActividadesBuscadas(idCursos, idEspecializacion);
+		/*
+		//usuario.getActividadesBuscadas(idCursos, idEspecializacion);
 		mergeSort(idCursos, 0, int(idCursos.size()) - 1);
 		mergeSort(idEspecializacion, 0, int(idEspecializacion.size()) - 1);
 
 		ifstream cursos("./archivos/planos/cursos.txt");
 		ifstream especializaciones("./archivos/planos/especializaciones.txt");
 
-		
+		*/
 	}
 
 	void mostrarInterfaz() {

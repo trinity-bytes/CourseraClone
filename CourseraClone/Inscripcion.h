@@ -1,6 +1,5 @@
 #pragma once
 #include "Actividad.h"
-#include "Instructor.h"
 #include "algoritmosBusqueda.h"
 #include <fstream>
 
@@ -20,10 +19,10 @@ struct InscripcionBinaria {
     bool completado;
     bool pagado;
 
-    InscripcionBinaria(int _idUsuario, int _idActividad, int tipoActividad, double _progreso, bool _completado, bool _pagado)
-        : idEstudiante(_idUsuario), idActividad(_idActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
+    InscripcionBinaria(int _idUsuario, int _idActividad, int _tipoActividad, double _progreso, bool _completado, bool _pagado)
+        : idEstudiante(_idUsuario), idActividad(_idActividad), tipoActividad(_tipoActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
     }
-    InscripcionBinaria() : idEstudiante(0), idActividad(0), progreso(0.0), completado(false), pagado(false) {};
+    InscripcionBinaria() : idEstudiante(0), idActividad(0), tipoActividad(0), progreso(0.0), completado(false), pagado(false) {};
 };
 
 class Inscripcion {
@@ -36,11 +35,7 @@ private:
     bool pagado;
 
 public:
-    /*
-    Inscripcion(int _idEstudiante, )
-        : idEstudiante(_idEstudiante), idActividad(_idActividad), tipoActividad(_tipo) {
-    }
-    */
+    Inscripcion() : id(0), idEstudiante(0), actividad(), progreso(0.0), completado(false), pagado(false) {}
 
 	Inscripcion(int _idEstudiante, Actividad _actividad)
 		: idEstudiante(_idEstudiante), actividad(_actividad), progreso(0.0), completado(false), pagado(false) {
@@ -89,9 +84,11 @@ public:
 	int getIdEstudiante() {
 		return idEstudiante;
 	}
+
 	int getIdActividad() {
 		return actividad.getId();
 	}
+
 	int getId() {
 		return id;
 	}

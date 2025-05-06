@@ -9,35 +9,42 @@
 
 class Estudiante :public Usuario{
 private:
-	string nombre, apellido, _username;
-	Boleta* boleta;
-	Curso* curso;
-	Actividad* actividad;
-	Inscripcion* inscripcion;
-	LinkedList<Inscripcion> inscripciones;
-	Stack<Inscripcion> actividadesInscritas;
-	Queue<Inscripcion> actividadesRecientesCompletadas;
+	LinkedList<Boleta*> boletas;
+	LinkedList<Inscripcion*> inscripciones;
+	Stack<Inscripcion*> actividadesInscritas;
+	Queue<Inscripcion*> actividadesRecientesCompletadas;
 public:
 	
-	Estudiante(string _nombre, string _apellido): Usuario(id, tipoUsuario,_username, contrasena) {
-		nombre = _nombre;
-		apellido = _apellido;
+	Estudiante(int _id, string _nickname, string _contrasena): Usuario(_id, 1, _nickname, _contrasena) {
+		inscripciones = LinkedList<Inscripcion*>();
+		actividadesInscritas = Stack<Inscripcion*>();
+		actividadesRecientesCompletadas = Queue<Inscripcion*>();
+		boletas = LinkedList<Boleta*>();
+		cargarDatos();
+	}
+
+	void cargarDatos() {
+		// cargar boletas
 	}
 
 	void verBoletas() {
 		//todas las boletas que el estudiante tiene
+		/*
 		ifstream file("boletas.txt");
 		if (!file.is_open()) {
 			cout << "No se pudo abrir el archivo." << endl;
 			return;
 		}
+		
 		while (file.read(reinterpret_cast<char*>(&boleta), sizeof(Boleta))) {
 			boleta->mostrar();
 		}
+		*/
 	}
 
 	void verCursosInscritos() {
 		ifstream file("inscripciones.txt");
+		/*
 		if (!file.is_open()) {
 			cout << "No se pudo abrir el archivo." << endl;
 			return;
@@ -51,20 +58,21 @@ public:
 			}
 		}
 		file.close();
+		*/
 	}
 
-	int incribirseAcurso(Actividad actividad) {
-		Inscripcion nuevaInscripcion(inscripcion->getId(), actividad);
+	int incribirseAcurso(Actividad actividadNueva) {
+		Inscripcion* nuevaInscripcion = new Inscripcion(10, actividadNueva);
 
 		// Guarda en archivo binario
-		nuevaInscripcion.guardar();
+		nuevaInscripcion->guardar();
 
 		// 3. Agregar a la lista del estudiante
 		inscripciones.agregarAlFinal(nuevaInscripcion); 
 
 		//actividadesInscritas.push(nuevaInscripcion);
 
-		cout << "Inscripción completada para la actividad: " << curso->getTitulo() << endl;
+		cout << "Inscripción completada para la actividad: " << actividadNueva.getTitulo() << '\n';
 		return 1; 
 
 	}
