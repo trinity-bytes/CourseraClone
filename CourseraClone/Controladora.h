@@ -1,6 +1,7 @@
 #pragma once
 #include "LinkedList.h"
 #include "Actividad.h"
+#include "PriorityQueue.h"
 #include "Especializacion.h"
 #include <string>
 #include "algoritmosOrdenamiento.h"
@@ -9,7 +10,10 @@
 class Controladora {
 private:
 	//Usuario usario;
-	LinkedList<Actividad> actividadesBuscadas;
+	LinkedList<Curso*> cursosTodos;
+	LinkedList<Especializacion*> especializacionesTodos;
+
+	PriorityQueue<Actividad*> actividadesLandingPage;
 	vector<Actividad*> actividades;
 
 private:
@@ -59,7 +63,6 @@ private:
 
 		}
 	}
-
 	void cargarDatosInscripciones() {
 		ifstream ruta("Resources/Data/inscripciones.dat", ios::binary);
 		if (ruta.is_open()) {
@@ -74,14 +77,26 @@ private:
 			cout << "Error al abrir el archivo de inscripciones." << endl;
 		}
 	}
+	void cargarCursosPopulares(int maximo) {
+		PriorityQueue<Curso*> actividadesLandingPage(maximo);
+
+		auto cantidad = [](Actividad* a) {
+			return a->getCantidadAlumnos();
+			};
+		actividadesLandingPage.llenarDesde<int>(cursosTodos, cantidad);
+	}
 
 public:
+	Controladora() : actividadesLandingPage(3) {
+		vector<Actividad*> actividades;
+		LinkedList<Curso*> cursosTodos;
+		LinkedList<Especializacion*> especializacionesTodos;
 
-
-	void cargarDatos() {
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
+		cargarCursosPopulares(3);
 	}
+
 
 	LinkedList<Actividad> buscarActividades() {
 		vector<int> idCursos, idEspecializacion;

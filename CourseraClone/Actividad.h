@@ -39,4 +39,8 @@ public:
 	int getTipo(){
 		return tipo;
 	}
+
+	int getCantidadAlumnos() {
+		return cantidadAlumnos;
+	}
 };

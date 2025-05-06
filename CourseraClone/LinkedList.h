@@ -22,6 +22,10 @@ public:
 		return tamano;
 	}
 
+	Nodo<T>* getHead() {
+		return head;
+	}
+
 	template <typename valor, typename metodoConseguir>
 	vector<valor> extraerDato(metodoConseguir requerido) {
 		vector<valor> datos;

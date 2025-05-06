@@ -1,7 +1,7 @@
 #pragma once
 #include "Nodo.h"
 
-template <typename T, typename O> // O representa el tipo de variable por el cual decidimos el orden
+template <typename T>
 class PriorityQueue {
 private:
 	Nodo<T>* head;
@@ -10,8 +10,8 @@ private:
 	const int tamanoMaximo;
 
 public:
-	PriorityQueue() : head(nullptr), tail(nullptr), tamano(0), tamanoMaximo(10) {}
 	PriorityQueue(int _tamanoMaximo) : head(nullptr), tail(nullptr), tamano(0), tamanoMaximo(_tamanoMaximo) {}
+	PriorityQueue() : head(nullptr), tail(nullptr), tamano(0), tamanoMaximo(10) {}
 	~PriorityQueue() {
 		while (head) {
 			Nodo<T>* current = head;
@@ -28,7 +28,7 @@ public:
 		if (tamano > tamanoMaximo) {
 			Nodo<T>* current = head;
 			if (current->next == nullptr) {
-				delete head;
+				delete current;
 				head = nullptr;
 			}
 			else {
@@ -43,19 +43,19 @@ public:
 		}
 	}
 
-	void enqueue(T nodoAgregar) {
+	template <typename valor, typename metodoOrden>
+	void enqueue(T nodoAgregar, metodoOrden requerido) {
 		Nodo<T>* nuevoNodo = new Nodo<T>;
 		nuevoNodo->data = nodoAgregar;
-		O val = nodoAgregar.getValorOrden();
+		valor val = requerido(nuevoNodo->data);
 
-		if (head == nullptr || head->data.getValorOrden() < val) {
+		if (head == nullptr || requerido(head->data) < val) {
 			nuevoNodo->next = head;
 			head = nuevoNodo;
 		}
 		else {
 			Nodo<T>* current = head;
-			O valAhora = current->next->data.getValorOrden();
-			while (current->next != nullptr && valAhora >= val) {
+			while (current->next != nullptr && requerido(current->next->data) >= val) {
 				current = current->next;
 			}
 			nuevoNodo->next = current->next;
@@ -64,6 +64,15 @@ public:
 		tamano++;
 
 		eliminarExceso();
+	}
+
+	template <typename valor, typename metodoOrden>
+	void llenarDesde(LinkedList<T>& lista, metodoOrden requerido) {
+		Nodo<T>* current = lista.getHead();
+		while (current != nullptr) {
+			enqueue(current->data, requerido);
+			current = current->next;
+		}
 	}
 
 	T dequeue() {
