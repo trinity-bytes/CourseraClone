@@ -8,8 +8,16 @@ class Controladora {
 private:
 	//Usuario usario;
 	LinkedList<Actividad> actividadesBuscadas;
+	// vector con iteradores a las actividades
+	// vector con iteradores a las especializaciones
+	vector<Actividad*> actividades;
 
 public:
+
+	void cargarDatos() {
+		
+	}
+
 	LinkedList<Actividad> buscarActividades() {
 		vector<int> idCursos, idEspecializacion;
 		usuario.getActividadesBuscadas(idCursos, idEspecializacion);
