@@ -14,7 +14,11 @@ protected:
 	int tipo;
 
 public:
-	Actividad(int _id, int _idEmpresa, string _nombreEmpresa, string _titulo, int _cantidadAlumnos, int _tipo, string _descripcion) {
+	Actividad(int _id, int _idEmpresa, 
+		string _nombreEmpresa, string _titulo, 
+		int _cantidadAlumnos, int _tipo, 
+		string _descripcion) 
+	{
 		id = _id;
 		idEmpresa = _idEmpresa;
 		nombreEmpresa = _nombreEmpresa;

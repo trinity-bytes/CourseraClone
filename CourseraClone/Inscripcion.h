@@ -1,9 +1,13 @@
 #pragma once
 #include "Actividad.h"
 #include "algoritmosBusqueda.h"
-#include <fstream>
+#include "fstream"
+#include "iostream"
 
-struct InscripcionIndex {
+using namespace std;
+
+struct InscripcionIndex 
+{
     int idUsuario;
     int offset;
 
@@ -11,7 +15,8 @@ struct InscripcionIndex {
     InscripcionIndex() : idUsuario(0), offset(0) {}
 };
 
-struct InscripcionBinaria {
+struct InscripcionBinaria 
+{
     int idEstudiante;
     int idActividad;
 	int tipoActividad;
@@ -19,10 +24,16 @@ struct InscripcionBinaria {
     bool completado;
     bool pagado;
 
-    InscripcionBinaria(int _idUsuario, int _idActividad, int tipoActividad, double _progreso, bool _completado, bool _pagado)
-        : idEstudiante(_idUsuario), idActividad(_idActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
-    }
-    InscripcionBinaria() : idEstudiante(0), idActividad(0), progreso(0.0), completado(false), pagado(false) {};
+	// Constructor para inicializar los atributos
+    InscripcionBinaria(int _idUsuario, int _idActividad, 
+        int tipoActividad, double _progreso, bool _completado, 
+        bool _pagado) : idEstudiante(_idUsuario), 
+        idActividad(_idActividad), progreso(_progreso), 
+        completado(_completado), pagado(_pagado) {}
+
+	// Constructor por defecto
+    InscripcionBinaria() : idEstudiante(0), idActividad(0), 
+        progreso(0.0), completado(false), pagado(false) {};
 };
 
 class Inscripcion {
@@ -42,13 +53,18 @@ public:
     */
 
 	Inscripcion(int _idEstudiante, Actividad _actividad)
-		: idEstudiante(_idEstudiante), actividad(_actividad), progreso(0.0), completado(false), pagado(false) {
+		: idEstudiante(_idEstudiante), actividad(_actividad), 
+        progreso(0.0), completado(false), pagado(false) 
+    {
 	}
     void guardar() {
         ofstream archivo("Resources/Data/inscripciones.dat", ios::app);
         int offsetRegistro = 0;
-        if (archivo.is_open()) {
-            InscripcionBinaria nuevo(idEstudiante, actividad.getId(), actividad.getTipo(), progreso, completado, pagado);
+        if (archivo.is_open()) 
+        {
+            InscripcionBinaria nuevo(idEstudiante, actividad.getId(), 
+                actividad.getTipo(), progreso, completado, pagado);
+
             archivo.seekp(0, ios::end);
             offsetRegistro = int((archivo.tellp() / sizeof(InscripcionBinaria))) + 1;
 
