@@ -42,6 +42,9 @@ public:
     }
     */
 
+	Inscripcion(int _idEstudiante, Actividad _actividad)
+		: idEstudiante(_idEstudiante), actividad(_actividad), progreso(0.0), completado(false), pagado(false) {
+	}
     void guardar() {
         ofstream archivo("Resources/Data/inscripciones.dat", ios::app);
         int offsetRegistro = 0;
@@ -81,5 +84,22 @@ public:
             archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(InscripcionIndex));
             archivoOrden.close();
         }
+    }
+
+	int getIdEstudiante() {
+		return idEstudiante;
+	}
+	int getIdActividad() {
+		return actividad.getId();
+	}
+	int getId() {
+		return id;
+	}
+    void mostrar() {
+		cout << "ID Estudiante: " << idEstudiante << endl;
+		cout << "ID Actividad: " << actividad.getId() << endl;
+		cout << "Progreso: " << progreso << endl;
+		cout << "Completado: " << (completado ? "Sí" : "No") << endl;
+		cout << "Pagado: " << (pagado ? "Sí" : "No") << endl;
     }
 };

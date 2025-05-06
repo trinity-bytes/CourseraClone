@@ -26,11 +26,11 @@ public:
 
 	virtual void mostrar() {}
 
-	int getId() const {
+	int getId(){
 		return id;
 	}
 
-	int getTipo() const {
+	int getTipo(){
 		return tipo;
 	}
 };

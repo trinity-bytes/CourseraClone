@@ -30,4 +30,14 @@ public:
 			cout << "Error al abrir el archivo." << endl;
 		}
 	}
+	// getters
+	string getTitulo() {
+		return titulo;
+	}
+	int getCantidadModulo() {
+		return cantidadModulo;
+	}
+	int getId() {
+		return id;
+	}
 };

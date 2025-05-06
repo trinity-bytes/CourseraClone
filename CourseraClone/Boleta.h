@@ -21,6 +21,20 @@ public:
 		precio = _precio;
 	}
 
+	// Getters
+	int getId() {
+		return id;
+	}
+	string getNombreEstudiante() {
+		return nombreEstudiante;
+	}
+	string getApellidoEstudiante() {
+		return apellidoEstudiante;
+	}
+	string getNombreActividad() {
+		return nombreActividad;
+	}
+
 	void mostrar() {
 		cout << "Boleta ID: " << id << endl;
 		cout << "Nombre Estudiante: " << nombreEstudiante << endl;
