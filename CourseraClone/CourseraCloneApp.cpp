@@ -1,47 +1,93 @@
-#include "iostream"
-#include "Usuario.h"
+// Cabeceras propias
 #include "ExtendedFunctions.h"
 #include "UI_Menu_LandingPage.h"
+#include "UI_Ascii.h"
+#include "Controladora.h"
+#include "UI_Menu_State.h"
+#include "Usuario.h"
+
+// Librerias
+#include "iostream"
+#include "memory"
 
 using namespace std;
 using namespace System;
 
 // maquetacion de funciones
 void SecuenciaInicializacion();
+void ManejarLogin(Controladora& controladora);
+void ManejarRegistro(Controladora& controladora);
+// ------------------------
 
-void main(){
-	int opc;
+void main() {
+	SecuenciaInicializacion();
+	
+	// Crear el estado inicial
+	unique_ptr<MenuState> currentState = make_unique<LandingPageState>();
 	bool ejecutando = true;
 
-	SecuenciaInicializacion();
+	while (ejecutando) {
+		// Renderizar el estado actual
+		currentState->render();
 
-	do
-	{
-		opc = MostrarMenu_LandingPage();
+		// Manejar input
+		if (_kbhit()) {
+			int tecla = _getch();
+			
+			// Verificar si se presionó ESC
+			if (tecla == 27) {
+				ejecutando = false;
+				continue;
+			}
 
-		switch (opc)
-		{
-		case 1: // Iniciar Sesion
-			system("cls");
-			UI_Login();
-			break;
-		case 2: // Registrarse
-			system("cls");
-			UI_Signup();
-			break;
-		case 3: // Sobre Nosotros
-			// ui about us
-			break;
-		case 0: // Salir
-			ejecutando = false;
-			break;
-		default:
-			break;
+			// Manejar la tecla en el estado actual
+			currentState->handleInput(tecla);
+
+			// Verificar si hay un nuevo estado
+			auto nextState = currentState->getNextState();
+			if (nextState) {
+				currentState = move(nextState);
+			}
 		}
-		system("pause");
-	} while (ejecutando);
+
+		Sleep(50); // Pequeño retraso para no saturar la CPU
+	}
 }
 
-void SecuenciaInicializacion(){
+void ManejarLogin(Controladora& controladora) {
+	UI_Login();
+	
+	if (controladora.iniciarSesion()) {
+		system("cls");
+		controladora.mostrarDashboard();
+	}
+}
+
+void ManejarRegistro(Controladora& controladora) {
+	UI_Signup();
+	string nombre, apellido, username, password;
+	int tipoUsuario;
+
+	// Aquí iría la lógica para obtener los datos del formulario
+	// Por ahora usamos valores de prueba
+	cout << "Tipo de usuario (1: Estudiante, 2: Organización): ";
+	cin >> tipoUsuario;
+	cout << "Nombre: ";
+	cin >> nombre;
+	cout << "Apellido: ";
+	cin >> apellido;
+	cout << "Username: ";
+	cin >> username;
+	cout << "Password: ";
+	cin >> password;
+
+	if (controladora.registrarUsuario(tipoUsuario, nombre, apellido, username, password)) {
+		cout << "Registro exitoso!" << endl;
+	} else {
+		cout << "Error en el registro" << endl;
+	}
+}
+
+void SecuenciaInicializacion() {
 	ConfigurarConsola();
 }

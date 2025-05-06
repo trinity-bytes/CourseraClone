@@ -19,6 +19,12 @@ public:
 		strncpy(contrasena, _contrasena.c_str(), sizeof(contrasena));
 	}
 
+	~Usuario() {}
+
+	int getTipoUsuario() const {
+		return tipoUsuario;
+	}
+
 	bool validarUsuario(const string& input) {
 		return input == nombreDeUsuario;
 	}
@@ -73,7 +79,4 @@ public:
 		cout << "Usuario o contrasena invalido" << endl;
 		return false;
 	}
-
-
-
 };

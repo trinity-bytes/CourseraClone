@@ -6,13 +6,16 @@
 #include <string>
 #include "algoritmosOrdenamiento.h"
 #include <fstream>
+#include "Usuario.h"
+#include "Estudiante.h"
+#include "Empresa.h"
+#include "UI_Menu_State.h"
 
 class Controladora {
 private:
-	//Usuario usario;
+	Usuario* usuarioActual;
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
-
 	PriorityQueue<Actividad*> actividadesLandingPage;
 	vector<Actividad*> actividades;
 
@@ -40,7 +43,7 @@ private:
 						string tituloClase, descripcionClase;
 						getline(ruta, tituloClase);
 						getline(ruta, descripcionClase);
-						nuevoCurso->a�adirClases(tituloClase, descripcionClase);
+						nuevoCurso->añadirClases(tituloClase, descripcionClase);
 					}
 					actividades.push_back(nuevoCurso);
 				}
@@ -51,7 +54,7 @@ private:
 					for (int i = 0; i < cantidadCursos; i++) {
 						int idCurso;
 						ruta >> idCurso; ruta.ignore();
-						nuevaEspecializacion->a�adirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
+						nuevaEspecializacion->añadirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
 					}
 					actividades.push_back(nuevaEspecializacion);
 				}
@@ -88,6 +91,7 @@ private:
 
 public:
 	Controladora() : actividadesLandingPage(3) {
+		usuarioActual = nullptr;
 		vector<Actividad*> actividades;
 		LinkedList<Curso*> cursosTodos;
 		LinkedList<Especializacion*> especializacionesTodos;
@@ -97,10 +101,62 @@ public:
 		cargarCursosPopulares(3);
 	}
 
+	~Controladora() 
+	{
+		if (usuarioActual) {
+			delete usuarioActual;
+		}
+	}
+
+	bool iniciarSesion() {
+		Usuario temp;
+		if (Usuario::login("Resources/Data/usuarios.dat", temp)) {
+			switch (temp.getTipoUsuario()) {
+				case 1: // Estudiante
+					usuarioActual = new Estudiante(temp.getNombre(), temp.getApellido());
+					break;
+				case 2: // Organización
+					usuarioActual = new Empresa();
+					break;
+				default:
+					cout << "Tipo de usuario no válido" << endl;
+					return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	bool registrarUsuario(int tipoUsuario, const string& nombre, const string& apellido, 
+		const string& username, const string& password) {
+		Usuario* nuevoUsuario;
+		if (tipoUsuario == 1) {
+			nuevoUsuario = new Estudiante(nombre, apellido);
+		} else if (tipoUsuario == 2) {
+			nuevoUsuario = new Empresa();
+		} else {
+			return false;
+		}
+
+		return Usuario::registrar("Resources/Data/usuarios.dat", *nuevoUsuario);
+	}
+
+	unique_ptr<MenuState> getNextStateAfterLogin() {
+		if (!usuarioActual) return make_unique<LandingPageState>();
+
+		switch (usuarioActual->getTipoUsuario()) {
+			case 1: // Estudiante
+				return make_unique<StudentDashboardState>(this);
+			case 2: // Organización
+				return make_unique<OrganizationDashboardState>(this);
+			default:
+				return make_unique<LandingPageState>();
+		}
+	}
 
 	LinkedList<Actividad> buscarActividades() {
 		vector<int> idCursos, idEspecializacion;
-		usuario.getActividadesBuscadas(idCursos, idEspecializacion);
+		usuarioActual->getActividadesBuscadas(idCursos, idEspecializacion);
 		mergeSort(idCursos, 0, int(idCursos.size()) - 1);
 		mergeSort(idEspecializacion, 0, int(idEspecializacion.size()) - 1);
 
@@ -110,7 +166,8 @@ public:
 		
 	}
 
-	void mostrarInterfaz() {
+	void mostrarDashboard() 
+	{
 
 	}
 
