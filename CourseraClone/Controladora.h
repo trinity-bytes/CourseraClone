@@ -5,15 +5,18 @@
 #include "Especializacion.h"
 #include <string>
 #include "algoritmosOrdenamiento.h"
+#include "UI_Menu_LandingPage.h"
 #include <fstream>
 
 class Controladora {
 private:
-	//Usuario usario;
+	Usuario* usuario;
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
-
-	PriorityQueue<Actividad*> actividadesLandingPage;
+	
+	vector<ElementoMenu> cursosPopularesLandingPage;
+	vector<ElementoMenu> especializacionesPopularesLandingPage;
+	
 	vector<Actividad*> actividades;
 
 private:
@@ -43,6 +46,7 @@ private:
 						nuevoCurso->añadirClases(tituloClase, descripcionClase);
 					}
 					actividades.push_back(nuevoCurso);
+					cursosTodos.agregarAlFinal(nuevoCurso);
 				}
 				else if (tipo == 2) {
 					int cantidadCursos;
@@ -54,6 +58,7 @@ private:
 						nuevaEspecializacion->añadirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
 					}
 					actividades.push_back(nuevaEspecializacion);
+					especializacionesTodos.agregarAlFinal(nuevaEspecializacion);
 				}
 				else {
 					cout << "Tipo de actividad no reconocido." << endl;
@@ -77,25 +82,58 @@ private:
 			cout << "Error al abrir el archivo de inscripciones." << endl;
 		}
 	}
-	void cargarCursosPopulares(int maximo) {
-		PriorityQueue<Curso*> actividadesLandingPage(maximo);
+	void cargarDatosLanding(int maximo) {
+		cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
+		especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
 
+		PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
+		PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
 		auto cantidad = [](Actividad* a) {
 			return a->getCantidadAlumnos();
 			};
-		actividadesLandingPage.llenarDesde<int>(cursosTodos, cantidad);
+		priorityCursosLandingPage.llenarDesde<int>(cursosTodos, cantidad);
+		priorityEspecializacionesLandingPage.llenarDesde<int>(especializacionesTodos, cantidad);
+
+		vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
+		auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
+			return a->getTitulo();
+			};
+		auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripción
+			return a->getDescripcion();
+			};
+
+		// obtener datos
+		titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
+		titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
+		descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
+		descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
+
+		for (int i = 0; i < maximo; i++) {
+			cursosPopularesLandingPage[i].titulo = titulosCursos[i];
+			cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
+			especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
+			especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
+		}
 	}
 
+
 public:
-	Controladora() : actividadesLandingPage(3) {
-		vector<Actividad*> actividades;
-		LinkedList<Curso*> cursosTodos;
-		LinkedList<Especializacion*> especializacionesTodos;
+	void cargarTodosDatos() {
+		actividades = vector<Actividad*>();
+		cursosTodos = LinkedList<Curso*>();
+		especializacionesTodos = LinkedList<Especializacion*>();
 
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
-		cargarCursosPopulares(3);
+		cargarDatosLanding(3);
+		usuario = new Usuario();
 	}
+
+	Controladora() {
+		cargarTodosDatos();
+	}
+
+
 
 
 	LinkedList<Actividad> buscarActividades() {

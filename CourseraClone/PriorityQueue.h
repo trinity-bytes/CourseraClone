@@ -20,10 +20,6 @@ public:
 		}
 	}
 
-	int getTamano() {
-		return tamano;
-	}
-
 	void eliminarExceso() {
 		if (tamano > tamanoMaximo) {
 			Nodo<T>* current = head;
@@ -73,6 +69,17 @@ public:
 			enqueue(current->data, requerido);
 			current = current->next;
 		}
+	}
+
+	template <typename valor, typename metodoConseguir>
+	vector<valor> extraerDato(metodoConseguir requerido) {
+		vector<valor> datos;
+		Nodo<T>* current = head;
+		while (current != nullptr) {
+			datos.push_back(requerido(current->data)); 
+			current = current->next;
+		}
+		return datos;
 	}
 
 	T dequeue() {

@@ -8,7 +8,7 @@ struct InscripcionIndex {
     int idUsuario;
     int offset;
 
-    InscripcionIndex(int _idUsuario, int _offset) : idUsuario(_idUsuario), offset(_offset), {}
+    InscripcionIndex(int _idUsuario, int _offset) : idUsuario(_idUsuario), offset(_offset) {}
     InscripcionIndex() : idUsuario(0), offset(0) {}
 };
 

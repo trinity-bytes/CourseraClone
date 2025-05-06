@@ -2,6 +2,7 @@
 #include "Usuario.h"
 #include "ExtendedFunctions.h"
 #include "UI_Menu_LandingPage.h"
+#include "Controladora.h"
 
 using namespace std;
 using namespace System;
@@ -13,10 +14,13 @@ void main(){
 	int opc;
 	bool ejecutando = true;
 
+	
 	SecuenciaInicializacion();
+	Controladora* controladora = new Controladora();
 
 	do
 	{
+		controladora->cargarTodosDatos();
 		opc = MostrarMenu_LandingPage();
 
 		switch (opc)
