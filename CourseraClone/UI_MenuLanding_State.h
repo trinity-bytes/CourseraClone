@@ -282,12 +282,14 @@ public:
         }
     }
 
-    void renderInicial() override {
+    void renderInicial() override 
+    {
         system("cls");
         UI_Login();
     }
 
-    void renderUpdate() override {
+    void renderUpdate() override 
+    {
         // Actualizar solo los campos de entrada
         gotoXY(67, 15);
         cout << string(30, ' '); // Limpiar área
@@ -300,7 +302,8 @@ public:
         cout << string(password.length(), '*');
     }
 
-    std::unique_ptr<MenuState> getNextState() override {
+    std::unique_ptr<MenuState> getNextState() override 
+    {
         // Retornar al estado anterior o al dashboard según el resultado del login
         return std::make_unique<LandingPageState>(controladora);
     }

@@ -1,7 +1,8 @@
 #pragma once
 template <typename Pred>
 
-int busquedaBinaria(int l, int r, Pred pred) {
+int busquedaBinaria(int l, int r, Pred pred) 
+{
 	int m = l + (r - l) / 2;
 
 	if (l > r) return -1;

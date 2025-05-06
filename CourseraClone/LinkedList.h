@@ -1,5 +1,8 @@
 #pragma once
 #include "Nodo.h"
+#include "vector"
+
+using namespace std;
 
 template <typename T>
 class LinkedList {
@@ -34,7 +37,7 @@ public:
 			datos.push_back(requerido(current->data));
 			current = current->next;
 		}
-		return res;
+		return datos;
 	}
 
 	void agregarAlInicio(T value) {
