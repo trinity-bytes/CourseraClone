@@ -56,7 +56,9 @@ public:
 		: idEstudiante(_idEstudiante), actividad(_actividad), 
         progreso(0.0), completado(false), pagado(false) 
     {
+        // aca deberia haber algo?
 	}
+
     void guardar() {
         ofstream archivo("Resources/Data/inscripciones.dat", ios::app);
         int offsetRegistro = 0;
@@ -73,7 +75,9 @@ public:
         }
 
         fstream archivoOrden("Resources/Data/indices/inscripciones.dat", ios::binary | ios::in | ios::out);
-        if (archivoOrden.is_open()) {
+
+        if (archivoOrden.is_open()) 
+        {
             archivoOrden.seekg(0, ios::end);
             int cantidad = archivoOrden.tellg() / sizeof(InscripcionIndex);
             auto busqueda = [&](int pos) {
@@ -101,16 +105,12 @@ public:
         }
     }
 
-	int getIdEstudiante() {
-		return idEstudiante;
-	}
-	int getIdActividad() {
-		return actividad.getId();
-	}
-	int getId() {
-		return id;
-	}
-    void mostrar() {
+	int getIdEstudiante() { return idEstudiante; }
+	int getIdActividad() { return actividad.getId(); }
+	int getId() { return id; }
+
+    void mostrar() 
+    {
 		cout << "ID Estudiante: " << idEstudiante << endl;
 		cout << "ID Actividad: " << actividad.getId() << endl;
 		cout << "Progreso: " << progreso << endl;
