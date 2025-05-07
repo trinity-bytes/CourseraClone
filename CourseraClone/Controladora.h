@@ -20,8 +20,8 @@
 
 // librerias
 #include "fstream"
-#include "memory" // Para std::unique_ptr
-#include "stack" // Para std::stack
+#include "memory"  // Para std::unique_ptr
+#include "stack"   // Para std::stack
 
 class Controladora 
 {
@@ -31,21 +31,17 @@ private:
 	stack<unique_ptr<MenuState>> historialEstados;
 
 	// Gestores
-	GestionadorUsuarios gestionadorUsuarios;
-	GestionadorCursos gestionadorCursos;
+	unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
+	unique_ptr<GestionadorCursos> gestionadorCursos;
 
-	//Usuario* usuario;
+	// Colecciones de actividades
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
+	vector<Actividad*> actividades;
 	
 	vector<ElementoMenu> cursosPopularesLandingPage;
 	vector<ElementoMenu> especializacionesPopularesLandingPage;
 	
-	vector<Actividad*> actividades;
-
-	stack<unique_ptr<MenuState>> estados;
-	unique_ptr<GestionadorUsuarios> userManager;
-	unique_ptr<GestionadorCursos> courseManager;
 	bool running;
 
 private:
@@ -131,14 +127,13 @@ public:
 	{
 		cargarTodosDatos();
 		estadoActual = make_unique<LandingPageState>(this);
-		userManager = make_unique<GestionadorUsuarios>();
-		courseManager = make_unique<GestionadorCursos>();
-		estados.push(make_unique<LoginState>(this));
+		gestionadorUsuarios = make_unique<GestionadorUsuarios>();
+		gestionadorCursos = make_unique<GestionadorCursos>();
 	}
 
 	~Controladora() 
 	{
-		if (usuarioActual) delete usuarioActual; // Liberar memoria del usuario actual
+		if (usuarioActual) delete usuarioActual;
 	}
 
 	/// Métodos de navegación
@@ -150,7 +145,7 @@ public:
 
 	void volverAtras() 
 	{
-		if (!historialEstados.empty()) // Comprueba si hay un estado anterior
+		if (!historialEstados.empty())
 		{
 			estadoActual = move(historialEstados.top());
 			historialEstados.pop();
@@ -159,7 +154,7 @@ public:
 
 	void irAInicio() 
 	{
-		while (!historialEstados.empty()) // Remueve todos los estados del historial
+		while (!historialEstados.empty())
 		{
 			historialEstados.pop();
 		}
@@ -169,17 +164,23 @@ public:
 	/// Métodos de autenticación
 	bool iniciarSesion(const string& username, const string& password) 
 	{
-		if (gestionadorUsuarios.autenticarUsuario(username, password)) 
-		{
-			usuarioActual = gestionadorUsuarios.obtenerUsuario(username);
+		// Intentar login como estudiante primero
+		Usuario usuarioTemp;
+		LoginStatus status = Usuario::login(usuarioTemp, TipoUsuario::ESTUDIANTE, username, password);
+		
+		// Si no es estudiante, intentar como empresa
+		if (status == LoginStatus::USER_NOT_FOUND) {
+			status = Usuario::login(usuarioTemp, TipoUsuario::EMPRESA, username, password);
+		}
+
+		if (status == LoginStatus::SUCCESS) {
+			usuarioActual = new Usuario(usuarioTemp);
 			
 			// Navegar al dashboard correspondiente
-			if (usuarioActual->getTipoUsuario() == 1) // Estudiante
-			{ 
+			if (usuarioActual->getTipoUsuario() == TipoUsuario::ESTUDIANTE) { 
 				navegarA(make_unique<DashboardEstudianteState>(this));
 			}
-			else if (usuarioActual->getTipoUsuario() == 2) // Organización
-			{ 
+			else if (usuarioActual->getTipoUsuario() == TipoUsuario::EMPRESA) { 
 				navegarA(make_unique<DashboardOrganizacionState>(this));
 			}
 			
@@ -202,156 +203,137 @@ public:
 		const string& nombre, const string& username, 
 		const string& password)
 	{
-		return gestionadorUsuarios.registrarUsuario(tipoUsuario, id, nombre, username, password);
+		return gestionadorUsuarios->registrarUsuario(tipoUsuario, id, nombre, username, password);
 	}
 
 	/// Métodos para cursos y especializaciones
 	bool crearCurso(const string& titulo, const string& descripcion, 
 		int cantidadClases, const string& instructor) 
 	{
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) 
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::EMPRESA)
 		{
 			return false;
 		}
 
-		return gestionadorCursos.crearCurso(
+		return gestionadorCursos->crearCurso(
 			usuarioActual->getId(),
 			titulo,
-			usuarioActual->getNickname(),
+			usuarioActual->getUsername(),
 			cantidadClases,
 			instructor,
 			descripcion
 		);
 	}
 
-	bool crearEspecializacion(const string& titulo, const string& descripcion, 
-		int cantidadCursos, const vector<int>& idsCursos) 
+	bool crearEspecializacion(
+		const string& titulo, 
+		const string& descripcion, 
+		int cantidadCursos, 
+		const vector<int>& idsCursos) 
 	{
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) 
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::EMPRESA)
 		{
 			return false;
 		}
 
-		return gestionadorCursos.crearEspecializacion(
+		vector<int> idsCursosCopy = idsCursos;
+		return gestionadorCursos->crearEspecializacion(
 			usuarioActual->getId(),
-			usuarioActual->getNickname(),
+			usuarioActual->getUsername(),
 			titulo,
-			descripcion,
 			cantidadCursos,
-			idsCursos
+			descripcion,
+			idsCursosCopy
 		);
 	}
 
 	// Métodos de búsqueda
 	vector<Curso*> buscarCursos(const string& criterio) 
 	{
-		return gestionadorCursos.buscarCursos(criterio);
+		return gestionadorCursos->buscarCursos(criterio);
 	}
 
 	vector<Especializacion*> buscarEspecializaciones(const string& criterio) 
 	{
-		return gestionadorCursos.buscarEspecializaciones(criterio);
+		return gestionadorCursos->buscarEspecializaciones(criterio);
 	}
 
 	// Getters
 	Usuario* getUsuarioActual() const { return usuarioActual; }
 	MenuState* getEstadoActual() const { return estadoActual.get(); }
-	int getTipoUsuarioActual() const { 
-		return usuarioActual ? usuarioActual->getTipoUsuario() : 0; 
-	}
+	TipoUsuario getTipoUsuarioActual() const { return usuarioActual->getTipoUsuario(); }
 
 	// Métodos de inscripción
 	bool inscribirseACurso(int idCurso) {
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::ESTUDIANTE) {
 			return false;
 		}
-		return gestionadorCursos.inscribirEstudianteACurso(usuarioActual->getId(), idCurso);
+		return gestionadorCursos->inscribirEstudianteACurso(usuarioActual->getId(), idCurso);
 	}
 
 	bool inscribirseAEspecializacion(int idEspecializacion) {
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::ESTUDIANTE) {
 			return false;
 		}
-		return gestionadorCursos.inscribirEstudianteAEspecializacion(usuarioActual->getId(), idEspecializacion);
+		return gestionadorCursos->inscribirEstudianteAEspecializacion(usuarioActual->getId(), idEspecializacion);
 	}
 
 	// Métodos de progreso
 	bool actualizarProgresoCurso(int idCurso, int progreso) {
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::ESTUDIANTE) {
 			return false;
 		}
-		return gestionadorCursos.actualizarProgresoCurso(usuarioActual->getId(), idCurso, progreso);
+		return gestionadorCursos->actualizarProgresoCurso(usuarioActual->getId(), idCurso, progreso);
 	}
 
 	// Métodos de calificación
 	bool calificarCurso(int idCurso, int calificacion, const string& comentario) {
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::ESTUDIANTE) {
 			return false;
 		}
-		return gestionadorCursos.agregarCalificacionCurso(usuarioActual->getId(), idCurso, calificacion, comentario);
+		return gestionadorCursos->agregarCalificacionCurso(usuarioActual->getId(), idCurso, calificacion, comentario);
 	}
 
 	// Métodos de listado
 	vector<Curso*> listarCursosPorCategoria(const string& categoria) {
-		return gestionadorCursos.listarCursosPorCategoria(categoria);
+		return gestionadorCursos->listarCursosPorCategoria(categoria);
 	}
 
 	vector<Especializacion*> listarEspecializacionesPorCategoria(const string& categoria) {
-		return gestionadorCursos.listarEspecializacionesPorCategoria(categoria);
+		return gestionadorCursos->listarEspecializacionesPorCategoria(categoria);
 	}
 
 	// Métodos de gestión de contenido
 	bool agregarContenidoCurso(int idCurso, const string& titulo, const string& contenido) {
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::EMPRESA) {
 			return false;
 		}
-		return gestionadorCursos.agregarContenidoCurso(idCurso, titulo, contenido);
+		return gestionadorCursos->agregarContenidoCurso(idCurso, titulo, contenido);
 	}
 
 	bool modificarContenidoCurso(int idCurso, int idContenido, const string& nuevoContenido) {
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::EMPRESA) {
 			return false;
 		}
-		return gestionadorCursos.modificarContenidoCurso(idCurso, idContenido, nuevoContenido);
+		return gestionadorCursos->modificarContenidoCurso(idCurso, idContenido, nuevoContenido);
 	}
 
-	// Métodos de renderizado
+	// Método de renderizado
 	void run() 
 	{
-		while (running && !estados.empty()) 
+		while (running && estadoActual) 
 		{
-			estados.top()->render();
+			estadoActual->render();
 			int tecla = _getch();
 
-			// Si la tecla es 0 o 224, significa que es una tecla especial
 			if (tecla == 0 || tecla == 224) tecla = _getch();
 
-			estados.top()->handleInput(tecla);
-			unique_ptr<MenuState> nextState = estados.top()->getNextState();
+			estadoActual->handleInput(tecla);
+			unique_ptr<MenuState> nextState = estadoActual->getNextState();
 
-			// Si hay un nuevo estado, lo agregamos a la pila
-			if (nextState) estados.push(move(nextState));
+			if (nextState) {
+				navegarA(move(nextState));
+			}
 		}
-	}
-
-	bool login(const string& username, const string& password) 
-	{
-		return userManager->autenticarUsuario(username, password);
-	}
-
-	bool registrarUsuario(const int& tipo, const int& id, const string& fullName, const string& username, const string& password) {
-		return userManager->registrarUsuario(tipo, id, fullName, username, password);
-	}
-
-	string getTipoUsuario(Usuario usuarioActual) const {
-		return usuarioActual->getTipoUsuario();
-	}
-
-	void cerrarSesion() {
-		userManager->cerrarSesion();
-		while (!estados.empty()) {
-			estados.pop();
-		}
-		estados.push(make_unique<LoginState>(this));
 	}
 };

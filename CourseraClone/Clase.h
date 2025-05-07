@@ -1,21 +1,18 @@
 #pragma once
-#include <iostream>
-using namespace std;
 
-
-class Clase {
+class Clase
+{
 private:
-	string titulo;
-	string actividad;
-
+	string titulo, contenido;
 public:
-	Clase() : titulo(""), actividad("") {}
-	Clase(string _titulo, string _actividad) : titulo(_titulo), actividad(_actividad) {}
+	Clase() : titulo(""), contenido("") {}
+	Clase(
+		string _titulo, 
+		string _contenido
+	) : titulo(_titulo), 
+		contenido(_contenido) 
+	{}
 
-	string getTitulo() const {
-		return titulo;
-	}
-	string getDescripcion() const {
-		return actividad;
-	}
+	string getTitulo() const { return titulo; }
+	string getContenido() const { return contenido; }
 };

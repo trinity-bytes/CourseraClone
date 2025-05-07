@@ -12,6 +12,9 @@ class GestionadorCursos {
 private:
     LinkedList<Curso*> cursos;
     LinkedList<Especializacion*> especializaciones;
+
+    vector<int>& idsCursos;
+
     const string RUTA_CURSOS = "Resources/Data/cursos.txt";
     const string RUTA_ESPECIALIZACIONES = "Resources/Data/especializaciones.txt";
     const string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
@@ -39,16 +42,22 @@ public:
         }
     }
 
-    bool crearCurso(int idEmpresa, const string& titulo, const string& nombreEmpresa,
-        int cantidadClases, const string& instructor, const string& descripcion) {
+    bool crearCurso(
+        int idEmpresa, 
+        const string& titulo, 
+        const string& nombreEmpresa,
+        int cantidadClases, 
+        const string& instructor, 
+        const string& descripcion) 
+    {
         Curso* nuevoCurso = new Curso(
-            cursos.getSize() + 1, // ID autoincremental
+            cursos.getTamano() + 1, // ID autoincremental
             idEmpresa,
-            titulo,
             nombreEmpresa,
-            cantidadClases,
-            instructor,
-            descripcion
+            titulo,
+			descripcion,
+			instructor,
+            cantidadClases
         );
 
         cursos.agregarAlFinal(nuevoCurso);
@@ -56,10 +65,16 @@ public:
         return true;
     }
 
-    bool crearEspecializacion(int idEmpresa, const string& nombreEmpresa,
-        const string& titulo, int cantidadCursos, const string& descripcion) {
+    bool crearEspecializacion(
+        int idEmpresa, 
+        const string& nombreEmpresa,
+        const string& titulo, 
+        int cantidadCursos, 
+        const string& descripcion,
+        vector<int>& idsCursos)
+    {
         Especializacion* nuevaEspecializacion = new Especializacion(
-            especializaciones.getSize() + 1, // ID autoincremental
+            especializaciones.getTamano() + 1, // ID autoincremental
             idEmpresa,
             nombreEmpresa,
             titulo,
@@ -121,7 +136,7 @@ public:
         InscripcionBinaria inscripcion;
         inscripcion.idEstudiante = idEstudiante;
         inscripcion.idActividad = idCurso;
-        inscripcion.fecha = time(nullptr);
+        //inscripcion.fecha = time(nullptr);
 
         // Guardar inscripción
         ofstream archivo(RUTA_INSCRIPCIONES, ios::binary | ios::app);
@@ -143,7 +158,7 @@ public:
         InscripcionBinaria inscripcion;
         inscripcion.idEstudiante = idEstudiante;
         inscripcion.idActividad = idEspecializacion;
-        inscripcion.fecha = time(nullptr);
+        //inscripcion.fecha = time(nullptr);
 
         // Guardar inscripción
         ofstream archivo(RUTA_INSCRIPCIONES, ios::binary | ios::app);

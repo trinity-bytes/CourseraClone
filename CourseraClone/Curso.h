@@ -1,169 +1,213 @@
 #pragma once
+
+// headers propios
 #include "Actividad.h"
 #include "Clase.h"
 #include "algoritmosBusqueda.h"
-#include <fstream>
-#include <string>
-#include <vector>
 
-class Curso : public Actividad {
+// headers de la libreria estandar
+#include "fstream"     // Para manejo de archivos
+#include "string"      // Para manejo de cadenas
+#include "vector"      // Para manejo de vectores
+#include "sstream"     // Para manejo de cadenas
+#include "functional"  // Para uso de funciones lambda
+
+using namespace std;
+
+class Curso : public Actividad 
+{
 private:
-	string instructor;
-	int cantidadClases;
-	LinkedList<Clase> clases;
-	string categoria;
-	vector<string> requisitos;
-	float calificacionPromedio;
-	int totalCalificaciones;
+    // Atributos principales
+    string instructor;
+    string categoria;
+    float calificacionPromedio;
+    int totalCalificaciones;
+    int cantidadClases;
+
+    // Colecciones
+    LinkedList<Clase> clases;
+    vector<string> requisitos;
+
+    // Ruta del archivo para persistencia
+    const string RUTA_ARCHIVO = "Resources/Data/actividades.txt";
 
 public:
+    // Constructores
+    Curso() :
+        Actividad(0, 0, "", "", 0, 1, ""),
+        instructor(""),
+        cantidadClases(0),
+        categoria(""),
+        calificacionPromedio(0.0f),
+        totalCalificaciones(0) {
+    }
 
-	Curso() : Actividad(0,0,"","",0,1,"") {
-		instructor = "";
-		cantidadClases = 0;
-		clases = LinkedList<Clase>();
-		categoria = "";
-		calificacionPromedio = 0.0f;
-		totalCalificaciones = 0;
-	}
+    Curso(
+        int _id,
+        int _idEmpresa,
+        const string& _nombreEmpresa,
+        const string& _titulo,
+        const string& _descripcion,
+        const string& _instructor,
+        int _cantidadClases,
+        const string& _categoria = ""
+    ) :
+        Actividad(_id, _idEmpresa, _nombreEmpresa, _titulo, 0, 1, _descripcion),
+        instructor(_instructor),
+        cantidadClases(_cantidadClases),
+        categoria(_categoria),
+        calificacionPromedio(0.0f),
+        totalCalificaciones(0) {
+    }
 
-	Curso(int _id, int _idEmpresa, string _nombreEmpresa, string _titulo, string _descripcion, string _instructor, int _cantidadClases, string _categoria = "") : Actividad(_id, _idEmpresa, _nombreEmpresa, _titulo, 0, 1, _descripcion) {
-		instructor = _instructor;
-		cantidadClases = _cantidadClases;
-		clases = LinkedList<Clase>();
-		categoria = _categoria;
-		calificacionPromedio = 0.0f;
-		totalCalificaciones = 0;
-	}
+    // Getters
+    string getInstructor() const { return instructor; }
+    int getCantidadClases() const { return cantidadClases; }
+    LinkedList<Clase> getClases() const { return clases; }
+    string getCategoria() const { return categoria; }
+    vector<string> getRequisitos() const { return requisitos; }
+    float getCalificacionPromedio() const { return calificacionPromedio; }
+    int getTotalCalificaciones() const { return totalCalificaciones; }
 
-	void anadirClases(string _titulo, string _descripcion) {
-		Clase nuevaClase(_titulo, _descripcion);
-		clases.agregarAlFinal(nuevaClase);
-		cantidadClases++;
-	}
+    // Setters
+    void setCategoria(const string& _categoria) { categoria = _categoria; }
 
-	bool modificarClase(int idClase, const string& nuevoContenido) {
-		if (idClase < 0 || idClase >= clases.getTamano()) return false;
-		
-		auto it = clases.begin();
-		for (int i = 0; i < idClase; i++) ++it;
-		
-		it->setDescripcion(nuevoContenido);
-		return true;
-	}
+    // Métodos para gestión de clases
+    void anadirClases(const string& _titulo, const string& _descripcion) {
+        Clase nuevaClase(_titulo, _descripcion);
+        clases.agregarAlFinal(nuevaClase);
+        cantidadClases++;
+    }
 
-	bool eliminarClase(int idClase) {
-		if (idClase < 0 || idClase >= clases.getTamano()) return false;
-		
-		auto it = clases.begin();
-		for (int i = 0; i < idClase; i++) ++it;
-		
-		clases.eliminar(it);
-		cantidadClases--;
-		return true;
-	}
+    bool modificarClase(int idClase, const string& nuevoContenido) {
+        if (idClase < 0 || idClase >= clases.getTamano())
+            return false;
 
-	void setCategoria(const string& _categoria) { categoria = _categoria; }
-	string getCategoria() const { return categoria; }
+        auto it = clases.begin();
+        advance(it, idClase);
+        it->setDescripcion(nuevoContenido);
+        return true;
+    }
 
-	void agregarRequisito(const string& requisito) {
-		requisitos.push_back(requisito);
-	}
+    bool eliminarClase(int idClase) {
+        if (idClase < 0 || idClase >= clases.getTamano())
+            return false;
 
-	vector<string> getRequisitos() const { return requisitos; }
+        auto it = clases.begin();
+        advance(it, idClase);
+        clases.eliminar(it);
+        cantidadClases--;
+        return true;
+    }
 
-	void agregarCalificacion(int calificacion) {
-		if (calificacion < 1 || calificacion > 5) return;
-		
-		calificacionPromedio = (calificacionPromedio * totalCalificaciones + calificacion) / (totalCalificaciones + 1);
-		totalCalificaciones++;
-	}
+    // Métodos para requisitos
+    void agregarRequisito(const string& requisito) {
+        requisitos.push_back(requisito);
+    }
 
-	float getCalificacionPromedio() const { return calificacionPromedio; }
-	int getTotalCalificaciones() const { return totalCalificaciones; }
+    // Métodos para calificaciones
+    void agregarCalificacion(int calificacion) {
+        if (calificacion < 1 || calificacion > 5)
+            return;
 
-	string getInstructor() const { return instructor; }
-	int getCantidadClases() const { return cantidadClases; }
-	LinkedList<Clase> getClases() const { return clases; }
+        float sumaTotal = calificacionPromedio * totalCalificaciones + calificacion;
+        totalCalificaciones++;
+        calificacionPromedio = sumaTotal / totalCalificaciones;
+    }
 
-	int calcularProgreso(const vector<int>& clasesCompletadas) const {
-		if (clasesCompletadas.empty()) return 0;
-		return (clasesCompletadas.size() * 100) / cantidadClases;
-	}
+    // Métodos para cálculos
+    int calcularProgreso(const vector<int>& clasesCompletadas) const {
+        if (clasesCompletadas.empty() || cantidadClases == 0)
+            return 0;
+        return (clasesCompletadas.size() * 100) / cantidadClases;
+    }
 
-	bool verificarRequisitos(const vector<int>& cursosCompletados) const {
-		if (requisitos.empty()) return true;
-		
-		return true;
-	}
+    bool verificarRequisitos(const vector<int>& cursosCompletados) const {
+        // NOTA: Este método está incompleto en el código original
+        return requisitos.empty() || true;
+    }
 
-	void mostrar() override {
-		cout << "Curso: " << titulo << "\n";
-		cout << "Empresa: " << nombreEmpresa << "\n";
-		cout << "Instructor: " << instructor << "\n";
-		cout << "Cantidad de alumnos: " << cantidadAlumnos << "\n";
-		cout << "Descripcion: " << descripcion << "\n";
-		cout << "Categoría: " << categoria << "\n";
-		cout << "Calificación promedio: " << calificacionPromedio << "\n";
-		cout << "Total de calificaciones: " << totalCalificaciones << "\n";
-	}
+    // Métodos de visualización y serialización
+    void mostrar() const {
+        cout << "=== INFORMACIÓN DEL CURSO ===" << endl;
+        cout << "Curso: " << titulo << endl;
+        cout << "Empresa: " << nombreEmpresa << endl;
+        cout << "Instructor: " << instructor << endl;
+        cout << "Cantidad de alumnos: " << cantidadAlumnos << endl;
+        cout << "Descripción: " << descripcion << endl;
+        cout << "Categoría: " << categoria << endl;
+        cout << "Calificación: " << calificacionPromedio << " (" << totalCalificaciones << " opiniones)" << endl;
+        cout << "===========================" << endl;
+    }
 
-	string toString() const {
-		stringstream ss;
-		ss << idEmpresa << '\n'
-		   << tipo << '\n'
-		   << nombreEmpresa << '\n'
-		   << titulo << '\n'
-		   << descripcion << '\n'
-		   << instructor << '\n'
-		   << cantidadClases << '\n'
-		   << categoria << '\n'
-		   << calificacionPromedio << '\n'
-		   << totalCalificaciones << '\n';
-		
-		ss << clases.getTamano() << '\n';
-		for (const auto& clase : clases) {
-			ss << clase.getTitulo() << '\n'
-			   << clase.getDescripcion() << '\n';
-		}
-		
-		ss << requisitos.size() << '\n';
-		for (const auto& req : requisitos) {
-			ss << req << '\n';
-		}
-		
-		return ss.str();
-	}
+    string toString() const {
+        stringstream ss;
 
-	void guardar() {
-		ofstream archivo("Resources/Data/actividades.txt", ios::app);
-		if (archivo.is_open()) {
-			archivo << getIdEmpresa() << '\n';
-			archivo << getTipo() << '\n';
-			archivo << getNombreEmpresa() << '\n';
-			archivo << titulo << '\n';   
-			archivo << getDescripcion() << '\n';     
-			archivo << instructor << '\n';
+        // Datos básicos
+        ss << idEmpresa << '\n'
+            << tipo << '\n'
+            << nombreEmpresa << '\n'
+            << titulo << '\n'
+            << descripcion << '\n'
+            << instructor << '\n'
+            << cantidadClases << '\n'
+            << categoria << '\n'
+            << calificacionPromedio << '\n'
+            << totalCalificaciones << '\n';
 
-			auto conseguirTitulo = [](const Clase& c) {
-				return c.getTitulo();
-				};
-			auto conseguirDescripcion = [](const Clase& c) {
-				return c.getDescripcion();
-				};
+        // Serialización de clases
+        ss << clases.getTamano() << '\n';
+        for (const auto& clase : clases) {
+            ss << clase.getTitulo() << '\n'
+                << clase.getContenido() << '\n';
+        }
 
-			vector<string> titulos = clases.extraerDato<string>(conseguirTitulo);
-			vector<string> descripciones = clases.extraerDato<string>(conseguirDescripcion);
+        // Serialización de requisitos
+        ss << requisitos.size() << '\n';
+        for (const auto& req : requisitos) {
+            ss << req << '\n';
+        }
 
-			archivo << clases.getTamano() << '\n';
-			for (int i = 0; i < int(clases.getTamano()); i++) {
-				cout << titulos[i] << '\n';
-				cout << descripciones[i] << '\n';
-			}
-			archivo.close();
-		}
-		else {
-			cout << "Error al abrir el archivo." << endl;
-		}
-	}
+        return ss.str();
+    }
+
+    // Método para persistencia
+    bool guardar() {
+        ofstream archivo(RUTA_ARCHIVO, ios::app);
+        if (!archivo.is_open()) {
+            cerr << "Error: No se pudo abrir el archivo " << RUTA_ARCHIVO << endl;
+            return false;
+        }
+
+        // Guardar datos básicos
+        archivo << getIdEmpresa() << '\n'
+            << getTipo() << '\n'
+            << getNombreEmpresa() << '\n'
+            << titulo << '\n'
+            << getDescripcion() << '\n'
+            << instructor << '\n';
+
+        // Definir funciones lambda para extraer datos
+        function<string(const Clase&)> conseguirTitulo = [](const Clase& c) {
+            return c.getTitulo();
+            };
+
+        function<string(const Clase&)> conseguirDescripcion = [](const Clase& c) {
+            return c.getContenido();
+            };
+
+        // Extraer datos de clases
+        vector<string> titulos = clases.extraerDato<string>(conseguirTitulo);
+        vector<string> descripciones = clases.extraerDato<string>(conseguirDescripcion);
+
+        // Guardar clases
+        archivo << clases.getTamano() << '\n';
+        for (size_t i = 0; i < clases.getTamano(); i++) {
+            archivo << titulos[i] << '\n'
+                << descripciones[i] << '\n';
+        }
+
+        archivo.close();
+        return true;
+    }
 };

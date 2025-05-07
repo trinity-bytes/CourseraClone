@@ -16,15 +16,29 @@ private:
 	int duracionEstimada; // en semanas
 
 public:
-	Especializacion(int _id, int _idEmpresa, string _nombreEmpresa, 
-				   string _titulo, int _cantidadAlumnos, string _descripcion,
-				   string _categoria = "", int _duracionEstimada = 0)
-		: Actividad(_id, _idEmpresa, _nombreEmpresa, _titulo, _cantidadAlumnos, 2, _descripcion) {
-		cursos = LinkedList<Curso*>();
-		categoria = _categoria;
-		calificacionPromedio = 0.0f;
-		totalCalificaciones = 0;
-		duracionEstimada = _duracionEstimada;
+	Especializacion(
+		int _id, 
+		int _idEmpresa, 
+		string _nombreEmpresa, 
+		string _titulo, 
+		int _cantidadAlumnos, 
+		string _descripcion,
+		string _categoria = "", 
+		int _duracionEstimada = 0
+	) : Actividad(
+		_id, 
+		_idEmpresa, 
+		_nombreEmpresa, 
+		_titulo, 
+		_cantidadAlumnos, 
+		2, 
+		_descripcion) 
+	{
+		this->cursos = LinkedList<Curso*>();
+		this->categoria = _categoria;
+		this->calificacionPromedio = 0.0;
+		this->totalCalificaciones = 0;
+		this->duracionEstimada = _duracionEstimada;
 	}
 
 	// Métodos de gestión de cursos
@@ -87,7 +101,7 @@ public:
 	}
 
 	// Sobrescribir método virtual de Actividad
-	void mostrar() override {
+	void mostrar() {
 		cout << "Especialización: " << titulo << "\n";
 		cout << "Empresa: " << nombreEmpresa << "\n";
 		cout << "Cantidad de alumnos: " << cantidadAlumnos << "\n";

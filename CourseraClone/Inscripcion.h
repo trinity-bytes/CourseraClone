@@ -11,7 +11,8 @@ struct InscripcionIndex {
     InscripcionIndex() : idUsuario(0), offset(0) {}
 };
 
-struct InscripcionBinaria {
+struct InscripcionBinaria 
+{
     int idEstudiante;
     int idActividad;
 	int tipoActividad;
