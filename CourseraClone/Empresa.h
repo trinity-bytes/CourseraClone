@@ -19,7 +19,7 @@ public:
 
     int crearCurso(Curso* nuevoCurso) {
         cursos.agregarAlFinal(nuevoCurso);
-		cout << "Curso creado exitosamente." << endl;
+        cout << "Curso creado exitosamente." << endl;
     }
 
     int crearEspecializacion(Especializacion* _nuevaEspecializacion) {
@@ -42,18 +42,18 @@ public:
         }
     }
     void eliminarCursoEspecializacion(Curso* curso) {
-		if (curso != nullptr) {
-			// Eliminar el curso de la especialización
-			for (auto& especializacion : especializaciones) {
-				if (especializacion != nullptr) {
-					especializacion->eliminarCurso(curso->getId());
-				}
-			}
-			cout << "Curso eliminado exitosamente de la especialización." << endl;
-		}
-		else {
-			cout << "Error: El curso proporcionado es nulo." << endl;
-		}
+        if (curso != nullptr) {
+            // Eliminar el curso de la especialización
+            for (auto& especializacion : especializaciones) {
+                if (especializacion != nullptr) {
+                    especializacion->eliminarCurso(curso->getId());
+                }
+            }
+            cout << "Curso eliminado exitosamente de la especialización." << endl;
+        }
+        else {
+            cout << "Error: El curso proporcionado es nulo." << endl;
+        }
     }
     void anadirCursoEspecializacion(int idEspecializacion, Curso* curso) {
         // Validar que el curso no sea nulo
@@ -75,4 +75,4 @@ public:
         // Si no se encuentra la especialización
         cout << "Error: No se encontró una especialización con el ID proporcionado." << endl;
     }
-}
+};
