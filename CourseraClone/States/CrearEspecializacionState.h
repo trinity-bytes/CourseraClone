@@ -130,11 +130,7 @@ private:
             return;
         }
 
-        if (controladora->crearEspecializacion(
-            titulo,
-            descripcion,
-            stoi(cantidadCursos)
-        )) {
+        if (controladora->crearEspecializacion(titulo, descripcion, stoi(cantidadCursos), controladora->getIdsCursos())) {
             // Volver al dashboard
             controladora->volverAtras();
         }

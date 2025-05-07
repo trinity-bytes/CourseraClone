@@ -246,6 +246,14 @@ public:
 			idsCursosCopy
 		);
 	}
+	vector<int> getIdsCursos() const
+	{
+		vector<int> idsCursos;
+		for (auto curso : cursosTodos) {
+			idsCursos.push_back(curso->getId());
+		}
+		return idsCursos;
+	}
 
 	// Métodos de búsqueda
 	vector<Curso*> buscarCursos(const string& criterio) 
