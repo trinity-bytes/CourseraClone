@@ -1,10 +1,13 @@
 #pragma once
 #include "Usuario.h"
+#include <vector>
 
 class Empresa: public Usuario
 {
 private:
 	LinkedList<Actividad*> actividadesPropias;
+	LinkedList<Especializacion*> especializaciones;
+	LinkedList<Curso*> cursos;
 public:
 	void cargarDatos() { }
 
@@ -13,14 +16,12 @@ public:
 		this->actividadesPropias = LinkedList<Actividad*>();
 	}
 	
-	int crearCurso(){
-
+	int crearCurso(Curso *nuevoCurso){
+		cursos.agregarAlFinal(nuevoCurso);
 	}
-	int crearInstructor() {
 
-	}
-	int crearEspecializacion() {
-
+	int crearEspecializacion(Especializacion *_nuevaEspecializacion) {
+		especializaciones.agregarAlFinal(_nuevaEspecializacion);
 	}
 	void verProfesores() {
 
