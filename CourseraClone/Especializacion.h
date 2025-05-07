@@ -16,6 +16,7 @@ private:
 	int duracionEstimada; // en semanas
 
 public:
+	Especializacion() {};
 	Especializacion(
 		int _id, 
 		int _idEmpresa, 

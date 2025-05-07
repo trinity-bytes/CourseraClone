@@ -271,26 +271,26 @@ public:
     // Acceder al primer elemento
     T& primero() {
         if (isEmpty())
-            throw std::runtime_error("Lista vacía: No hay primer elemento");
+            throw runtime_error("Lista vacía: No hay primer elemento");
         return head->data;
     }
 
     const T& primero() const {
         if (isEmpty())
-            throw std::runtime_error("Lista vacía: No hay primer elemento");
+            throw runtime_error("Lista vacía: No hay primer elemento");
         return head->data;
     }
 
     // Acceder al último elemento
     T& ultimo() {
         if (isEmpty())
-            throw std::runtime_error("Lista vacía: No hay último elemento");
+            throw runtime_error("Lista vacía: No hay último elemento");
         return tail->data;
     }
 
     const T& ultimo() const {
         if (isEmpty())
-            throw std::runtime_error("Lista vacía: No hay último elemento");
+            throw runtime_error("Lista vacía: No hay último elemento");
         return tail->data;
     }
 };
