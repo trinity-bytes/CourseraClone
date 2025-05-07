@@ -190,26 +190,26 @@ public:
 
 	void cerrarSesion() 
 	{
-		if (usuarioActual) // Comprueba que el usuario actual no sea nulo
+		if (usuarioActual) 
 		{
-			delete usuarioActual; // Liberar memoria del usuario actual
-			usuarioActual = nullptr; // Reiniciar el puntero
+			delete usuarioActual;
+			usuarioActual = nullptr;
 		}
 		irAInicio();
 	}
 
-	bool registrarUsuario(int tipoUsuario, const string& nombre, 
-		const string& apellido, const string& username, const string& password) 
+	bool registrarUsuario(int tipoUsuario, const int& id, 
+		const string& nombre, const string& username, 
+		const string& password)
 	{
-		return gestionadorUsuarios.registrarUsuario(tipoUsuario, nombre, apellido, username, password);
+		return gestionadorUsuarios.registrarUsuario(tipoUsuario, id, nombre, username, password);
 	}
 
-	/// Métodos para los cursos
+	/// Métodos para cursos y especializaciones
 	bool crearCurso(const string& titulo, const string& descripcion, 
 		int cantidadClases, const string& instructor) 
 	{
-		// Verificar que el usuario actual sea una organización
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2)  // 2 = Empresa
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) 
 		{
 			return false;
 		}
@@ -224,6 +224,25 @@ public:
 		);
 	}
 
+	bool crearEspecializacion(const string& titulo, const string& descripcion, 
+		int cantidadCursos, const vector<int>& idsCursos) 
+	{
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) 
+		{
+			return false;
+		}
+
+		return gestionadorCursos.crearEspecializacion(
+			usuarioActual->getId(),
+			usuarioActual->getNickname(),
+			titulo,
+			descripcion,
+			cantidadCursos,
+			idsCursos
+		);
+	}
+
+	// Métodos de búsqueda
 	vector<Curso*> buscarCursos(const string& criterio) 
 	{
 		return gestionadorCursos.buscarCursos(criterio);
@@ -237,17 +256,63 @@ public:
 	// Getters
 	Usuario* getUsuarioActual() const { return usuarioActual; }
 	MenuState* getEstadoActual() const { return estadoActual.get(); }
+	int getTipoUsuarioActual() const { 
+		return usuarioActual ? usuarioActual->getTipoUsuario() : 0; 
+	}
 
-	LinkedList<Actividad> buscarActividades() {
-		//vector<int> idCursos, idEspecializacion;
-		
-		// Obtener los IDs de las actividades buscadas
-		//usuarioActual.getActividadesBuscadas(idCursos, idEspecializacion);
-		//mergeSort(idCursos, 0, int(idCursos.size()) - 1);
-		//mergeSort(idEspecializacion, 0, int(idEspecializacion.size()) - 1);
+	// Métodos de inscripción
+	bool inscribirseACurso(int idCurso) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+			return false;
+		}
+		return gestionadorCursos.inscribirEstudianteACurso(usuarioActual->getId(), idCurso);
+	}
 
-		//ifstream cursos("./archivos/planos/cursos.txt");
-		//ifstream especializaciones("./archivos/planos/especializaciones.txt");
+	bool inscribirseAEspecializacion(int idEspecializacion) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+			return false;
+		}
+		return gestionadorCursos.inscribirEstudianteAEspecializacion(usuarioActual->getId(), idEspecializacion);
+	}
+
+	// Métodos de progreso
+	bool actualizarProgresoCurso(int idCurso, int progreso) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+			return false;
+		}
+		return gestionadorCursos.actualizarProgresoCurso(usuarioActual->getId(), idCurso, progreso);
+	}
+
+	// Métodos de calificación
+	bool calificarCurso(int idCurso, int calificacion, const string& comentario) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 1) {
+			return false;
+		}
+		return gestionadorCursos.agregarCalificacionCurso(usuarioActual->getId(), idCurso, calificacion, comentario);
+	}
+
+	// Métodos de listado
+	vector<Curso*> listarCursosPorCategoria(const string& categoria) {
+		return gestionadorCursos.listarCursosPorCategoria(categoria);
+	}
+
+	vector<Especializacion*> listarEspecializacionesPorCategoria(const string& categoria) {
+		return gestionadorCursos.listarEspecializacionesPorCategoria(categoria);
+	}
+
+	// Métodos de gestión de contenido
+	bool agregarContenidoCurso(int idCurso, const string& titulo, const string& contenido) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) {
+			return false;
+		}
+		return gestionadorCursos.agregarContenidoCurso(idCurso, titulo, contenido);
+	}
+
+	bool modificarContenidoCurso(int idCurso, int idContenido, const string& nuevoContenido) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) {
+			return false;
+		}
+		return gestionadorCursos.modificarContenidoCurso(idCurso, idContenido, nuevoContenido);
 	}
 
 	// Métodos de renderizado
@@ -278,12 +343,8 @@ public:
 		return userManager->registrarUsuario(tipo, id, fullName, username, password);
 	}
 
-	string getTipoUsuario() const {
-		return userManager->getTipoUsuario();
-	}
-
-	bool crearEspecializacion(const string& titulo, const string& descripcion, int cantidadCursos) {
-		return courseManager->crearEspecializacion(titulo, descripcion, cantidadCursos);
+	string getTipoUsuario(Usuario usuarioActual) const {
+		return usuarioActual->getTipoUsuario();
 	}
 
 	void cerrarSesion() {
