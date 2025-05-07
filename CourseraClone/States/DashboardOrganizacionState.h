@@ -2,7 +2,7 @@
 #include "MenuState.h"
 #include "../UI_Ascii.h"
 #include "../ExtendedFunctions.h"
-#include "CrearCursoState.h"
+#include "../Controladora.h"
 #include "CrearEspecializacionState.h"
 #include <vector>
 #include <string>

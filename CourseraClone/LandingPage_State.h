@@ -1,5 +1,6 @@
 #pragma once
 // Encabezados propios
+#include "Controladora.h"
 #include "ExtendedFunctions.h"
 #include "UI_Ascii.h"
 #include "MenuState.h"

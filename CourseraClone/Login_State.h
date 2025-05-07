@@ -1,4 +1,5 @@
 #pragma once
+#include "Controladora.h"
 #include "UI_Ascii.h"
 #include "MenuState.h"
 #include "ExtendedFunctions.h"
@@ -68,19 +69,19 @@ public:
     {
         // Actualizar solo los campos de entrada
         gotoXY(67, 15);
-        cout << string(30, ' '); // Limpiar área
+        cout << string(30, ' '); // Limpiar ï¿½rea
         gotoXY(67, 15);
         cout << username;
 
         gotoXY(67, 20);
-        cout << string(30, ' '); // Limpiar área
+        cout << string(30, ' '); // Limpiar ï¿½rea
         gotoXY(67, 20);
         cout << string(password.length(), '*');
     }
 
     std::unique_ptr<MenuState> getNextState() override
     {
-        // Retornar al estado anterior o al dashboard según el resultado del login
+        // Retornar al estado anterior o al dashboard segï¿½n el resultado del login
         return std::make_unique<LandingPageState>(controladora);
     }
 };
