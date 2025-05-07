@@ -1,10 +1,12 @@
 #pragma once
+// Headers propios
 #include "LinkedList.h"
 #include "Actividad.h"
 #include "PriorityQueue.h"
 #include "Especializacion.h"
 #include "UI_Menu_LandingPage.h"
 #include "Inscripcion.h"
+<<<<<<< HEAD
 #include <fstream>
 #include "Usuario.h"
 #include "Estudiante.h"
@@ -14,11 +16,20 @@
 class Controladora {
 private:
 	Usuario* usuarioActual;
+=======
+
+// librerias
+#include "fstream"
+
+class Controladora {
+private:
+	//Usuario* usuario;
+>>>>>>> 1d73e309e3d2cc093cf45025a0c7f932947e2c37
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
 	
-	vector<ElementoMenu> cursosPopularesLandingPage;
-	vector<ElementoMenu> especializacionesPopularesLandingPage;
+	//vector<ElementoMenu> cursosPopularesLandingPage;
+	//vector<ElementoMenu> especializacionesPopularesLandingPage;
 	
 	PriorityQueue<Actividad*> actividadesLandingPage;
 	vector<Actividad*> actividades;
@@ -89,8 +100,8 @@ private:
 		}
 	}
 	void cargarDatosLanding(int maximo) {
-		cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
-		especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
+		//cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
+		//especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
 
 		PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
 		PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
@@ -115,10 +126,10 @@ private:
 		descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
 
 		for (int i = 0; i < maximo; i++) {
-			cursosPopularesLandingPage[i].titulo = titulosCursos[i];
-			cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
-			especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
-			especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
+			//cursosPopularesLandingPage[i].titulo = titulosCursos[i];
+			//cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
+			//especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
+			//especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
 		}
 	}
 
@@ -137,7 +148,7 @@ public:
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
 		cargarDatosLanding(0);
-		usuario = new Usuario();
+		//usuario = new Usuario();
 	}
 
 	Controladora() {

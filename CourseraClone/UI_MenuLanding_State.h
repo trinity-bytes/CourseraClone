@@ -5,7 +5,26 @@
 #include "Controladora.h"
 
 // Encabezados de librerías
-#include "memory"
+#include "memory" // Para std::unique_ptr
+#include "conio.h" // Para _kbhit() y _getch()
+
+
+/*
+/// Constantes globales
+const vector<string> ELEMENTOS_CABECERA = {
+    " Iniciar Sesion ",
+    " Registrarse ",
+    " Sobre Nosotros "
+};
+
+/// Estructuras de datos
+struct ElementoMenu
+{
+    string titulo;
+    string descripcion; // Usado para especialidades y cursos
+};
+
+*/
 
 // Estado base abstracto
 class MenuState 
@@ -228,9 +247,9 @@ public:
         {
             switch (elementoActual) 
             {
-                case 0: return std::make_unique<LoginState>(controladora);
-                case 1: return std::make_unique<RegisterState>(controladora);
-                case 2: return std::make_unique<AboutUsState>(controladora);
+                //case 0: return std::make_unique<LoginState>(controladora);
+                //case 1: return std::make_unique<RegisterState>(controladora);
+                //case 2: return std::make_unique<AboutUsState>(controladora);
             }
         }
         return nullptr;
@@ -422,7 +441,7 @@ private:
     int opcionActual;
 
 public:
-    StudentDashboardState(Controladora* ctrl) : controladora(ctrl), opcionActual(0) {}
+    StudentDashboardState(Controladora* ctrl) : MenuState(ctrl), controladora(ctrl), opcionActual(0) {}
 
     void handleInput(int tecla) override {
         if (tecla == 224) { // Tecla extendida
@@ -459,7 +478,7 @@ private:
     int opcionActual;
 
 public:
-    OrganizationDashboardState(Controladora* ctrl) : controladora(ctrl), opcionActual(0) {}
+    OrganizationDashboardState(Controladora* ctrl) : MenuState(ctrl),  controladora(ctrl), opcionActual(0) {}
 
     void handleInput(int tecla) override {
         if (tecla == 224) { // Tecla extendida
