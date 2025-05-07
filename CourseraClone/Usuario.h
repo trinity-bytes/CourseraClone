@@ -315,20 +315,8 @@ public:
 
     /// --- Método estático para manejar el login ---
     // Retorna un código de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
-    static LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario) {
-        string userInput, passInput;
-
-        cout << "Username: ";
-        cin >> userInput;
-        // Limpiar el buffer de entrada para evitar problemas con getline o futuras lecturas
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-        cout << "Password: ";
-        // En un sistema real, no mostrar la contraseña en pantalla (usar técnicas de entrada segura)
-        cin >> passInput;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-
+    static LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, string userInput, string passInput) 
+    {
         string indexFilePath = getIndexFilePath(tipoUsuario);
         ifstream indexFile(indexFilePath, ios::binary); // Abrir solo para leer
 
