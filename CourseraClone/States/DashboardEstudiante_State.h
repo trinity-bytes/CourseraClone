@@ -1,11 +1,17 @@
 #pragma once
-#include "MenuState.h"
+
+// Headers propios
+#include "Menu_State.h"
 #include "../UI_Ascii.h"
 #include "../ExtendedFunctions.h"
-#include <vector>
-#include <string>
+#include "../Controladora.h"
 
-class DashboardEstudianteState : public MenuState {
+// Headers de librerías
+#include "vector"
+#include "string"
+
+class DashboardEstudianteState : public MenuState 
+{
 private:
     // Constantes del menú
     static const int SECCION_CURSOS_INSCRITOS = 0;

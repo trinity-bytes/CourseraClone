@@ -6,6 +6,7 @@
 #include "algoritmosBusqueda.h"
 
 // headers de la libreria estandar
+#include "iostream"    // Para manejo de entrada/salida
 #include "fstream"     // Para manejo de archivos
 #include "string"      // Para manejo de cadenas
 #include "vector"      // Para manejo de vectores

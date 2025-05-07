@@ -1,12 +1,15 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 class Controladora; // Declaración anticipada de Controladora
 
 /// Estructuras de datos
 struct ElementoMenu
 {
-    string titulo;
-    string descripcion; // Usado para especialidades y cursos
+    std::string titulo;
+    std::string descripcion; // Usado para especialidades y cursos
 };
 
 // Estado base abstracto

@@ -1,9 +1,9 @@
 #pragma once
-#include "MenuState.h"
+#include "Menu_State.h"
 #include "../UI_Ascii.h"
 #include "../ExtendedFunctions.h"
 #include "../Controladora.h"
-#include "CrearEspecializacionState.h"
+//#include "CrearEspecializacionState.h"
 #include <vector>
 #include <string>
 
@@ -95,10 +95,10 @@ public:
             case VK_RETURN:
                 switch (opcionActual) {
                     case OPCION_CREAR_CURSO:
-                        nextState = make_unique<CrearCursoState>(controladora);
+                        //nextState = make_unique<CrearCursoState>(controladora);
                         break;
                     case OPCION_CREAR_ESPECIALIZACION:
-                        nextState = make_unique<CrearEspecializacionState>(controladora);
+                        //nextState = make_unique<CrearEspecializacionState>(controladora);
                         break;
                     case OPCION_CERRAR_SESION:
                         controladora->cerrarSesion();

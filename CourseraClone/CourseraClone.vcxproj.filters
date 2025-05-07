@@ -92,7 +92,7 @@
     <ClInclude Include="OLD_LandingPage.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="MenuState.h">
+    <ClInclude Include="Menu_State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="algoritmosBusqueda.h">
@@ -122,16 +122,16 @@
     <ClInclude Include="Especializacion.h">
       <Filter>Header Files\Cursos y Actividades</Filter>
     </ClInclude>
-    <ClInclude Include="States\CrearCursoState.h">
+    <ClInclude Include="States\CrearCurso_State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="States\CrearEspecializacionState.h">
+    <ClInclude Include="States\CrearEspecializacion_State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="States\DashboardEstudianteState.h">
+    <ClInclude Include="States\DashboardEstudiante_State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="States\DashboardOrganizacionState.h">
+    <ClInclude Include="States\DashboardOrganizacion_State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
