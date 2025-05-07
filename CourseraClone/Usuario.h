@@ -314,13 +314,14 @@ public:
     }
 
     /// --- Método estático para manejar el login ---
-    // Retorna un código de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
+    // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
     static LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, string userInput, string passInput) 
     {
         string indexFilePath = getIndexFilePath(tipoUsuario);
         ifstream indexFile(indexFilePath, ios::binary); // Abrir solo para leer
 
-        if (!indexFile.is_open()) {
+        if (!indexFile.is_open()) 
+        {
             cerr << "Error al abrir archivo de indice para login: " << indexFilePath << endl;
             return LoginStatus::FILE_ERROR; // Indicar error de archivo
         }
@@ -329,12 +330,12 @@ public:
         int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
         indexFile.seekg(0, ios::beg); // Volver al principio
 
-        if (cantidad == 0) {
+        if (cantidad == 0) 
+        {
             // Archivo de índice vacío, ningún usuario registrado
             indexFile.close();
             return LoginStatus::USER_NOT_FOUND;
         }
-
 
         // Lambda para la búsqueda binaria de un match exacto (o el posible lugar donde debería estar)
         // Queremos encontrar la primera posición `p` tal que el username buscado sea
@@ -356,8 +357,7 @@ public:
         // Rango de búsqueda: [0, cantidad - 1].
         int posPosibleUsuario = busquedaBinaria(0, cantidad - 1, predicadoBusqueda);
 
-        // Verificar si la posición encontrada es válida y si el usuario en esa posición
-        // realmente coincide con el username buscado.
+        // Verificar si la posición encontrada es válida y si el usuario en esa posición realmente coincide con el username buscado.
         bool usuarioEncontrado = false;
         UsuarioIndex encontrado;
 
