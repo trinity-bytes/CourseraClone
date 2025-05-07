@@ -6,16 +6,21 @@
 #include "UI_Menu_LandingPage.h"
 #include "Inscripcion.h"
 #include <fstream>
+#include "Usuario.h"
+#include "Estudiante.h"
+#include "Empresa.h"
+#include "UI_MenuLanding_State.h"
 
 class Controladora {
 private:
-	Usuario* usuario;
+	Usuario* usuarioActual;
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
 	
 	vector<ElementoMenu> cursosPopularesLandingPage;
 	vector<ElementoMenu> especializacionesPopularesLandingPage;
 	
+	PriorityQueue<Actividad*> actividadesLandingPage;
 	vector<Actividad*> actividades;
 
 private:
@@ -44,7 +49,7 @@ private:
 						string tituloClase, descripcionClase;
 						getline(ruta, tituloClase);
 						getline(ruta, descripcionClase);
-						nuevoCurso->anadirClases(tituloClase, descripcionClase);
+						nuevoCurso->añadirClases(tituloClase, descripcionClase);
 					}
 					actividades.push_back(nuevoCurso);
 					cursosTodos.agregarAlFinal(nuevoCurso);
@@ -56,7 +61,7 @@ private:
 					for (int i = 0; i < cantidadCursos; i++) {
 						int idCurso = 0;
 						ruta >> idCurso; ruta.ignore();
-						nuevaEspecializacion->anadirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
+						nuevaEspecializacion->añadirCurso(dynamic_cast<Curso*>(actividades[idCurso]));
 					}
 					actividades.push_back(nuevaEspecializacion);
 					especializacionesTodos.agregarAlFinal(nuevaEspecializacion);
@@ -99,7 +104,7 @@ private:
 		auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
 			return a->getTitulo();
 			};
-		auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripci�n
+		auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripci�n
 			return a->getDescripcion();
 			};
 
@@ -123,6 +128,11 @@ public:
 		actividades = vector<Actividad*>();
 		cursosTodos = LinkedList<Curso*>();
 		especializacionesTodos = LinkedList<Especializacion*>();
+	Controladora() : actividadesLandingPage(3) {
+		usuarioActual = nullptr;
+		vector<Actividad*> actividades;
+		LinkedList<Curso*> cursosTodos;
+		LinkedList<Especializacion*> especializacionesTodos;
 
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
@@ -134,13 +144,62 @@ public:
 		cargarTodosDatos();
 	}
 
+	~Controladora() 
+	{
+		if (usuarioActual) {
+			delete usuarioActual;
+		}
+	}
 
+	bool iniciarSesion() {
+		Usuario temp;
+		if (Usuario::login("Resources/Data/usuarios.dat", temp)) {
+			switch (temp.getTipoUsuario()) {
+				case 1: // Estudiante
+					usuarioActual = new Estudiante(temp.getNombre(), temp.getApellido());
+					break;
+				case 2: // Organizaci�n
+					usuarioActual = new Empresa();
+					break;
+				default:
+					cout << "Tipo de usuario no v�lido" << endl;
+					return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
+	bool registrarUsuario(int tipoUsuario, const string& nombre, const string& apellido, 
+		const string& username, const string& password) {
+		Usuario* nuevoUsuario;
+		if (tipoUsuario == 1) {
+			nuevoUsuario = new Estudiante(nombre, apellido);
+		} else if (tipoUsuario == 2) {
+			nuevoUsuario = new Empresa();
+		} else {
+			return false;
+		}
+
+		return Usuario::registrar("Resources/Data/usuarios.dat", *nuevoUsuario);
+	}
+
+	unique_ptr<MenuState> getNextStateAfterLogin() {
+		if (!usuarioActual) return make_unique<LandingPageState>();
+
+		switch (usuarioActual->getTipoUsuario()) {
+			case 1: // Estudiante
+				return make_unique<StudentDashboardState>(this);
+			case 2: // Organización
+				return make_unique<OrganizationDashboardState>(this);
+			default:
+				return make_unique<LandingPageState>();
+		}
+	}
 
 	LinkedList<Actividad> buscarActividades() {
 		vector<int> idCursos, idEspecializacion;
-		/*
-		//usuario.getActividadesBuscadas(idCursos, idEspecializacion);
+		usuario.getActividadesBuscadas(idCursos, idEspecializacion);
 		mergeSort(idCursos, 0, int(idCursos.size()) - 1);
 		mergeSort(idEspecializacion, 0, int(idEspecializacion.size()) - 1);
 
@@ -150,7 +209,8 @@ public:
 		*/
 	}
 
-	void mostrarInterfaz() {
+	void mostrarDashboard() 
+	{
 
 	}
 
