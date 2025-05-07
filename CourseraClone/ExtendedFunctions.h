@@ -38,7 +38,7 @@ namespace Palette
     constexpr Color NEGRO = { 0, 0, 0 };    // Advertencias importantes
 }
 
-void setColorPalette(int index, Color color) 
+inline void setColorPalette(int index, Color color) 
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -51,7 +51,7 @@ void setColorPalette(int index, Color color)
     SetConsoleScreenBufferInfoEx(hConsole, &csbi);
 }
 
-void gotoXY(int x, int y) 
+inline void gotoXY(int x, int y) 
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;
@@ -61,12 +61,12 @@ void gotoXY(int x, int y)
 }
 
 // Oculta el cursor parpadeante en la consola
-void ocultarCursor() {
+inline void ocultarCursor() {
 	Console::CursorVisible = false;
 }
 
 // Configurar la fuente y tamano de la letra
-void CambiarFuenteConsola(const wstring& nombreFuente, COORD tamanioFuente) 
+inline void CambiarFuenteConsola(const wstring& nombreFuente, COORD tamanioFuente) 
 {
     HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -96,7 +96,7 @@ SetConsoleColor(1, 4, false, true);
 // Texto secundario (gris oscuro sobre crema)
 SetConsoleColor(7, 0);
 */
-void SetConsoleColor(int textColor, int backgroundColor = 0, bool intenseText = false, bool intenseBackground = false) {
+inline void SetConsoleColor(int textColor, int backgroundColor = 0, bool intenseText = false, bool intenseBackground = false) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     // Validar rangos de colores
@@ -113,7 +113,7 @@ void SetConsoleColor(int textColor, int backgroundColor = 0, bool intenseText = 
 }
 
 // Configurar la consola
-void ConfigurarConsola()
+inline void ConfigurarConsola()
 {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);

@@ -17,7 +17,7 @@ private:
     int opcionActual;
     int opcionAnterior;
     bool primeraRenderizacion;
-
+    Controladora* controladora;
     void actualizarSeleccion() {
         if (opcionActual != opcionAnterior) {
             // Desdibujar selección anterior
@@ -66,6 +66,7 @@ public:
         opcionActual = 0;
         opcionAnterior = 0;
         primeraRenderizacion = true;
+        controladora = new Controladora();
     }
 
     void render() override {

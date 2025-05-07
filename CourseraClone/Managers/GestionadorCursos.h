@@ -13,7 +13,7 @@ private:
     LinkedList<Curso*> cursos;
     LinkedList<Especializacion*> especializaciones;
 
-    vector<int>& idsCursos;
+    vector<int> idsCursos; // Ya no referencia
 
     const string RUTA_CURSOS = "Resources/Data/cursos.txt";
     const string RUTA_ESPECIALIZACIONES = "Resources/Data/especializaciones.txt";
@@ -27,6 +27,12 @@ private:
     map<int, map<int, pair<int, string>>> calificacionesCursos;
 
 public:
+    GestionadorCursos() {
+        cargarCursos();
+        cargarEspecializaciones();
+    }
+
+
     GestionadorCursos(vector<int>& _idsCursos) : idsCursos(_idsCursos)
     {
         cargarCursos();

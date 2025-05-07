@@ -19,9 +19,6 @@
     <Filter Include="Header Files\Otras bibliotecas">
       <UniqueIdentifier>{662afb46-e4c5-4cfb-99ba-319742095ff0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\EstructurasEspeciales">
-      <UniqueIdentifier>{7f19bf12-afff-407a-8677-75e790deed1c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\States">
       <UniqueIdentifier>{8b4f9dc9-2367-4466-a772-9a15cd0f27aa}</UniqueIdentifier>
     </Filter>
@@ -36,6 +33,9 @@
     </Filter>
     <Filter Include="Header Files\Cursos y Actividades">
       <UniqueIdentifier>{278cae69-13a5-4411-9432-a4cd9ff68aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Otras bibliotecas\EstructurasEspeciales">
+      <UniqueIdentifier>{7f19bf12-afff-407a-8677-75e790deed1c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -72,19 +72,19 @@
       <Filter>Header Files\Otras bibliotecas</Filter>
     </ClInclude>
     <ClInclude Include="PriorityQueue.h">
-      <Filter>Header Files\EstructurasEspeciales</Filter>
+      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
     </ClInclude>
     <ClInclude Include="LinkedList.h">
-      <Filter>Header Files\EstructurasEspeciales</Filter>
+      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
     </ClInclude>
     <ClInclude Include="Nodo.h">
-      <Filter>Header Files\EstructurasEspeciales</Filter>
+      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
     </ClInclude>
     <ClInclude Include="Queue.h">
-      <Filter>Header Files\EstructurasEspeciales</Filter>
+      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
     </ClInclude>
     <ClInclude Include="Stack.h">
-      <Filter>Header Files\EstructurasEspeciales</Filter>
+      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
     </ClInclude>
     <ClInclude Include="LandingPage_State.h">
       <Filter>Header Files\States</Filter>

@@ -79,7 +79,7 @@ public:
         cout << string(password.length(), '*');
     }
 
-    std::unique_ptr<MenuState> getNextState() override
+    unique_ptr<MenuState> getNextState() override
     {
         // Retornar al estado anterior o al dashboard seg�n el resultado del login
         return std::make_unique<LandingPageState>(controladora);

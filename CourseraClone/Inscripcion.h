@@ -1,6 +1,10 @@
 #pragma once
+
+// headers propios
 #include "Actividad.h"
 #include "algoritmosBusqueda.h"
+
+// headers de la libreria estandar
 #include "fstream"
 #include "iostream"
 

@@ -1,7 +1,9 @@
 #pragma once
 #include "Usuario.h"
 #include "Curso.h"
+#include "Especializacion.h"
 #include "unordered_set"
+
 class Empresa : public Usuario
 {
 private:
@@ -74,7 +76,6 @@ public:
             }
         }
 
-        // Si no se encuentra la especialización
         cout << "Error: No se encontró una especialización con el ID proporcionado." << endl;
     }
 };

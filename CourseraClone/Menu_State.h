@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <string>
+#include "string"
 
 class Controladora; // Declaración anticipada de Controladora
 

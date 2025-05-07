@@ -1,16 +1,16 @@
 #pragma once
-
 // Headers propios
 #include "Menu_State.h"
 #include "LandingPage_State.h"
 #include "Login_State.h"
 //#include "Registro_State.h"
-#include "States/DashboardEstudiante_State.h"
-#include "States/DashboardOrganizacion_State.h"
+//#include "States/DashboardEstudiante_State.h"
+//#include "States/DashboardOrganizacion_State.h"
 //#include "States/DashboardInstructor_State.h"
 #include "Managers/GestionadorUsuarios.h"
 #include "Managers/GestionadorCursos.h"
 #include "Curso.h"
+#include "Stack.h"
 #include "Especializacion.h"
 #include "Actividad.h"
 #include "Usuario.h"
@@ -18,17 +18,15 @@
 // Headers de la libreria estandar
 #include <fstream>
 #include <memory>
-#include <stack>
 #include <vector>
 #include <string>
 
-
 class Controladora {
 private:
-	std::unique_ptr<MenuState> estadoActual;
-	std::unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
-	std::unique_ptr<GestionadorCursos> gestionadorCursos;
-	std::vector<Actividad> actividades;
+	unique_ptr<MenuState> estadoActual;
+	unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
+	unique_ptr<GestionadorCursos> gestionadorCursos;
+	vector<Actividad> actividades;
 	Usuario* usuarioActual;
 	bool ejecutando;
 
@@ -40,33 +38,52 @@ private:
 		}
 
 		std::string linea;
-		while (std::getline(archivo, linea)) {
-			Actividad actividad;
-			actividad.titulo = linea;
-			actividades.push_back(actividad);
+		while (getline(archivo, linea)) {
+			actividades.push_back(Actividad(
+				0,                  // id
+				0,                  // idEmpresa
+				"",                 // nombreEmpresa
+				linea,             // titulo
+				0,                  // cantidadAlumnos
+				0,                  // tipo
+				""                 // descripcion
+			));
 		}
 		archivo.close();
 	}
 
 	void cargarDatosInscripciones() {
-		std::ifstream archivo("inscripciones.bin", std::ios::binary);
+		ifstream archivo("inscripciones.bin", ios::binary);
 		if (!archivo.is_open()) {
-			std::cerr << "Error al abrir el archivo de inscripciones" << std::endl;
+			cerr << "Error al abrir el archivo de inscripciones" << '\n';
 			return;
 		}
 
 		InscripcionBinaria inscripcion;
-		while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
-			// Procesar inscripción
-		}
+		auto procesarInscripcion = [&](const InscripcionBinaria& ins) {
+			int idx = ins.idActividad - 1;
+			if (idx >= 0 && idx < actividades.size())
+				actividades[idx].aumentarAlumno(1);
+			};
+	
+		function<void()> leerRecursivo = [&]() { // lambda normal no permite recursividad
+			InscripcionBinaria ins;
+			if (archivo.read(reinterpret_cast<char*>(&ins), sizeof(ins))) {
+				procesarInscripcion(ins);
+				leerRecursivo();
+			}
+
+			};
+
+		leerRecursivo();  // inicia la recursión
 		archivo.close();
 	}
 
 public:
 	Controladora() : usuarioActual(nullptr), ejecutando(true) {
-		gestionadorUsuarios = std::make_unique<GestionadorUsuarios>();
-		gestionadorCursos = std::make_unique<GestionadorCursos>();
-		estadoActual = std::make_unique<LandingPage_State>(this);
+		gestionadorUsuarios = make_unique<GestionadorUsuarios>();
+		gestionadorCursos = make_unique<GestionadorCursos>();
+		estadoActual = make_unique<LandingPageState>(this);
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
 	}
@@ -76,19 +93,19 @@ public:
 	}
 
 	// Navegación
-	void cambiarEstado(std::unique_ptr<MenuState> nuevoEstado) {
-		estadoActual = std::move(nuevoEstado);
+	void cambiarEstado(unique_ptr<MenuState> nuevoEstado) {
+		estadoActual = move(nuevoEstado);
 	}
 
 	// Autenticación
-	bool iniciarSesion(const std::string& email, const std::string& password) {
-		usuarioActual = gestionadorUsuarios->iniciarSesion(email, password);
+	bool iniciarSesion(const string& email, const string& password) {
+		//usuarioActual = gestionadorUsuarios->iniciarSesion(email, password);
 		return usuarioActual != nullptr;
 	}
 
-	bool registrarUsuario(const std::string& nombre, const std::string& email, 
-						 const std::string& password, const std::string& tipo) {
-		return gestionadorUsuarios->registrarUsuario(nombre, email, password, tipo);
+	bool registrarUsuario(const string& nombre, const string& email, 
+						 const string& password, const string& tipo) {
+		//return gestionadorUsuarios->registrarUsuario(nombre, email, password, tipo);
 	}
 
 	void cerrarSesion() {
@@ -96,38 +113,39 @@ public:
 	}
 
 	// Gestión de cursos
-	bool crearCurso(const std::string& titulo, const std::string& descripcion) {
-		return gestionadorCursos->crearCurso(titulo, descripcion);
+	bool crearCurso(const string& titulo, const string& descripcion) {
+		//return gestionadorCursos->crearCurso(titulo, descripcion);
 	}
 
-	bool crearEspecializacion(const std::string& titulo, const std::string& descripcion) {
-		return gestionadorCursos->crearEspecializacion(titulo, descripcion);
+	bool crearEspecializacion(const string& titulo, const string& descripcion) {
+		//return gestionadorCursos->crearEspecializacion(titulo, descripcion);
 	}
 
 	// Listados
-	std::vector<Curso> listarCursos() const {
-		return gestionadorCursos->listarCursos();
+	vector<Curso> listarCursos() const {
+		//return gestionadorCursos->listarCursos();
 	}
 
-	std::vector<Especializacion> listarEspecializaciones() const {
-		return gestionadorCursos->listarEspecializaciones();
+	vector<Especializacion> listarEspecializaciones() const {
+		//return gestionadorCursos->listarEspecializaciones();
 	}
 
-	std::vector<Actividad> listarActividades() const {
+	vector<Actividad> listarActividades() const {
 		return actividades;
 	}
 
 	// Gestión de contenido
 	bool agregarContenidoACurso(int cursoId, const std::string& titulo, 
 							   const std::string& descripcion) {
-		return gestionadorCursos->agregarContenidoACurso(cursoId, titulo, descripcion);
+		//return gestionadorCursos->agregarContenidoACurso(cursoId, titulo, descripcion);
 	}
 
-	bool agregarContenidoAEspecializacion(int especializacionId, 
-										const std::string& titulo, 
-										const std::string& descripcion) {
-		return gestionadorCursos->agregarContenidoAEspecializacion(
-			especializacionId, titulo, descripcion);
+	bool agregarContenidoAEspecializacion(
+		int especializacionId, 
+		const string& titulo, 
+		const string& descripcion) 
+	{
+		//return gestionadorCursos->agregarContenidoAEspecializacion(especializacionId, titulo, descripcion);
 	}
 
 	bool crearEspecializacion(
@@ -151,6 +169,8 @@ public:
 			idsCursosCopy
 		);
 	}
+
+	/*
 	vector<int> getIdsCursos() const
 	{
 		vector<int> idsCursos;
@@ -159,6 +179,7 @@ public:
 		}
 		return idsCursos;
 	}
+	*/
 
 	// Métodos de búsqueda
 	vector<Curso*> buscarCursos(const string& criterio) 
@@ -169,18 +190,21 @@ public:
 	vector<Especializacion*> buscarEspecializaciones(const string& criterio) 
 	{
 		return gestionadorCursos->buscarEspecializaciones(criterio);
-	// Ejecución
-	void run() {
+	}
+
+	/// --- Ejecución ---
+	void run() 
+	{
 		while (ejecutando) {
 			estadoActual->render();
-			int tecla = getch();
+			int tecla = _getch();
 			if (tecla == 27) { // ESC
 				ejecutando = false;
 			} else {
 				estadoActual->handleInput(tecla);
 				auto siguienteEstado = estadoActual->getNextState();
 				if (siguienteEstado) {
-					estadoActual = std::move(siguienteEstado);
+					estadoActual = move(siguienteEstado);
 				}
 			}
 		}

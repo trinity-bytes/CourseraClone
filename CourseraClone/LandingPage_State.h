@@ -1,6 +1,6 @@
 #pragma once
 // Encabezados propios
-#include "Controladora.h"
+// #include "Controladora.h" // Creer que no es necesario
 #include "ExtendedFunctions.h"
 #include "UI_Ascii.h"
 #include "Menu_State.h"
@@ -570,11 +570,14 @@ public:
             switch (elementoActual)
             {
             case 0: // Iniciar Sesión
+                break;
                // return std::make_unique<LoginState>(controladora);
             case 1: // Registrarse
                // return std::make_unique<RegisterState>(controladora);
+                break;
             case 2: // Sobre Nosotros
                 //return std::make_unique<AboutUsState>(controladora);
+                break;
             }
         }
         else if (seccionActual == SECCION_ESPECIALIDADES && opcionSeleccionada == 4)

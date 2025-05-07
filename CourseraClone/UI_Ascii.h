@@ -12,7 +12,7 @@
 using namespace std;
 
 /// UI Landing Page
-void UI_LandingPage()
+inline void UI_LandingPage()
 {
 	string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -54,7 +54,7 @@ void UI_LandingPage()
 }
 
 /// UI Login
-void UI_Login()
+inline void UI_Login()
 {
 	string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -96,7 +96,7 @@ void UI_Login()
 }
 
 /// UI Singup
-void UI_Signup()
+inline void UI_Signup()
 {
 	string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -138,7 +138,7 @@ void UI_Signup()
 }
 
 /// UI Dashboard for student
-void UI_StudentDashboard()
+inline void UI_StudentDashboard()
 {
     string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -180,7 +180,7 @@ void UI_StudentDashboard()
 }
 
 /// UI Dashboard for organization
-void UI_OrganizationDashboard()
+inline void UI_OrganizationDashboard()
 {
     string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -222,7 +222,7 @@ void UI_OrganizationDashboard()
 }
 
 /// UI User Profile View
-void UI_UserProfile()
+inline void UI_UserProfile()
 {
     string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -264,7 +264,7 @@ void UI_UserProfile()
 }
 
 /// UI Organization Profile View
-void UI_OrganizationProfile()
+inline void UI_OrganizationProfile()
 {
     string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -306,7 +306,7 @@ void UI_OrganizationProfile()
 }
 
 /// UI Vista de las especialidades
-void UI_VistaEspecialidad()
+inline void UI_VistaEspecialidad()
 {
     string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -348,7 +348,7 @@ void UI_VistaEspecialidad()
 }
 
 /// UI Vista de los cursos
-void UI_VistaCurso()
+inline void UI_VistaCurso()
 {
     string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
