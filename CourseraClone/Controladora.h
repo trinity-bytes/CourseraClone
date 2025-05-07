@@ -130,6 +130,45 @@ public:
 			especializacionId, titulo, descripcion);
 	}
 
+	bool crearEspecializacion(
+		const string& titulo, 
+		const string& descripcion, 
+		int cantidadCursos, 
+		const vector<int>& idsCursos) 
+	{
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != TipoUsuario::EMPRESA)
+		{
+			return false;
+		}
+
+		vector<int> idsCursosCopy = idsCursos;
+		return gestionadorCursos->crearEspecializacion(
+			usuarioActual->getId(),
+			usuarioActual->getUsername(),
+			titulo,
+			cantidadCursos,
+			descripcion,
+			idsCursosCopy
+		);
+	}
+	vector<int> getIdsCursos() const
+	{
+		vector<int> idsCursos;
+		for (auto curso : cursosTodos) {
+			idsCursos.push_back(curso->getId());
+		}
+		return idsCursos;
+	}
+
+	// Métodos de búsqueda
+	vector<Curso*> buscarCursos(const string& criterio) 
+	{
+		return gestionadorCursos->buscarCursos(criterio);
+	}
+
+	vector<Especializacion*> buscarEspecializaciones(const string& criterio) 
+	{
+		return gestionadorCursos->buscarEspecializaciones(criterio);
 	// Ejecución
 	void run() {
 		while (ejecutando) {

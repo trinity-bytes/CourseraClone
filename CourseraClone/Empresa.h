@@ -41,6 +41,7 @@ public:
             cout << "- " << profesor << endl;
         }
     }
+
     void eliminarCursoEspecializacion(Curso* curso) {
         if (curso != nullptr) {
             // Eliminar el curso de la especialización
@@ -55,6 +56,7 @@ public:
             cout << "Error: El curso proporcionado es nulo." << endl;
         }
     }
+
     void anadirCursoEspecializacion(int idEspecializacion, Curso* curso) {
         // Validar que el curso no sea nulo
         if (curso == nullptr) {
