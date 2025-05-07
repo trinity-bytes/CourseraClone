@@ -152,6 +152,12 @@ public:
 
 	}
 
+	~Usuario() {}
+
+	int getTipoUsuario() const {
+		return tipoUsuario;
+	}
+
 	bool validarUsuario(const string& input) {
 		return input == nickname;
 	}
@@ -185,5 +191,7 @@ public:
 	string getContrasena() { 
 		return contrasena; 
 	}
+
+
 
 };
