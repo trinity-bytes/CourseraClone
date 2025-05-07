@@ -1,66 +1,78 @@
 #pragma once
 #include "Usuario.h"
 #include "Curso.h"
-class Empresa: public Usuario
+#include "unordered_set"
+class Empresa : public Usuario
 {
 private:
-	LinkedList<Actividad*> actividadesPropias;
-	LinkedList<Especializacion*> especializaciones;
-	LinkedList<Curso*> cursos;
+    LinkedList<Actividad*> actividadesPropias;
+    LinkedList<Especializacion*> especializaciones;
+    LinkedList<Curso*> cursos;
 public:
-	void cargarDatos() { }
+    void cargarDatos() {}
 
-	Empresa(int _id, string nombreCompleto, string _nickname, string _contrasena): Usuario(_id, TipoUsuario::EMPRESA, nombreCompleto, _nickname, _contrasena) {
-		cargarDatos();
-		this->actividadesPropias = LinkedList<Actividad*>();
-		cursos = LinkedList<Curso*>();
-	}
-	
-	int crearCurso(Curso *nuevoCurso){
-		cursos.agregarAlFinal(nuevoCurso);
-	}
+    Empresa(int _id, string nombreCompleto, string _nickname, string _contrasena) : Usuario(_id, TipoUsuario::EMPRESA, nombreCompleto, _nickname, _contrasena) {
+        cargarDatos();
+        this->actividadesPropias = LinkedList<Actividad*>();
+        cursos = LinkedList<Curso*>();
+    }
 
-	int crearEspecializacion(Especializacion *_nuevaEspecializacion) {
-		especializaciones.agregarAlFinal(_nuevaEspecializacion);
-	}
-	void verProfesores() {
+    int crearCurso(Curso* nuevoCurso) {
+        cursos.agregarAlFinal(nuevoCurso);
+        cout << "Curso creado exitosamente." << endl;
+    }
 
-	}
-	void eliminarCursoEspecializacion() {
+    int crearEspecializacion(Especializacion* _nuevaEspecializacion) {
+        especializaciones.agregarAlFinal(_nuevaEspecializacion);
+    }
+    void verProfesores() {
+        unordered_set<string> profesores;
 
-	}
-    void anadirCursoEspecilizacion(Curso* curso) {
-		Especializacion* especializacion = new Especializacion(); // Crear una nueva especialización
+        // Iterar sobre la lista de cursos
+        for (const auto& curso : cursos) {
+            if (curso != nullptr) {
+                profesores.insert(curso->getInstructor());
+            }
+        }
+
+        // Mostrar los nombres de los profesores
+        cout << "Profesores asociados a los cursos de la empresa:" << endl;
+        for (const auto& profesor : profesores) {
+            cout << "- " << profesor << endl;
+        }
+    }
+    void eliminarCursoEspecializacion(Curso* curso) {
+        if (curso != nullptr) {
+            // Eliminar el curso de la especialización
+            for (auto& especializacion : especializaciones) {
+                if (especializacion != nullptr) {
+                    especializacion->eliminarCurso(curso->getId());
+                }
+            }
+            cout << "Curso eliminado exitosamente de la especialización." << endl;
+        }
+        else {
+            cout << "Error: El curso proporcionado es nulo." << endl;
+        }
+    }
+    void anadirCursoEspecializacion(int idEspecializacion, Curso* curso) {
+        // Validar que el curso no sea nulo
         if (curso == nullptr) {
-            cout << "Error: El curso no existe." << endl;
+            cout << "Error: El curso proporcionado es nulo." << endl;
             return;
         }
 
-        // Solicitar datos para la nueva especialización
-        int idEspecializacion = especializacion->getId(); // Generar un ID único
-        string titulo = especializacion->getTitulo(); // Título por defecto o solicitado al usuario
-        string descripcion = especializacion->getDescripcion(); // Descripción por defecto o solicitada
-        string categoria = curso->getCategoria(); // Usar la categoría del curso como base
-        int duracionEstimada = curso->getCantidadClases(); // Ejemplo: usar la cantidad de clases como duración estimada
+        // Buscar la especialización por su ID
+        for (auto& especializacion : especializaciones) {
+            if (especializacion != nullptr && especializacion->getId() == idEspecializacion) {
+                // Agregar el curso a la especialización
+                especializacion->anadirCurso(curso);
+                cout << "Curso añadido exitosamente a la especialización: " << especializacion->getTitulo() << endl;
+                return;
+            }
+        }
 
-        // Crear la nueva especialización
-        Especializacion* nuevaEspecializacion = new Especializacion(
-            idEspecializacion,
-            this->getId(), // ID de la empresa
-            this->getNombreCompleto(), // Nombre de la empresa
-            titulo,
-            0, // Cantidad inicial de alumnos
-            descripcion,
-            categoria,
-            duracionEstimada
-        );
-
-        // Añadir el curso a la especialización
-        nuevaEspecializacion->anadirCurso(curso);
-
-        // Agregar la especialización a la lista de especializaciones de la empresa
-        especializaciones.agregarAlFinal(nuevaEspecializacion);
-
-        cout << "Especialización creada y curso añadido exitosamente." << endl;
+        // Si no se encuentra la especialización
+        cout << "Error: No se encontró una especialización con el ID proporcionado." << endl;
     }
 };
