@@ -7,7 +7,8 @@
 #include "Boleta.h"
 #include "Curso.h"
 
-class Estudiante :public Usuario{
+class Estudiante :public Usuario
+{
 private:
 	LinkedList<Boleta*> boletas;
 	LinkedList<Inscripcion*> inscripciones;
@@ -15,7 +16,10 @@ private:
 	Queue<Inscripcion*> actividadesRecientesCompletadas;
 public:
 	
-	Estudiante(int _id, string _nickname, string _contrasena): Usuario(_id, 1, _nickname, _contrasena) {
+	Estudiante(int _id, string nombreCompleto, 
+		string _nickname, string _contrasena) : Usuario(_id, 1, nombreCompleto,
+												_nickname, _contrasena) 
+	{
 		inscripciones = LinkedList<Inscripcion*>();
 		actividadesInscritas = Stack<Inscripcion*>();
 		actividadesRecientesCompletadas = Queue<Inscripcion*>();

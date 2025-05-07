@@ -114,6 +114,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CourseraCloneApp.cpp" />
+    <ClCompile Include="Login_State.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actividad.h" />
@@ -129,13 +130,18 @@
     <ClInclude Include="ExtendedFunctions.h" />
     <ClInclude Include="Inscripcion.h" />
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="Managers\GestionadorCursos.h" />
+    <ClInclude Include="Managers\GestionadorUsuarios.h" />
+    <ClInclude Include="MenuState.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Stack.h" />
+    <ClInclude Include="States\DashboardEstudianteState.h" />
+    <ClInclude Include="States\DashboardOrganizacionState.h" />
     <ClInclude Include="UI_Ascii.h" />
-    <ClInclude Include="UI_Menu_LandingPage.h" />
-    <ClInclude Include="UI_MenuLanding_State.h" />
+    <ClInclude Include="OLD_LandingPage.h" />
+    <ClInclude Include="LandingPage_State.h" />
     <ClInclude Include="Usuario.h" />
     <ClInclude Include="Venta.h" />
   </ItemGroup>

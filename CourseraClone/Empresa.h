@@ -1,29 +1,27 @@
 #pragma once
-#include "Estudiante.h"
+#include "Usuario.h"
+#include <vector>
 
-class Empresa: public Usuario{
+class Empresa: public Usuario
+{
 private:
-
-	LinkedList<Actividad*> actividades;
-	//LinkedList<Instructor> instructores;
+	LinkedList<Actividad*> actividadesPropias;
+	LinkedList<Especializacion*> especializaciones;
+	LinkedList<Curso*> cursos;
 public:
-	void cargarDatos() {
+	void cargarDatos() { }
 
-	}
-
-	Empresa(int _id, string _nickname, string _contrasena): Usuario(id, 2, _nickname, _contrasena) {
+	Empresa(int _id, string nombreCompleto, string _nickname, string _contrasena): Usuario(id, 2, nombreCompleto, _nickname, _contrasena) {
 		cargarDatos();
-		actividades = LinkedList<Actividad*>();
+		this->actividadesPropias = LinkedList<Actividad*>();
+	}
+	
+	int crearCurso(Curso *nuevoCurso){
+		cursos.agregarAlFinal(nuevoCurso);
 	}
 
-	int crearCurso(){
-
-	}
-	int crearInstructor() {
-
-	}
-	int crearEspecializacion() {
-
+	int crearEspecializacion(Especializacion *_nuevaEspecializacion) {
+		especializaciones.agregarAlFinal(_nuevaEspecializacion);
 	}
 	void verProfesores() {
 
