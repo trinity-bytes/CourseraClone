@@ -1,9 +1,8 @@
 #pragma once
-#include "Controladora.h"
-#include "UI_Ascii.h"
+// Headers propios
 #include "Menu_State.h"
 #include "ExtendedFunctions.h"
-#include "LandingPage_State.h"
+#include "UI_Ascii.h"
 
 /// Estado de Login
 class LoginState : public MenuState
@@ -17,8 +16,7 @@ private:
 public:
     // Constructor por defecto
     LoginState(Controladora* ctrl) : MenuState(ctrl),
-        primeraRenderizacion(true), campoActual(0) {
-    }
+        primeraRenderizacion(false), campoActual(0) { }
 
     void handleInput(int tecla) override
     {
@@ -81,7 +79,7 @@ public:
 
     unique_ptr<MenuState> getNextState() override
     {
-        // Retornar al estado anterior o al dashboard seg�n el resultado del login
-        return std::make_unique<LandingPageState>(controladora);
+        // Retornar al estado anterior o al dashboard segun el resultado del login
+        //return std::unique_ptr<MenuState>(new LandingPageState(controladora));
     }
 };

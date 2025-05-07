@@ -3,7 +3,14 @@
 #include <memory>
 #include "string"
 
-class Controladora; // Declaración anticipada de Controladora
+// Declaraciones anticipadas
+class Controladora;
+class LoginState;
+class LandingPageState;
+class RegistroState;
+class DashboardEstudianteState;
+class DashboardOrganizacionState;
+class DashboardInstructorState;
 
 /// Estructuras de datos
 struct ElementoMenu

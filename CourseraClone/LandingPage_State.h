@@ -1,9 +1,10 @@
 #pragma once
 // Encabezados propios
-// #include "Controladora.h" // Creer que no es necesario
+#include "Controladora.h"
 #include "ExtendedFunctions.h"
 #include "UI_Ascii.h"
 #include "Menu_State.h"
+//#include "Login_State.h"
 
 // Encabezados estandar
 #include "iostream"
@@ -499,7 +500,7 @@ public:
                 if (elementoActual >= 0 && elementoActual < MAX_ELEMENTOS_CABECERA)
                 {
                     opcionSeleccionada = elementoActual + 1; // 1=Iniciar, 2=Registrarse, 3=Sobre Nosotros
-                    //controladora->cambiarEstado(getNextState()); // Cambiar al siguiente estado
+                    //controladora->cambiarEstado(make_unique<LoginState>(controladora)); // Cambiar al siguiente estado
                 }
                 break;
             case SECCION_ESPECIALIDADES:
@@ -565,20 +566,9 @@ public:
 
     std::unique_ptr<MenuState> getNextState() override // Retornar al siguiente estado
     {
-        if (seccionActual == SECCION_CABECERA)
+        if (seccionActual == SECCION_CABECERA && elementoActual == 0)
         {
-            switch (elementoActual)
-            {
-            case 0: // Iniciar Sesión
-                break;
-               // return std::make_unique<LoginState>(controladora);
-            case 1: // Registrarse
-               // return std::make_unique<RegisterState>(controladora);
-                break;
-            case 2: // Sobre Nosotros
-                //return std::make_unique<AboutUsState>(controladora);
-                break;
-            }
+            //return std::make_unique<LoginState>(controladora);
         }
         else if (seccionActual == SECCION_ESPECIALIDADES && opcionSeleccionada == 4)
         {

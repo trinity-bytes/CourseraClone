@@ -1,12 +1,7 @@
 #pragma once
+
 // Headers propios
 #include "Menu_State.h"
-#include "LandingPage_State.h"
-#include "Login_State.h"
-//#include "Registro_State.h"
-//#include "States/DashboardEstudiante_State.h"
-//#include "States/DashboardOrganizacion_State.h"
-//#include "States/DashboardInstructor_State.h"
 #include "Managers/GestionadorUsuarios.h"
 #include "Managers/GestionadorCursos.h"
 #include "Curso.h"
@@ -20,6 +15,14 @@
 #include <memory>
 #include <vector>
 #include <string>
+
+// Los estados específicos 
+#include "LandingPage_State.h"
+#include "Login_State.h"
+//#include "Registro_State.h"
+//#include "States/DashboardEstudiante_State.h"
+//#include "States/DashboardOrganizacion_State.h"
+//#include "States/DashboardInstructor_State.h"
 
 class Controladora {
 private:
