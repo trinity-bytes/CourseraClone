@@ -7,7 +7,7 @@
 #include "iostream"
 #include "fstream"
 #include "string"
-#include "vector"     // Podría ser útil para manejar indices temporalmente en memoria
+#include "vector"     // PodrÃ­a ser Ãºtil para manejar indices temporalmente en memoria
 #include "cstring"    // Para strncpy, strncmp, memset
 #include "limits"     // Para std::numeric_limits
 #include "algorithm"  // Para std::sort si manejamos indices en memoria (opcional)
@@ -42,13 +42,13 @@ enum class LoginStatus
     FILE_ERROR = 3 // Agregado para errores de archivo
 };
 
-/// --- Structs para la representación en archivos binarios ---
+/// --- Structs para la representaciÃ³n en archivos binarios ---
 // Struct para datos de usuario en el archivo principal (.dat)
 struct UsuarioBinario 
 {
     char nombreCompleto[MAX_FIELD_LEN];
     char nombreDeUsuario[MAX_FIELD_LEN];
-    char contrasenaHash[MAX_FIELD_LEN]; // Guardamos un HASH de la contraseña
+    char contrasenaHash[MAX_FIELD_LEN]; // Guardamos un HASH de la contraseÃ±a
 
     // Constructor por defecto: Inicializa todo a cero
     UsuarioBinario() 
@@ -59,7 +59,7 @@ struct UsuarioBinario
     }
 
     // Constructor parametrizado (usado para crear el struct antes de guardar)
-    // Este constructor se debe llamar con el HASH de la contraseña y no en texto plano OwO
+    // Este constructor se debe llamar con el HASH de la contraseÃ±a y no en texto plano OwO
     UsuarioBinario(
         const string& nombreCompletoStr, 
         const string& nombreUsuarioStr, 
@@ -77,7 +77,7 @@ struct UsuarioBinario
     }
 };
 
-// Struct para entradas del archivo índice (.dat)
+// Struct para entradas del archivo Ã­ndice (.dat)
 struct UsuarioIndex 
 {
     char nombreDeUsuario[MAX_FIELD_LEN];
@@ -89,7 +89,7 @@ struct UsuarioIndex
         memset(nombreDeUsuario, 0, sizeof(nombreDeUsuario)); // Inicializa nombre a cero
     }
 
-    // Constructor parametrizado (usado para crear el struct antes de guardar en índice)
+    // Constructor parametrizado (usado para crear el struct antes de guardar en Ã­ndice)
     UsuarioIndex(const string& nombreUsuarioStr, int _offset) : offset(_offset) 
     {
         // Copia segura de cadena, asegurando null termination
@@ -97,7 +97,7 @@ struct UsuarioIndex
         nombreDeUsuario[MAX_FIELD_LEN - 1] = '\0';
     }
 
-    // Función de comparación estática para usar con busquedaBinaria
+    // FunciÃ³n de comparaciÃ³n estÃ¡tica para usar con busquedaBinaria
     // Compara por nombre de usuario
     static int compare(const UsuarioIndex& a, const UsuarioIndex& b) {
         return strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN);
@@ -133,15 +133,15 @@ public:
         username(_username), 
         contrasenaHash(_contrasenaHash)
     { }
-private:
-    // Función de hashing de contraseña pero de mentiritas nomas UwU*
+
     static string hashContrasena(const string& contrasena) 
     {
-		string mockHash = "atalapastrukaGohGohGoh"; // Hash inicial con la palabra de seguridad xd
+        string mockHash = "atalapastrukaGohGohGoh"; // Hash inicial con la palabra de seguridad xd
         mockHash += contrasena.substr(0, min((int)contrasena.length(), MAX_FIELD_LEN - (int)mockHash.length() - 1));
         return mockHash;
     }
 
+private:
     // Convierte objeto Usuario a struct UsuarioBinario
     UsuarioBinario toUsuarioBinario() const 
     {
@@ -150,10 +150,10 @@ private:
     }
 
     // Convierte struct UsuarioBinario a objeto Usuario
-    // Necesita el ID y tipo de usuario, que no están en UsuarioBinario
+    // Necesita el ID y tipo de usuario, que no estÃ¡n en UsuarioBinario
     static Usuario fromUsuarioBinario(const UsuarioBinario& binario, int id, TipoUsuario tipo) 
     {
-        // Funciona la lectura del archivo nos da un struct válido.
+        // Funciona la lectura del archivo nos da un struct vÃ¡lido.
         string nomCompleto(binario.nombreCompleto, strnlen(binario.nombreCompleto, MAX_FIELD_LEN));
         string user(binario.nombreDeUsuario, strnlen(binario.nombreDeUsuario, MAX_FIELD_LEN));
         string hash(binario.contrasenaHash, strnlen(binario.contrasenaHash, MAX_FIELD_LEN));
@@ -174,7 +174,7 @@ private:
         return string(index.nombreDeUsuario, strnlen(index.nombreDeUsuario, MAX_FIELD_LEN));
     }
 
-    // Helper para obtener la ruta del archivo de datos según el tipo de usuario
+    // Helper para obtener la ruta del archivo de datos segÃºn el tipo de usuario
     static string getDataFilePath(TipoUsuario tipo) 
     {
         return (tipo == TipoUsuario::EMPRESA) ? EMPRESA_DATA_FILE : ESTUDIANTE_DATA_FILE;
@@ -185,21 +185,21 @@ private:
         return (tipo == TipoUsuario::EMPRESA) ? EMPRESA_INDEX_FILE : ESTUDIANTE_INDEX_FILE;
     }
 public:
-    // --- Método para guardar un usuario ---
+    // --- MÃ©todo para guardar un usuario ---
     void guardar() 
     {
-        // NOTA: Este método guarda la *instancia actual* del usuario.
-        // Se asume que el ID y tipo ya están establecidos y que la contraseña
+        // NOTA: Este mÃ©todo guarda la *instancia actual* del usuario.
+        // Se asume que el ID y tipo ya estÃ¡n establecidos y que la contraseÃ±a
         // ya fue hasheada y guardada en contrasenaHash.
 
         // 1. Guardar en el archivo de datos principal (.dat)
         string dataFilePath = getDataFilePath(tipoUsuario);
         ofstream dataFile(dataFilePath, ios::binary | ios::app); // Abre para agregar al final
-        int offsetRegistro = 0; // Offset donde se escribirá este registro
+        int offsetRegistro = 0; // Offset donde se escribirÃ¡ este registro
 
         if (!dataFile.is_open()) {
             cerr << "Error al abrir archivo de datos: " << dataFilePath << endl;
-            // Deberíamos manejar este error, quizás lanzando una excepción o retornando false
+            // DeberÃ­amos manejar este error, quizÃ¡s lanzando una excepciÃ³n o retornando false
             return;
         }
 
@@ -210,10 +210,10 @@ public:
         // Crear la struct binaria para guardar (asumiendo que this->contrasenaHash ya tiene el hash)
         UsuarioBinario nuevoBinario = toUsuarioBinario();
         dataFile.write(reinterpret_cast<const char*>(&nuevoBinario), sizeof(nuevoBinario));
-        dataFile.close(); // El destructor del stream también cerraría el archivo
+        dataFile.close(); // El destructor del stream tambiÃ©n cerrarÃ¡ el archivo
 
 
-        // 2. Guardar e insertar en el archivo de índice (.dat) (mantenido ordenado)
+        // 2. Guardar e insertar en el archivo de Ã­ndice (.dat) (mantenido ordenado)
         string indexFilePath = getIndexFilePath(tipoUsuario);
         fstream indexFile(indexFilePath, ios::binary | ios::in | ios::out); // Abrir para leer y escribir
 
@@ -226,7 +226,7 @@ public:
                 // Manejo de error
                 return;
             }
-            createIndexFile.close(); // Cerrar después de crear
+            createIndexFile.close(); // Cerrar despuÃ©s de crear
 
             // Ahora intentar abrir de nuevo en modo in|out
             indexFile.open(indexFilePath, ios::binary | ios::in | ios::out);
@@ -237,43 +237,43 @@ public:
             }
         }
 
-        // Calcular la cantidad actual de registros en el índice
+        // Calcular la cantidad actual de registros en el Ã­ndice
         indexFile.seekg(0, ios::end);
         int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
         indexFile.seekg(0, ios::beg); // Volver al principio
 
-        // Crear la entrada del índice para el nuevo usuario
+        // Crear la entrada del Ã­ndice para el nuevo usuario
         UsuarioIndex nuevoIndex = toUsuarioIndex(offsetRegistro);
 
-        // Lambda para la búsqueda binaria de la posición de inserción
-        // Queremos encontrar la primera posición `p` tal que el nombre de usuario del
-        // nuevo índice sea menor o igual al nombre de usuario en la posición `p`.
-        // Esto nos da el punto de inserción correcto para mantener el orden ascendente.
-        // Esta lambda se pasa a la función busquedaBinaria (asumimos que esta función
-        // encuentra el primer índice donde la lambda devuelve true en el rango [inicio, fin]).
-        // La lambda recibe la posición `p` a verificar.
+        // Lambda para la bÃºsqueda binaria de la posiciÃ³n de inserciÃ³n
+        // Queremos encontrar la primera posiciÃ³n `p` tal que el nombre de usuario del
+        // nuevo Ã­ndice sea menor o igual al nombre de usuario en la posiciÃ³n `p`.
+        // Esto nos da el punto de inserciÃ³n correcto para mantener el orden ascendente.
+        // Esta lambda se pasa a la funciÃ³n busquedaBinaria (asumimos que esta funciÃ³n
+        // encuentra el primer Ã­ndice donde la lambda devuelve true en el rango [inicio, fin]).
+        // La lambda recibe la posiciÃ³n `p` a verificar.
         auto predicadoInsercion = [&](int pos) {
-            if (pos < 0 || pos >= cantidad) { // Fuera de rango si la lista está vacía
-                return true; // Inserta al principio si la lista está vacía
+            if (pos < 0 || pos >= cantidad) { // Fuera de rango si la lista estÃ¡ vacÃ­a
+                return true; // Inserta al principio si la lista estÃ¡ vacÃ­a
             }
             UsuarioIndex temp;
             indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
             indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags de error/eof después de leer
+            indexFile.clear(); // Limpiar flags de error/eof despuÃ©s de leer
 
-            // Comparar el nombre del nuevo usuario con el de la posición actual
+            // Comparar el nombre del nuevo usuario con el de la posiciÃ³n actual
             // strncmp(a, b, n) regresa <0 si a < b, 0 si a == b, >0 si a > b
             // Queremos el primer pos donde nuevoIndex.username <= temp.username
             // Es decir, donde strncmp(nuevoIndex.username, temp.username, ...) <= 0 es true.
             return strncmp(nuevoIndex.nombreDeUsuario, temp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
             };
 
-        // Usar busquedaBinaria para encontrar la posición de inserción
+        // Usar busquedaBinaria para encontrar la posiciÃ³n de inserciÃ³n
         // Asumimos que busquedaBinaria(inicio, fin, predicado) encuentra el
-        // primer índice `i` en el rango [inicio, fin] donde predicado(i) es true.
-        // Si la lista está vacía, cantidad es 0, cantidad-1 es -1.
-        // La búsqueda debe manejar el rango vacío [0, -1].
-        int posInsercion = 0; // Posición por defecto si el archivo está vacío
+        // primer Ã­ndice `i` en el rango [inicio, fin] donde predicado(i) es true.
+        // Si la lista estÃ¡ vacÃ­a, cantidad es 0, cantidad-1 es -1.
+        // La bÃºsqueda debe manejar el rango vacÃ­o [0, -1].
+        int posInsercion = 0; // PosiciÃ³n por defecto si el archivo estÃ¡ vacÃ­o
         if (cantidad > 0) {
             // Rango [0, cantidad - 1]. busquedaBinaria debe manejar este rango.
             // Si nuestro busquedaBinaria no maneja inicio > fin, necesitamos ajustarlo.
@@ -283,37 +283,37 @@ public:
             // Asumiendo busquedaBinaria(inicio, fin, predicado) implementa lower_bound-like:
             posInsercion = busquedaBinaria(0, cantidad - 1, predicadoInsercion);
             // Si busquedaBinaria retorna cantidad, significa que el nuevo elemento es mayor
-            // que todos los existentes y debe ir al final. El loop de shift lo manejará.
+            // que todos los existentes y debe ir al final. El loop de shift lo manejarÃ¡.
         }
         else {
-            posInsercion = 0; // Primer elemento en archivo vacío
+            posInsercion = 0; // Primer elemento en archivo vacÃ­o
         }
 
 
-        // Mover elementos para hacer espacio en el archivo de índice
-        // Desde el final hacia la posición de inserción
+        // Mover elementos para hacer espacio en el archivo de Ã­ndice
+        // Desde el final hacia la posiciÃ³n de inserciÃ³n
         for (int i = cantidad - 1; i >= posInsercion; --i) {
             UsuarioIndex temp;
             // Leer el elemento actual
             indexFile.seekg(i * sizeof(UsuarioIndex), ios::beg);
             indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags después de leer
+            indexFile.clear(); // Limpiar flags despuÃ©s de leer
 
-            // Escribir el elemento en la siguiente posición (corriendo uno a la derecha)
+            // Escribir el elemento en la siguiente posiciÃ³n (corriendo uno a la derecha)
             indexFile.seekp((i + 1) * sizeof(UsuarioIndex), ios::beg);
             indexFile.write(reinterpret_cast<const char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags después de escribir
+            indexFile.clear(); // Limpiar flags despuÃ©s de escribir
         }
 
-        // Escribir el nuevo índice en la posición de inserción encontrada
+        // Escribir el nuevo Ã­ndice en la posiciÃ³n de inserciÃ³n encontrada
         indexFile.seekp(posInsercion * sizeof(UsuarioIndex), ios::beg);
         indexFile.write(reinterpret_cast<const char*>(&nuevoIndex), sizeof(nuevoIndex));
-        indexFile.clear(); // Limpiar flags después de escribir
+        indexFile.clear(); // Limpiar flags despuÃ©s de escribir
 
-        // El destructor de fstream cerrará el archivo
+        // El destructor de fstream cerrarÃ¡ el archivo
     }
 
-    /// --- Método estático para manejar el login ---
+    /// --- MÃ©todo estÃ¡tico para manejar el login ---
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
     static LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, string userInput, string passInput) 
     {
@@ -332,15 +332,15 @@ public:
 
         if (cantidad == 0) 
         {
-            // Archivo de índice vacío, ningún usuario registrado
+            // Archivo de Ã­ndice vacÃ­o, ningÃºn usuario registrado
             indexFile.close();
             return LoginStatus::USER_NOT_FOUND;
         }
 
-        // Lambda para la búsqueda binaria de un match exacto (o el posible lugar donde debería estar)
-        // Queremos encontrar la primera posición `p` tal que el username buscado sea
-        // menor o igual al nombre de usuario en la posición `p`.
-        // Esto nos da la posición donde el usuario *podría* estar si existe.
+        // Lambda para la bÃºsqueda binaria de un match exacto (o el posible lugar donde deberÃ­a estar)
+        // Queremos encontrar la primera posiciÃ³n `p` tal que el username buscado sea
+        // menor o igual al nombre de usuario en la posiciÃ³n `p`.
+        // Esto nos da la posiciÃ³n donde el usuario *podrÃ­a* estar si existe.
         auto predicadoBusqueda = [&](int pos) {
             UsuarioIndex temp;
             indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
@@ -351,17 +351,17 @@ public:
             return strncmp(userInput.c_str(), temp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
             };
 
-        // Usar busquedaBinaria para encontrar el posible índice del usuario
-        // La búsqueda binaria nos dará la posición donde el usuario *debería* estar
-        // si existe, o la posición de inserción si no existe.
-        // Rango de búsqueda: [0, cantidad - 1].
+        // Usar busquedaBinaria para encontrar el posible Ã­ndice del usuario
+        // La bÃºsqueda binaria nos darÃ¡ la posiciÃ³n donde el usuario *deberÃ­a* estar
+        // si existe, o la posiciÃ³n de inserciÃ³n si no existe.
+        // Rango de bÃºsqueda: [0, cantidad - 1].
         int posPosibleUsuario = busquedaBinaria(0, cantidad - 1, predicadoBusqueda);
 
-        // Verificar si la posición encontrada es válida y si el usuario en esa posición realmente coincide con el username buscado.
+        // Verificar si la posiciÃ³n encontrada es vÃ¡lida y si el usuario en esa posiciÃ³n realmente coincide con el username buscado.
         bool usuarioEncontrado = false;
         UsuarioIndex encontrado;
 
-        // posPosibleUsuario podría ser 'cantidad' si el usuario buscado es mayor que todos.
+        // posPosibleUsuario podrÃ­a ser 'cantidad' si el usuario buscado es mayor que todos.
         if (posPosibleUsuario >= 0 && posPosibleUsuario < cantidad) {
             indexFile.seekg(posPosibleUsuario * sizeof(UsuarioIndex), ios::beg);
             indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(UsuarioIndex));
@@ -369,19 +369,19 @@ public:
 
             // Comparar el nombre de usuario encontrado con el nombre de usuario de entrada
             if (strncmp(encontrado.nombreDeUsuario, userInput.c_str(), MAX_FIELD_LEN) == 0) {
-                // ¡Match exacto del nombre de usuario en el índice!
+                // Match exacto del nombre de usuario en el Ã­ndice!
                 usuarioEncontrado = true;
             }
         }
-        indexFile.close(); // Ya no necesitamos el archivo de índice
+        indexFile.close(); // Ya no necesitamos el archivo de Ã­ndice
 
 
         if (!usuarioEncontrado) {
-            // El nombre de usuario no se encontró en el índice en la posición esperada
+            // El nombre de usuario no se encontrÃ³ en el Ã­ndice en la posiciÃ³n esperada
             return LoginStatus::USER_NOT_FOUND;
         }
 
-        // Si el usuario fue encontrado en el índice, leer sus datos del archivo principal
+        // Si el usuario fue encontrado en el Ã­ndice, leer sus datos del archivo principal
         string dataFilePath = getDataFilePath(tipoUsuario);
         ifstream dataFile(dataFilePath, ios::binary);
 
@@ -391,33 +391,33 @@ public:
         }
 
         UsuarioBinario datos;
-        // Mover al offset indicado en el índice y leer el struct binario
+        // Mover al offset indicado en el Ã­ndice y leer el struct binario
         dataFile.seekg(encontrado.offset, ios::beg);
         dataFile.read(reinterpret_cast<char*>(&datos), sizeof(UsuarioBinario));
         dataFile.close();
 
-        // 3. Verificar la contraseña (comparando hashes)
-        // Hashear la contraseña ingresada por el usuario
+        // 3. Verificar la contraseÃ±a (comparando hashes)
+        // Hashear la contraseÃ±a ingresada por el usuario
         string inputPassHash = hashContrasena(passInput);
 
-        // Comparar el hash de la contraseña ingresada con el hash almacenado
+        // Comparar el hash de la contraseÃ±a ingresada con el hash almacenado
         // Usamos strncmp ya que contrasenaHash en 'datos' es char[] y inputPassHash es string
         // Debemos comparar las cadenas hasta la longitud del campo, considerando el null terminator
         if (strncmp(datos.contrasenaHash, inputPassHash.c_str(), MAX_FIELD_LEN) == 0) {
-            // ¡Login exitoso! Crear el objeto UsuarioLogueado
-            // NOTA: Aquí necesitas decidir cómo generar el ID al cargar.
-            // Usar 'cantidad + 1' como antes no es un ID persistente y único.
-            // Un enfoque mejor sería guardar el ID en UsuarioBinario o tener
+            // Login exitoso! Crear el objeto UsuarioLogueado
+            // NOTA: AquÃ­ necesitas decidir cÃ³mo generar el ID al cargar.
+            // Usar 'cantidad + 1' como antes no es un ID persistente y Ãºnico.
+            // Un enfoque mejor serÃ­a guardar el ID en UsuarioBinario o tener
             // un archivo de metadatos que lleve un contador de IDs.
             // Por ahora, usamos un ID placeholder (por ejemplo, 0 o el offset).
-            // Usaremos el offset como un ID temporal para la demostración,
-            // aunque no es un ID "semántico" real.
+            // Usaremos el offset como un ID temporal para la demostraciÃ³n,
+            // aunque no es un ID "semÃ¡ntico" real.
 
             usuarioLogueado = fromUsuarioBinario(datos, encontrado.offset, tipoUsuario); // Usamos offset como ID temporal
             return LoginStatus::SUCCESS; // Login logrado wiiiiiii!! ^.^
         }
         else {
-            return LoginStatus::WRONG_PASSWORD; // Contraseña incorrecta
+            return LoginStatus::WRONG_PASSWORD; // ContraseÃ±a incorrecta
         }
     }
 
@@ -428,6 +428,6 @@ public:
     string getUsername() const { return username; } // Agregado const
 	// string getContrasenaHash() const { return contrasenaHash; } // No deberiamos exponer el hash OwO, no es necesario
 
-    // Setter para el ID si es necesario establecerlo después de la creación
+    // Setter para el ID si es necesario establecerlo despuÃ©s de la creaciÃ³n
     void setId(int newId) { id = newId; }
 };

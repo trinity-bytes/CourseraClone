@@ -6,101 +6,71 @@
 #include <fstream>
 #include <string>
 
-class GestionadorUsuarios {
+class GestionadorUsuarios 
+{
 private:
     LinkedList<Usuario*> usuarios;
-    const string RUTA_USUARIOS = "Resources/Data/usuarios.dat";
-
 public:
-    GestionadorUsuarios() {
-        cargarUsuarios();
-    }
+    GestionadorUsuarios() {}
 
-    ~GestionadorUsuarios() {
-        // Liberar memoria de usuarios
-        for (auto usuario : usuarios) {
+    ~GestionadorUsuarios() 
+    {
+        for (auto usuario : usuarios) // Liberar memoria de usuarios
+        {
             delete usuario;
         }
     }
 
     bool autenticarUsuario(const string& username, const string& password) {
-        for (auto usuario : usuarios) {
-            if (usuario->getUsername() == username && usuario->getPassword() == password) {
-                return true;
-            }
+        // Usar el método login de Usuario
+        Usuario usuarioTemp;
+        LoginStatus status = Usuario::login(usuarioTemp, TipoUsuario::ESTUDIANTE, username, password);
+        
+        if (status == LoginStatus::SUCCESS) {
+            return true;
         }
-        return false;
+        
+        // Intentar como empresa si no es estudiante
+        status = Usuario::login(usuarioTemp, TipoUsuario::EMPRESA, username, password);
+        return status == LoginStatus::SUCCESS;
     }
 
-    Usuario* obtenerUsuario(const string& username) {
-        for (auto usuario : usuarios) {
-            if (usuario->getUsername() == username) {
+    Usuario* obtenerUsuario(const string& username) 
+    {
+        for (auto usuario : usuarios) 
+        {
+            if (usuario->getUsername() == username) 
+            {
                 return usuario;
             }
         }
         return nullptr;
     }
 
-    bool registrarUsuario(int tipoUsuario, const int& id, const string& nombreCompleto,
-        const string& username, const string& password) {
+    bool registrarUsuario(int tipoUsuario, const int& id, 
+        const string& nombreCompleto, const string& username, 
+        const string& password) {
         
-        if (obtenerUsuario(username) != nullptr) // Verificar si el usuario ya existe
-        {
+        // Verificar si el usuario ya existe intentando hacer login
+        Usuario usuarioTemp;
+        if (Usuario::login(usuarioTemp, TipoUsuario::ESTUDIANTE, username, password) == LoginStatus::SUCCESS ||
+            Usuario::login(usuarioTemp, TipoUsuario::EMPRESA, username, password) == LoginStatus::SUCCESS) {
             return false;
         }
 
-        Usuario* nuevoUsuario;
+        // Crear nuevo usuario
+        Usuario* nuevoUsuario = new Usuario(
+            id,
+            static_cast<TipoUsuario>(tipoUsuario),
+            nombreCompleto,
+            username,
+            Usuario::hashContrasena(password) // Usar el método de hash de Usuario
+        );
 
-		if (tipoUsuario == 1) // Estudiante
-        {
-            nuevoUsuario = new Estudiante(id, nombreCompleto, username, password);
-        }
-		else if (tipoUsuario == 2) // Empresa
-        {
-            nuevoUsuario = new Empresa(id, nombreCompleto, username, password);
-        }
-		else { return false; } // Tipo de usuario inv�lido
-
+        // Guardar el usuario usando su método guardar
+        nuevoUsuario->guardar();
+        
         usuarios.agregarAlFinal(nuevoUsuario);
-
-        // Guardar en archivo
-        guardarUsuarios();
         return true;
-    }
-
-private:
-    void cargarUsuarios() {
-        ifstream archivo(RUTA_USUARIOS, ios::binary);
-        if (!archivo.is_open()) return;
-
-        UsuarioBinario usuarioBin;
-        while (archivo.read(reinterpret_cast<char*>(&usuarioBin), sizeof(usuarioBin))) {
-            Usuario* usuario;
-            if (usuarioBin.tipoUsuario == 1) {
-                usuario = new Estudiante(usuarioBin.nombre, usuarioBin.apellido);
-            }
-            else {
-                usuario = new Empresa();
-            }
-            usuario->setUsername(usuarioBin.username);
-            usuario->setPassword(usuarioBin.password);
-            usuarios.agregarAlFinal(usuario);
-        }
-    }
-
-    void guardarUsuarios() {
-        ofstream archivo(RUTA_USUARIOS, ios::binary);
-        if (!archivo.is_open()) return;
-
-        for (auto usuario : usuarios) {
-            UsuarioBinario usuarioBin;
-            strcpy_s(usuarioBin.username, usuario->getUsername().c_str());
-            strcpy_s(usuarioBin.password, usuario->getPassword().c_str());
-            strcpy_s(usuarioBin.nombre, usuario->getNombre().c_str());
-            strcpy_s(usuarioBin.apellido, usuario->getApellido().c_str());
-            usuarioBin.tipoUsuario = usuario->getTipoUsuario();
-
-            archivo.write(reinterpret_cast<char*>(&usuarioBin), sizeof(usuarioBin));
-        }
     }
 }; 

@@ -17,7 +17,7 @@ private:
 public:
 	
 	Estudiante(int _id, string nombreCompleto, 
-		string _nickname, string _contrasena) : Usuario(_id, 1, nombreCompleto,
+		string _nickname, string _contrasena) : Usuario(_id, TipoUsuario::ESTUDIANTE, nombreCompleto,
 												_nickname, _contrasena) 
 	{
 		inscripciones = LinkedList<Inscripcion*>();

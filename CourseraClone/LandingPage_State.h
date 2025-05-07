@@ -8,21 +8,13 @@
 #include "iostream"
 #include "vector"
 #include "string"
-#include "memory" // Para std::unique_ptr
-#include "conio.h" // Para _kbhit() y _getch()
-#include "fstream" // Para ifstream, ofstream
-#include "sstream" // Para stringstream (usado en formatearDescripcion)
+#include "memory"    // Para std::unique_ptr
+#include "conio.h"   // Para _kbhit() y _getch()
+#include "fstream"   // Para ifstream, ofstream
+#include "sstream"   // Para stringstream (usado en formatearDescripcion)
 #include "windows.h" // Para GetAsyncKeyState, VK_ESCAPE
 
 using namespace std;
-
-/*
-// Estructura compartida para elementos del menú
-struct ElementoMenu {
-    string titulo;
-    string descripcion; // Usado para especialidades y cursos
-};
-*/
 
 // Estado de la página principal
 class LandingPageState : public MenuState
