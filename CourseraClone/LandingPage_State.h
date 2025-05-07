@@ -600,3 +600,39 @@ public:
         return opcionSeleccionada;
     }
 };
+
+/*
+void cargarDatosLanding(int maximo) {
+        cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
+        especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
+
+        PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
+        PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
+        auto cantidad = [](Actividad* a) {
+            return a->getCantidadAlumnos();
+            };
+        priorityCursosLandingPage.llenarDesde<int>(cursosTodos, cantidad);
+        priorityEspecializacionesLandingPage.llenarDesde<int>(especializacionesTodos, cantidad);
+
+        vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
+        auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
+            return a->getTitulo();
+            };
+        auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripción
+            return a->getDescripcion();
+            };
+
+        // obtener datos
+        titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
+        titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
+        descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
+        descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
+
+        for (int i = 0; i < maximo; i++) {
+            //cursosPopularesLandingPage[i].titulo = titulosCursos[i];
+            //cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
+            //especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
+            //especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
+        }
+    }
+*/

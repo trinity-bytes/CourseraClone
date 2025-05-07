@@ -41,26 +41,26 @@ public:
         return nullptr;
     }
 
-    bool registrarUsuario(int tipoUsuario, const string& nombre, const string& apellido,
+    bool registrarUsuario(int tipoUsuario, const int& id, const string& nombreCompleto,
         const string& username, const string& password) {
-        // Verificar si el usuario ya existe
-        if (obtenerUsuario(username) != nullptr) {
+        
+        if (obtenerUsuario(username) != nullptr) // Verificar si el usuario ya existe
+        {
             return false;
         }
 
         Usuario* nuevoUsuario;
-        if (tipoUsuario == 1) {
-            nuevoUsuario = new Estudiante(nombre, apellido);
-        }
-        else if (tipoUsuario == 2) {
-            nuevoUsuario = new Empresa();
-        }
-        else {
-            return false;
-        }
 
-        nuevoUsuario->setUsername(username);
-        nuevoUsuario->setPassword(password);
+		if (tipoUsuario == 1) // Estudiante
+        {
+            nuevoUsuario = new Estudiante(id, nombreCompleto, username, password);
+        }
+		else if (tipoUsuario == 2) // Empresa
+        {
+            nuevoUsuario = new Empresa(id, nombreCompleto, username, password);
+        }
+		else { return false; } // Tipo de usuario inválido
+
         usuarios.agregarAlFinal(nuevoUsuario);
 
         // Guardar en archivo

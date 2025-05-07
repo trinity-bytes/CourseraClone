@@ -29,17 +29,18 @@ struct UsuarioIndex {
 class Usuario{
 protected:
 	int id, tipoUsuario;
-	string nickname, contrasena;
+	string nombreCompleto, username, password;
 	//char nombreDeUsuario[30];
 	//char contrasena[30];
 
 public:
 	Usuario() {};
-	Usuario(int _id, int _tipoUsuario, string _nickname, string _contrasena) {
-		id = _id;
-		tipoUsuario = _tipoUsuario;
-		nickname = _nickname;
-		contrasena = _contrasena;
+	Usuario(int _id, int _tipoUsuario, string nombreCompleto, string _nickname, string _contrasena) {
+		this->id = _id;
+		this->tipoUsuario = _tipoUsuario;
+		this->nombreCompleto = nombreCompleto;
+		this->username = _nickname;
+		this->password = _contrasena;
 	}
 
 	void guardar() {
@@ -53,7 +54,7 @@ public:
 			archivo.seekp(0, ios::end);
 			offsetRegistro = archivo.tellp();
 
-			UsuarioBinario nuevo(nickname, contrasena);
+			UsuarioBinario nuevo(username, password);
 			archivo.write(reinterpret_cast<char*>(&nuevo), sizeof(nuevo));
 			archivo.close();
 		}
@@ -76,7 +77,7 @@ public:
 			UsuarioIndex temp;
 			archivoOrden.seekg(pos * sizeof(UsuarioIndex), ios::beg);
 			archivoOrden.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-			return strncmp(nickname.c_str(), temp.nombreDeUsuario, 30) >= 0; // compara los nombres
+			return strncmp(username.c_str(), temp.nombreDeUsuario, 30) >= 0; // compara los nombres
 			};
 
 		int pos = busquedaBinaria(0, cantidad - 1, busqueda);
@@ -90,7 +91,7 @@ public:
 			archivoOrden.write(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
 		}
 
-		UsuarioIndex nuevo(nickname, offsetRegistro);
+		UsuarioIndex nuevo(username, offsetRegistro);
 		archivoOrden.seekp(pos * sizeof(UsuarioIndex), ios::beg);
 		archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(UsuarioIndex));
 		archivoOrden.close();
@@ -153,17 +154,17 @@ public:
 	}
 
 	bool validarUsuario(const string& input) {
-		return input == nickname;
+		return input == username;
 	}
 
 	bool validarContrasena(const string& input) {
-		return input == contrasena;
+		return input == username;
 	}
 
 	
 	virtual void mostrarPerfil() {
 		cout << "ID: " << id << endl;
-		cout << "Username: " << nickname << endl;
+		cout << "Username: " << username << endl;
 		cout << "Tipo de Usuario: " << tipoUsuario << endl;
 	}
 
@@ -179,18 +180,10 @@ public:
 		return true;
 	}
 
-	string getNickname() { 
-		return nickname; 
-	}
-	string getContrasena() { 
-		return contrasena; 
-	}
-
-	int getTipoUsuario() {
-		return tipoUsuario;
-	}
-
-	int getId() {
-		return id;
-	}
+	// Getters
+	int getId() { return id; }
+	string getNombreCompleto() { return nombreCompleto; }
+	int getTipoUsuario() { return tipoUsuario; }
+	string getNickname() { return username; }
+	string getContrasena() { return password; }
 };

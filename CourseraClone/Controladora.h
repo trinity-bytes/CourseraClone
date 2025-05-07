@@ -38,8 +38,8 @@ private:
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
 	
-	//vector<ElementoMenu> cursosPopularesLandingPage;
-	//vector<ElementoMenu> especializacionesPopularesLandingPage;
+	vector<ElementoMenu> cursosPopularesLandingPage;
+	vector<ElementoMenu> especializacionesPopularesLandingPage;
 	
 	vector<Actividad*> actividades;
 
@@ -49,9 +49,8 @@ private:
 	bool running;
 
 private:
-	void cargarDatosArchivo() {
-
-
+	void cargarDatosArchivo() 
+	{
 		ifstream ruta("Resources/Data/actividades.txt");
 		if (ruta.is_open()) {
 			int id = 0, idEmpresa, tipo;
@@ -113,54 +112,23 @@ private:
 			cout << "Error al abrir el archivo de inscripciones." << endl;
 		}
 	}
-	void cargarDatosLanding(int maximo) {
-		//cursosPopularesLandingPage = vector<ElementoMenu>(maximo);
-		//especializacionesPopularesLandingPage = vector<ElementoMenu>(maximo);
-
-		PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
-		PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
-		auto cantidad = [](Actividad* a) {
-			return a->getCantidadAlumnos();
-			};
-		priorityCursosLandingPage.llenarDesde<int>(cursosTodos, cantidad);
-		priorityEspecializacionesLandingPage.llenarDesde<int>(especializacionesTodos, cantidad);
-
-		vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
-		auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
-			return a->getTitulo();
-			};
-		auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripción
-			return a->getDescripcion();
-			};
-
-		// obtener datos
-		titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
-		titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
-		descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
-		descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
-
-		for (int i = 0; i < maximo; i++) {
-			//cursosPopularesLandingPage[i].titulo = titulosCursos[i];
-			//cursosPopularesLandingPage[i].descripcion = descripcionesCursos[i];
-			//especializacionesPopularesLandingPage[i].titulo = titulosEspecializaciones[i];
-			//especializacionesPopularesLandingPage[i].descripcion = descripcionesEspecializaciones[i];
-		}
-	}
+	
 
 
 public:
-	void cargarTodosDatos() {
+	void cargarTodosDatos() 
+	{
 		actividades = vector<Actividad*>();
 		cursosTodos = LinkedList<Curso*>();
 		especializacionesTodos = LinkedList<Especializacion*>();
 
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
-		cargarDatosLanding(0);
-		//usuario = new Usuario();
+		usuarioActual = new Usuario();
 	}
 
-	Controladora() : usuarioActual(nullptr), running(true) {
+	Controladora() : usuarioActual(nullptr), running(true) 
+	{
 		cargarTodosDatos();
 		estadoActual = make_unique<LandingPageState>(this);
 		userManager = make_unique<GestionadorUsuarios>();
@@ -168,42 +136,50 @@ public:
 		estados.push(make_unique<LoginState>(this));
 	}
 
-	~Controladora() {
-		if (usuarioActual) {
-			delete usuarioActual;
-		}
+	~Controladora() 
+	{
+		if (usuarioActual) delete usuarioActual; // Liberar memoria del usuario actual
 	}
 
-	// Métodos de navegación
-	void navegarA(unique_ptr<MenuState> nuevoEstado) {
+	/// Métodos de navegación
+	void navegarA(unique_ptr<MenuState> nuevoEstado) 
+	{
 		historialEstados.push(move(estadoActual));
 		estadoActual = move(nuevoEstado);
 	}
 
-	void volverAtras() {
-		if (!historialEstados.empty()) {
+	void volverAtras() 
+	{
+		if (!historialEstados.empty()) // Comprueba si hay un estado anterior
+		{
 			estadoActual = move(historialEstados.top());
 			historialEstados.pop();
 		}
 	}
 
-	void irAInicio() {
-		while (!historialEstados.empty()) {
+	void irAInicio() 
+	{
+		while (!historialEstados.empty()) // Remueve todos los estados del historial
+		{
 			historialEstados.pop();
 		}
 		estadoActual = make_unique<LandingPageState>(this);
 	}
 
-	// Métodos de autenticación
-	bool iniciarSesion(const string& username, const string& password) {
-		if (gestionadorUsuarios.autenticarUsuario(username, password)) {
+	/// Métodos de autenticación
+	bool iniciarSesion(const string& username, const string& password) 
+	{
+		if (gestionadorUsuarios.autenticarUsuario(username, password)) 
+		{
 			usuarioActual = gestionadorUsuarios.obtenerUsuario(username);
 			
 			// Navegar al dashboard correspondiente
-			if (usuarioActual->getTipoUsuario() == 1) { // Estudiante
+			if (usuarioActual->getTipoUsuario() == 1) // Estudiante
+			{ 
 				navegarA(make_unique<DashboardEstudianteState>(this));
 			}
-			else if (usuarioActual->getTipoUsuario() == 2) { // Organización
+			else if (usuarioActual->getTipoUsuario() == 2) // Organización
+			{ 
 				navegarA(make_unique<DashboardOrganizacionState>(this));
 			}
 			
@@ -212,23 +188,29 @@ public:
 		return false;
 	}
 
-	void cerrarSesion() {
-		if (usuarioActual) {
-			delete usuarioActual;
-			usuarioActual = nullptr;
+	void cerrarSesion() 
+	{
+		if (usuarioActual) // Comprueba que el usuario actual no sea nulo
+		{
+			delete usuarioActual; // Liberar memoria del usuario actual
+			usuarioActual = nullptr; // Reiniciar el puntero
 		}
 		irAInicio();
 	}
 
-	bool registrarUsuario(int tipoUsuario, const string& nombre, const string& apellido,
-		const string& username, const string& password) {
+	bool registrarUsuario(int tipoUsuario, const string& nombre, 
+		const string& apellido, const string& username, const string& password) 
+	{
 		return gestionadorUsuarios.registrarUsuario(tipoUsuario, nombre, apellido, username, password);
 	}
 
-	// Métodos de cursos
-	bool crearCurso(const string& titulo, const string& descripcion, int cantidadClases,
-		const string& instructor) {
-		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) { // 2 = Empresa
+	/// Métodos para los cursos
+	bool crearCurso(const string& titulo, const string& descripcion, 
+		int cantidadClases, const string& instructor) 
+	{
+		// Verificar que el usuario actual sea una organización
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2)  // 2 = Empresa
+		{
 			return false;
 		}
 
@@ -242,11 +224,13 @@ public:
 		);
 	}
 
-	vector<Curso*> buscarCursos(const string& criterio) {
+	vector<Curso*> buscarCursos(const string& criterio) 
+	{
 		return gestionadorCursos.buscarCursos(criterio);
 	}
 
-	vector<Especializacion*> buscarEspecializaciones(const string& criterio) {
+	vector<Especializacion*> buscarEspecializaciones(const string& criterio) 
+	{
 		return gestionadorCursos.buscarEspecializaciones(criterio);
 	}
 
@@ -255,47 +239,43 @@ public:
 	MenuState* getEstadoActual() const { return estadoActual.get(); }
 
 	LinkedList<Actividad> buscarActividades() {
-		vector<int> idCursos, idEspecializacion;
-		/*
-		//usuario.getActividadesBuscadas(idCursos, idEspecializacion);
-		mergeSort(idCursos, 0, int(idCursos.size()) - 1);
-		mergeSort(idEspecializacion, 0, int(idEspecializacion.size()) - 1);
+		//vector<int> idCursos, idEspecializacion;
+		
+		// Obtener los IDs de las actividades buscadas
+		//usuarioActual.getActividadesBuscadas(idCursos, idEspecializacion);
+		//mergeSort(idCursos, 0, int(idCursos.size()) - 1);
+		//mergeSort(idEspecializacion, 0, int(idEspecializacion.size()) - 1);
 
-		ifstream cursos("./archivos/planos/cursos.txt");
-		ifstream especializaciones("./archivos/planos/especializaciones.txt");
-
-		*/
+		//ifstream cursos("./archivos/planos/cursos.txt");
+		//ifstream especializaciones("./archivos/planos/especializaciones.txt");
 	}
 
-	void mostrarInterfaz() {
-
-	}
-
-	void mostrarBusqueda() {
-
-	}
-
-	void run() {
-		while (running && !estados.empty()) {
+	// Métodos de renderizado
+	void run() 
+	{
+		while (running && !estados.empty()) 
+		{
 			estados.top()->render();
 			int tecla = _getch();
-			if (tecla == 0 || tecla == 224) {
-				tecla = _getch();
-			}
+
+			// Si la tecla es 0 o 224, significa que es una tecla especial
+			if (tecla == 0 || tecla == 224) tecla = _getch();
+
 			estados.top()->handleInput(tecla);
 			unique_ptr<MenuState> nextState = estados.top()->getNextState();
-			if (nextState) {
-				estados.push(move(nextState));
-			}
+
+			// Si hay un nuevo estado, lo agregamos a la pila
+			if (nextState) estados.push(move(nextState));
 		}
 	}
 
-	bool login(const string& username, const string& password) {
+	bool login(const string& username, const string& password) 
+	{
 		return userManager->autenticarUsuario(username, password);
 	}
 
-	bool registrarUsuario(const string& username, const string& password, const string& tipo) {
-		return userManager->registrarUsuario(username, password, tipo);
+	bool registrarUsuario(const int& tipo, const int& id, const string& fullName, const string& username, const string& password) {
+		return userManager->registrarUsuario(tipo, id, fullName, username, password);
 	}
 
 	string getTipoUsuario() const {

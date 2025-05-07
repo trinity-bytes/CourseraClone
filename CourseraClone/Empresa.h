@@ -1,21 +1,18 @@
 #pragma once
-#include "Estudiante.h"
+#include "Usuario.h"
 
-class Empresa: public Usuario{
+class Empresa: public Usuario
+{
 private:
-
-	LinkedList<Actividad*> actividades;
-	//LinkedList<Instructor> instructores;
+	LinkedList<Actividad*> actividadesPropias;
 public:
-	void cargarDatos() {
+	void cargarDatos() { }
 
-	}
-
-	Empresa(int _id, string _nickname, string _contrasena): Usuario(id, 2, _nickname, _contrasena) {
+	Empresa(int _id, string nombreCompleto, string _nickname, string _contrasena): Usuario(id, 2, nombreCompleto, _nickname, _contrasena) {
 		cargarDatos();
-		actividades = LinkedList<Actividad*>();
+		this->actividadesPropias = LinkedList<Actividad*>();
 	}
-
+	
 	int crearCurso(){
 
 	}

@@ -31,14 +31,14 @@ void main() {
 		if (_kbhit()) {
 			int tecla = _getch();
 			
-			if (tecla == 27) // ESC
-			{ 
+			// Primero dejamos que el estado actual maneje la tecla
+			estadoActual->handleInput(tecla);
+
+			// Solo cerramos si es ESC y estamos en el estado inicial
+			if (tecla == 27 && dynamic_cast<LandingPageState*>(estadoActual)) {
 				ejecutando = false;
 				continue;
 			}
-
-			// Manejar input en el estado actual
-			estadoActual->handleInput(tecla);
 		}
 
 		Sleep(50); // Retraso para no saturar la CPU
