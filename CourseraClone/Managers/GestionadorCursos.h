@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <map>
+#include <map> // Para el mapa de progreso y calificaciones
 
 class GestionadorCursos {
 private:

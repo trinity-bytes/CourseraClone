@@ -137,6 +137,8 @@
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Stack.h" />
+    <ClInclude Include="States\CrearCursoState.h" />
+    <ClInclude Include="States\CrearEspecializacionState.h" />
     <ClInclude Include="States\DashboardEstudianteState.h" />
     <ClInclude Include="States\DashboardOrganizacionState.h" />
     <ClInclude Include="UI_Ascii.h" />

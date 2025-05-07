@@ -11,7 +11,7 @@ private:
 public:
 	void cargarDatos() { }
 
-	Empresa(int _id, string nombreCompleto, string _nickname, string _contrasena): Usuario(id, 2, nombreCompleto, _nickname, _contrasena) {
+	Empresa(int _id, string nombreCompleto, string _nickname, string _contrasena): Usuario(_id, TipoUsuario::EMPRESA, nombreCompleto, _nickname, _contrasena) {
 		cargarDatos();
 		this->actividadesPropias = LinkedList<Actividad*>();
 	}

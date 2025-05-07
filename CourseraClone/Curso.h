@@ -85,7 +85,7 @@ public:
 
         auto it = clases.begin();
         advance(it, idClase);
-        it->setDescripcion(nuevoContenido);
+        it->setContenido(nuevoContenido);
         return true;
     }
 
