@@ -27,7 +27,8 @@ private:
     map<int, map<int, pair<int, string>>> calificacionesCursos;
 
 public:
-    GestionadorCursos() {
+    GestionadorCursos(vector<int>& _idsCursos) : idsCursos(_idsCursos)
+    {
         cargarCursos();
         cargarEspecializaciones();
     }

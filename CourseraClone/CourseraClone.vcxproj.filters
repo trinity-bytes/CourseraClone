@@ -34,9 +34,6 @@
     <Filter Include="Header Files\Clases Usuarios">
       <UniqueIdentifier>{35e1c194-4e64-4ddb-ba69-1371c8cda19a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DashBoards">
-      <UniqueIdentifier>{eb154eea-34b0-4ae0-bcdd-f4325ccb375f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Cursos y Actividades">
       <UniqueIdentifier>{278cae69-13a5-4411-9432-a4cd9ff68aea}</UniqueIdentifier>
     </Filter>
@@ -113,12 +110,6 @@
     <ClInclude Include="Estudiante.h">
       <Filter>Header Files\Clases Usuarios</Filter>
     </ClInclude>
-    <ClInclude Include="States\DashboardEstudianteState.h">
-      <Filter>Header Files\DashBoards</Filter>
-    </ClInclude>
-    <ClInclude Include="States\DashboardOrganizacionState.h">
-      <Filter>Header Files\DashBoards</Filter>
-    </ClInclude>
     <ClInclude Include="Clase.h">
       <Filter>Header Files\Cursos y Actividades</Filter>
     </ClInclude>
@@ -135,6 +126,12 @@
       <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="States\CrearEspecializacionState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="States\DashboardEstudianteState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="States\DashboardOrganizacionState.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
