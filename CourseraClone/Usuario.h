@@ -186,4 +186,11 @@ public:
 		return contrasena; 
 	}
 
+	int getTipoUsuario() {
+		return tipoUsuario;
+	}
+
+	int getId() {
+		return id;
+	}
 };

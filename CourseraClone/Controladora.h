@@ -4,14 +4,36 @@
 #include "Actividad.h"
 #include "PriorityQueue.h"
 #include "Especializacion.h"
-#include "UI_Menu_LandingPage.h"
 #include "Inscripcion.h"
+#include "Usuario.h"
+#include "Estudiante.h"
+#include "Empresa.h"
+#include "MenuState.h"
+#include "LandingPage_State.h"
+#include "Login_State.h"
+#include "States/DashboardEstudianteState.h"
+#include "States/DashboardOrganizacionState.h"
+#include "States/CrearCursoState.h"
+#include "States/CrearEspecializacionState.h"
+#include "Managers/GestionadorUsuarios.h"
+#include "Managers/GestionadorCursos.h"
 
 // librerias
 #include "fstream"
+#include "memory" // Para std::unique_ptr
+#include "stack" // Para std::stack
 
-class Controladora {
+class Controladora 
+{
 private:
+	Usuario* usuarioActual;
+	unique_ptr<MenuState> estadoActual;
+	stack<unique_ptr<MenuState>> historialEstados;
+
+	// Gestores
+	GestionadorUsuarios gestionadorUsuarios;
+	GestionadorCursos gestionadorCursos;
+
 	//Usuario* usuario;
 	LinkedList<Curso*> cursosTodos;
 	LinkedList<Especializacion*> especializacionesTodos;
@@ -20,6 +42,11 @@ private:
 	//vector<ElementoMenu> especializacionesPopularesLandingPage;
 	
 	vector<Actividad*> actividades;
+
+	stack<unique_ptr<MenuState>> estados;
+	unique_ptr<GestionadorUsuarios> userManager;
+	unique_ptr<GestionadorCursos> courseManager;
+	bool running;
 
 private:
 	void cargarDatosArchivo() {
@@ -102,7 +129,7 @@ private:
 		auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
 			return a->getTitulo();
 			};
-		auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripci髇
+		auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripci贸n
 			return a->getDescripcion();
 			};
 
@@ -133,12 +160,99 @@ public:
 		//usuario = new Usuario();
 	}
 
-	Controladora() {
+	Controladora() : usuarioActual(nullptr), running(true) {
 		cargarTodosDatos();
+		estadoActual = make_unique<LandingPageState>(this);
+		userManager = make_unique<GestionadorUsuarios>();
+		courseManager = make_unique<GestionadorCursos>();
+		estados.push(make_unique<LoginState>(this));
 	}
 
+	~Controladora() {
+		if (usuarioActual) {
+			delete usuarioActual;
+		}
+	}
 
+	// M茅todos de navegaci贸n
+	void navegarA(unique_ptr<MenuState> nuevoEstado) {
+		historialEstados.push(move(estadoActual));
+		estadoActual = move(nuevoEstado);
+	}
 
+	void volverAtras() {
+		if (!historialEstados.empty()) {
+			estadoActual = move(historialEstados.top());
+			historialEstados.pop();
+		}
+	}
+
+	void irAInicio() {
+		while (!historialEstados.empty()) {
+			historialEstados.pop();
+		}
+		estadoActual = make_unique<LandingPageState>(this);
+	}
+
+	// M茅todos de autenticaci贸n
+	bool iniciarSesion(const string& username, const string& password) {
+		if (gestionadorUsuarios.autenticarUsuario(username, password)) {
+			usuarioActual = gestionadorUsuarios.obtenerUsuario(username);
+			
+			// Navegar al dashboard correspondiente
+			if (usuarioActual->getTipoUsuario() == 1) { // Estudiante
+				navegarA(make_unique<DashboardEstudianteState>(this));
+			}
+			else if (usuarioActual->getTipoUsuario() == 2) { // Organizaci贸n
+				navegarA(make_unique<DashboardOrganizacionState>(this));
+			}
+			
+			return true;
+		}
+		return false;
+	}
+
+	void cerrarSesion() {
+		if (usuarioActual) {
+			delete usuarioActual;
+			usuarioActual = nullptr;
+		}
+		irAInicio();
+	}
+
+	bool registrarUsuario(int tipoUsuario, const string& nombre, const string& apellido,
+		const string& username, const string& password) {
+		return gestionadorUsuarios.registrarUsuario(tipoUsuario, nombre, apellido, username, password);
+	}
+
+	// M茅todos de cursos
+	bool crearCurso(const string& titulo, const string& descripcion, int cantidadClases,
+		const string& instructor) {
+		if (!usuarioActual || usuarioActual->getTipoUsuario() != 2) { // 2 = Empresa
+			return false;
+		}
+
+		return gestionadorCursos.crearCurso(
+			usuarioActual->getId(),
+			titulo,
+			usuarioActual->getNickname(),
+			cantidadClases,
+			instructor,
+			descripcion
+		);
+	}
+
+	vector<Curso*> buscarCursos(const string& criterio) {
+		return gestionadorCursos.buscarCursos(criterio);
+	}
+
+	vector<Especializacion*> buscarEspecializaciones(const string& criterio) {
+		return gestionadorCursos.buscarEspecializaciones(criterio);
+	}
+
+	// Getters
+	Usuario* getUsuarioActual() const { return usuarioActual; }
+	MenuState* getEstadoActual() const { return estadoActual.get(); }
 
 	LinkedList<Actividad> buscarActividades() {
 		vector<int> idCursos, idEspecializacion;
@@ -159,5 +273,44 @@ public:
 
 	void mostrarBusqueda() {
 
+	}
+
+	void run() {
+		while (running && !estados.empty()) {
+			estados.top()->render();
+			int tecla = _getch();
+			if (tecla == 0 || tecla == 224) {
+				tecla = _getch();
+			}
+			estados.top()->handleInput(tecla);
+			unique_ptr<MenuState> nextState = estados.top()->getNextState();
+			if (nextState) {
+				estados.push(move(nextState));
+			}
+		}
+	}
+
+	bool login(const string& username, const string& password) {
+		return userManager->autenticarUsuario(username, password);
+	}
+
+	bool registrarUsuario(const string& username, const string& password, const string& tipo) {
+		return userManager->registrarUsuario(username, password, tipo);
+	}
+
+	string getTipoUsuario() const {
+		return userManager->getTipoUsuario();
+	}
+
+	bool crearEspecializacion(const string& titulo, const string& descripcion, int cantidadCursos) {
+		return courseManager->crearEspecializacion(titulo, descripcion, cantidadCursos);
+	}
+
+	void cerrarSesion() {
+		userManager->cerrarSesion();
+		while (!estados.empty()) {
+			estados.pop();
+		}
+		estados.push(make_unique<LoginState>(this));
 	}
 };
