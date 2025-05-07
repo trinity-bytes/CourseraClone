@@ -3,7 +3,8 @@
 
 using namespace std;
 
-class Actividad {
+class Actividad 
+{
 protected:
 	int id;
 	int idEmpresa;

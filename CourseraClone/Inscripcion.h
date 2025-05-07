@@ -1,9 +1,13 @@
 #pragma once
 #include "Actividad.h"
 #include "algoritmosBusqueda.h"
-#include <fstream>
+#include "fstream"
+#include "iostream"
 
-struct InscripcionIndex {
+using namespace std;
+
+struct InscripcionIndex 
+{
     int idUsuario;
     int offset;
 
@@ -20,10 +24,10 @@ struct InscripcionBinaria
     bool completado;
     bool pagado;
 
-    InscripcionBinaria(int _idUsuario, int _idActividad, int _tipoActividad, double _progreso, bool _completado, bool _pagado)
-        : idEstudiante(_idUsuario), idActividad(_idActividad), tipoActividad(_tipoActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
+    InscripcionBinaria(int _idUsuario, int _idActividad, int tipoActividad, double _progreso, bool _completado, bool _pagado)
+        : idEstudiante(_idUsuario), idActividad(_idActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
     }
-    InscripcionBinaria() : idEstudiante(0), idActividad(0), tipoActividad(0), progreso(0.0), completado(false), pagado(false) {};
+    InscripcionBinaria() : idEstudiante(0), idActividad(0), progreso(0.0), completado(false), pagado(false) {};
 };
 
 class Inscripcion {
@@ -39,13 +43,20 @@ public:
     Inscripcion() : id(0), idEstudiante(0), actividad(), progreso(0.0), completado(false), pagado(false) {}
 
 	Inscripcion(int _idEstudiante, Actividad _actividad)
-		: idEstudiante(_idEstudiante), actividad(_actividad), progreso(0.0), completado(false), pagado(false) {
+		: idEstudiante(_idEstudiante), actividad(_actividad), 
+        progreso(0.0), completado(false), pagado(false) 
+    {
+        // aca deberia haber algo?
 	}
+
     void guardar() {
         ofstream archivo("Resources/Data/inscripciones.dat", ios::app);
         int offsetRegistro = 0;
-        if (archivo.is_open()) {
-            InscripcionBinaria nuevo(idEstudiante, actividad.getId(), actividad.getTipo(), progreso, completado, pagado);
+        if (archivo.is_open()) 
+        {
+            InscripcionBinaria nuevo(idEstudiante, actividad.getId(), 
+                actividad.getTipo(), progreso, completado, pagado);
+
             archivo.seekp(0, ios::end);
             offsetRegistro = int((archivo.tellp() / sizeof(InscripcionBinaria))) + 1;
 
@@ -54,7 +65,9 @@ public:
         }
 
         fstream archivoOrden("Resources/Data/indices/inscripciones.dat", ios::binary | ios::in | ios::out);
-        if (archivoOrden.is_open()) {
+
+        if (archivoOrden.is_open()) 
+        {
             archivoOrden.seekg(0, ios::end);
             int cantidad = archivoOrden.tellg() / sizeof(InscripcionIndex);
             auto busqueda = [&](int pos) {
@@ -85,11 +98,9 @@ public:
 	int getIdEstudiante() {
 		return idEstudiante;
 	}
-
 	int getIdActividad() {
 		return actividad.getId();
 	}
-
 	int getId() {
 		return id;
 	}
