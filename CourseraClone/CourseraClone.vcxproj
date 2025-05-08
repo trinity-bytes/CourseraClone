@@ -113,6 +113,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Controladora.cpp" />
     <ClCompile Include="CourseraCloneApp.cpp" />
     <ClCompile Include="Login_State.h" />
   </ItemGroup>
