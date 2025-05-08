@@ -4,7 +4,7 @@
 #include "ExtendedFunctions.h"
 #include "UI_Ascii.h"
 #include "Menu_State.h"
-//#include "Login_State.h"
+#include "Login_State.h"
 
 // Encabezados estandar
 #include "iostream"
@@ -500,21 +500,21 @@ public:
                 if (elementoActual >= 0 && elementoActual < MAX_ELEMENTOS_CABECERA)
                 {
                     opcionSeleccionada = elementoActual + 1; // 1=Iniciar, 2=Registrarse, 3=Sobre Nosotros
-                    //controladora->cambiarEstado(make_unique<LoginState>(controladora)); // Cambiar al siguiente estado
+                    if (elementoActual == 0) { // Iniciar Sesión
+                        controladora->cambiarEstado(std::make_unique<LoginState>(controladora));
+                    }
                 }
                 break;
             case SECCION_ESPECIALIDADES:
                 if (elementoActual >= 0 && elementoActual < especialidades.size())
                 {
                     opcionSeleccionada = 4; // Código para especialidad seleccionada
-                    // Aquí podrías implementar alguna acción específica o cambio de estado
                 }
                 break;
             case SECCION_CURSOS:
                 if (elementoActual >= 0 && elementoActual < cursos.size())
                 {
                     opcionSeleccionada = 5; // Código para curso seleccionado
-                    // Aquí podrías implementar alguna acción específica o cambio de estado
                 }
                 break;
             }
@@ -522,7 +522,6 @@ public:
         else if (tecla == 27) // ESC - Salir
         {
             opcionSeleccionada = 0; // Opción 0 para salir
-            //controladora->terminarAplicacion(); // O implementar la lógica de salida adecuada
         }
     }
 
