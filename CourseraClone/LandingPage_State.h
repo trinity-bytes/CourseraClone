@@ -567,7 +567,7 @@ public:
     {
         if (seccionActual == SECCION_CABECERA && elementoActual == 0)
         {
-            //return std::make_unique<LoginState>(controladora);
+            return std::make_unique<LoginState>(controladora);
         }
         else if (seccionActual == SECCION_ESPECIALIDADES && opcionSeleccionada == 4)
         {

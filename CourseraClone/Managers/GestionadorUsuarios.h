@@ -11,14 +11,18 @@ class GestionadorUsuarios
 {
 private:
     LinkedList<Usuario*> usuarios;
+    Usuario* usuarioActual;
 
 public:
-    GestionadorUsuarios() {}
+    GestionadorUsuarios() : usuarioActual(nullptr) {}
 
     ~GestionadorUsuarios() 
     {
         for (auto usuario : usuarios) {
             delete usuario;
+        }
+        if (usuarioActual) {
+            delete usuarioActual;
         }
     }
 
@@ -29,24 +33,43 @@ public:
             LoginStatus status = Usuario::login(usuarioTemp, TipoUsuario::ESTUDIANTE, username, password);
             
             if (status == LoginStatus::SUCCESS) {
+                // Liberar usuario actual si existe
+                if (usuarioActual) {
+                    delete usuarioActual;
+                }
                 // Crear una copia del usuario autenticado
-                Usuario* usuarioAutenticado = new Usuario(usuarioTemp);
-                usuarios.agregarAlFinal(usuarioAutenticado);
+                usuarioActual = new Usuario(usuarioTemp);
+                usuarios.agregarAlFinal(usuarioActual);
                 return true;
             }
             
             // Si no es estudiante, intentar como empresa
             status = Usuario::login(usuarioTemp, TipoUsuario::EMPRESA, username, password);
             if (status == LoginStatus::SUCCESS) {
+                // Liberar usuario actual si existe
+                if (usuarioActual) {
+                    delete usuarioActual;
+                }
                 // Crear una copia del usuario autenticado
-                Usuario* usuarioAutenticado = new Usuario(usuarioTemp);
-                usuarios.agregarAlFinal(usuarioAutenticado);
+                usuarioActual = new Usuario(usuarioTemp);
+                usuarios.agregarAlFinal(usuarioActual);
                 return true;
             }
 
             return false;
         } catch (const std::exception& e) {
             throw std::runtime_error(std::string("Error en autenticación: ") + e.what());
+        }
+    }
+
+    Usuario* getUsuarioActual() const {
+        return usuarioActual;
+    }
+
+    void cerrarSesion() {
+        if (usuarioActual) {
+            delete usuarioActual;
+            usuarioActual = nullptr;
         }
     }
 

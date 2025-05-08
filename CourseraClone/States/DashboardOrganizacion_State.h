@@ -1,5 +1,5 @@
 #pragma once
-#include "Menu_State.h"
+#include "../Menu_State.h"
 #include "../UI_Ascii.h"
 #include "../ExtendedFunctions.h"
 #include "../Controladora.h"
@@ -17,7 +17,8 @@ private:
     int opcionActual;
     int opcionAnterior;
     bool primeraRenderizacion;
-    Controladora* controladora;
+    std::unique_ptr<MenuState> nextState;
+    
     void actualizarSeleccion() {
         if (opcionActual != opcionAnterior) {
             // Desdibujar selección anterior
@@ -62,11 +63,10 @@ private:
     }
 
 public:
-    DashboardOrganizacionState(Controladora* controladora) : MenuState(controladora) {
+    DashboardOrganizacionState(Controladora* ctrl) : MenuState(ctrl) {
         opcionActual = 0;
         opcionAnterior = 0;
         primeraRenderizacion = true;
-        controladora = new Controladora();
     }
 
     void render() override {
@@ -109,10 +109,7 @@ public:
         }
     }
 
-    unique_ptr<MenuState> getNextState() override {
-        return move(nextState);
+    std::unique_ptr<MenuState> getNextState() override {
+        return std::move(nextState);
     }
-
-private:
-    unique_ptr<MenuState> nextState;
 }; 

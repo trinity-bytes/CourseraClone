@@ -23,15 +23,15 @@ struct InscripcionBinaria
 {
     int idEstudiante;
     int idActividad;
-	int tipoActividad;
+    int tipoActividad;
     double progreso;
     bool completado;
     bool pagado;
 
-    InscripcionBinaria(int _idUsuario, int _idActividad, int tipoActividad, double _progreso, bool _completado, bool _pagado)
-        : idEstudiante(_idUsuario), idActividad(_idActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
+    InscripcionBinaria(int _idUsuario, int _idActividad, int _tipoActividad, double _progreso, bool _completado, bool _pagado)
+        : idEstudiante(_idUsuario), idActividad(_idActividad), tipoActividad(_tipoActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
     }
-    InscripcionBinaria() : idEstudiante(0), idActividad(0), progreso(0.0), completado(false), pagado(false) {};
+    InscripcionBinaria() : idEstudiante(0), idActividad(0), tipoActividad(0), progreso(0.0), completado(false), pagado(false) {};
 };
 
 class Inscripcion {
@@ -112,7 +112,7 @@ public:
 		cout << "ID Estudiante: " << idEstudiante << endl;
 		cout << "ID Actividad: " << actividad.getId() << endl;
 		cout << "Progreso: " << progreso << endl;
-		cout << "Completado: " << (completado ? "Sí" : "No") << endl;
-		cout << "Pagado: " << (pagado ? "Sí" : "No") << endl;
+		cout << "Completado: " << (completado ? "Sï¿½" : "No") << endl;
+		cout << "Pagado: " << (pagado ? "Sï¿½" : "No") << endl;
     }
 };
