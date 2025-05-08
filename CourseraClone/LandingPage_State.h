@@ -5,6 +5,8 @@
 #include "UI_Ascii.h"
 #include "Menu_State.h"
 #include "Login_State.h"
+#include "PriorityQueue.h"
+//#include "Login_State.h"
 
 // Encabezados estandar
 #include "iostream"
@@ -323,76 +325,73 @@ private:
         }
     }
 
-    void cargarDatos(const string& nombreArchivo, vector<ElementoMenu>& datos, const vector<ElementoMenu>& datosDefecto)
+    void cargarDatosLanding(Controladora* ctrl, int maximo) {
+        PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
+        PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
+
+        vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
+        auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
+            return a->getTitulo();
+            };
+        auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripción
+            return a->getDescripcion();
+            };
+
+        // obtener datos
+        titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
+        titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
+        descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
+        descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
+
+        auto cantidad = [](Actividad* a) {
+            return a->getCantidadAlumnos();
+            };
+        int cantidadTotal;
+
+        cantidadTotal = titulosCursos.size();
+        if (cantidadTotal < maximo) maximo = cantidadTotal;
+        cursos = vector<ElementoMenu>(maximo);
+        priorityCursosLandingPage.llenarDesde<int>(ctrl->getCursos(), cantidad);
+        for (int i = 0; i < maximo; i++) {
+            cursos[i].titulo = titulosCursos[i];
+            cursos[i].descripcion = descripcionesCursos[i];
+        }
+
+        cantidadTotal = titulosEspecializaciones.size();
+        maximo = 3;
+        if (cantidadTotal < maximo) maximo = cantidadTotal;
+        especialidades = vector<ElementoMenu>(maximo);
+        priorityEspecializacionesLandingPage.llenarDesde<int>(ctrl->getEspecializaciones(), cantidad);
+        for (int i = 0; i < maximo; i++) {
+            especialidades[i].titulo = titulosEspecializaciones[i];
+            especialidades[i].descripcion = descripcionesEspecializaciones[i];
+        }
+    }
+
+    void cargarDatos(Controladora* ctrl, const vector<ElementoMenu>& cursosDefecto, const vector<ElementoMenu>& especialidadesDefecto, int maximo)
     {
-        ifstream archivo(nombreArchivo);
-        datos.clear(); // Limpiar datos existentes
+        cursos.clear();
+        especialidades.clear();
+        cargarDatosLanding(ctrl, 3);
 
-        if (archivo.is_open())
-        {
-            string linea;
-            bool datosCargadosDesdeArchivo = false;
-            while (getline(archivo, linea))
-            {
-                size_t posFlecha = linea.find("->");
-                if (posFlecha != string::npos)
-                {
-                    ElementoMenu elemento;
-                    elemento.titulo = linea.substr(0, posFlecha);
-                    // Eliminar posibles espacios en blanco al inicio/fin del título
-                    size_t first = elemento.titulo.find_first_not_of(' ');
-                    if (string::npos != first) {
-                        size_t last = elemento.titulo.find_last_not_of(' ');
-                        elemento.titulo = elemento.titulo.substr(first, (last - first + 1));
-                    }
-                    else {
-                        elemento.titulo = ""; // Título vacío si solo son espacios
-                    }
-
-                    elemento.descripcion = linea.substr(posFlecha + 2);
-                    // Eliminar posibles espacios en blanco al inicio/fin de la descripcion
-                    first = elemento.descripcion.find_first_not_of(' ');
-                    if (string::npos != first) {
-                        size_t last = elemento.descripcion.find_last_not_of(' ');
-                        elemento.descripcion = elemento.descripcion.substr(first, (last - first + 1));
-                    }
-                    else {
-                        elemento.descripcion = ""; // Descripcion vacia si solo son espacios
-                    }
-
-                    if (!elemento.titulo.empty()) { // Solo agregar si tiene titulo (evitar lineas vacias o invalidas)
-                        datos.push_back(elemento);
-                        datosCargadosDesdeArchivo = true;
-                    }
-                }
+        int tamanoOriginal;
+        if (cursos.size() < maximo) {
+            cursos.resize(maximo);
+            tamanoOriginal = cursos.size();
+            for (int i = tamanoOriginal; i < maximo; i++) {
+                cursos[i].titulo = cursosDefecto[i].titulo;
+                cursos[i].descripcion = cursosDefecto[i].descripcion;
             }
-            archivo.close();
-
-            if (!datosCargadosDesdeArchivo) // Si despues de leer el archivo, no se cargo ningun dato valido
-            {
-                if (datosDefecto.empty()) {
-                    // Si el archivo estaba vacío y no hay datos por defecto, añadir un marcador
-                    datos.push_back({ "No se encontraron datos", "" });
-                }
-                else {
-                    // El archivo estaba vacío, usar datos por defecto
-                    datos = datosDefecto;
-                }
+        }
+        if (especialidades.size() < maximo) {
+            cursos.resize(maximo);
+            tamanoOriginal = especialidades.size();
+            for (int i = tamanoOriginal; i < maximo; i++) {
+                especialidades[i].titulo = especialidadesDefecto[i].titulo;
+                especialidades[i].descripcion = especialidadesDefecto[i].descripcion;
             }
-
-        }
-        else {
-            // Archivo no encontrado, usar datos por defecto
-            datos = datosDefecto;
         }
 
-        // Asegurar que el tamaño de datos no exceda el espacio asignado en la UI
-        if (nombreArchivo == ARCHIVO_ESPECIALIDADES && datos.size() > MAX_ELEMENTOS_ESPECIALIDAD) {
-            datos.resize(MAX_ELEMENTOS_ESPECIALIDAD);
-        }
-        else if (nombreArchivo == ARCHIVO_CURSOS && datos.size() > MAX_ELEMENTOS_CURSO) {
-            datos.resize(MAX_ELEMENTOS_CURSO);
-        }
     }
 
     // Carga la última sección y elemento guardados del archivo de persistencia
@@ -442,14 +441,15 @@ private:
         }
     }
 
+
+
 public:
     LandingPageState(Controladora* ctrl) : MenuState(ctrl),
         seccionActual(0), elementoActual(0), seccionAnterior(-1),
         elementoAnterior(-1), primeraRenderizacion(true), opcionSeleccionada(0)
     {
         // Cargar datos desde archivos
-        cargarDatos(ARCHIVO_ESPECIALIDADES, especialidades, especialidadesDefecto);
-        cargarDatos(ARCHIVO_CURSOS, cursos, cursosDefecto);
+        cargarDatos(ctrl, cursosDefecto, especialidadesDefecto, 3);
 
         // Cargar última posición seleccionada
         cargarPersistencia();

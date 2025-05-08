@@ -223,7 +223,6 @@ public:
             ofstream createIndexFile(indexFilePath, ios::binary | ios::out);
             if (!createIndexFile.is_open()) {
                 cerr << "Error al crear archivo de indice: " << indexFilePath << endl;
-                // Manejo de error
                 return;
             }
             createIndexFile.close(); // Cerrar después de crear
@@ -232,7 +231,6 @@ public:
             indexFile.open(indexFilePath, ios::binary | ios::in | ios::out);
             if (!indexFile.is_open()) {
                 cerr << "Error al reabrir archivo de indice despues de crear: " << indexFilePath << endl;
-                // Manejo de error
                 return;
             }
         }

@@ -94,6 +94,13 @@ public:
         return true;
     }
 
+    LinkedList<Curso*> getCursos() {
+        return cursos;
+    }
+    LinkedList<Especializacion*> getEspecializaciones() {
+        return especializaciones;
+    }
+
     vector<Curso*> buscarCursos(const string& criterio) {
         vector<Curso*> resultados;
         for (auto curso : cursos) {
