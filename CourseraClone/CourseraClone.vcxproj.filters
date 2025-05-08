@@ -45,6 +45,9 @@
     <ClCompile Include="Login_State.h">
       <Filter>Header Files\States</Filter>
     </ClCompile>
+    <ClCompile Include="Controladora.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UI_Ascii.h">

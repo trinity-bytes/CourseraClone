@@ -1,16 +1,10 @@
 #pragma once
 
 #include <memory>
-#include "string"
+#include <string>
 
-// Declaraciones anticipadas
+// Forward declaration
 class Controladora;
-class LoginState;
-class LandingPageState;
-class RegistroState;
-class DashboardEstudianteState;
-class DashboardOrganizacionState;
-class DashboardInstructorState;
 
 /// Estructuras de datos
 struct ElementoMenu
@@ -25,7 +19,7 @@ class MenuState
 protected:
     Controladora* controladora;
 public:
-    MenuState(Controladora* ctrl) : controladora(ctrl) {}
+    explicit MenuState(Controladora* ctrl) : controladora(ctrl) {}
     virtual void handleInput(int tecla) = 0; // Método para manejar la entrada
     virtual void render() = 0; // Método para renderizar
     virtual void renderInicial() = 0; // Metodo para renderizado inicial
