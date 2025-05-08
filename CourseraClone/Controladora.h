@@ -185,6 +185,13 @@ public:
 	*/
 
 	// Métodos de búsqueda
+	LinkedList<Curso*> getCursos() {
+		return gestionadorCursos->getCursos();
+	}
+	LinkedList<Especializacion*> getEspecializaciones() {
+		return gestionadorCursos->getEspecializaciones();
+	}
+
 	vector<Curso*> buscarCursos(const string& criterio) 
 	{
 		return gestionadorCursos->buscarCursos(criterio);
