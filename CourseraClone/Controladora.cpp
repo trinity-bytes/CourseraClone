@@ -87,11 +87,18 @@ void Controladora::cambiarEstado(std::unique_ptr<MenuState> nuevoEstado) {
 bool Controladora::iniciarSesion(const std::string& email, const std::string& password) {
     try {
         if (gestionadorUsuarios->autenticarUsuario(email, password)) {
+            // Obtener el usuario actual del gestionador de usuarios después de la autenticación
+            usuarioActual = gestionadorUsuarios->getUsuarioActual();
+            
             // Login exitoso, cambiar al estado correspondiente según el tipo de usuario
-            if (usuarioActual->getTipoUsuario() == TipoUsuario::ESTUDIANTE) {
+            if (usuarioActual && usuarioActual->getTipoUsuario() == TipoUsuario::ESTUDIANTE) {
                 cambiarEstado(std::make_unique<DashboardEstudianteState>(this));
-            } else {
+            } else if (usuarioActual) {
                 cambiarEstado(std::make_unique<DashboardOrganizacionState>(this));
+            } else {
+                // Error, no se pudo obtener el usuario
+                std::cerr << "Error: Usuario autenticado pero no se pudo obtener la instancia" << std::endl;
+                return false;
             }
             return true;
         }
@@ -113,6 +120,10 @@ bool Controladora::registrarUsuario(const std::string& nombre, const std::string
 }
 
 void Controladora::cerrarSesion() {
+    // Cerrar sesión en el gestionador de usuarios primero
+    if (gestionadorUsuarios) {
+        gestionadorUsuarios->cerrarSesion();
+    }
     usuarioActual = nullptr;
     cambiarEstado(std::make_unique<LandingPageState>(this));
 }
