@@ -14,7 +14,7 @@
 // y otras partes del programa. Si necesitas cambiar el tamaño
 // de la consola, modifica estas constantes.
 const int ANCHO_CONSOLA = 120;
-const int ALTO_CONSOLA = 33;
+const int ALTO_CONSOLA = 35;
 
 // =====================================================
 // ESTRUCTURAS DE DATOS COMUNES
