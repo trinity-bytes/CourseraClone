@@ -1,110 +1,130 @@
 #pragma once
-#include <iostream>
+
+#include <string>
+#include <ctime>
+#include <fstream>
+#include "algoritmosBusqueda.h"
 using namespace std;
 
-class Boleta {
-private:
-	int id;
-	string nombreEstudiante;
-	string nombreActividad;
-	string fecha;
-	double precio;
-
-public:
-	Boleta(int _id, string _nombreEstudiante, string _nombreActividad, string _fecha, double _precio) {
-		id = _id;
-		nombreEstudiante = _nombreEstudiante;
-		nombreActividad = _nombreActividad;
-		fecha = _fecha;
-		precio = _precio;
-	}
-
-	// Getters
-	int getId() {
-		return id;
-	}
-	string getNombreEstudiante() {
-		return nombreEstudiante;
-	}
-	string getNombreActividad() {
-		return nombreActividad;
-	}
-
-	void mostrar() {
-		cout << "Boleta ID: " << id << endl;
-		cout << "Nombre Estudiante: " << nombreEstudiante << endl;
-		cout << "Nombre Actividad: " << nombreActividad << endl;
-		cout << "Fecha: " << fecha << endl;
-		cout << "Precio: $" << precio << endl;
-	}
-};
-
-/*
-// Boleta.h
-#include <Date.h>
-#include "BoletaPersistencia.h"
-class Boleta {
-private:
-    int    id;
+struct BoletaBinaria {
     int    idEstudiante;
     int    idActividad;
-    Date   fecha;
+    char   fecha[20];    // "dd/MM/yy HH:mm:ss\0"
     double precio;
+
+    BoletaBinaria() : idEstudiante(0), idActividad(0), fecha(), precio(0.0) {}
+};
+
+struct BoletaIndex {
+    int   idEstudiante;
+    int offset;
+
+    BoletaIndex() : idEstudiante(0), offset(0) {}
+    BoletaIndex(int _idEstudiante, int _offset) : idEstudiante(_idEstudiante), offset(_offset) {}
+};
+
+class Boleta {
+private:
+    int id;
+    int idEstudiante;
+    int idActividad;
+    string fecha;
+    double precio;
+
+    string generarFechaActual() {
+        time_t t = time(nullptr);
+        tm tm = localtime(&t)[0];
+
+        string fecha;
+
+        auto agregar = [&](int valor) {
+            if (valor < 10) fecha += '0';
+            fecha += to_string(valor);
+            };
+
+        agregar(tm.tm_mday);
+        fecha += '/';
+        agregar(tm.tm_mon + 1);
+        fecha += '/';
+        agregar(tm.tm_year % 100);
+        fecha += ' ';
+        agregar(tm.tm_hour);
+        fecha += ':';
+        agregar(tm.tm_min);
+        fecha += ':';
+        agregar(tm.tm_sec);
+
+        return fecha;
+    }
+
 public:
-    // Nuevo constructor
-    Boleta(int _id, int est, int act, const Date& _fecha, double _precio)
+    Boleta(int _id, int est, int act, string _fecha, double _precio)
         : id(_id), idEstudiante(est), idActividad(act),
         fecha(_fecha), precio(_precio) {
+
+    }
+
+    Boleta(int est, int act, double _precio)
+        : idEstudiante(est), idActividad(act),
+        fecha(generarFechaActual()), precio(_precio) {
+        
+        ifstream archivo("Resources/Data/boletas.dat", ios::binary);
+        if (archivo.is_open()) {
+            id = int(archivo.tellg() / sizeof(BoletaBinaria));
+            archivo.close();
+        }
+        else {
+            id = 1;
+        }
+
     }
 
     void guardar() {
-        // 1) Escribir registro principal
-        std::ofstream out("Resources/Data/boletas.dat",
-            std::ios::binary | std::ios::app);
-        if (!out.is_open()) throw std::runtime_error("No puedo abrir boletas.dat");
-        out.seekp(0, std::ios::end);
-        long offset = out.tellp();
+        // 1) Escribir boleta.dat
+        ofstream archivo("Resources/Data/boletas.dat", ios::binary | ios::app);
+        int offset = 0;
+        if (archivo.is_open()) {
+            archivo.seekp(0, ios::end);
+            offset = archivo.tellp();
 
-        BoletaBinaria bin{ id, idEstudiante, idActividad, fecha, precio };
-        out.write(reinterpret_cast<char*>(&bin), sizeof(bin));
-        out.close();
-
-        // 2) Insertar en índice
-        const char* idxPath = "Resources/Data/indices/boletas.dat";
-        std::fstream idx(idxPath, std::ios::binary | std::ios::in | std::ios::out);
-        if (!idx.is_open()) {
-            // si no existe, crearlo
-            std::ofstream create(idxPath, std::ios::binary);
-            create.close();
-            idx.open(idxPath, std::ios::binary | std::ios::in | std::ios::out);
+            BoletaBinaria boleBin;
+            boleBin.idEstudiante = idEstudiante;
+            boleBin.idActividad = idActividad;
+            strncpy(boleBin.fecha, fecha.c_str(), sizeof(boleBin.fecha) - 1);
+            boleBin.fecha[sizeof(boleBin.fecha) - 1] = '\0';
+            boleBin.precio = precio;
+            archivo.write(reinterpret_cast<char*>(&boleBin), sizeof(boleBin));
+            archivo.close();
         }
-        idx.seekg(0, std::ios::end);
-        int count = idx.tellg() / sizeof(BoletaIndex);
+        
+        fstream indiceArchivo("Resources/Data/indices/boletas.dat", ios::binary | ios::in | ios::out);
+        if (indiceArchivo.is_open()) {
+            indiceArchivo.seekg(0, ios::end);
+            int cantidad = indiceArchivo.tellg() / sizeof(BoletaIndex);
 
-        // búsqueda para mantener orden por idEstudiante
-        auto pred = [&](int pos)->bool {
-            BoletaIndex temp;
-            idx.seekg(pos * sizeof(BoletaIndex), std::ios::beg);
-            idx.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-            return idEstudiante >= temp.idEstudiante;
-            };
-        // Supongamos busquedaBinaria disponible (lower_bound)
-        int posIns = (count > 0
-            ? busquedaBinaria(0, count - 1, pred)
-            : 0);
-        // mover registros hacia atrás
-        for (int i = count - 1; i >= posIns; --i) {
-            BoletaIndex t;
-            idx.seekg(i * sizeof(BoletaIndex), std::ios::beg);
-            idx.read(reinterpret_cast<char*>(&t), sizeof(t));
-            idx.seekp((i + 1) * sizeof(BoletaIndex), std::ios::beg);
-            idx.write(reinterpret_cast<char*>(&t), sizeof(t));
+            // predicado para busquedaBinaria
+            auto pred = [&](int pos)->bool {
+                BoletaIndex temp;
+                indiceArchivo.seekg(pos * sizeof(temp), ios::beg);
+                indiceArchivo.read(reinterpret_cast<char*>(&temp), sizeof(temp));
+                return idEstudiante >= temp.idEstudiante;
+                };
+
+            int posIns = (cantidad > 0) ? busquedaBinaria(0, cantidad - 1, pred) : 0;
+
+            for (int i = cantidad - 1; i >= posIns; --i) {
+                BoletaIndex t;
+                indiceArchivo.seekg(i * sizeof(t), ios::beg);
+                indiceArchivo.read(reinterpret_cast<char*>(&t), sizeof(t));
+                indiceArchivo.seekp((i + 1) * sizeof(t), ios::beg);
+                indiceArchivo.write(reinterpret_cast<char*>(&t), sizeof(t));
+            }
+            // insertar nuevo
+            BoletaIndex nuevo(idEstudiante, offset);
+            indiceArchivo.seekp(posIns * sizeof(nuevo), ios::beg);
+            indiceArchivo.write(reinterpret_cast<char*>(&nuevo), sizeof(nuevo));
+            indiceArchivo.close();
         }
-        // escribir nuevo índice
-        BoletaIndex nuevo{ idEstudiante, offset };
-        idx.seekp(posIns * sizeof(BoletaIndex), std::ios::beg);
-        idx.write(reinterpret_cast<char*>(&nuevo), sizeof(nuevo));
-        idx.close();
+        
     }
 };
-*/

@@ -138,3 +138,6 @@ void Controladora::run() {
         }
     }
 } 
+
+LinkedList<Curso*> Controladora::getCursos()  { return gestionadorCursos->getCursos(); }
+LinkedList<Especializacion*> Controladora::getEspecializaciones()  { return gestionadorCursos->getEspecializaciones(); }
