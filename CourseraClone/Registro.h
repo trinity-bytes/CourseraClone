@@ -1,5 +1,6 @@
 #pragma once
 #include "Pantalla.h"
+#include "Usuario.h"
 //#include "Controladora.h"
 #include "ExtendedFunctions.h"
 #include <string>
@@ -8,38 +9,39 @@ class Controladora; // Declaración anticipada de la clase Controladora
 
 class Registro : public PantallaBase {
 private:
-    std::string nombre;
-    std::string email;
-    std::string password;
-    std::string confirmarPassword;
+    string nombre;
+    string email;
+    string password;
+    string confirmarPassword;
+    TipoUsuario tipoUsuario;
     int campoActual;
     bool error;
-    std::string mensajeError;
+    string mensajeError;
 
-    void renderizarCampo(const std::string& etiqueta, const std::string& valor, int y, bool seleccionado) {
+    void renderizarCampo(const string& etiqueta, const string& valor, int y, bool seleccionado) {
         gotoxy(ANCHO_CONSOLA / 2 - 20, y);
         if (seleccionado) {
             setColor(Colors::SELECCION);
-            std::cout << "> ";
+            cout << "> ";
         } else {
             setColor(Colors::NORMAL);
-            std::cout << "  ";
+            cout << "  ";
         }
-        std::cout << etiqueta << ": ";
+        cout << etiqueta << ": ";
         setColor(Colors::NORMAL);
-        std::cout << valor;
+        cout << valor;
     }
 
-    void renderizarBoton(const std::string& texto, int y, bool seleccionado) {
+    void renderizarBoton(const string& texto, int y, bool seleccionado) {
         gotoxy(ANCHO_CONSOLA / 2 - 10, y);
         if (seleccionado) {
             setColor(Colors::SELECCION);
-            std::cout << "> ";
+            cout << "> ";
         } else {
             setColor(Colors::NORMAL);
-            std::cout << "  ";
+            cout << "  ";
         }
-        std::cout << texto;
+        cout << texto;
     }
 
 public:
@@ -51,13 +53,13 @@ public:
             // Título
             gotoxy(ANCHO_CONSOLA / 2 - 10, 2);
             setColor(Colors::NORMAL);
-            std::cout << "REGISTRO DE USUARIO";
+            cout << "REGISTRO DE USUARIO";
 
             // Campos
             renderizarCampo("Nombre", nombre, 5, campoActual == 0);
             renderizarCampo("Email", email, 7, campoActual == 1);
-            renderizarCampo("Contraseña", std::string(password.length(), '*'), 9, campoActual == 2);
-            renderizarCampo("Confirmar Contraseña", std::string(confirmarPassword.length(), '*'), 11, campoActual == 3);
+            renderizarCampo("Contraseña", string(password.length(), '*'), 9, campoActual == 2);
+            renderizarCampo("Confirmar Contraseña", string(confirmarPassword.length(), '*'), 11, campoActual == 3);
 
             // Botones
             renderizarBoton("Registrarse", 14, campoActual == 4);
@@ -67,13 +69,13 @@ public:
             if (error) {
                 gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 18);
                 setColor(Colors::ERRORES);
-                std::cout << mensajeError;
+                cout << mensajeError;
             }
 
             // Instrucciones
             gotoxy(ANCHO_CONSOLA / 2 - 20, ALTO_CONSOLA - 2);
             setColor(Colors::TEXTO_SECUNDARIO);
-            std::cout << "Use las flechas para navegar y Enter para seleccionar";
+            cout << "Use las flechas para navegar y Enter para seleccionar";
 
             int tecla = _getch();
             switch (tecla) {
@@ -101,7 +103,7 @@ public:
                     break;
                 case 8: // Backspace
                     if (campoActual >= 0 && campoActual <= 3) {
-                        std::string* campo = nullptr;
+                        string* campo = nullptr;
                         switch (campoActual) {
                             case 0: campo = &nombre; break;
                             case 1: campo = &email; break;
@@ -115,7 +117,7 @@ public:
                     break;
                 default:
                     if (tecla >= 32 && tecla <= 126) { // Caracteres imprimibles
-                        std::string* campo = nullptr;
+                        string* campo = nullptr;
                         switch (campoActual) {
                             case 0: campo = &nombre; break;
                             case 1: campo = &email; break;
@@ -133,12 +135,22 @@ public:
     }
 
 private:
+
     bool validarCampos() {
+        Usuario temp;
+        
         if (nombre.empty() || email.empty() || password.empty() || confirmarPassword.empty()) {
             error = true;
             mensajeError = "Todos los campos son obligatorios";
             return false;
         }
+
+        if (temp.usuarioRepetido(email, tipoUsuario)) {
+            error = true;
+            mensajeError = "El email corresponde a otro usuario";
+            return false;
+        }
+
         if (password != confirmarPassword) {
             error = true;
             mensajeError = "Las contraseñas no coinciden";
@@ -149,11 +161,13 @@ private:
             mensajeError = "La contraseña debe tener al menos 6 caracteres";
             return false;
         }
-        if (email.find('@') == std::string::npos || email.find('.') == std::string::npos) {
-            error = true;
-            mensajeError = "Email inválido";
-            return false;
-        }
+
+        temp.setNombre(nombre);
+        temp.setContrasena(password);
+        temp.setUsername(email);
+        // temp.setTipoUsuario(tipoUsuario);
+        temp.guardar();
+
         return true;
     }
 }; 

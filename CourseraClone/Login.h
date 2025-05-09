@@ -5,36 +5,36 @@
 
 class Login : public PantallaBase {
 private:
-    std::string email;
-    std::string password;
+    string email;
+    string password;
     int campoActual;
     bool error;
-    std::string mensajeError;
+    string mensajeError;
 
-    void renderizarCampo(const std::string& etiqueta, const std::string& valor, int y, bool seleccionado) {
+    void renderizarCampo(const string& etiqueta, const string& valor, int y, bool seleccionado) {
         gotoxy(ANCHO_CONSOLA / 2 - 20, y);
         if (seleccionado) {
             setColor(Colors::SELECCION);
-            std::cout << "> ";
+            cout << "> ";
         } else {
             setColor(Colors::NORMAL);
-            std::cout << "  ";
+            cout << "  ";
         }
-        std::cout << etiqueta << ": ";
+        cout << etiqueta << ": ";
         setColor(Colors::NORMAL);
-        std::cout << valor;
+        cout << valor;
     }
 
-    void renderizarBoton(const std::string& texto, int y, bool seleccionado) {
+    void renderizarBoton(const string& texto, int y, bool seleccionado) {
         gotoxy(ANCHO_CONSOLA / 2 - 10, y);
         if (seleccionado) {
             setColor(Colors::SELECCION);
-            std::cout << "> ";
+            cout << "> ";
         } else {
             setColor(Colors::NORMAL);
-            std::cout << "  ";
+            cout << "  ";
         }
-        std::cout << texto;
+        cout << texto;
     }
 
 public:
@@ -46,11 +46,11 @@ public:
             // Título
             gotoxy(ANCHO_CONSOLA / 2 - 10, 2);
             setColor(Colors::NORMAL);
-            std::cout << "INICIO DE SESIÓN";
+            cout << "INICIO DE SESIÓN";
 
             // Campos
             renderizarCampo("Email", email, 5, campoActual == 0);
-            renderizarCampo("Contraseña", std::string(password.length(), '*'), 7, campoActual == 1);
+            renderizarCampo("Contraseña", string(password.length(), '*'), 7, campoActual == 1);
 
             // Botones
             renderizarBoton("Iniciar Sesión", 10, campoActual == 2);
@@ -61,13 +61,13 @@ public:
             if (error) {
                 gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 16);
                 setColor(Colors::ERRORES);
-                std::cout << mensajeError;
+                cout << mensajeError;
             }
 
             // Instrucciones
             gotoxy(ANCHO_CONSOLA / 2 - 20, ALTO_CONSOLA - 2);
             setColor(Colors::TEXTO_SECUNDARIO);
-            std::cout << "Use las flechas para navegar y Enter para seleccionar";
+            cout << "Use las flechas para navegar y Enter para seleccionar";
 
             int tecla = _getch();
             switch (tecla) {
@@ -101,7 +101,7 @@ public:
                     break;
                 case 8: // Backspace
                     if (campoActual >= 0 && campoActual <= 1) {
-                        std::string* campo = nullptr;
+                        string* campo = nullptr;
                         switch (campoActual) {
                             case 0: campo = &email; break;
                             case 1: campo = &password; break;
@@ -113,7 +113,7 @@ public:
                     break;
                 default:
                     if (tecla >= 32 && tecla <= 126) { // Caracteres imprimibles
-                        std::string* campo = nullptr;
+                        string* campo = nullptr;
                         switch (campoActual) {
                             case 0: campo = &email; break;
                             case 1: campo = &password; break;
@@ -133,12 +133,6 @@ private:
         if (email.empty() || password.empty()) {
             error = true;
             mensajeError = "Todos los campos son obligatorios";
-            return false;
-        }
-        // Validación básica de email
-        if (email.find('@') == std::string::npos || email.find('.') == std::string::npos) {
-            error = true;
-            mensajeError = "Email inválido";
             return false;
         }
         return true;

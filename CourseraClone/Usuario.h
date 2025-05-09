@@ -313,6 +313,50 @@ public:
 
     /// --- Método estático para manejar el login ---
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
+    bool usuarioRepetido(const string& username, TipoUsuario tipoUsuario) {
+        string indexFilePath = getIndexFilePath(tipoUsuario);
+        ifstream indexFile(indexFilePath, ios::binary);
+        if (!indexFile.is_open()) {
+            cerr << "Error al abrir archivo de índice para ver repetido: " << indexFilePath << endl;
+            return false; // Asumimos que no está repetido si el archivo no existe
+        }
+
+        indexFile.seekg(0, ios::end);
+        int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
+        indexFile.seekg(0, ios::beg);
+
+        if (cantidad == 0) {
+            indexFile.close();
+            return false;
+        }
+
+        // Lambda para búsqueda binaria (igual a login)
+        auto predicado = [&](int pos) {
+            UsuarioIndex temp;
+            indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
+            indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
+            indexFile.clear(); // evitar errores de lectura
+            return strncmp(username.c_str(), temp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
+            };
+
+        int pos = busquedaBinaria(0, cantidad - 1, predicado);
+        if (pos >= 0 && pos < cantidad) {
+            UsuarioIndex temp;
+            indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
+            indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
+            indexFile.close();
+
+            // Confirmar coincidencia exacta
+            if (strncmp(temp.nombreDeUsuario, username.c_str(), MAX_FIELD_LEN) == 0) {
+                return true; // Usuario repetido
+            }
+        }
+
+        indexFile.close();
+        return false; // Usuario disponible
+    }
+
+
     static LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, string userInput, string passInput) 
     {
         string indexFilePath = getIndexFilePath(tipoUsuario);
@@ -428,4 +472,9 @@ public:
 
     // Setter para el ID si es necesario establecerlo después de la creación
     void setId(int newId) { id = newId; }
+    void setNombre(string _nombreCompleto) { nombreCompleto = _nombreCompleto; }
+    void setUsername(string _username) { username = _username; }
+    void setContrasena(string _contrasena) { contrasenaHash = hashContrasena(_contrasena); }
+    void setTipoUsuario(TipoUsuario _tipoUsuario) { tipoUsuario = _tipoUsuario; }
+
 };

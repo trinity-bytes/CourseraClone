@@ -35,19 +35,19 @@ class LinkedList;
 
 class Controladora {
 private:
-	std::unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
-	std::unique_ptr<GestionadorCursos> gestionadorCursos;
-	std::vector<Actividad> actividades;
+	unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
+	unique_ptr<GestionadorCursos> gestionadorCursos;
+	vector<Actividad> actividades;
 	Usuario* usuarioActual;
 	bool ejecutando;
 
 	void cargarDatosArchivo() {
-		std::ifstream archivo("actividades.txt");
+		ifstream archivo(".\\Resources\\Data\\actividades.txt");
 		if (!archivo.is_open()) {
-			throw std::runtime_error("No se pudo abrir el archivo de actividades");
+			throw runtime_error("No se pudo abrir el archivo de actividades"); // Nos salta error al ejecutar
 		}
 
-		std::string linea;
+		string linea;
 		while (getline(archivo, linea)) {
 			actividades.push_back(Actividad(
 				0,                  // id
@@ -63,9 +63,9 @@ private:
 	}
 
 	void cargarDatosInscripciones() {
-		std::ifstream archivo("inscripciones.bin", std::ios::binary);
+		ifstream archivo(".\\Resources\\Data\\inscripciones.bin", ios::binary);
 		if (!archivo.is_open()) {
-			throw std::runtime_error("No se pudo abrir el archivo de inscripciones");
+			throw runtime_error("No se pudo abrir el archivo de inscripciones"); // Nos salta error al ejecutar
 		}
 
 		try {
@@ -78,12 +78,12 @@ private:
 			}
 			
 			if (!archivo.eof()) {
-				throw std::runtime_error("Error al leer el archivo de inscripciones");
+				throw runtime_error("Error al leer el archivo de inscripciones");
 			}
 		}
-		catch (const std::exception& e) {
+		catch (const exception& e) {
 			archivo.close();
-			throw std::runtime_error(std::string("Error al procesar inscripciones: ") + e.what());
+			throw runtime_error(string("Error al procesar inscripciones: ") + e.what());
 		}
 		
 		archivo.close();
@@ -92,8 +92,8 @@ private:
 public:
 	Controladora() : usuarioActual(nullptr), ejecutando(true) {
 		// Inicializar gestores
-		gestionadorUsuarios = std::make_unique<GestionadorUsuarios>();
-		gestionadorCursos = std::make_unique<GestionadorCursos>();
+		gestionadorUsuarios = make_unique<GestionadorUsuarios>();
+		gestionadorCursos = make_unique<GestionadorCursos>();
 		
 		// Cargar datos iniciales
 		cargarDatosArchivo();
@@ -101,25 +101,25 @@ public:
 	}
 
 	void run() {
-		std::unique_ptr<PantallaBase> pantallaActual = std::make_unique<LandingPage>();
+		unique_ptr<PantallaBase> pantallaActual = make_unique<LandingPage>();
 		while (ejecutando) {
 			ResultadoPantalla resultado = pantallaActual->ejecutar();
 			switch (resultado.accion) {
 				case AccionPantalla::IR_A_LOGIN:
-					pantallaActual = std::make_unique<Login>();
+					pantallaActual = make_unique<Login>();
 					break;
 				case AccionPantalla::IR_A_REGISTRO:
-					pantallaActual = std::make_unique<Registro>();
+					pantallaActual = make_unique<Registro>();
 					break;
 				case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
 					if (iniciarSesion(resultado.email, resultado.password)) {
-						pantallaActual = std::make_unique<DashboardEstudiante>();
+						pantallaActual = make_unique<DashboardEstudiante>();
 					} else {
-						pantallaActual = std::make_unique<Login>();
+						pantallaActual = make_unique<Login>();
 					}
 					break;
 				case AccionPantalla::IR_A_LANDING_PAGE:
-					pantallaActual = std::make_unique<LandingPage>();
+					pantallaActual = make_unique<LandingPage>();
 					break;
 				case AccionPantalla::SALIR:
 					ejecutando = false;
@@ -131,7 +131,7 @@ public:
 	}
 
 	// Autenticación
-	bool iniciarSesion(const std::string& email, const std::string& password) {
+	bool iniciarSesion(const string& email, const string& password) {
 		try {
 			if (gestionadorUsuarios->autenticarUsuario(email, password)) {
 				usuarioActual = gestionadorUsuarios->getUsuarioActual();
@@ -139,19 +139,19 @@ public:
 			}
 			return false;
 		}
-		catch (const std::exception& e) {
-			std::cerr << "Error durante el inicio de sesión: " << e.what() << std::endl;
+		catch (const exception& e) {
+			cerr << "Error durante el inicio de sesión: " << e.what() << endl;
 			return false;
 		}
 	}
 
-	bool registrarUsuario(const std::string& nombre, const std::string& email,
-						 const std::string& password, const std::string& tipo) {
+	bool registrarUsuario(const string& nombre, const string& email,
+						 const string& password, const string& tipo) {
 		try {
 			return gestionadorUsuarios->registrarUsuario(nombre, email, password, tipo);
 		}
-		catch (const std::exception& e) {
-			std::cerr << "Error durante el registro: " << e.what() << std::endl;
+		catch (const exception& e) {
+			cerr << "Error durante el registro: " << e.what() << endl;
 			return false;
 		}
 	}
@@ -164,7 +164,7 @@ public:
 	}
 
 	// Listados
-	const std::vector<Actividad>& listarActividades() const { return actividades; }
+	const vector<Actividad>& listarActividades() const { return actividades; }
 
 	// Getters
 	Usuario* getUsuarioActual() const { return usuarioActual; }
