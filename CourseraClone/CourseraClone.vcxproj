@@ -113,9 +113,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Controladora.cpp" />
     <ClCompile Include="CourseraCloneApp.cpp" />
-    <ClCompile Include="Login_State.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actividad.h" />
@@ -125,27 +123,26 @@
     <ClInclude Include="Clase.h" />
     <ClInclude Include="Controladora.h" />
     <ClInclude Include="Curso.h" />
+    <ClInclude Include="DashboardEstudiante.h" />
     <ClInclude Include="Empresa.h" />
     <ClInclude Include="Especializacion.h" />
     <ClInclude Include="Estudiante.h" />
     <ClInclude Include="ExtendedFunctions.h" />
+    <ClInclude Include="GestionadorCursos.h" />
+    <ClInclude Include="GestionadorUsuarios.h" />
     <ClInclude Include="Inscripcion.h" />
+    <ClInclude Include="LandingPage.h" />
     <ClInclude Include="LinkedList.h" />
-    <ClInclude Include="Managers\GestionadorCursos.h" />
-    <ClInclude Include="Managers\GestionadorUsuarios.h" />
-    <ClInclude Include="Menu_State.h" />
+    <ClInclude Include="Login.h" />
     <ClInclude Include="Nodo.h" />
+    <ClInclude Include="Pantalla.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Queue.h" />
+    <ClInclude Include="Registro.h" />
     <ClInclude Include="Stack.h" />
-    <ClInclude Include="States\CrearCurso_State.h" />
-    <ClInclude Include="States\CrearEspecializacion_State.h" />
-    <ClInclude Include="States\DashboardEstudiante_State.h" />
-    <ClInclude Include="States\DashboardOrganizacion_State.h" />
     <ClInclude Include="UI_Ascii.h" />
-    <ClInclude Include="OLD_LandingPage.h" />
-    <ClInclude Include="LandingPage_State.h" />
     <ClInclude Include="Usuario.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Venta.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

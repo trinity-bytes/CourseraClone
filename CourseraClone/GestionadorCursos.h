@@ -1,8 +1,8 @@
 #pragma once
-#include "../Curso.h"
-#include "../LinkedList.h"
-#include "../Especializacion.h"
-#include "../Inscripcion.h"
+#include "Curso.h"
+#include "LinkedList.h"
+#include "Especializacion.h"
+#include "Inscripcion.h"
 #include <fstream>
 #include <string>
 #include <vector>

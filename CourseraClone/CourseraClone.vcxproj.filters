@@ -13,46 +13,13 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Gestores">
-      <UniqueIdentifier>{4ff413ef-ab15-408c-8a00-6d58d942d36e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Otras bibliotecas">
-      <UniqueIdentifier>{662afb46-e4c5-4cfb-99ba-319742095ff0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\States">
-      <UniqueIdentifier>{8b4f9dc9-2367-4466-a772-9a15cd0f27aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Menus UI">
-      <UniqueIdentifier>{de2c495b-f5a8-4c10-84ab-d97f6c0c7831}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Otras bibliotecas\Algoritmos">
-      <UniqueIdentifier>{cc212ff9-c667-4305-a6b1-1b9e5a2987fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Clases Usuarios">
-      <UniqueIdentifier>{35e1c194-4e64-4ddb-ba69-1371c8cda19a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Cursos y Actividades">
-      <UniqueIdentifier>{278cae69-13a5-4411-9432-a4cd9ff68aea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Otras bibliotecas\EstructurasEspeciales">
-      <UniqueIdentifier>{7f19bf12-afff-407a-8677-75e790deed1c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CourseraCloneApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Login_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Controladora.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UI_Ascii.h">
-      <Filter>Header Files\Menus UI</Filter>
-    </ClInclude>
     <ClInclude Include="Boleta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -65,77 +32,77 @@
     <ClInclude Include="Venta.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Managers\GestionadorCursos.h">
-      <Filter>Header Files\Gestores</Filter>
-    </ClInclude>
-    <ClInclude Include="Managers\GestionadorUsuarios.h">
-      <Filter>Header Files\Gestores</Filter>
-    </ClInclude>
-    <ClInclude Include="ExtendedFunctions.h">
-      <Filter>Header Files\Otras bibliotecas</Filter>
-    </ClInclude>
-    <ClInclude Include="PriorityQueue.h">
-      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedList.h">
-      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodo.h">
-      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
-    </ClInclude>
-    <ClInclude Include="Queue.h">
-      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.h">
-      <Filter>Header Files\Otras bibliotecas\EstructurasEspeciales</Filter>
-    </ClInclude>
-    <ClInclude Include="LandingPage_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="OLD_LandingPage.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="algoritmosBusqueda.h">
-      <Filter>Header Files\Otras bibliotecas\Algoritmos</Filter>
-    </ClInclude>
-    <ClInclude Include="algoritmosOrdenamiento.h">
-      <Filter>Header Files\Otras bibliotecas\Algoritmos</Filter>
-    </ClInclude>
-    <ClInclude Include="Usuario.h">
-      <Filter>Header Files\Clases Usuarios</Filter>
-    </ClInclude>
     <ClInclude Include="Empresa.h">
-      <Filter>Header Files\Clases Usuarios</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Estudiante.h">
-      <Filter>Header Files\Clases Usuarios</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Clase.h">
-      <Filter>Header Files\Cursos y Actividades</Filter>
+    <ClInclude Include="Usuario.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Actividad.h">
-      <Filter>Header Files\Cursos y Actividades</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Clase.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Curso.h">
-      <Filter>Header Files\Cursos y Actividades</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Especializacion.h">
-      <Filter>Header Files\Cursos y Actividades</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="States\CrearCurso_State.h">
-      <Filter>Header Files\States</Filter>
+    <ClInclude Include="UI_Ascii.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="States\CrearEspecializacion_State.h">
-      <Filter>Header Files\States</Filter>
+    <ClInclude Include="ExtendedFunctions.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="States\DashboardEstudiante_State.h">
-      <Filter>Header Files\States</Filter>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="States\DashboardOrganizacion_State.h">
-      <Filter>Header Files\States</Filter>
+    <ClInclude Include="Nodo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="algoritmosBusqueda.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="algoritmosOrdenamiento.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GestionadorUsuarios.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GestionadorCursos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pantalla.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LandingPage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Login.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DashboardEstudiante.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

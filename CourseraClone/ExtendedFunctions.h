@@ -1,14 +1,12 @@
 #pragma once
-#include "iostream"
-#include "windows.h" // acceder a la api de windows
-#include "string"
+#include <windows.h>
+#include <conio.h>
+#include <iostream>
+#include <string>
+#include "Utils.h"  // Incluimos Utils.h para usar sus constantes
 
 using namespace std;
 using namespace System;
-
-/// Constantes
-const int ANCHO_CONSOLA = 120;
-const int ALTO_CONSOLA = 35;
 
 struct Color 
 {
@@ -22,18 +20,18 @@ namespace Palette
 {
     constexpr Color AZUL_PRIMARIO = { 8, 113, 240 };       // Botones principales, encabezados
     constexpr Color CREMA = { 244, 237, 221 };             // Fondo general
-    constexpr Color AZUL_OSCURO = { 40, 16, 102 };         // Barra de navegaci髇, pies de p醙ina
+    constexpr Color AZUL_OSCURO = { 40, 16, 102 };         // Barra de navegaci贸n, pies de p谩gina
     constexpr Color AMARILLO_ACCENT = { 242, 208, 75 };    // Destacar elementos importantes
-    constexpr Color ROSA_SECUNDARIO = { 238, 154, 128 };   // Botones secundarios, 韈onos
+    constexpr Color ROSA_SECUNDARIO = { 238, 154, 128 };   // Botones secundarios, 铆conos
     constexpr Color BLANCO_PURO = { 255, 255, 255 };       // Texto principal
-    constexpr Color VERDE_EXITO = { 80, 173, 89 };         // Indicadores de 閤ito, progreso
-    constexpr Color GRIS_SUAVE = { 210, 210, 210 };        // Bordes, l韓eas divisorias
+    constexpr Color VERDE_EXITO = { 80, 173, 89 };         // Indicadores de 茅xito, progreso
+    constexpr Color GRIS_SUAVE = { 210, 210, 210 };        // Bordes, l铆neas divisorias
     constexpr Color AZUL_HOVER = { 20, 80, 200 };          // Efectos hover sobre botones azules
     constexpr Color ROSA_CLARO = { 255, 223, 211 };        // Fondos de alertas, tooltips
     constexpr Color GRIS_OSCURO = { 100, 100, 100 };       // Texto secundario
     constexpr Color ROJO_ERROR = { 222, 53, 57 };          // Mensajes de error, advertencias
     constexpr Color AZUL_LINK = { 120, 160, 255 };         // Enlaces interactivos
-    constexpr Color VERDE_CLARO = { 220, 240, 215 };       // Fondos de 閤ito
+    constexpr Color VERDE_CLARO = { 220, 240, 215 };       // Fondos de 茅xito
     constexpr Color SOMBRA_AZUL = { 15, 45, 90 };          // Sombras, profundidad
     constexpr Color NEGRO = { 0, 0, 0 };    // Advertencias importantes
 }
@@ -81,16 +79,16 @@ inline void CambiarFuenteConsola(const wstring& nombreFuente, COORD tamanioFuent
 
 /// Cambia el color de la consola
 /*
-// Opci髇 normal (texto blanco sobre crema)
+// Opci贸n normal (texto blanco sobre crema)
 SetConsoleColor(1, 0);
 
-// Opci髇 seleccionada (texto azul intenso sobre crema claro)
+// Opci贸n seleccionada (texto azul intenso sobre crema claro)
 SetConsoleColor(4, 0, true, true);
 
 // Mensaje de error (texto rojo intenso sobre rosa claro)
 SetConsoleColor(3, 10, true);
 
-// Bot髇 primario (texto blanco sobre azul con intensidad)
+// Bot贸n primario (texto blanco sobre azul con intensidad)
 SetConsoleColor(1, 4, false, true);
 
 // Texto secundario (gris oscuro sobre crema)
@@ -134,14 +132,82 @@ inline void ConfigurarConsola()
     setColorPalette(9, Palette::VERDE_CLARO);      // Fondos de notificaciones
     setColorPalette(10, Palette::ROSA_CLARO);      // Alertas suaves
     setColorPalette(11, Palette::AZUL_LINK);       // Enlaces interactivos
-    setColorPalette(12, Palette::AMARILLO_ACCENT); // Estrellas de valoraci髇
+    setColorPalette(12, Palette::AMARILLO_ACCENT); // Estrellas de valoraci贸n
     setColorPalette(13, Palette::AZUL_OSCURO);     // Barra superior
     setColorPalette(14, Palette::SOMBRA_AZUL);     // Sombras de tarjetas
-    setColorPalette(15, Palette::NEGRO);           // Texto normal o L韒ites de tiempo
+    setColorPalette(15, Palette::NEGRO);           // Texto normal o L铆mites de tiempo
 
     SetConsoleColor(15, 1);
 
 	Console::SetWindowSize(ANCHO_CONSOLA, ALTO_CONSOLA);
 
 	SetConsoleTitle(L"Coursera Clone | Alpha 2");
+}
+
+// =====================================================
+// FUNCIONES DE POSICIONAMIENTO DEL CURSOR
+// Utilizan las dimensiones definidas en Utils.h
+// =====================================================
+
+// Mueve el cursor a una posici贸n espec铆fica
+void gotoxy(int x, int y) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD pos = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
+    SetConsoleCursorPosition(hConsole, pos);
+}
+
+// Centra el cursor horizontalmente
+void centrarCursor(int y) {
+    gotoxy(ANCHO_CONSOLA / 2, y);
+}
+
+// =====================================================
+// FUNCIONES DE COLOR
+// Utilizan las constantes de color definidas en Utils.h
+// =====================================================
+
+// Establece el color del texto
+void setColor(int color) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color);
+}
+
+// Restaura los colores por defecto
+void resetColor() {
+    setColor(Colors::NORMAL);
+}
+
+// Muestra un mensaje de error
+void mostrarError(const std::string& mensaje) {
+    setColor(Colors::ERRORES);
+    std::cout << mensaje << std::endl;
+    resetColor();
+}
+
+// Muestra un mensaje de 茅xito
+void mostrarExito(const std::string& mensaje) {
+    setColor(Colors::EXITO);
+    std::cout << mensaje << std::endl;
+    resetColor();
+}
+
+// =====================================================
+// FUNCIONES DE ENTRADA
+// =====================================================
+
+// Limpia el buffer de entrada
+void limpiarBuffer() {
+    while (_kbhit()) _getch();
+}
+
+// Espera una tecla espec铆fica
+bool esperarTecla(int tecla) {
+    while (true) {
+        if (_kbhit()) {
+            int teclaPresionada = _getch();
+            if (teclaPresionada == tecla) return true;
+            if (teclaPresionada == 27) return false; // ESC
+        }
+        Sleep(16);
+    }
 }

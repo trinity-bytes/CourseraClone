@@ -1,0 +1,145 @@
+#pragma once
+#include "Pantalla.h"
+#include "ExtendedFunctions.h"
+#include <string>
+
+class Controladora; // Declaración anticipada de la clase Controladora
+
+class Login : public PantallaBase {
+private:
+    std::string email;
+    std::string password;
+    int campoActual;
+    bool error;
+    std::string mensajeError;
+
+    void renderizarCampo(const std::string& etiqueta, const std::string& valor, int y, bool seleccionado) {
+        gotoxy(ANCHO_CONSOLA / 2 - 20, y);
+        if (seleccionado) {
+            setColor(Colors::SELECCION);
+            std::cout << "> ";
+        } else {
+            setColor(Colors::NORMAL);
+            std::cout << "  ";
+        }
+        std::cout << etiqueta << ": ";
+        setColor(Colors::NORMAL);
+        std::cout << valor;
+    }
+
+    void renderizarBoton(const std::string& texto, int y, bool seleccionado) {
+        gotoxy(ANCHO_CONSOLA / 2 - 10, y);
+        if (seleccionado) {
+            setColor(Colors::SELECCION);
+            std::cout << "> ";
+        } else {
+            setColor(Colors::NORMAL);
+            std::cout << "  ";
+        }
+        std::cout << texto;
+    }
+
+public:
+    Login(Controladora* controladora) : PantallaBase(controladora),
+        campoActual(0), error(false) {}
+
+    void renderizar() override {
+        system("cls");
+        
+        // Título
+        gotoxy(ANCHO_CONSOLA / 2 - 10, 2);
+        setColor(Colors::NORMAL);
+        std::cout << "INICIO DE SESIÓN";
+
+        // Campos
+        renderizarCampo("Email", email, 5, campoActual == 0);
+        renderizarCampo("Contraseña", std::string(password.length(), '*'), 7, campoActual == 1);
+
+        // Botones
+        renderizarBoton("Iniciar Sesión", 10, campoActual == 2);
+        renderizarBoton("Registrarse", 12, campoActual == 3);
+        renderizarBoton("Volver", 14, campoActual == 4);
+
+        // Mensaje de error
+        if (error) {
+            gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 16);
+            setColor(Colors::ERRORES);
+            std::cout << mensajeError;
+        }
+
+        // Instrucciones
+        gotoxy(ANCHO_CONSOLA / 2 - 20, ALTO_CONSOLA - 2);
+        setColor(Colors::TEXTO_SECUNDARIO);
+        std::cout << "Use las flechas para navegar y Enter para seleccionar";
+    }
+
+    void manejarInput(int tecla) override {
+        switch (tecla) {
+            case 72: // Flecha arriba
+                if (campoActual > 0) campoActual--;
+                break;
+            case 80: // Flecha abajo
+                if (campoActual < 4) campoActual++;
+                break;
+            case 13: // Enter
+                if (campoActual == 2) { // Iniciar Sesión
+                    if (validarCampos()) {
+                        if (controladora->iniciarSesion(email, password)) {
+                            // La navegación se maneja en Controladora según el tipo de usuario
+                        } else {
+                            error = true;
+                            mensajeError = "Credenciales inválidas. Intente nuevamente.";
+                        }
+                    }
+                } else if (campoActual == 3) { // Registrarse
+                    cambiarPantalla(Pantalla::REGISTRO);
+                } else if (campoActual == 4) { // Volver
+                    cambiarPantalla(Pantalla::LANDING_PAGE);
+                }
+                break;
+            case 8: // Backspace
+                if (campoActual >= 0 && campoActual <= 1) {
+                    std::string* campo = nullptr;
+                    switch (campoActual) {
+                        case 0: campo = &email; break;
+                        case 1: campo = &password; break;
+                    }
+                    if (campo && !campo->empty()) {
+                        campo->pop_back();
+                    }
+                }
+                break;
+            default:
+                if (tecla >= 32 && tecla <= 126) { // Caracteres imprimibles
+                    std::string* campo = nullptr;
+                    switch (campoActual) {
+                        case 0: campo = &email; break;
+                        case 1: campo = &password; break;
+                    }
+                    if (campo) {
+                        campo->push_back(static_cast<char>(tecla));
+                    }
+                }
+                break;
+        }
+        error = false;
+    }
+
+private:
+    bool validarCampos() {
+        if (email.empty() || password.empty()) {
+            error = true;
+            mensajeError = "Todos los campos son obligatorios";
+            return false;
+        }
+
+        // Validación básica de email
+        if (email.find('@') == std::string::npos || email.find('.') == std::string::npos) {
+            error = true;
+            mensajeError = "Email inválido";
+            return false;
+        }
+
+        return true;
+    }
+};

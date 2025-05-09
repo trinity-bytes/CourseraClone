@@ -1,8 +1,8 @@
 #pragma once
-#include "../Usuario.h"
-#include "../Estudiante.h"
-#include "../Empresa.h"
-#include "../LinkedList.h"
+#include "Usuario.h"
+#include "Estudiante.h"
+#include "Empresa.h"
+#include "LinkedList.h"
 #include <fstream>
 #include <string>
 #include <stdexcept>
