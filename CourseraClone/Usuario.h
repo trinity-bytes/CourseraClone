@@ -315,7 +315,11 @@ public:
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
     // Dentro de class Usuario:
 public:
-    bool usuarioRepetido(const string& username, TipoUsuario tipoUsuario) {
+    bool usuarioRepetido(string _username, TipoUsuario tipoUsuario) {
+        for (char& c : _username) {
+            if (c >= 'A' && c <= 'Z') c = c + 32;
+        }
+
         const string indexFilePath = getIndexFilePath(tipoUsuario);
         ifstream indexFile(indexFilePath, ios::in | ios::binary);
         if (!indexFile.is_open()) {
@@ -334,7 +338,7 @@ public:
             UsuarioIndex tmp;
             indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
             indexFile.read(reinterpret_cast<char*>(&tmp), sizeof(tmp));
-            return strncmp(username.c_str(), tmp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
+            return strncmp(_username.c_str(), tmp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
             };
 
         int pos = busquedaBinaria(0, cantidad - 1, pred);
@@ -344,7 +348,7 @@ public:
             indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
 
             // Si coincide exactamente, está repetido
-            if (strncmp(encontrado.nombreDeUsuario, username.c_str(), MAX_FIELD_LEN) == 0) {
+            if (strncmp(encontrado.nombreDeUsuario, _username.c_str(), MAX_FIELD_LEN) == 0) {
                 return true;
             }
         }

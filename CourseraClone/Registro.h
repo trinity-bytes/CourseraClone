@@ -138,35 +138,41 @@ private:
 
     bool validarCampos() {
         Usuario temp;
-        
+
         if (nombre.empty() || email.empty() || password.empty() || confirmarPassword.empty()) {
             error = true;
             mensajeError = "Todos los campos son obligatorios";
+            //throw runtime_error(mensajeError); // Nos salta error al ejecutar
             return false;
         }
 
         if (temp.usuarioRepetido(email, tipoUsuario)) {
             error = true;
             mensajeError = "El email corresponde a otro usuario";
+            //throw runtime_error(mensajeError); // Nos salta error al ejecutar
             return false;
         }
 
         if (password != confirmarPassword) {
             error = true;
             mensajeError = "Las contraseñas no coinciden";
+            //throw runtime_error(mensajeError); // Nos salta error al ejecutar
             return false;
         }
         if (password.length() < 6) {
             error = true;
             mensajeError = "La contraseña debe tener al menos 6 caracteres";
+            //throw runtime_error(mensajeError); // Nos salta error al ejecutar
             return false;
         }
+       
 
         temp.setNombre(nombre);
         temp.setContrasena(password);
         temp.setUsername(email);
         // temp->setTipoUsuario(tipoUsuario);
         temp.guardar();
+
 
         return true;
     }
