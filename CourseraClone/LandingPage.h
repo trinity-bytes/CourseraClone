@@ -321,8 +321,8 @@ private:
     int obtenerMaxElementosEnSeccion(int seccion) {
         switch (seccion) {
             case SECCION_CABECERA: return MAX_ELEMENTOS_CABECERA;
-            case SECCION_ESPECIALIDADES: return std::min(static_cast<int>(especialidades.size()), MAX_ELEMENTOS_ESPECIALIDAD);
-            case SECCION_CURSOS: return std::min(static_cast<int>(cursos.size()), MAX_ELEMENTOS_CURSO);
+            //case SECCION_ESPECIALIDADES: return std::min(static_cast<int>(especialidades.size()), MAX_ELEMENTOS_ESPECIALIDAD);
+            //case SECCION_CURSOS: return std::min(static_cast<int>(cursos.size()), MAX_ELEMENTOS_CURSO);
             default: return 0;
         }
     }
