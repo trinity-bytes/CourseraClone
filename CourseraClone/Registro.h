@@ -165,7 +165,7 @@ private:
         temp.setNombre(nombre);
         temp.setContrasena(password);
         temp.setUsername(email);
-        // temp.setTipoUsuario(tipoUsuario);
+        // temp->setTipoUsuario(tipoUsuario);
         temp.guardar();
 
         return true;

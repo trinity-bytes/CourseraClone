@@ -313,12 +313,13 @@ public:
 
     /// --- Método estático para manejar el login ---
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
+    // Dentro de class Usuario:
+public:
     bool usuarioRepetido(const string& username, TipoUsuario tipoUsuario) {
-        string indexFilePath = getIndexFilePath(tipoUsuario);
-        ifstream indexFile(indexFilePath, ios::binary);
+        const string indexFilePath = getIndexFilePath(tipoUsuario);
+        ifstream indexFile(indexFilePath, ios::in | ios::binary);
         if (!indexFile.is_open()) {
-            cerr << "Error al abrir archivo de índice para ver repetido: " << indexFilePath << endl;
-            return false; // Asumimos que no está repetido si el archivo no existe
+            return false;
         }
 
         indexFile.seekg(0, ios::end);
@@ -326,35 +327,30 @@ public:
         indexFile.seekg(0, ios::beg);
 
         if (cantidad == 0) {
-            indexFile.close();
             return false;
         }
 
-        // Lambda para búsqueda binaria (igual a login)
-        auto predicado = [&](int pos) {
-            UsuarioIndex temp;
+        auto pred = [&](int pos) {
+            UsuarioIndex tmp;
             indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
-            indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // evitar errores de lectura
-            return strncmp(username.c_str(), temp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
+            indexFile.read(reinterpret_cast<char*>(&tmp), sizeof(tmp));
+            return strncmp(username.c_str(), tmp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
             };
 
-        int pos = busquedaBinaria(0, cantidad - 1, predicado);
-        if (pos >= 0 && pos < cantidad) {
-            UsuarioIndex temp;
+        int pos = busquedaBinaria(0, cantidad - 1, pred);
+        if (pos < cantidad) {
+            UsuarioIndex encontrado;
             indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
-            indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.close();
+            indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
 
-            // Confirmar coincidencia exacta
-            if (strncmp(temp.nombreDeUsuario, username.c_str(), MAX_FIELD_LEN) == 0) {
-                return true; // Usuario repetido
+            // Si coincide exactamente, está repetido
+            if (strncmp(encontrado.nombreDeUsuario, username.c_str(), MAX_FIELD_LEN) == 0) {
+                return true;
             }
         }
-
-        indexFile.close();
-        return false; // Usuario disponible
+        return false;
     }
+
 
 
     static LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, string userInput, string passInput) 
@@ -473,7 +469,12 @@ public:
     // Setter para el ID si es necesario establecerlo después de la creación
     void setId(int newId) { id = newId; }
     void setNombre(string _nombreCompleto) { nombreCompleto = _nombreCompleto; }
-    void setUsername(string _username) { username = _username; }
+    void setUsername(string _username) {
+        for (char& c : _username) {
+            if (c >= 'A' && c <= 'Z') c = c + 32;
+        }
+        username = _username;
+    }
     void setContrasena(string _contrasena) { contrasenaHash = hashContrasena(_contrasena); }
     void setTipoUsuario(TipoUsuario _tipoUsuario) { tipoUsuario = _tipoUsuario; }
 
