@@ -16,7 +16,7 @@ private:
     string mensajeError;
 
     // Coordenadas para dibujar
-    COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {67, 3}, {84, 3} };
+    COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {67, 14}, {84, 19} };
     COORD coordsBotones[CANT_BOTONES] = { {11, 15}, {45, 15}, {79, 15} };
 
     void renderizarCampo(const string& etiqueta, const string& valor, int y, bool seleccionado) {
