@@ -16,8 +16,6 @@
 class GestionadorUsuarios;
 class GestionadorCursos;
 class Usuario;
-class LandingPageState;
-class LoginState;
 class Curso;
 class Especializacion;
 
