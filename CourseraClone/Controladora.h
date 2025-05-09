@@ -50,13 +50,13 @@ private:
 		string linea;
 		while (getline(archivo, linea)) {
 			actividades.push_back(Actividad(
-				0,                  // id
-				0,                  // idEmpresa
-				"",                 // nombreEmpresa
-				linea,             // titulo
-				0,                  // cantidadAlumnos
-				0,                  // tipo
-				""                 // descripcion
+				0,     // id
+				0,     // idEmpresa
+				"",    // nombreEmpresa
+				linea, // titulo
+				0,     // cantidadAlumnos
+				0,     // tipo
+				""     // descripcion
 			));
 		}
 		archivo.close();
