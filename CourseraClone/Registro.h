@@ -4,6 +4,8 @@
 #include "ExtendedFunctions.h"
 #include <string>
 
+class Controladora; // Declaración anticipada de la clase Controladora
+
 class Registro : public PantallaBase {
 private:
     Controladora* controladora;
