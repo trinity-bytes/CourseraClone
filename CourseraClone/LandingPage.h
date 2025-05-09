@@ -49,6 +49,7 @@ private:
     int elementoAnterior;
 
     bool primeraRenderizacion;
+	bool presionEnter; // Para evitar que se ejecute el evento de enter al iniciar la pantalla
 
     // Datos del menú
     std::vector<ElementoMenu> especialidades;
@@ -252,21 +253,16 @@ public:
     LandingPage() 
         : PantallaBase(),
           seccionActual(0), elementoActual(0),
-          seccionAnterior(-1), elementoAnterior(-1), primeraRenderizacion(true) {
+          seccionAnterior(-1), elementoAnterior(-1), 
+		  primeraRenderizacion(true), presionEnter(false)
+    {
         cargarDatos();
     }
 
-    ResultadoPantalla ejecutar() override {
-        // Lógica de renderizado, input y navegación aquí
-        // Por ejemplo:
-        ResultadoPantalla res;
-        res.accion = AccionPantalla::IR_A_LOGIN; // o la acción que corresponda
-        return res;
-    }
-
-    void renderizar()  {
-        if (primeraRenderizacion) {
-            //limpiarPantalla();
+    void renderizar()  
+    {
+        if (primeraRenderizacion) 
+        {
 			system("cls");
             UI_LandingPage();
             dibujarInterfazCompleta();
@@ -277,10 +273,15 @@ public:
         }
     }
 
-    void manejarInput(int tecla)  {
-        if (tecla == 224) { // Tecla extendida
+    void manejarInput(int tecla)  
+    {
+		presionEnter = false;
+
+        if (tecla == 224) // Tecla extendida
+        { 
             tecla = _getch();
-            switch (tecla) {
+            switch (tecla) 
+            {
                 case 72: // Flecha arriba
                     seccionActual--;
                     if (seccionActual < 0) seccionActual = 0;
@@ -305,36 +306,88 @@ public:
             }
             actualizarSeleccion();
         }
-        else if (tecla == 13) { // Enter
-            switch (seccionActual) {
-                case SECCION_CABECERA:
-                    if (elementoActual == 0) { // Iniciar Sesión
-                        // TODO: Cambiar a pantalla de login
-                    }
-                    break;
-                case SECCION_ESPECIALIDADES:
-                    // TODO: Navegar a detalle de especialidad
-                    break;
-                case SECCION_CURSOS:
-                    // TODO: Navegar a detalle de curso
-                    break;
-            }
+        else if (tecla == 13) // Enter
+        { 
+			presionEnter = true;
         }
     }
 
     Pantalla getSiguientePantalla()  {
-        if (seccionActual == SECCION_CABECERA && elementoActual == 0) {
-            return Pantalla::LOGIN;
+        if (seccionActual == SECCION_CABECERA) 
+        {
+            switch (elementoActual)
+            {
+			case 0: // Iniciar Sesion
+                return Pantalla::LOGIN;
+			case 1: // Registrarse
+				return Pantalla::REGISTRO;
+			case 2: // Sobre Nosotros
+				return Pantalla::SOBRE_NOSOTROS;
+            default: 
+                return Pantalla::NONE;
+            }
         }
-        return Pantalla::NONE;
+    }
+
+    ResultadoPantalla ejecutar() override
+    {
+        ResultadoPantalla res;
+
+        renderizar();
+
+        int tecla;
+        while (res.accion == AccionPantalla::NINGUNA) {
+            // Handle input
+            tecla = _getch(); // Assuming _getch() is available for input
+            manejarInput(tecla);
+
+            // Re-render based on updated selection
+            renderizar();
+
+            if (presionEnter)
+            {
+                // Check if a selection triggers a screen change
+                Pantalla siguiente = getSiguientePantalla();
+                if (siguiente != Pantalla::NONE) {
+                    switch (siguiente) {
+                    case Pantalla::LOGIN:
+                        res.accion = AccionPantalla::IR_A_LOGIN;
+                        break;
+                        // Add cases for other possible screens (REGISTRO, etc.)
+                        // based on getSiguientePantalla() logic and ELEMENTOS_CABECERA
+                    case Pantalla::REGISTRO: // Assuming you have a Pantalla::REGISTRO enum value
+                        if (seccionActual == SECCION_CABECERA && elementoActual == 1) { // Assuming Registrarse is at index 1
+                            res.accion = AccionPantalla::IR_A_REGISTRO; // Assuming you have AccionPantalla::IR_A_REGISTRO
+                        }
+                        break;
+                    case Pantalla::SOBRE_NOSOTROS: // Assuming you have a Pantalla::SOBRE_NOSOTROS enum value
+                        if (seccionActual == SECCION_CABECERA && elementoActual == 2) { // Assuming Sobre Nosotros is at index 2
+                            res.accion = AccionPantalla::IR_A_SOBRE_NOSOTROS; // Assuming you have AccionPantalla::IR_A_SOBRE_NOSOTROS
+                        }
+                        break;
+                    default:
+                        // Handle other possible next screens if needed
+                        break;
+                    }
+                }
+            }
+            
+            // If Enter was pressed but no screen change was triggered,
+           // you might want to handle actions related to selected specialties or courses here.
+           // The current code in manejarInput has TODOs for this.
+        }
+
+        return res;
     }
 
 private:
-    int obtenerMaxElementosEnSeccion(int seccion) {
-        switch (seccion) {
+    int obtenerMaxElementosEnSeccion(int seccion) 
+    {
+        switch (seccion) 
+        {
             case SECCION_CABECERA: return MAX_ELEMENTOS_CABECERA;
-            //case SECCION_ESPECIALIDADES: return std::min(static_cast<int>(especialidades.size()), MAX_ELEMENTOS_ESPECIALIDAD);
-            //case SECCION_CURSOS: return std::min(static_cast<int>(cursos.size()), MAX_ELEMENTOS_CURSO);
+            case SECCION_ESPECIALIDADES: return MAX_ELEMENTOS_ESPECIALIDAD;
+            case SECCION_CURSOS: return MAX_ELEMENTOS_CURSO;
             default: return 0;
         }
     }
