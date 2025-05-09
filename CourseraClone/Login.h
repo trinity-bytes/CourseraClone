@@ -5,11 +5,19 @@
 
 class Login : public PantallaBase {
 private:
+    // Constantes del menú
+    static const int ELEMENTOS_INPUT = 2;
+    static const int CANT_BOTONES = 3;
+
     string email;
     string password;
     int campoActual;
     bool error;
     string mensajeError;
+
+    // Coordenadas para dibujar
+    COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {67, 3}, {84, 3} };
+    COORD coordsBotones[CANT_BOTONES] = { {11, 15}, {45, 15}, {79, 15} };
 
     void renderizarCampo(const string& etiqueta, const string& valor, int y, bool seleccionado) {
         gotoxy(ANCHO_CONSOLA / 2 - 20, y);
@@ -40,8 +48,10 @@ private:
 public:
     Login() : campoActual(0), error(false) {}
 
-    ResultadoPantalla ejecutar() override {
-        while (true) {
+    ResultadoPantalla ejecutar() override 
+    {
+        while (true) 
+        {
             system("cls");
             // Título
             gotoxy(ANCHO_CONSOLA / 2 - 10, 2);
