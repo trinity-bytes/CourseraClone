@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Pantalla.h"
-
-class Controladora; // Declaración anticipada de la clase Controladora
+#include "ExtendedFunctions.h"
+#include <vector>
+#include <string>
 
 class DashboardEstudiante : public PantallaBase {
 private:
@@ -34,140 +35,61 @@ private:
     int elementoActual;
     int seccionAnterior;
     int elementoAnterior;
-
-    void actualizarSeleccion() {
-        // Si cambió de sección, actualizar ambas secciones implicadas
-        if (seccionActual != seccionAnterior) {
-            actualizarElementoMenu(seccionAnterior, false);
-            actualizarElementoMenu(seccionActual, true);
-        }
-        // Si solo cambió el elemento dentro de la misma sección
-        else if (elementoActual != elementoAnterior) {
-            actualizarElementoMenu(elementoAnterior, false);
-            actualizarElementoMenu(elementoActual, true);
-        }
-
-        seccionAnterior = seccionActual;
-        elementoAnterior = elementoActual;
-    }
+    bool primeraRenderizacion;
 
     void actualizarElementoMenu(int indice, bool seleccionado) {
         if (indice < 0 || indice >= TOTAL_SECCIONES) return;
-
         gotoXY(coordsElementosMenu[indice].X, coordsElementosMenu[indice].Y);
-
-        if (seleccionado) SetConsoleColor(1, 4);
-        else SetConsoleColor(15, 1);
-
+        if (seleccionado) setColor(Colors::SELECCION);
+        else setColor(Colors::NORMAL);
         std::cout << ELEMENTOS_MENU[indice];
-        SetConsoleColor(15, 1);
+        setColor(Colors::NORMAL);
     }
 
     void dibujarInterfazCompleta() {
-        // Dibujar cabecera
         for (int i = 0; i < TOTAL_SECCIONES; ++i) {
             actualizarElementoMenu(i, seccionActual == i);
         }
-
-        // Dibujar contenido según la sección actual
-        switch (seccionActual) {
-            case SECCION_CURSOS_INSCRITOS:
-                dibujarCursosInscritos();
-                break;
-            case SECCION_CERTIFICADOS:
-                dibujarCertificados();
-                break;
-            case SECCION_BOLETAS:
-                dibujarBoletas();
-                break;
-            case SECCION_PERFIL:
-                dibujarPerfil();
-                break;
-        }
+        // Aquí puedes dibujar el contenido de la sección seleccionada
     }
 
-    void dibujarCursosInscritos() {
-        gotoXY(11, 15);
-        std::cout << "Mis Cursos Inscritos:";
-        // TODO: Mostrar lista de cursos
-    }
-
-    void dibujarCertificados() {
-        gotoXY(11, 15);
-        std::cout << "Mis Certificados:";
-        // TODO: Mostrar lista de certificados
-    }
-
-    void dibujarBoletas() {
-        gotoXY(11, 15);
-        std::cout << "Mis Boletas:";
-        // TODO: Mostrar lista de boletas
-    }
-
-    void dibujarPerfil() {
-        gotoXY(11, 15);
-        std::cout << "Mi Perfil:";
-        // TODO: Mostrar información del perfil
+    void actualizarSeleccion() {
+        // Aquí puedes actualizar la selección visual si lo deseas
     }
 
 public:
-    DashboardEstudiante(Controladora* ctrl) 
-        : PantallaBase(ctrl),
-          seccionActual(0), elementoActual(0),
-          seccionAnterior(0), elementoAnterior(0) {}
-    // PantallaBase(ctrl, Pantalla::DASHBOARD_ESTUDIANTE), opcional para los constructores pero no implementado depende de si sea necesario en el futuro
+    DashboardEstudiante() : seccionActual(0), elementoActual(0), seccionAnterior(0), elementoAnterior(0), primeraRenderizacion(true) {}
 
-    void renderizar() override {
-        if (primeraRenderizacion) {
-            limpiarPantalla();
-            dibujarInterfazCompleta();
-            primeraRenderizacion = false;
-        }
-        else {
-            actualizarSeleccion();
-        }
-    }
+    ResultadoPantalla ejecutar() override {
+        while (true) {
+            if (primeraRenderizacion) {
+                system("cls");
+                dibujarInterfazCompleta();
+                primeraRenderizacion = false;
+            } else {
+                actualizarSeleccion();
+            }
 
-    void manejarInput(int tecla) override {
-        switch (tecla) {
-            case VK_LEFT:
-                if (seccionActual > 0) {
-                    seccionActual--;
-                    dibujarInterfazCompleta();
+            int tecla = _getch();
+            switch (tecla) {
+                case 224: // Tecla extendida
+                    tecla = _getch();
+                    switch (tecla) {
+                        case 75: // Flecha izquierda
+                            if (seccionActual > 0) seccionActual--;
+                            break;
+                        case 77: // Flecha derecha
+                            if (seccionActual < TOTAL_SECCIONES - 1) seccionActual++;
+                            break;
+                    }
+                    break;
+                case 27: // ESC
+                {
+                    ResultadoPantalla res;
+                    res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+                    return res;
                 }
-                break;
-            case VK_RIGHT:
-                if (seccionActual < TOTAL_SECCIONES - 1) {
-                    seccionActual++;
-                    dibujarInterfazCompleta();
-                }
-                break;
-            case VK_RETURN:
-                // Manejar selección
-                switch (seccionActual) {
-                    case SECCION_CURSOS_INSCRITOS:
-                        // TODO: Navegar a detalle de curso
-                        break;
-                    case SECCION_CERTIFICADOS:
-                        // TODO: Navegar a detalle de certificado
-                        break;
-                    case SECCION_BOLETAS:
-                        // TODO: Navegar a detalle de boleta
-                        break;
-                    case SECCION_PERFIL:
-                        // TODO: Navegar a edición de perfil
-                        break;
-                }
-                break;
-            case VK_ESCAPE:
-                controladora->cerrarSesion();
-                break;
+            }
         }
-    }
-
-    Pantalla getSiguientePantalla() override {
-        // Por ahora, siempre retorna la pantalla actual
-        // TODO: Implementar lógica de navegación
-        return pantallaActual;
     }
 }; 

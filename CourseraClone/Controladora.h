@@ -10,6 +10,7 @@
 #include "LandingPage.h"
 #include "DashboardEstudiante.h"
 #include "Registro.h"
+#include "PantallaResultado.h"
 
 // Forward declarations
 class GestionadorUsuarios;
@@ -34,7 +35,6 @@ class LinkedList;
 
 class Controladora {
 private:
-	std::unique_ptr<PantallaBase> pantallaActual;
 	std::unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
 	std::unique_ptr<GestionadorCursos> gestionadorCursos;
 	std::vector<Actividad> actividades;
@@ -98,50 +98,34 @@ public:
 		// Cargar datos iniciales
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
-		
-		// Iniciar con la pantalla de landing page
-		cambiarPantalla(std::make_unique<LandingPage>(this));
 	}
 
-	~Controladora() {
-		// Limpiar recursos
-	}
-
-	// Navegación
-	void cambiarPantalla(std::unique_ptr<PantallaBase> nuevaPantalla) {
-		pantallaActual = std::move(nuevaPantalla);
-	}
-
-	void ejecutarPantallaActual() {
-		if (!pantallaActual) return;
-
-		// Renderizar la pantalla actual
-		pantallaActual->renderizar();
-
-		// Manejar input si hay tecla presionada
-		if (_kbhit()) {
-			int tecla = _getch();
-			pantallaActual->manejarInput(tecla);
-
-			// Verificar si hay cambio de pantalla
-			Pantalla siguientePantalla = pantallaActual->getSiguientePantalla();
-			if (siguientePantalla != pantallaActual->getPantallaActual()) {
-				switch (siguientePantalla) {
-					case Pantalla::LOGIN:
-						cambiarPantalla(std::make_unique<Login>(this));
-						break;
-					case Pantalla::LANDING_PAGE:
-						cambiarPantalla(std::make_unique<LandingPage>(this));
-						break;
-					case Pantalla::DASHBOARD_ESTUDIANTE:
-						cambiarPantalla(std::make_unique<DashboardEstudiante>(this));
-						break;
-					case Pantalla::REGISTRO:
-						cambiarPantalla(std::make_unique<Registro>(this));
-						break;
-					default:
-						break;
-				}
+	void run() {
+		std::unique_ptr<PantallaBase> pantallaActual = std::make_unique<LandingPage>();
+		while (ejecutando) {
+			ResultadoPantalla resultado = pantallaActual->ejecutar();
+			switch (resultado.accion) {
+				case AccionPantalla::IR_A_LOGIN:
+					pantallaActual = std::make_unique<Login>();
+					break;
+				case AccionPantalla::IR_A_REGISTRO:
+					pantallaActual = std::make_unique<Registro>();
+					break;
+				case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+					if (iniciarSesion(resultado.email, resultado.password)) {
+						pantallaActual = std::make_unique<DashboardEstudiante>();
+					} else {
+						pantallaActual = std::make_unique<Login>();
+					}
+					break;
+				case AccionPantalla::IR_A_LANDING_PAGE:
+					pantallaActual = std::make_unique<LandingPage>();
+					break;
+				case AccionPantalla::SALIR:
+					ejecutando = false;
+					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -151,14 +135,7 @@ public:
 		try {
 			if (gestionadorUsuarios->autenticarUsuario(email, password)) {
 				usuarioActual = gestionadorUsuarios->getUsuarioActual();
-				
-				if (usuarioActual) {
-					if (usuarioActual->getTipoUsuario() == TipoUsuario::ESTUDIANTE) {
-						cambiarPantalla(std::make_unique<DashboardEstudiante>(this));
-					}
-					// TODO: Implementar otros tipos de usuario
-					return true;
-				}
+				return usuarioActual != nullptr;
 			}
 			return false;
 		}
@@ -184,19 +161,10 @@ public:
 			gestionadorUsuarios->cerrarSesion();
 		}
 		usuarioActual = nullptr;
-		cambiarPantalla(std::make_unique<LandingPage>(this));
 	}
 
 	// Listados
 	const std::vector<Actividad>& listarActividades() const { return actividades; }
-
-	// Ejecución
-	void run() {
-		while (ejecutando) {
-			ejecutarPantallaActual();
-			Sleep(16); // Aproximadamente 60 FPS
-		}
-	}
 
 	// Getters
 	Usuario* getUsuarioActual() const { return usuarioActual; }
@@ -205,5 +173,4 @@ public:
 
 	LinkedList<Curso*> getCursos();
 	LinkedList<Especializacion*> getEspecializaciones();
-	
 };

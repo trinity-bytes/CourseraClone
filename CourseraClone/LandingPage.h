@@ -48,6 +48,8 @@ private:
     int seccionAnterior;
     int elementoAnterior;
 
+    bool primeraRenderizacion;
+
     // Datos del menú
     std::vector<ElementoMenu> especialidades;
     std::vector<ElementoMenu> cursos;
@@ -246,16 +248,26 @@ private:
     }
 
 public:
-    LandingPage(Controladora* ctrl) 
-        : PantallaBase(ctrl),
+
+    LandingPage() 
+        : PantallaBase(),
           seccionActual(0), elementoActual(0),
-          seccionAnterior(-1), elementoAnterior(-1) {
+          seccionAnterior(-1), elementoAnterior(-1), primeraRenderizacion(true) {
         cargarDatos();
     }
 
-    void renderizar() override {
+    ResultadoPantalla ejecutar() override {
+        // Lógica de renderizado, input y navegación aquí
+        // Por ejemplo:
+        ResultadoPantalla res;
+        res.accion = AccionPantalla::IR_A_LOGIN; // o la acción que corresponda
+        return res;
+    }
+
+    void renderizar()  {
         if (primeraRenderizacion) {
-            limpiarPantalla();
+            //limpiarPantalla();
+			system("cls");
             UI_LandingPage();
             dibujarInterfazCompleta();
             primeraRenderizacion = false;
@@ -265,7 +277,7 @@ public:
         }
     }
 
-    void manejarInput(int tecla) override {
+    void manejarInput(int tecla)  {
         if (tecla == 224) { // Tecla extendida
             tecla = _getch();
             switch (tecla) {
@@ -310,11 +322,11 @@ public:
         }
     }
 
-    Pantalla getSiguientePantalla() override {
+    Pantalla getSiguientePantalla()  {
         if (seccionActual == SECCION_CABECERA && elementoActual == 0) {
             return Pantalla::LOGIN;
         }
-        return pantallaActual;
+        return Pantalla::NONE;
     }
 
 private:

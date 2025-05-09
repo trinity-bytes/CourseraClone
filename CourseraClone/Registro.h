@@ -8,7 +8,6 @@ class Controladora; // Declaración anticipada de la clase Controladora
 
 class Registro : public PantallaBase {
 private:
-    Controladora* controladora;
     std::string nombre;
     std::string email;
     std::string password;
@@ -44,92 +43,93 @@ private:
     }
 
 public:
-	Registro(Controladora* controladora) : PantallaBase(controladora),
-        controladora(controladora), campoActual(0), error(false) {}
+    Registro() : campoActual(0), error(false) {}
 
-    void renderizar() override {
-        system("cls");
-        
-        // Título
-        gotoxy(ANCHO_CONSOLA / 2 - 10, 2);
-        setColor(Colors::NORMAL);
-        std::cout << "REGISTRO DE USUARIO";
+    ResultadoPantalla ejecutar() override {
+        while (true) {
+            system("cls");
+            // Título
+            gotoxy(ANCHO_CONSOLA / 2 - 10, 2);
+            setColor(Colors::NORMAL);
+            std::cout << "REGISTRO DE USUARIO";
 
-        // Campos
-        renderizarCampo("Nombre", nombre, 5, campoActual == 0);
-        renderizarCampo("Email", email, 7, campoActual == 1);
-        renderizarCampo("Contraseña", std::string(password.length(), '*'), 9, campoActual == 2);
-        renderizarCampo("Confirmar Contraseña", std::string(confirmarPassword.length(), '*'), 11, campoActual == 3);
+            // Campos
+            renderizarCampo("Nombre", nombre, 5, campoActual == 0);
+            renderizarCampo("Email", email, 7, campoActual == 1);
+            renderizarCampo("Contraseña", std::string(password.length(), '*'), 9, campoActual == 2);
+            renderizarCampo("Confirmar Contraseña", std::string(confirmarPassword.length(), '*'), 11, campoActual == 3);
 
-        // Botones
-        renderizarBoton("Registrarse", 14, campoActual == 4);
-        renderizarBoton("Volver", 16, campoActual == 5);
+            // Botones
+            renderizarBoton("Registrarse", 14, campoActual == 4);
+            renderizarBoton("Volver", 16, campoActual == 5);
 
-        // Mensaje de error
-        if (error) {
-            gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 18);
-            setColor(Colors::ERRORES);
-            std::cout << mensajeError;
-        }
+            // Mensaje de error
+            if (error) {
+                gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 18);
+                setColor(Colors::ERRORES);
+                std::cout << mensajeError;
+            }
 
-        // Instrucciones
-        gotoxy(ANCHO_CONSOLA / 2 - 20, ALTO_CONSOLA - 2);
-        setColor(Colors::TEXTO_SECUNDARIO);
-        std::cout << "Use las flechas para navegar y Enter para seleccionar";
-    }
+            // Instrucciones
+            gotoxy(ANCHO_CONSOLA / 2 - 20, ALTO_CONSOLA - 2);
+            setColor(Colors::TEXTO_SECUNDARIO);
+            std::cout << "Use las flechas para navegar y Enter para seleccionar";
 
-    void manejarInput(int tecla) override {
-        switch (tecla) {
-            case 72: // Flecha arriba
-                if (campoActual > 0) campoActual--;
-                break;
-            case 80: // Flecha abajo
-                if (campoActual < 5) campoActual++;
-                break;
-            case 13: // Enter
-                if (campoActual == 4) { // Registrarse
-                    if (validarCampos()) {
-                        if (controladora->registrarUsuario(nombre, email, password, "ESTUDIANTE")) {
-                            cambiarPantalla(Pantalla::LOGIN);
-                        } else {
-                            error = true;
-                            mensajeError = "Error al registrar usuario. Intente nuevamente.";
+            int tecla = _getch();
+            switch (tecla) {
+                case 72: // Flecha arriba
+                    if (campoActual > 0) campoActual--;
+                    break;
+                case 80: // Flecha abajo
+                    if (campoActual < 5) campoActual++;
+                    break;
+                case 13: // Enter
+                    if (campoActual == 4) { // Registrarse
+                        if (validarCampos()) {
+                            ResultadoPantalla res;
+                            res.accion = AccionPantalla::IR_A_LOGIN;
+                            res.email = email;
+                            res.password = password;
+                            res.email = email;
+                            return res;
+                        }
+                    } else if (campoActual == 5) { // Volver
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+                        return res;
+                    }
+                    break;
+                case 8: // Backspace
+                    if (campoActual >= 0 && campoActual <= 3) {
+                        std::string* campo = nullptr;
+                        switch (campoActual) {
+                            case 0: campo = &nombre; break;
+                            case 1: campo = &email; break;
+                            case 2: campo = &password; break;
+                            case 3: campo = &confirmarPassword; break;
+                        }
+                        if (campo && !campo->empty()) {
+                            campo->pop_back();
                         }
                     }
-                } else if (campoActual == 5) { // Volver
-                    cambiarPantalla(Pantalla::LANDING_PAGE);
-                }
-                break;
-            case 8: // Backspace
-                if (campoActual >= 0 && campoActual <= 3) {
-                    std::string* campo = nullptr;
-                    switch (campoActual) {
-                        case 0: campo = &nombre; break;
-                        case 1: campo = &email; break;
-                        case 2: campo = &password; break;
-                        case 3: campo = &confirmarPassword; break;
+                    break;
+                default:
+                    if (tecla >= 32 && tecla <= 126) { // Caracteres imprimibles
+                        std::string* campo = nullptr;
+                        switch (campoActual) {
+                            case 0: campo = &nombre; break;
+                            case 1: campo = &email; break;
+                            case 2: campo = &password; break;
+                            case 3: campo = &confirmarPassword; break;
+                        }
+                        if (campo) {
+                            campo->push_back(static_cast<char>(tecla));
+                        }
                     }
-                    if (campo && !campo->empty()) {
-                        campo->pop_back();
-                    }
-                }
-                break;
-            default:
-                if (tecla >= 32 && tecla <= 126) { // Caracteres imprimibles
-                    std::string* campo = nullptr;
-                    switch (campoActual) {
-                        case 0: campo = &nombre; break;
-                        case 1: campo = &email; break;
-                        case 2: campo = &password; break;
-                        case 3: campo = &confirmarPassword; break;
-                    }
-                    if (campo) {
-                        campo->push_back(static_cast<char>(tecla));
-                    }
-                }
-                break;
+                    break;
+            }
+            error = false;
         }
-        error = false;
     }
 
 private:
@@ -139,26 +139,21 @@ private:
             mensajeError = "Todos los campos son obligatorios";
             return false;
         }
-
         if (password != confirmarPassword) {
             error = true;
             mensajeError = "Las contraseñas no coinciden";
             return false;
         }
-
         if (password.length() < 6) {
             error = true;
             mensajeError = "La contraseña debe tener al menos 6 caracteres";
             return false;
         }
-
-        // Validación básica de email
         if (email.find('@') == std::string::npos || email.find('.') == std::string::npos) {
             error = true;
             mensajeError = "Email inválido";
             return false;
         }
-
         return true;
     }
 }; 

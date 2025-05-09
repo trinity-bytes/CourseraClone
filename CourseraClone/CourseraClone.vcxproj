@@ -136,6 +136,7 @@
     <ClInclude Include="Login.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="Pantalla.h" />
+    <ClInclude Include="PantallaResultado.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Registro.h" />
