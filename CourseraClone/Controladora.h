@@ -11,6 +11,18 @@
 #include "DashboardEstudiante.h"
 #include "Registro.h"
 
+// Forward declarations
+class GestionadorUsuarios;
+class GestionadorCursos;
+class Usuario;
+class LandingPageState;
+class LoginState;
+class Curso;
+class Especializacion;
+
+template<typename T>
+class LinkedList;
+
 // Headers de la libreria estandar
 #include <memory>
 #include <vector>
@@ -190,4 +202,8 @@ public:
 	Usuario* getUsuarioActual() const { return usuarioActual; }
 	GestionadorUsuarios* getGestionadorUsuarios() const { return gestionadorUsuarios.get(); }
 	GestionadorCursos* getGestionadorCursos() const { return gestionadorCursos.get(); }
+
+	LinkedList<Curso*> getCursos();
+	LinkedList<Especializacion*> getEspecializaciones();
+	
 };
