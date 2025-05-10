@@ -329,7 +329,7 @@ public:
         primeraRenderizacion(true), presionEnter(false)
     {
         //cargarDatos(cursosDatos, especializacionesDatos, 3);
-        cargarDatos();
+        cargarDatos(cursosDatos, especializacionesDatos, 3);
     }
 
     void renderizar()
