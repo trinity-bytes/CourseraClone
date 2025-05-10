@@ -3,7 +3,7 @@
 // Headers propios
 #include "Pantalla.h"
 #include "Actividad.h"
-#include "GestionadorUsuarios.h"
+//#include "GestionadorUsuarios.h"
 #include "GestionadorCursos.h"
 #include "Usuario.h"
 #include "Login.h"
@@ -33,10 +33,10 @@ class LinkedList;
 
 class Controladora {
 private:
-	unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
+	//unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
 	unique_ptr<GestionadorCursos> gestionadorCursos;
 	vector<Actividad> actividades;
-	Usuario* usuarioActual;
+	unique_ptr<Usuario> usuarioActual; // Cambiamos a unique_ptr para gestionar memoria
 	bool ejecutando;
 
 	void cargarDatosArchivo() {
@@ -90,7 +90,7 @@ private:
 public:
 	Controladora() : usuarioActual(nullptr), ejecutando(true) {
 		// Inicializar gestores
-		gestionadorUsuarios = make_unique<GestionadorUsuarios>();
+		//gestionadorUsuarios = make_unique<GestionadorUsuarios>();
 		gestionadorCursos = make_unique<GestionadorCursos>();
 		
 		// Cargar datos iniciales
@@ -98,11 +98,14 @@ public:
 		cargarDatosInscripciones();
 	}
 
-	void run() {
+	void run() 
+	{
 		unique_ptr<PantallaBase> pantallaActual = make_unique<LandingPage>();
-		while (ejecutando) {
+		while (ejecutando) 
+		{
 			ResultadoPantalla resultado = pantallaActual->ejecutar();
-			switch (resultado.accion) {
+			switch (resultado.accion) 
+			{
 				case AccionPantalla::IR_A_LOGIN:
 					pantallaActual = make_unique<Login>();
 					break;
@@ -110,9 +113,13 @@ public:
 					pantallaActual = make_unique<Registro>();
 					break;
 				case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
-					if (iniciarSesion(resultado.email, resultado.password)) {
+					// El Login ya validó las credenciales, simplemente establecemos el usuario
+					establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
+					if (usuarioActual) {
 						pantallaActual = make_unique<DashboardEstudiante>();
-					} else {
+					}
+					else {
+						// En caso de error, volvemos a la pantalla de login
 						pantallaActual = make_unique<Login>();
 					}
 					break;
@@ -121,6 +128,8 @@ public:
 					break;
 				case AccionPantalla::SALIR:
 					ejecutando = false;
+					system("cls");
+					cout << "Gracias por usar CourseraClone. Hasta luego!" << endl;
 					break;
 				default:
 					break;
@@ -128,6 +137,55 @@ public:
 		}
 	}
 
+	bool establecerUsuarioActual(const string& email, TipoUsuario tipo) {
+		try {
+			// Creamos un objeto Usuario temporal
+			Usuario temp;
+			// Buscamos el usuario por su email
+			int index = temp.buscarIndexUsuario(email, tipo);
+
+			if (index != -1) {
+				// Cargar los datos completos del usuario
+				const string indexPath = (tipo == TipoUsuario::EMPRESA) ?
+					EMPRESA_INDEX_FILE : ESTUDIANTE_INDEX_FILE;
+
+				ifstream indexFile(indexPath, ios::in | ios::binary);
+				if (!indexFile.is_open()) return false;
+
+				indexFile.seekg(index * sizeof(UsuarioIndex), ios::beg);
+				UsuarioIndex encontrado;
+				indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
+				indexFile.close();
+
+				// Abrir el archivo de datos y cargar el usuario
+				const string dataPath = (tipo == TipoUsuario::EMPRESA) ?
+					EMPRESA_DATA_FILE : ESTUDIANTE_DATA_FILE;
+
+				ifstream dataFile(dataPath, ios::in | ios::binary);
+				if (!dataFile.is_open()) return false;
+
+				dataFile.seekg(encontrado.offset, ios::beg);
+				UsuarioBinario binRec;
+				dataFile.read(reinterpret_cast<char*>(&binRec), sizeof(binRec));
+				dataFile.close();
+
+				// Crear el usuario actual
+				string nombre(binRec.nombreCompleto, strnlen(binRec.nombreCompleto, MAX_FIELD_LEN));
+				string usuario(binRec.nombreDeUsuario, strnlen(binRec.nombreDeUsuario, MAX_FIELD_LEN));
+				string hash(binRec.contrasenaHash, strnlen(binRec.contrasenaHash, MAX_FIELD_LEN));
+
+				usuarioActual = make_unique<Usuario>(encontrado.offset, tipo, nombre, usuario, hash);
+				return true;
+			}
+			return false;
+		}
+		catch (const exception& e) {
+			cerr << "Error al establecer usuario: " << e.what() << endl;
+			return false;
+		}
+	}
+
+	/*
 	// Autenticación
 	bool iniciarSesion(const string& email, const string& password) {
 		try {
@@ -142,7 +200,9 @@ public:
 			return false;
 		}
 	}
-
+	*/
+	
+	/*
 	bool registrarUsuario(const string& nombre, const string& email,
 						 const string& password, const string& tipo) {
 		try {
@@ -153,22 +213,26 @@ public:
 			return false;
 		}
 	}
-
+	*/
+	
+	/*
 	void cerrarSesion() {
 		if (gestionadorUsuarios) {
 			gestionadorUsuarios->cerrarSesion();
 		}
 		usuarioActual = nullptr;
 	}
+	*/
+	
 
 	// Listados
 	const vector<Actividad>& listarActividades() const { return actividades; }
 
 	// Getters
-	Usuario* getUsuarioActual() const { return usuarioActual; }
-	GestionadorUsuarios* getGestionadorUsuarios() const { return gestionadorUsuarios.get(); }
-	GestionadorCursos* getGestionadorCursos() const { return gestionadorCursos.get(); }
+	//Usuario* getUsuarioActual() const { return usuarioActual; }
+	//GestionadorUsuarios* getGestionadorUsuarios() const { return gestionadorUsuarios.get(); }
+	//GestionadorCursos* getGestionadorCursos() const { return gestionadorCursos.get(); }
 
-	LinkedList<Curso*> getCursos();
-	LinkedList<Especializacion*> getEspecializaciones();
+	//LinkedList<Curso*> getCursos();
+	//LinkedList<Especializacion*> getEspecializaciones();
 };

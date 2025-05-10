@@ -68,9 +68,6 @@
     <ClInclude Include="ExtendedFunctions.h">
       <Filter>Header Files\Bibliotecas</Filter>
     </ClInclude>
-    <ClInclude Include="GestionadorUsuarios.h">
-      <Filter>Header Files\Gestores</Filter>
-    </ClInclude>
     <ClInclude Include="GestionadorCursos.h">
       <Filter>Header Files\Gestores</Filter>
     </ClInclude>

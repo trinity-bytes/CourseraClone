@@ -153,52 +153,103 @@ public:
                     res.accion = AccionPantalla::IR_A_LANDING_PAGE;
                     return res;
                 case 13: // Enter
-                    if (campoActual == 2) { // Botón Estudiante
+                    if (campoActual == 2) // Botón Estudiante
+                    { 
                         tipoUsuarioActual = 0;
+						tipoUsuario = TipoUsuario::ESTUDIANTE;
                         dibujarInterfazCompleta();
-                    } else if (campoActual == 3) { // Botón Organización
+                    } 
+                    else if (campoActual == 3) // Botón Organización
+                    { 
                         tipoUsuarioActual = 1;
+						tipoUsuario = TipoUsuario::EMPRESA;
                         dibujarInterfazCompleta();
-                    } else if (campoActual == 4) { // Iniciar Sesión
-                        if (validarCampos()) {
-                            //ResultadoPantalla res;
-                            res.email = email;
-                            res.password = password;
-                            res.tipoUsuario = (tipoUsuarioActual == 0) ? TipoUsuario::ESTUDIANTE : TipoUsuario::EMPRESA;
-                            
-                            // Intentar autenticar al usuario
-                            Usuario usuarioTemp;
-                            int index = usuarioTemp.buscarIndexUsuario(email, res.tipoUsuario);
-                            LoginStatus status = usuarioTemp.login(usuarioTemp, res.tipoUsuario, password, index);
-                            //LoginStatus status = Usuario::login(usuarioTemp, res.tipoUsuario, email, password);
-                            
-                            if (status == LoginStatus::SUCCESS) {
-                                if (tipoUsuarioActual == 0) {
-                                    res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
-                                } else {
-                                    // res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION; // Descomentar cuando esté implementado
-                                    res.accion = AccionPantalla::NINGUNA;
-                                }
-                                return res;
-                            } else {
-                                error = true;
-                                mensajeError = "Credenciales inválidas. Intente nuevamente.";
-                                dibujarInterfazCompleta();
-                                // Resetear campos y posicionar en el primero para volver a ingresar
-                                email = "";
-                                password = "";
-                                tipoUsuarioActual = 0;
-                                campoActual = 0;
-                                campoAnterior = -1;
-                                dibujarInterfazCompleta();
-                                continue;
-                            }
-                        } else {
+                    } 
+                    else if (campoActual == 4) // Iniciar Sesión
+                    { 
+                        // Primero verificamos que los campos no estén vacíos
+                        if (email.empty() || password.empty()) 
+                        {
                             error = true;
+                            //gotoXY();
                             mensajeError = "Todos los campos son obligatorios";
                             dibujarInterfazCompleta();
                             continue;
                         }
+
+                        // Verificar credenciales localmente
+                        Usuario usuarioTemp;
+                        tipoUsuario = (tipoUsuarioActual == 0) ? TipoUsuario::ESTUDIANTE : TipoUsuario::EMPRESA;
+                        int index = usuarioTemp.buscarIndexUsuario(email, tipoUsuario);
+
+                        if (index == -1) {
+                            // Usuario no encontrado
+                            error = true;
+                            mensajeError = "Usuario no encontrado";
+                            dibujarInterfazCompleta();
+                            continue;
+                        }
+
+                        LoginStatus status = usuarioTemp.login(usuarioTemp, tipoUsuario, password, index);
+
+                        if (status == LoginStatus::SUCCESS) {
+                            // Credenciales válidas, prepara los datos para la Controladora
+                            res.email = email;
+                            res.password = password;
+                            res.tipoUsuario = tipoUsuario;
+
+                            if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+                                res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+                            }
+                            else {
+                                // Cuando se implemente el dashboard de organización:
+                                // res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
+                            }
+                            return res;
+                        }
+                        else {
+                            // Contraseña incorrecta
+                            error = true;
+                            mensajeError = "Contraseña incorrecta";
+                            dibujarInterfazCompleta();
+                            continue;
+                        }
+
+                        /*
+                         //ResultadoPantalla res;
+                        res.email = email;
+                        res.password = password;
+                        res.tipoUsuario = (tipoUsuarioActual == 0) ? TipoUsuario::ESTUDIANTE : TipoUsuario::EMPRESA;
+
+                        // Intentar autenticar al usuario
+                        Usuario usuarioTemp;
+                        int index = usuarioTemp.buscarIndexUsuario(email, res.tipoUsuario);
+                        LoginStatus status = usuarioTemp.login(usuarioTemp, res.tipoUsuario, password, index);
+                        //LoginStatus status = Usuario::login(usuarioTemp, res.tipoUsuario, email, password);
+
+                        if (status == LoginStatus::SUCCESS) {
+                            if (tipoUsuarioActual == 0) {
+                                res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+                            }
+                            else {
+                                // res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION; // Descomentar cuando esté implementado
+                                res.accion = AccionPantalla::NINGUNA;
+                            }
+                            return res;
+                        }
+                        else {
+                            error = true;
+                            mensajeError = "Credenciales inválidas. Intente nuevamente.";
+                            dibujarInterfazCompleta();
+                            // Resetear campos y posicionar en el primero para volver a ingresar
+                            email = "";
+                            password = "";
+                            tipoUsuarioActual = 0;
+                            campoActual = 0;
+                            campoAnterior = -1;
+                            dibujarInterfazCompleta();
+                            continue;
+                        */
                     }
                     break;
                 case 8: // Backspace
@@ -232,6 +283,7 @@ public:
         }
     }
 
+/*
 private:
     bool validarCampos() {
         Usuario temp;
@@ -253,4 +305,5 @@ private:
 
         return false;
     }
+*/
 };

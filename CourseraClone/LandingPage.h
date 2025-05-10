@@ -372,9 +372,10 @@ public:
                 }
             }
             
-            // If Enter was pressed but no screen change was triggered,
-           // you might want to handle actions related to selected specialties or courses here.
-           // The current code in manejarInput has TODOs for this.
+			if (tecla == 27) // tecla ESC
+			{
+				res.accion = AccionPantalla::SALIR;
+            }
         }
 
         return res;
