@@ -218,7 +218,7 @@ public:
                     else if (campoActual == ELEMENTOS_INPUT + 1) { // Si estamos en organizacion
                         tipoUsuarioActual = 1; 
                     }
-                    else if (campoActual == ELEMENTOS_INPUT + 0) { // Registrar
+                    else if (campoActual == ELEMENTOS_INPUT + 2) { // Registrar
                         if (validarCampos()) {
                             guardarUsuario();
                             //ResultadoPantalla res;
