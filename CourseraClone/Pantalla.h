@@ -1,7 +1,6 @@
 #pragma once
 
 // Headers propios
-//#include "Controladora.h"
 #include "PantallaResultado.h"
 #include "UI_Ascii.h"
 #include "ExtendedFunctions.h"
@@ -24,6 +23,13 @@ enum class Pantalla {
     SOBRE_NOSOTROS,
     DASHBOARD_ESTUDIANTE,
     DASHBOARD_EMPRESA,
+	PERFIL_ESTUDIANTE,
+	PERFIL_EMPRESA,
+	ACTUALIZAR_PERFIL,
+	CURSOS_PUBLICADOS,
+	ESPECIALIDADES_PUBLICADAS,
+	CURSOS_INSCRITOS,
+	ESPECIALIDADES_INSCRITAS,
     DETALLE_CURSO,
     DETALLE_ESPECIALIDAD
 };

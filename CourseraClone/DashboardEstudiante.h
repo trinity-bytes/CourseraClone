@@ -125,17 +125,6 @@ private:
         // Por ahora, creamos una especialización de ejemplo
         return new Especializacion(id, 1, "Empresa", "Especialización " + std::to_string(id), 0, "Descripción de la especialización");
     }
-    
-    /*
-    void actualizarElementoMenu(int indice, bool seleccionado) {
-        if (indice < 0 || indice >= TOTAL_SECCIONES) return;
-        gotoXY(coordsElementosMenu[indice].X, coordsElementosMenu[indice].Y);
-        if (seleccionado) setColor(Colors::SELECCION);
-        else setColor(Colors::NORMAL);
-        std::cout << ELEMENTOS_MENU[indice];
-        setColor(Colors::NORMAL);
-    }
-    */
 
     void dibujarInterfazCompleta() 
     {
@@ -287,7 +276,7 @@ private:
     }
 
 public:
-    DashboardEstudiante(int _idEstudiante = 1, std::string _nombreEstudiante = "Estudiante de Prueba")
+    DashboardEstudiante(int _idEstudiante, std::string _nombreEstudiante)
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idEstudiante(_idEstudiante),
@@ -337,11 +326,19 @@ public:
                     break;
                 case 13: // Enter
                     // Procesar la acción según la sección y elemento actual
-                    if (seccionActual == SECCION_HEADER && elementoActual == 1) {
-                        // Cerrar sesión
-                        ResultadoPantalla res;
-                        res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-                        return res;
+                    if (seccionActual == SECCION_HEADER) {
+                        if (elementoActual == 0) {
+                            // Ver perfil
+                            ResultadoPantalla res;
+                            res.accion = AccionPantalla::IR_A_PERFIL_ESTUDIANTE;
+                            return res;
+                        }
+                        else if (elementoActual == 1) {
+                            // Cerrar sesión
+                            ResultadoPantalla res;
+                            res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+                            return res;
+                        }
                     }
                     break;
                 /*

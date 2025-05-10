@@ -10,6 +10,7 @@
 #include "LandingPage.h"
 #include "DashboardEstudiante.h"
 #include "DashboardOrganizacion.h"
+#include "PerfilEstudiante.h"
 #include "Registro.h"
 #include "PantallaResultado.h"
 
@@ -138,7 +139,10 @@ public:
 					// El Login ya validó las credenciales, simplemente establecemos el usuario
 					//establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
 					if (estudiante) {
-						pantallaActual = make_unique<DashboardEstudiante>();
+						pantallaActual = make_unique<DashboardEstudiante>(
+							estudiante->getId(),
+							estudiante->getNombreCompleto()
+						);
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
@@ -162,101 +166,24 @@ public:
 					system("cls");
 					cout << "Gracias por usar CourseraClone. Hasta luego!" << endl;
 					break;
+				case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
+				    if (estudiante) {
+				        pantallaActual = make_unique<PerfilEstudiante>(
+				            estudiante->getId(),
+				            estudiante->getNombreCompleto(),
+				            estudiante->getUsername()
+				        );
+				    }
+				    else {
+				        // Si no hay estudiante, redirigir al login
+				        pantallaActual = make_unique<Login>(estudiante, empresa);
+				    }
+				    break;
 				default:
 					break;
 			}
 		}
 	}
-
-	/*
-	bool establecerUsuarioActual(const string& email, TipoUsuario tipo) {
-		try {
-			// Creamos un objeto Usuario temporal
-			Usuario temp;
-			// Buscamos el usuario por su email
-			int index = temp.buscarIndexUsuario(email, tipo);
-
-			if (index != -1) {
-				// Cargar los datos completos del usuario
-				const string indexPath = (tipo == TipoUsuario::EMPRESA) ?
-					EMPRESA_INDEX_FILE : ESTUDIANTE_INDEX_FILE;
-
-				ifstream indexFile(indexPath, ios::in | ios::binary);
-				if (!indexFile.is_open()) return false;
-
-				indexFile.seekg(index * sizeof(UsuarioIndex), ios::beg);
-				UsuarioIndex encontrado;
-				indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
-				indexFile.close();
-
-				// Abrir el archivo de datos y cargar el usuario
-				const string dataPath = (tipo == TipoUsuario::EMPRESA) ?
-					EMPRESA_DATA_FILE : ESTUDIANTE_DATA_FILE;
-
-				ifstream dataFile(dataPath, ios::in | ios::binary);
-				if (!dataFile.is_open()) return false;
-
-				dataFile.seekg(encontrado.offset, ios::beg);
-				UsuarioBinario binRec;
-				dataFile.read(reinterpret_cast<char*>(&binRec), sizeof(binRec));
-				dataFile.close();
-
-				// Crear el usuario actual
-				string nombre(binRec.nombreCompleto, strnlen(binRec.nombreCompleto, MAX_FIELD_LEN));
-				string usuario(binRec.nombreDeUsuario, strnlen(binRec.nombreDeUsuario, MAX_FIELD_LEN));
-				string hash(binRec.contrasenaHash, strnlen(binRec.contrasenaHash, MAX_FIELD_LEN));
-
-				usuarioActual = make_unique<Usuario>(encontrado.offset, tipo, nombre, usuario, hash);
-				return true;
-			}
-			return false;
-		}
-		catch (const exception& e) {
-			cerr << "Error al establecer usuario: " << e.what() << endl;
-			return false;
-		}
-	}
-	*/
-
-	/*
-	// Autenticación
-	bool iniciarSesion(const string& email, const string& password) {
-		try {
-			if (gestionadorUsuarios->autenticarUsuario(email, password)) {
-				usuarioActual = gestionadorUsuarios->getUsuarioActual();
-				return usuarioActual != nullptr;
-			}
-			return false;
-		}
-		catch (const exception& e) {
-			cerr << "Error durante el inicio de sesión: " << e.what() << endl;
-			return false;
-		}
-	}
-	*/
-	
-	/*
-	bool registrarUsuario(const string& nombre, const string& email,
-						 const string& password, const string& tipo) {
-		try {
-			return gestionadorUsuarios->registrarUsuario(nombre, email, password, tipo);
-		}
-		catch (const exception& e) {
-			cerr << "Error durante el registro: " << e.what() << endl;
-			return false;
-		}
-	}
-	*/
-	
-	/*
-	void cerrarSesion() {
-		if (gestionadorUsuarios) {
-			gestionadorUsuarios->cerrarSesion();
-		}
-		usuarioActual = nullptr;
-	}
-	*/
-	
 
 	// Listados
 	const vector<Actividad>& listarActividades() const { return actividades; }
