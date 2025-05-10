@@ -2,6 +2,7 @@
 #include "Pantalla.h"
 #include "Usuario.h"
 #include "ExtendedFunctions.h"
+#include "UI_Ascii.h"
 #include <string>
 
 class Login : public PantallaBase {
@@ -14,15 +15,19 @@ private:
     string password;
     TipoUsuario tipoUsuario;
     int campoActual;
+    int campoAnterior;
+    bool primeraRenderizacion;
     bool error;
     string mensajeError;
 
     // Coordenadas para dibujar
-    COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {67, 3}, {84, 3} };
-    COORD coordsBotones[CANT_BOTONES] = { {11, 15}, {45, 15}, {79, 15} };
+    COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {67, 14}, {84, 19} };
+    COORD coordsBotones[CANT_BOTONES] = { {11, 24}, {45, 24}, {79, 28} };
+	const string elementosUserinput[ELEMENTOS_INPUT] = { "Email", "Contraseña" };
+    const string textosBotones[CANT_BOTONES] = { "Iniciar Sesión", "Registrarse", "Volver" };
 
-    void renderizarCampo(const string& etiqueta, const string& valor, int y, bool seleccionado) {
-        gotoxy(ANCHO_CONSOLA / 2 - 20, y);
+    void renderizarCampo(const string& valor, int indice, bool seleccionado) {
+        gotoxy(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
         if (seleccionado) {
             setColor(Colors::SELECCION);
             cout << "> ";
@@ -30,13 +35,13 @@ private:
             setColor(Colors::NORMAL);
             cout << "  ";
         }
-        cout << etiqueta << ": ";
+        cout << elementosUserinput[indice] << ": ";
         setColor(Colors::NORMAL);
         cout << valor;
     }
 
-    void renderizarBoton(const string& texto, int y, bool seleccionado) {
-        gotoxy(ANCHO_CONSOLA / 2 - 10, y);
+    void renderizarBoton(const string& texto, int indice, bool seleccionado) {
+        gotoxy(coordsBotones[indice].X, coordsBotones[indice].Y);
         if (seleccionado) {
             setColor(Colors::SELECCION);
             cout << "> ";
@@ -47,39 +52,61 @@ private:
         cout << texto;
     }
 
+    void dibujarInterfazCompleta() {
+        system("cls");
+        UI_Login();
+
+        // Campos
+        for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
+            string valor = (i == 0) ? email : string(password.length(), '*');
+            renderizarCampo(valor, i, campoActual == i);
+        }
+
+        // Botones
+        for (int i = 0; i < CANT_BOTONES; ++i) {
+            renderizarBoton(textosBotones[i], i, campoActual == i + 2);
+        }
+
+        // Mensaje de error
+        if (error) {
+            gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 16);
+            setColor(Colors::ERRORES);
+            cout << mensajeError;
+        }
+
+        // Instrucciones
+        gotoxy(ANCHO_CONSOLA / 2 - 20, ALTO_CONSOLA - 2);
+        setColor(Colors::TEXTO_SECUNDARIO);
+        cout << "Use las flechas para navegar y Enter para seleccionar";
+    }
+
+    void actualizarSeleccion() {
+        // Actualiza el campo/botón anterior como NO seleccionado
+        if (campoAnterior >= 0 && campoAnterior < ELEMENTOS_INPUT) {
+            string valorAnterior = (campoAnterior == 0) ? email : string(password.length(), '*');
+            renderizarCampo(valorAnterior, campoAnterior, false);
+        }
+        // Actualiza el campo/botón actual como seleccionado
+        if (campoActual >= 0 && campoActual < ELEMENTOS_INPUT) {
+            string valorActual = (campoActual == 0) ? email : string(password.length(), '*');
+            renderizarCampo(valorActual, campoActual, true);
+        }
+        campoAnterior = campoActual;
+    }
+
 public:
-    Login() : campoActual(0), error(false) {}
+    Login() : campoActual(0), campoAnterior(-1), primeraRenderizacion(true), error(false) {}
 
     ResultadoPantalla ejecutar() override 
     {
         while (true) 
         {
-            system("cls");
-            // Título
-            gotoxy(ANCHO_CONSOLA / 2 - 10, 2);
-            setColor(Colors::NORMAL);
-            cout << "INICIO DE SESIÓN";
-
-            // Campos
-            renderizarCampo("Email", email, 5, campoActual == 0);
-            renderizarCampo("Contraseña", string(password.length(), '*'), 7, campoActual == 1);
-
-            // Botones
-            renderizarBoton("Iniciar Sesión", 10, campoActual == 2);
-            renderizarBoton("Registrarse", 12, campoActual == 3);
-            renderizarBoton("Volver", 14, campoActual == 4);
-
-            // Mensaje de error
-            if (error) {
-                gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 16);
-                setColor(Colors::ERRORES);
-                cout << mensajeError;
+            if (primeraRenderizacion) {
+                dibujarInterfazCompleta();
+                primeraRenderizacion = false;
+            } else {
+                actualizarSeleccion();
             }
-
-            // Instrucciones
-            gotoxy(ANCHO_CONSOLA / 2 - 20, ALTO_CONSOLA - 2);
-            setColor(Colors::TEXTO_SECUNDARIO);
-            cout << "Use las flechas para navegar y Enter para seleccionar";
 
             int tecla = _getch();
             switch (tecla) {
@@ -100,6 +127,7 @@ public:
                         } else {
                             error = true;
                             mensajeError = "Credenciales inválidas. Intente nuevamente.";
+                            dibujarInterfazCompleta(); // Redibuja para mostrar el error
                         }
                     } else if (campoActual == 3) { // Registrarse
                         ResultadoPantalla res;
@@ -120,6 +148,7 @@ public:
                         }
                         if (campo && !campo->empty()) {
                             campo->pop_back();
+                            dibujarInterfazCompleta(); // Redibuja para mostrar el cambio
                         }
                     }
                     break;
@@ -132,6 +161,7 @@ public:
                         }
                         if (campo) {
                             campo->push_back(static_cast<char>(tecla));
+                            dibujarInterfazCompleta(); // Redibuja para mostrar el cambio
                         }
                     }
                     break;
