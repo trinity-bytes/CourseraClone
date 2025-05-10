@@ -37,6 +37,12 @@ private:
 
         gotoXY(COL_ETIQUETA, FILA_CORREO);
         std::cout << "CORREO: " << correoEstudiante << "@gmail.com";
+
+        // Botón de editar perfil
+        gotoXY(100, 12);
+        SetConsoleColor(1, 13);
+        std::cout << " EDITAR PERFIL ";
+        SetConsoleColor(15, 1);
     }
 
 public:
@@ -58,6 +64,10 @@ public:
         while (true) {
             int tecla = _getch();
 
+            if (tecla == 13) { // Enter para editar perfil
+                res.accion = AccionPantalla::IR_A_EDITAR_PERFIL;
+                return res;
+            }
             if (tecla == 27) { // ESC para volver
                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
                 return res;
