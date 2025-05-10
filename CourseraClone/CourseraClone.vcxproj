@@ -138,6 +138,7 @@
     <ClInclude Include="Pantalla.h" />
     <ClInclude Include="PantallaResultado.h" />
     <ClInclude Include="PerfilEstudiante.h" />
+    <ClInclude Include="PerfilOrganizacion.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Registro.h" />

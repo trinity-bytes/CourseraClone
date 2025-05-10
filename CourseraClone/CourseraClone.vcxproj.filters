@@ -125,5 +125,8 @@
     <ClInclude Include="PerfilEstudiante.h">
       <Filter>Header Files\Pantallas</Filter>
     </ClInclude>
+    <ClInclude Include="PerfilOrganizacion.h">
+      <Filter>Header Files\Pantallas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

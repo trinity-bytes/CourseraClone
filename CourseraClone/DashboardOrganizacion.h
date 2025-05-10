@@ -41,7 +41,7 @@ private:
     // Coordenadas para dibujar
     COORD coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { {84, 3}, {99, 3} }; // Perfil, Cerrar sesión
     COORD coordsElementosMenu[MAX_ELEMENTOS_MENU] = { {9, 10}, {47, 10} }; // Explorar, Gestionar
-    COORD coordsEstadisticas[3] = { {11, 6}, {44, 6}, {77, 6} }; // Estadísticas
+    COORD coordsEstadisticas[3] = { {11, 7}, {40, 7}, {76, 7} }; // Estadísticas
 
     // Coordenadas para cursos
     COORD coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
@@ -290,11 +290,19 @@ public:
                 break;
             case 13: // Enter
                 // Procesar la acción según la sección y elemento actual
-                if (seccionActual == SECCION_HEADER && elementoActual == 1) {
-                    // Cerrar sesión
-                    ResultadoPantalla res;
-                    res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-                    return res;
+                if (seccionActual == SECCION_HEADER) {
+                    if (elementoActual == 0) {
+                        // Ver perfil
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_PERFIL_ORGANIZACION;
+                        return res;
+                    }
+                    else if (elementoActual == 1) {
+                        // Cerrar sesión
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+                        return res;
+                    }
                 }
                 break;
             case 27: // ESC

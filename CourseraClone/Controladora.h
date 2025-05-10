@@ -10,6 +10,7 @@
 #include "DashboardEstudiante.h"
 #include "DashboardOrganizacion.h"
 #include "PerfilEstudiante.h"
+#include "PerfilOrganizacion.h"
 #include "Registro.h"
 #include "PantallaResultado.h"
 
@@ -188,6 +189,19 @@ public:
 				    }
 				    else {
 				        // Si no hay estudiante, redirigir al login
+				        pantallaActual = make_unique<Login>(estudiante, empresa);
+				    }
+				    break;
+				case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
+				    if (empresa) {
+				        pantallaActual = make_unique<PerfilOrganizacion>(
+				            empresa->getId(),
+				            empresa->getNombreCompleto(),
+				            empresa->getUsername()
+				        );
+				    }
+				    else {
+				        // Si no hay empresa, redirigir al login
 				        pantallaActual = make_unique<Login>(estudiante, empresa);
 				    }
 				    break;
