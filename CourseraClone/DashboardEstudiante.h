@@ -3,32 +3,48 @@
 #include "Pantalla.h"
 #include "ExtendedFunctions.h"
 #include "UI_Ascii.h"
+#include "Inscripcion.h"
+#include "Curso.h"
+#include "Especializacion.h"
+#include "GestionadorCursos.h"
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <algorithm> // Para std::min
 
-class DashboardEstudiante : public PantallaBase {
+class DashboardEstudiante : public PantallaBase 
+{
 private:
-    // Constantes del menú
-    static const int SECCION_CURSOS_INSCRITOS = 0;
-    static const int SECCION_CERTIFICADOS = 1;
-    static const int SECCION_BOLETAS = 2;
-    static const int SECCION_PERFIL = 3;
+    // Constantes para las secciones
+    static const int SECCION_HEADER = 0;
+    static const int SECCION_MENU_SUPERIOR = 1;
+    static const int SECCION_CURSOS = 2;
+    static const int SECCION_ESPECIALIZACIONES = 3;
     static const int TOTAL_SECCIONES = 4;
 
-    // Elementos del menú
-    const std::vector<std::string> ELEMENTOS_MENU = {
-        " Mis Cursos ",
-        " Certificados ",
-        " Boletas ",
-        " Mi Perfil "
-    };
+    // Elementos por sección
+    static const int MAX_ELEMENTOS_HEADER = 2; // Ver mi perfil, Cerrar sesión
+    static const int MAX_ELEMENTOS_MENU = 2; // Explorar cursos, Gestionar inscripciones
+    static const int MAX_ELEMENTOS_CURSOS = 4; // 3 cursos + "Ver todos"
+    static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 4; // 3 especializaciones + "Ver todas"
+
+    // Datos del usuario
+    std::string nombreEstudiante;
+    int idEstudiante;
 
     // Coordenadas para dibujar
-    COORD coordsElementosMenu[TOTAL_SECCIONES] = {
-        {67, 3},  // Cursos
-        {84, 3},  // Certificados
-        {98, 3},  // Boletas
-        {112, 3}  // Perfil
+    COORD coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { {84, 3}, {99, 3} }; // Perfil, Cerrar sesión
+    COORD coordsElementosMenu[MAX_ELEMENTOS_MENU] = { {9, 10}, {47, 10} }; // Explorar, Gestionar
+
+    // Coordenadas para cursos
+    COORD coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
+        {11, 15}, {42, 15}, {73, 15}, {101, 17} // 3 cursos + "Ver todos"
+    };
+
+    // Coordenadas para especializaciones
+    COORD coordsTituloEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES] = {
+        {11, 25}, {42, 25}, {73, 25}, {101, 27} // 3 especializaciones + "Ver todos"
     };
 
     // Estado actual
@@ -38,6 +54,79 @@ private:
     int elementoAnterior;
     bool primeraRenderizacion;
 
+    // Datos cargados
+    std::vector<ElementoMenu> cursosInscritos;
+    std::vector<ElementoMenu> especializacionesInscritas;
+
+    // Ruta del archivo de inscripciones
+    const std::string RUTA_INSCRIPCIONES = ".\\Resources\\Data\\inscripciones.bin";
+
+    void cargarDatos() {
+        cargarInscripciones();
+
+        // Si no hay datos, agregar algunos de ejemplo
+        if (cursosInscritos.empty()) 
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                cursosInscritos.emplace_back("No inscrito", "Aqui apareceran los cursos en los que te has inscrito");
+            }
+        }
+
+        if (especializacionesInscritas.empty()) 
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                especializacionesInscritas.emplace_back("No inscrito", "Aqui apareceran las especialidades en las que te has inscrito");
+            }
+        }
+    }
+
+    void cargarInscripciones() {
+        // Abrir el archivo de inscripciones binario
+        std::ifstream archivo(RUTA_INSCRIPCIONES, std::ios::binary);
+        if (!archivo.is_open()) {
+            return;
+        }
+
+        // Leer todas las inscripciones
+        InscripcionBinaria inscripcion;
+        while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
+            // Filtrar por el ID del estudiante actual
+            if (inscripcion.idEstudiante == idEstudiante) {
+                // Determinar si es curso o especialización
+                if (inscripcion.tipoActividad == 1) { // Curso
+                    // Buscar el curso en el gestionador
+                    Curso* curso = obtenerCursoPorId(inscripcion.idActividad);
+                    if (curso) {
+                        cursosInscritos.emplace_back(curso->getTitulo(), curso->getDescripcion());
+                    }
+                }
+                else if (inscripcion.tipoActividad == 2) { // Especialización
+                    // Buscar la especialización en el gestionador
+                    Especializacion* especializacion = obtenerEspecializacionPorId(inscripcion.idActividad);
+                    if (especializacion) {
+                        especializacionesInscritas.emplace_back(especializacion->getTitulo(), especializacion->getDescripcion());
+                    }
+                }
+            }
+        }
+        archivo.close();
+    }
+
+    Curso* obtenerCursoPorId(int id) {
+        // Esta función debería integrarse con GestionadorCursos
+        // Por ahora, creamos un curso de ejemplo
+        return new Curso(id, 1, "Empresa", "Curso " + std::to_string(id), "Descripción del curso", "Instructor", 5);
+    }
+
+    Especializacion* obtenerEspecializacionPorId(int id) {
+        // Esta función debería integrarse con GestionadorCursos
+        // Por ahora, creamos una especialización de ejemplo
+        return new Especializacion(id, 1, "Empresa", "Especialización " + std::to_string(id), 0, "Descripción de la especialización");
+    }
+    
+    /*
     void actualizarElementoMenu(int indice, bool seleccionado) {
         if (indice < 0 || indice >= TOTAL_SECCIONES) return;
         gotoXY(coordsElementosMenu[indice].X, coordsElementosMenu[indice].Y);
@@ -46,24 +135,166 @@ private:
         std::cout << ELEMENTOS_MENU[indice];
         setColor(Colors::NORMAL);
     }
+    */
 
     void dibujarInterfazCompleta() 
     {
+        system("cls");
         UI_StudentDashboard();
+        renderizarHeader();
+        renderizarMenuSuperior();
+        renderizarCursos();
+        renderizarEspecializaciones();
+    }
 
-        for (int i = 0; i < TOTAL_SECCIONES; ++i) 
-        {
-            actualizarElementoMenu(i, seccionActual == i);
+    void renderizarHeader() {
+        // Mostrar nombre de estudiante
+        gotoXY(52, 3);
+        SetConsoleColor(15, 1);
+        std::cout << nombreEstudiante;
+
+        // Botones del header
+        for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
+            gotoXY(coordsElementosHeader[i].X, coordsElementosHeader[i].Y);
+            if (seccionActual == SECCION_HEADER && elementoActual == i) {
+                SetConsoleColor(1, 13); // Color para selección
+            }
+            else {
+                SetConsoleColor(15, 1); // Color normal
+            }
+            std::cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
         }
-        // Aquí puedes dibujar el contenido de la sección seleccionada
+
+        SetConsoleColor(15, 1);
+    }
+
+    void renderizarMenuSuperior() {
+        for (int i = 0; i < MAX_ELEMENTOS_MENU; ++i) {
+            gotoXY(coordsElementosMenu[i].X, coordsElementosMenu[i].Y);
+            if (seccionActual == SECCION_MENU_SUPERIOR && elementoActual == i) {
+                SetConsoleColor(1, 13); // Color para selección
+            }
+            else {
+                SetConsoleColor(15, 1); // Color normal
+            }
+            std::cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS INSCRIPCIONES ");
+        }
+
+        SetConsoleColor(15, 1);
+    }
+
+    void renderizarCursos() 
+    {
+        // Renderizar 3 cursos
+        int numCursos = (int)cursosInscritos.size() < 3 ? (int)cursosInscritos.size() : 3;
+        for (int i = 0; i < numCursos; ++i) {
+            gotoXY(coordsTituloCursos[i].X, coordsTituloCursos[i].Y);
+            if (seccionActual == SECCION_CURSOS && elementoActual == i) {
+                SetConsoleColor(1, 13); // Color para selección
+            }
+            else {
+                SetConsoleColor(15, 1); // Color normal
+            }
+            std::cout << cursosInscritos[i].titulo;
+        }
+
+        // Botón "Ver todos"
+        gotoXY(coordsTituloCursos[3].X, coordsTituloCursos[3].Y);
+        if (seccionActual == SECCION_CURSOS && elementoActual == 3) {
+            SetConsoleColor(1, 13); // Color para selección
+        }
+        else {
+            SetConsoleColor(15, 1); // Color normal
+        }
+        std::cout << " Ver todos ";
+
+        SetConsoleColor(15, 1);
+    }
+
+    void renderizarEspecializaciones() 
+    {
+        // Renderizar 3 especializaciones
+        int numEspecializaciones = (int)especializacionesInscritas.size() < 3 ? (int)especializacionesInscritas.size() : 3;
+        for (int i = 0; i < numEspecializaciones; ++i) {
+            gotoXY(coordsTituloEspecializaciones[i].X, coordsTituloEspecializaciones[i].Y);
+            if (seccionActual == SECCION_ESPECIALIZACIONES && elementoActual == i) {
+                SetConsoleColor(1, 13); // Color para selección
+            }
+            else {
+                SetConsoleColor(15, 1); // Color normal
+            }
+            std::cout << especializacionesInscritas[i].titulo;
+        }
+
+        // Botón "Ver todas"
+        gotoXY(coordsTituloEspecializaciones[3].X, coordsTituloEspecializaciones[3].Y);
+        if (seccionActual == SECCION_ESPECIALIZACIONES && elementoActual == 3) {
+            SetConsoleColor(1, 13); // Color para selección
+        }
+        else {
+            SetConsoleColor(15, 1); // Color normal
+        }
+        std::cout << " Ver todas ";
+
+        SetConsoleColor(15, 1);
     }
 
     void actualizarSeleccion() {
-        // Aquí puedes actualizar la selección visual si lo deseas
+        if (seccionActual != seccionAnterior || elementoActual != elementoAnterior) {
+            switch (seccionAnterior) {
+            case SECCION_HEADER:
+                renderizarHeader();
+                break;
+            case SECCION_MENU_SUPERIOR:
+                renderizarMenuSuperior();
+                break;
+            case SECCION_CURSOS:
+                renderizarCursos();
+                break;
+            case SECCION_ESPECIALIZACIONES:
+                renderizarEspecializaciones();
+                break;
+            }
+
+            switch (seccionActual) {
+            case SECCION_HEADER:
+                renderizarHeader();
+                break;
+            case SECCION_MENU_SUPERIOR:
+                renderizarMenuSuperior();
+                break;
+            case SECCION_CURSOS:
+                renderizarCursos();
+                break;
+            case SECCION_ESPECIALIZACIONES:
+                renderizarEspecializaciones();
+                break;
+            }
+
+            seccionAnterior = seccionActual;
+            elementoAnterior = elementoActual;
+        }
+    }
+
+    int obtenerMaxElementosEnSeccion(int seccion) {
+        switch (seccion) {
+        case SECCION_HEADER: return MAX_ELEMENTOS_HEADER;
+        case SECCION_MENU_SUPERIOR: return MAX_ELEMENTOS_MENU;
+        case SECCION_CURSOS: return MAX_ELEMENTOS_CURSOS;
+        case SECCION_ESPECIALIZACIONES: return MAX_ELEMENTOS_ESPECIALIZACIONES;
+        default: return 0;
+        }
     }
 
 public:
-    DashboardEstudiante() : seccionActual(0), elementoActual(0), seccionAnterior(0), elementoAnterior(0), primeraRenderizacion(true) {}
+    DashboardEstudiante(int _idEstudiante = 1, std::string _nombreEstudiante = "Estudiante de Prueba")
+        : seccionActual(SECCION_HEADER), elementoActual(0),
+        seccionAnterior(-1), elementoAnterior(-1),
+        primeraRenderizacion(true), idEstudiante(_idEstudiante),
+        nombreEstudiante(_nombreEstudiante) {
+
+        cargarDatos();
+    }
 
     ResultadoPantalla ejecutar() override {
         while (true) {
@@ -80,20 +311,47 @@ public:
                 case 224: // Tecla extendida
                     tecla = _getch();
                     switch (tecla) {
-                        case 75: // Flecha izquierda
-                            if (seccionActual > 0) seccionActual--;
-                            break;
-                        case 77: // Flecha derecha
-                            if (seccionActual < TOTAL_SECCIONES - 1) seccionActual++;
-                            break;
+                    case 72: // Flecha arriba
+                        if (seccionActual > SECCION_HEADER) {
+                            seccionActual--;
+                            elementoActual = 0;
+                        }
+                        break;
+                    case 80: // Flecha abajo
+                        if (seccionActual < TOTAL_SECCIONES - 1) {
+                            seccionActual++;
+                            elementoActual = 0;
+                        }
+                        break;
+                    case 75: // Flecha izquierda
+                        if (elementoActual > 0) {
+                            elementoActual--;
+                        }
+                        break;
+                    case 77: // Flecha derecha
+                        if (elementoActual < obtenerMaxElementosEnSeccion(seccionActual) - 1) {
+                            elementoActual++;
+                        }
+                        break;
                     }
                     break;
+                case 13: // Enter
+                    // Procesar la acción según la sección y elemento actual
+                    if (seccionActual == SECCION_HEADER && elementoActual == 1) {
+                        // Cerrar sesión
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+                        return res;
+                    }
+                    break;
+                /*
                 case 27: // ESC
                 {
                     ResultadoPantalla res;
                     res.accion = AccionPantalla::IR_A_LANDING_PAGE;
                     return res;
                 }
+                */
             }
         }
     }

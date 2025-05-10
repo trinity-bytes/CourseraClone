@@ -150,8 +150,8 @@ inline void UI_StudentDashboard()
    ║      │ "Frase motivacional generica" - anonimUwU                                                        │      ║
    ║      └──────────────────────────────────────────────────────────────────────────────────────────────────┘      ║
    ║                                                                                                                ║
-   ║      EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MIS INSCRIPIONES                                          ║
-   ║      ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯      ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯                                          ║
+   ║      EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MIS INSCRIPCIONES                                         ║
+   ║      ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯      ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯                                         ║
    ║                                                                                                                ║
    ║      MIS CURSOS                                                                                                ║
    ║      ┌───────────────────────────┐  ┌───────────────────────────┐  ┌───────────────────────────┐               ║

@@ -35,7 +35,7 @@ private:
     }
 
     void renderizarCampo(const std::string& etiqueta, const std::string& valor, int indice, bool seleccionado) {
-        gotoxy(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
+        gotoXY(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
         if (seleccionado) mostrarCursor(true);
         else mostrarCursor(false);
         SetConsoleColor(15, 1);
@@ -46,7 +46,7 @@ private:
     }
 
     void renderizarBoton(const std::string& texto, int indice, bool seleccionado) {
-        gotoxy(coordsBotones[indice].X, coordsBotones[indice].Y);
+        gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
 
         // Resaltar botones de tipo usuario basado en la selección actual o el tipo activo
         if (indice == 0 || indice == 1) {
@@ -83,7 +83,7 @@ private:
             renderizarBoton(textosBotones[i], i, campoActual == i + ELEMENTOS_INPUT);
         }
         if (error) {
-            gotoxy(20, 23);
+            gotoXY(20, 23);
             SetConsoleColor(1, 4);
             std::cout << mensajeError;
             SetConsoleColor(15, 1);
@@ -155,7 +155,7 @@ public:
                 dibujarInterfazCompleta();
 				mostrarCursor(true);
                 primeraRenderizacion = false;
-                gotoxy(11, 15);
+                gotoXY(11, 15);
             } else {
                 actualizarSeleccion();
             }
