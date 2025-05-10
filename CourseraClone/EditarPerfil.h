@@ -44,11 +44,11 @@ private:
 
     // Coordenadas para dibujar
     const COORD coordsCampos[TOTAL_CAMPOS] = {
-        {149, 337}, // Nombre
-        {340, 429}, // Email (sin @gmail.com)
-        {362, 521}, // Password
-        {828, 521}, // Confirmar Password
-        {591, 592}  // Botón Guardar
+        {11, 15}, // Nombre
+        {11, 20}, // Email (sin @gmail.com)
+        {11, 25}, // Password
+        {63, 25}, // Confirmar Password
+        {52, 29}  // Botón Guardar
     };
 
     // Referencias a los objetos de usuario

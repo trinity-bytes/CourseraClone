@@ -39,7 +39,7 @@ private:
         std::cout << "CORREO: " << correoOrganizacion << "@gmail.edu.com";
 
         // Botón de editar perfil
-        gotoXY(30, 30);
+        gotoXY(92, 12);
         SetConsoleColor(1, 13);
         std::cout << " EDITAR PERFIL ";
         SetConsoleColor(15, 1);
