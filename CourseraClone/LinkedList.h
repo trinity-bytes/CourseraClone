@@ -139,6 +139,7 @@ public:
         tamano++;
     }
 
+
     void agregarAlFinal(const T& value) {
         Nodo<T>* nuevoNodo = new Nodo<T>(value);
         if (isEmpty()) {

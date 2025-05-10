@@ -50,25 +50,32 @@ public:
     }
 
     bool crearCurso(
-        int idEmpresa, 
-        const string& titulo, 
+        int idEmpresa,
+        const string& titulo,
         const string& nombreEmpresa,
-        int cantidadClases, 
-        const string& instructor, 
-        const string& descripcion) 
+        int cantidadClases,
+        const string& instructor,
+        const string& descripcion,
+        vector<string> titulos,
+        vector<string> descripciones
+    ) 
     {
         Curso* nuevoCurso = new Curso(
             cursos.getTamano() + 1, // ID autoincremental
             idEmpresa,
             nombreEmpresa,
             titulo,
-			descripcion,
-			instructor,
+            descripcion,
+            instructor,
             cantidadClases
         );
 
+        for (int i = 0; i < cantidadClases; i++) {
+            nuevoCurso->anadirClases(titulos[i], descripciones[i]);
+        }
+
         cursos.agregarAlFinal(nuevoCurso);
-        guardarCursos();
+        // guardarCursos();
         return true;
     }
 
@@ -94,12 +101,8 @@ public:
         return true;
     }
 
-    LinkedList<Curso*> getCursos() {
-        return cursos;
-    }
-    LinkedList<Especializacion*> getEspecializaciones() {
-        return especializaciones;
-    }
+    LinkedList<Curso*>& getCursos() { return cursos; }
+    LinkedList<Especializacion*>& getEspecializaciones() { return especializaciones; }
 
     vector<Curso*> buscarCursos(const string& criterio) {
         vector<Curso*> resultados;
@@ -267,7 +270,7 @@ public:
         if (!curso) return false;
 
         curso->anadirClases(titulo, contenido);
-        guardarCursos();
+        //guardarCursos();
         return true;
     }
 

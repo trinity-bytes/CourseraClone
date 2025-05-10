@@ -2,6 +2,7 @@
 
 #include "Pantalla.h"
 #include "PriorityQueue.h"
+#include "GestionadorCursos.h"
 
 class Controladora; // Declaración anticipada de la clase Controladora
 
@@ -21,6 +22,8 @@ private:
     // Caracteres maximos por cuadro
     static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
     static const int MAX_ALTO_CARACTERES_CUADRO = 4;
+
+    GestionadorCursos* gestionCursos;
 
     // Elementos del menú
     const std::vector<std::string> ELEMENTOS_CABECERA = {
@@ -242,21 +245,90 @@ private:
         return resultado;
     }
 
-    void cargarDatos() {
-        // TODO: Implementar carga de datos desde la controladora
-        especialidades = especialidadesDefecto;
-        cursos = cursosDefecto;
+    void cargarDatosLanding(LinkedList<Curso*>& cursosDatos, LinkedList<Especializacion*>& especializacionesDatos, int maximo) {
+        PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
+        PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
+
+        auto cantidad = [](Actividad* a) {
+            return a->getCantidadAlumnos();
+            };
+        int cantidadTotal;
+        priorityCursosLandingPage.llenarDesde<int>(cursosDatos, cantidad);
+        priorityEspecializacionesLandingPage.llenarDesde<int>(especializacionesDatos, cantidad);
+
+
+        vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
+        auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
+            return a->getTitulo();
+            };
+        auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripción
+            return a->getDescripcion();
+            };
+
+        titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
+        titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
+        descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
+        descripcionesEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(descripcionActividad);
+        //throw runtime_error(titulosCursos[0]);
+        cantidadTotal = titulosCursos.size();
+        if (cantidadTotal < maximo) maximo = cantidadTotal;
+        cursos = vector<ElementoMenu>(maximo);
+
+        
+        for (int i = 0; i < maximo; i++) {
+            cursos[i].titulo = titulosCursos[i];
+            cursos[i].descripcion = descripcionesCursos[i];
+        }
+
+        cantidadTotal = titulosEspecializaciones.size();
+        maximo = 3;
+        if (cantidadTotal < maximo) maximo = cantidadTotal;
+        especialidades = vector<ElementoMenu>(maximo);
+       
+
+        for (int i = 0; i < maximo; i++) {
+            especialidades[i].titulo = titulosEspecializaciones[i];
+            especialidades[i].descripcion = descripcionesEspecializaciones[i];
+        }
+    }
+
+    void cargarDatos(LinkedList<Curso*>& cursosDatos, LinkedList<Especializacion*>& especializacionesDatos, int maximo) {
+        cursos.clear();
+        especialidades.clear();
+        cargarDatosLanding(cursosDatos, especializacionesDatos, maximo);
+
+        int tamanoOriginal;
+        if (cursos.size() < maximo) {
+            cursos.resize(maximo);
+            tamanoOriginal = cursos.size();
+            for (int i = tamanoOriginal; i < maximo; i++) {
+                cursos[i].titulo = cursosDefecto[i].titulo;
+                cursos[i].descripcion = cursosDefecto[i].descripcion;
+            }
+        }
+        if (especialidades.size() < maximo) {
+            especialidades.resize(maximo);
+            tamanoOriginal = especialidades.size();
+            for (int i = tamanoOriginal; i < maximo; i++) {
+                especialidades[i].titulo = especialidadesDefecto[i].titulo;
+                especialidades[i].descripcion = especialidadesDefecto[i].descripcion;
+            }
+        }
     }
 
 public:
+    LandingPage() : PantallaBase(),
+        seccionActual(0), elementoActual(0),
+          seccionAnterior(-1), elementoAnterior(-1), 
+		  primeraRenderizacion(true), presionEnter(false) { }
 
-    LandingPage() 
+    LandingPage(LinkedList<Curso*>& cursosDatos, LinkedList<Especializacion*>& especializacionesDatos)
         : PantallaBase(),
           seccionActual(0), elementoActual(0),
           seccionAnterior(-1), elementoAnterior(-1), 
 		  primeraRenderizacion(true), presionEnter(false)
     {
-        cargarDatos();
+        cargarDatos(cursosDatos, especializacionesDatos, 3);
     }
 
     void renderizar()  

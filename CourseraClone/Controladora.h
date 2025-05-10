@@ -46,17 +46,35 @@ private:
 			throw runtime_error("No se pudo abrir el archivo de actividades"); // Nos salta error al ejecutar
 		}
 
-		string linea;
-		while (getline(archivo, linea)) {
-			actividades.push_back(Actividad(
-				0,     // id
-				0,     // idEmpresa
-				"",    // nombreEmpresa
-				linea, // titulo
-				0,     // cantidadAlumnos
-				0,     // tipo
-				""     // descripcion
-			));
+		string nombreEmpresa, titulo, descripcion, instructor, tituloActividad, descripcionActividad;
+		int cantidad = 0;
+		int tipo, idEmpresa;
+		while (archivo >> idEmpresa) {
+			archivo.ignore();
+			archivo >> tipo;
+			archivo.ignore();
+			getline(archivo, nombreEmpresa);
+			getline(archivo, tituloActividad);
+			getline(archivo, descripcionActividad);
+
+			if (tipo == 1) {
+				getline(archivo, instructor);
+				int cantidadClase = 0; archivo >> cantidadClase;
+				archivo.ignore();
+				//throw runtime_error(tituloActividad);
+				vector<string> titulos(cantidadClase), descripciones(cantidadClase);
+				for (int i = 0; i < cantidadClase; i++) {
+					getline(archivo, titulo);
+					getline(archivo, descripcion);
+					titulos[i] = titulo;
+					descripciones[i] = descripcion;
+				}
+				if (!gestionadorCursos->crearCurso(idEmpresa, tituloActividad, nombreEmpresa, cantidadClase, instructor, descripcionActividad, titulos, descripciones)) {
+					throw runtime_error("Falla carga");
+				} //else throw runtime_error("Logrado");
+
+			}
+			cantidad++;
 		}
 		archivo.close();
 	}
@@ -103,10 +121,12 @@ public:
 
 	void run() 
 	{
-		unique_ptr<PantallaBase> pantallaActual = make_unique<LandingPage>();
+		unique_ptr<PantallaBase> pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 		while (ejecutando) 
 		{
 			ResultadoPantalla resultado = pantallaActual->ejecutar();
+			// if (resultado.accion == AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE) throw runtime_error(estudiante->getNombreCompleto());
+
 			switch (resultado.accion) 
 			{
 				case AccionPantalla::IR_A_LOGIN:
@@ -120,7 +140,7 @@ public:
 					//establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
 					if (estudiante) {
 						pantallaActual = make_unique<DashboardEstudiante>();
-						// throw runtime_error(estudiante->getNombreCompleto());
+						
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login

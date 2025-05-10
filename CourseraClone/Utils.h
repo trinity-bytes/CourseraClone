@@ -14,7 +14,7 @@
 // y otras partes del programa. Si necesitas cambiar el tamaño
 // de la consola, modifica estas constantes.
 const int ANCHO_CONSOLA = 120;
-const int ALTO_CONSOLA = 35;
+const int ALTO_CONSOLA = 33;
 
 // =====================================================
 // ESTRUCTURAS DE DATOS COMUNES
@@ -28,6 +28,8 @@ const int ALTO_CONSOLA = 35;
 struct ElementoMenu {
     std::string titulo;
     std::string descripcion;
+
+    ElementoMenu() : titulo(""), descripcion("") {}
 
     ElementoMenu(const std::string& t, const std::string& d)
         : titulo(t), descripcion(d) {}

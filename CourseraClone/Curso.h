@@ -28,7 +28,6 @@ private:
 
     // Colecciones
     LinkedList<Clase> clases;
-    vector<string> requisitos;
 
     // Ruta del archivo para persistencia
     const string RUTA_ARCHIVO = "Resources/Data/actividades.txt";
@@ -67,7 +66,6 @@ public:
     int getCantidadClases() const { return cantidadClases; }
     LinkedList<Clase> getClases() const { return clases; }
     string getCategoria() const { return categoria; }
-    vector<string> getRequisitos() const { return requisitos; }
     float getCalificacionPromedio() const { return calificacionPromedio; }
     int getTotalCalificaciones() const { return totalCalificaciones; }
 
@@ -75,7 +73,7 @@ public:
     void setCategoria(const string& _categoria) { categoria = _categoria; }
 
     // Métodos para gestión de clases
-    void anadirClases(const string& _titulo, const string& _descripcion) {
+    void anadirClases(const string _titulo, const string _descripcion) {
         Clase nuevaClase(_titulo, _descripcion);
         clases.agregarAlFinal(nuevaClase);
         cantidadClases++;
@@ -102,11 +100,6 @@ public:
         return true;
     }
 
-    // Métodos para requisitos
-    void agregarRequisito(const string& requisito) {
-        requisitos.push_back(requisito);
-    }
-
     // Métodos para calificaciones
     void agregarCalificacion(int calificacion) {
         if (calificacion < 1 || calificacion > 5)
@@ -122,11 +115,6 @@ public:
         if (clasesCompletadas.empty() || cantidadClases == 0)
             return 0;
         return (clasesCompletadas.size() * 100) / cantidadClases;
-    }
-
-    bool verificarRequisitos(const vector<int>& cursosCompletados) const {
-        // NOTA: Este método está incompleto en el código original
-        return requisitos.empty() || true;
     }
 
     // Métodos de visualización y serialización
@@ -162,12 +150,6 @@ public:
         for (const auto& clase : clases) {
             ss << clase.getTitulo() << '\n'
                 << clase.getContenido() << '\n';
-        }
-
-        // Serialización de requisitos
-        ss << requisitos.size() << '\n';
-        for (const auto& req : requisitos) {
-            ss << req << '\n';
         }
 
         return ss.str();
