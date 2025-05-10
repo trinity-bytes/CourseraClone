@@ -2,6 +2,7 @@
 
 #include "Pantalla.h"
 #include "PriorityQueue.h"
+#include "GestionadorCursos.h"
 
 class Controladora; // Declaración anticipada de la clase Controladora
 
@@ -281,14 +282,18 @@ private:
         gotoXY(0, ALTO_CONSOLA - 1);
     }
 public:
+    LandingPage() : PantallaBase(),
+        seccionActual(0), elementoActual(0),
+          seccionAnterior(-1), elementoAnterior(-1), 
+		  primeraRenderizacion(true), presionEnter(false) { }
 
-    LandingPage() 
+    LandingPage(LinkedList<Curso*>& cursosDatos, LinkedList<Especializacion*>& especializacionesDatos)
         : PantallaBase(),
           seccionActual(0), elementoActual(0),
           seccionAnterior(-1), elementoAnterior(-1), 
 		  primeraRenderizacion(true), presionEnter(false)
     {
-        cargarDatos();
+        cargarDatos(cursosDatos, especializacionesDatos, 3);
     }
 
     void renderizar()  
