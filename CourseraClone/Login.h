@@ -168,7 +168,9 @@ public:
                             
                             // Intentar autenticar al usuario
                             Usuario usuarioTemp;
-                            LoginStatus status = Usuario::login(usuarioTemp, res.tipoUsuario, email, password);
+                            int index = usuarioTemp.buscarIndexUsuario(email, res.tipoUsuario);
+                            LoginStatus status = usuarioTemp.login(usuarioTemp, res.tipoUsuario, password, index);
+                            //LoginStatus status = Usuario::login(usuarioTemp, res.tipoUsuario, email, password);
                             
                             if (status == LoginStatus::SUCCESS) {
                                 if (tipoUsuarioActual == 0) {
