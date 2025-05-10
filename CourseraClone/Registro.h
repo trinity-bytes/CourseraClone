@@ -146,7 +146,7 @@ private:
             return false;
         }
 
-        if (temp.usuarioRepetido(email, tipoUsuario)) {
+        if (temp.buscarIndexUsuario(email, tipoUsuario) != -1) {
             error = true;
             mensajeError = "El email corresponde a otro usuario";
             //throw runtime_error(mensajeError); // Nos salta error al ejecutar

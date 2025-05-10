@@ -315,25 +315,27 @@ public:
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
     // Dentro de class Usuario:
 public:
-    bool usuarioRepetido(string _username, TipoUsuario tipoUsuario) {
+    int buscarIndexUsuario(string _username, TipoUsuario tipoUsuario) {
+        // 1) Normalizar a minúsculas
         for (char& c : _username) {
-            if (c >= 'A' && c <= 'Z') c = c + 32;
+            if (c >= 'A' && c <= 'Z')
+                c += ('a' - 'A');
         }
 
-        const string indexFilePath = getIndexFilePath(tipoUsuario);
+        // 2) Abrir el archivo de índices
+        const string indexFilePath = Usuario::getIndexFilePath(tipoUsuario);
         ifstream indexFile(indexFilePath, ios::in | ios::binary);
-        if (!indexFile.is_open()) {
-            return false;
-        }
+        if (!indexFile.is_open())
+            return -1;
 
+        // 3) Calcular cuántos registros hay
         indexFile.seekg(0, ios::end);
         int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
         indexFile.seekg(0, ios::beg);
+        if (cantidad == 0)
+            return -1;
 
-        if (cantidad == 0) {
-            return false;
-        }
-
+        // 4) Predicado para lower_bound
         auto pred = [&](int pos) {
             UsuarioIndex tmp;
             indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
@@ -341,126 +343,56 @@ public:
             return strncmp(_username.c_str(), tmp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
             };
 
+        // 5) Búsqueda binaria para encontrar la posición
         int pos = busquedaBinaria(0, cantidad - 1, pred);
         if (pos < cantidad) {
             UsuarioIndex encontrado;
             indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
             indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
-
-            // Si coincide exactamente, está repetido
-            if (strncmp(encontrado.nombreDeUsuario, _username.c_str(), MAX_FIELD_LEN) == 0) {
-                return true;
-            }
+            if (strncmp(encontrado.nombreDeUsuario, _username.c_str(), MAX_FIELD_LEN) == 0)
+                return pos;
         }
-        return false;
+        return -1;
     }
 
 
-
-    static LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, string userInput, string passInput) 
+    LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, string passInput, int pos) 
     {
-        string indexFilePath = getIndexFilePath(tipoUsuario);
-        ifstream indexFile(indexFilePath, ios::binary); // Abrir solo para leer
+        if (pos == -1) return LoginStatus::USER_NOT_FOUND;
 
-        if (!indexFile.is_open()) 
-        {
-            cerr << "Error al abrir archivo de indice para login: " << indexFilePath << endl;
-            return LoginStatus::FILE_ERROR; // Indicar error de archivo
+        const string indexPath = getIndexFilePath(tipoUsuario);
+        ifstream indexFile(indexPath, ios::in | ios::binary);
+        if (!indexFile.is_open()) {
+            return LoginStatus::FILE_ERROR;
         }
-
-        indexFile.seekg(0, ios::end);
-        int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
-        indexFile.seekg(0, ios::beg); // Volver al principio
-
-        if (cantidad == 0) 
-        {
-            // Archivo de índice vacío, ningún usuario registrado
-            indexFile.close();
-            return LoginStatus::USER_NOT_FOUND;
-        }
-
-        // Lambda para la búsqueda binaria de un match exacto (o el posible lugar donde debería estar)
-        // Queremos encontrar la primera posición `p` tal que el username buscado sea
-        // menor o igual al nombre de usuario en la posición `p`.
-        // Esto nos da la posición donde el usuario *podría* estar si existe.
-        auto predicadoBusqueda = [&](int pos) {
-            UsuarioIndex temp;
-            indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
-            indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags
-
-            // Queremos el primer pos donde userInput <= temp.nombreDeUsuario
-            return strncmp(userInput.c_str(), temp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
-            };
-
-        // Usar busquedaBinaria para encontrar el posible índice del usuario
-        // La búsqueda binaria nos dará la posición donde el usuario *debería* estar
-        // si existe, o la posición de inserción si no existe.
-        // Rango de búsqueda: [0, cantidad - 1].
-        int posPosibleUsuario = busquedaBinaria(0, cantidad - 1, predicadoBusqueda);
-
-        // Verificar si la posición encontrada es válida y si el usuario en esa posición realmente coincide con el username buscado.
-        bool usuarioEncontrado = false;
+        indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
         UsuarioIndex encontrado;
+        indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
+        indexFile.close();
 
-        // posPosibleUsuario podría ser 'cantidad' si el usuario buscado es mayor que todos.
-        if (posPosibleUsuario >= 0 && posPosibleUsuario < cantidad) {
-            indexFile.seekg(posPosibleUsuario * sizeof(UsuarioIndex), ios::beg);
-            indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags
-
-            // Comparar el nombre de usuario encontrado con el nombre de usuario de entrada
-            if (strncmp(encontrado.nombreDeUsuario, userInput.c_str(), MAX_FIELD_LEN) == 0) {
-                // Match exacto del nombre de usuario en el índice!
-                usuarioEncontrado = true;
-            }
-        }
-        indexFile.close(); // Ya no necesitamos el archivo de índice
-
-
-        if (!usuarioEncontrado) {
-            // El nombre de usuario no se encontró en el índice en la posición esperada
-            return LoginStatus::USER_NOT_FOUND;
-        }
-
-        // Si el usuario fue encontrado en el índice, leer sus datos del archivo principal
-        string dataFilePath = getDataFilePath(tipoUsuario);
-        ifstream dataFile(dataFilePath, ios::binary);
-
+        // 3) Abrir el archivo de datos y saltar al offset
+        const string dataPath = getDataFilePath(tipoUsuario);
+        ifstream dataFile(dataPath, ios::in | ios::binary);
         if (!dataFile.is_open()) {
-            cerr << "Error al abrir archivo de datos para login: " << dataFilePath << endl;
-            return LoginStatus::FILE_ERROR; // Indicar error de archivo
+            return LoginStatus::FILE_ERROR;
         }
 
-        UsuarioBinario datos;
-        // Mover al offset indicado en el índice y leer el struct binario
         dataFile.seekg(encontrado.offset, ios::beg);
-        dataFile.read(reinterpret_cast<char*>(&datos), sizeof(UsuarioBinario));
+        UsuarioBinario binRec;
+        dataFile.read(reinterpret_cast<char*>(&binRec), sizeof(binRec));
         dataFile.close();
 
-        // 3. Verificar la contraseña (comparando hashes)
-        // Hashear la contraseña ingresada por el usuario
-        string inputPassHash = hashContrasena(passInput);
-
-        // Comparar el hash de la contraseña ingresada con el hash almacenado
-        // Usamos strncmp ya que contrasenaHash en 'datos' es char[] y inputPassHash es string
-        // Debemos comparar las cadenas hasta la longitud del campo, considerando el null terminator
-        if (strncmp(datos.contrasenaHash, inputPassHash.c_str(), MAX_FIELD_LEN) == 0) {
-            // Login exitoso! Crear el objeto UsuarioLogueado
-            // NOTA: Aquí necesitas decidir cómo generar el ID al cargar.
-            // Usar 'cantidad + 1' como antes no es un ID persistente y único.
-            // Un enfoque mejor sería guardar el ID en UsuarioBinario o tener
-            // un archivo de metadatos que lleve un contador de IDs.
-            // Por ahora, usamos un ID placeholder (por ejemplo, 0 o el offset).
-            // Usaremos el offset como un ID temporal para la demostración,
-            // aunque no es un ID "semántico" real.
-
-            usuarioLogueado = fromUsuarioBinario(datos, encontrado.offset, tipoUsuario); // Usamos offset como ID temporal
-            return LoginStatus::SUCCESS; // Login logrado wiiiiiii!! ^.^
+        // 4) Comparar hashes
+        string inputHash = hashContrasena(passInput);
+        if (strncmp(binRec.contrasenaHash,
+            inputHash.c_str(),
+            MAX_FIELD_LEN) != 0)
+        {
+            return LoginStatus::WRONG_PASSWORD;
         }
-        else {
-            return LoginStatus::WRONG_PASSWORD; // Contraseña incorrecta
-        }
+
+        usuarioLogueado = fromUsuarioBinario(binRec, /*id=*/encontrado.offset, tipoUsuario); // Usamos offset como ID temporal
+        return LoginStatus::SUCCESS; // Login logrado wiiiiiii!! ^.^
     }
 
     // --- Getters ---

@@ -1,5 +1,6 @@
 #pragma once
 #include "Pantalla.h"
+#include "Usuario.h"
 #include "ExtendedFunctions.h"
 #include "UI_Ascii.h"
 #include <string>
@@ -12,6 +13,7 @@ private:
 
     string email;
     string password;
+    TipoUsuario tipoUsuario;
     int campoActual;
     int campoAnterior;
     bool primeraRenderizacion;
@@ -230,11 +232,23 @@ public:
 
 private:
     bool validarCampos() {
+        Usuario temp;
         if (email.empty() || password.empty()) {
             error = true;
             mensajeError = "Todos los campos son obligatorios";
             return false;
         }
-        return true;
+        int index = temp.buscarIndexUsuario(email, tipoUsuario);
+        if (index == -1) {
+            error = true;
+            mensajeError = "Usuario no encontrado";
+            return false;
+        }
+        else {
+            LoginStatus res = temp.login(temp, tipoUsuario, password, index);
+            if (res == LoginStatus::SUCCESS) return true;
+        }
+
+        return false;
     }
 };
