@@ -1,4 +1,4 @@
-Desarrollo Web->Aprende a crear sitios y apps web.
-Ciencia de Datos->Explora el mundo del analisis y ML.
-Marketing Digital->Domina las estrategias online.
-Diseño Grafico->Crea visuales impactantes.
+Desarrollo Web|Aprende a crear sitios y apps web.
+Ciencia de Datos|Explora el mundo del analisis y ML.
+Marketing Digital|Domina las estrategias online.
+Diseño Grafico|Crea visuales impactantes.

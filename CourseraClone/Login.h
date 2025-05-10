@@ -39,7 +39,7 @@ private:
 
     void renderizarCampo(const string& valor, int indice, bool seleccionado) 
     {
-        gotoxy(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
+        gotoXY(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
     
         if (seleccionado) mostrarCursor(true);
 		else mostrarCursor(false);
@@ -50,7 +50,7 @@ private:
 
     void renderizarBoton(const string& texto, int indice, bool seleccionado) 
     {
-        gotoxy(coordsBotones[indice].X, coordsBotones[indice].Y);
+        gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
 
         if (indice == 0 || indice == 1) {
             if (seleccionado || (indice == 0 && tipoUsuarioActual == 0) || (indice == 1 && tipoUsuarioActual == 1)) {
@@ -90,7 +90,7 @@ private:
                 
         if (error) // Mensaje de error
         {
-            gotoxy(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 11);
+            gotoXY(ANCHO_CONSOLA / 2 - mensajeError.length() / 2, 11);
 			SetConsoleColor(1, 3);
             cout << mensajeError;
             SetConsoleColor(15, 1);

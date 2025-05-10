@@ -145,23 +145,6 @@ inline void ConfigurarConsola()
 }
 
 // =====================================================
-// FUNCIONES DE POSICIONAMIENTO DEL CURSOR
-// Utilizan las dimensiones definidas en Utils.h
-// =====================================================
-
-// Mueve el cursor a una posición específica
-void gotoxy(int x, int y) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD pos = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
-    SetConsoleCursorPosition(hConsole, pos);
-}
-
-// Centra el cursor horizontalmente
-void centrarCursor(int y) {
-    gotoxy(ANCHO_CONSOLA / 2, y);
-}
-
-// =====================================================
 // FUNCIONES DE COLOR
 // Utilizan las constantes de color definidas en Utils.h
 // =====================================================
