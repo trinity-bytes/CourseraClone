@@ -3,6 +3,7 @@
 // headers propios
 #include "Actividad.h"
 #include "Clase.h"
+#include "LinkedList.h"
 #include "algoritmosBusqueda.h"
 
 // headers de la libreria estandar

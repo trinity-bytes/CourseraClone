@@ -214,11 +214,14 @@ public:
                 case 13: // Enter
                     if (campoActual == ELEMENTOS_INPUT) {
                         tipoUsuarioActual = 0;
+                        tipoUsuario = TipoUsuario::ESTUDIANTE;
                     }
                     else if (campoActual == ELEMENTOS_INPUT + 1) { // Si estamos en organizacion
                         tipoUsuarioActual = 1; 
+                        tipoUsuario = TipoUsuario::EMPRESA;
                     }
                     else if (campoActual == ELEMENTOS_INPUT + 2) { // Registrar
+                        tipoUsuario = (tipoUsuarioActual == 0) ? TipoUsuario::ESTUDIANTE : TipoUsuario::EMPRESA;
                         if (validarCampos()) {
                             guardarUsuario();
                             //ResultadoPantalla res;

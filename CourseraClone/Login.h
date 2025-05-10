@@ -156,13 +156,11 @@ public:
                     if (campoActual == 2) // Botón Estudiante
                     { 
                         tipoUsuarioActual = 0;
-						tipoUsuario = TipoUsuario::ESTUDIANTE;
                         dibujarInterfazCompleta();
                     } 
                     else if (campoActual == 3) // Botón Organización
                     { 
                         tipoUsuarioActual = 1;
-						tipoUsuario = TipoUsuario::EMPRESA;
                         dibujarInterfazCompleta();
                     } 
                     else if (campoActual == 4) // Iniciar Sesión
@@ -202,6 +200,7 @@ public:
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
                             }
                             else {
+                                // throw runtime_error("ldfkjlajf");
                                 // Cuando se implemente el dashboard de organización:
                                 // res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
                             }
