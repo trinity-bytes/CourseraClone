@@ -1,5 +1,4 @@
 #pragma once
-
 // Headers propios
 #include "Pantalla.h"
 #include "Actividad.h"
@@ -73,6 +72,19 @@ private:
 					throw runtime_error("Falla carga");
 				} //else throw runtime_error("Logrado");
 
+			}else{
+				int cantidadCursos = 0;
+				archivo >> cantidadCursos;
+				archivo.ignore();
+				vector<int> idsCursos(cantidadCursos);
+				for (int i = 0; i < cantidadCursos; i++) {
+					archivo >> idsCursos[i];
+					archivo.ignore();
+				}
+				getline(archivo, descripcion);
+				if (!gestionadorCursos->crearEspecializacion(idEmpresa, nombreEmpresa, tituloActividad, cantidadCursos, descripcionActividad, idsCursos)) {
+					throw runtime_error("Carga Fallida en especializacion");
+				}
 			}
 			cantidad++;
 		}

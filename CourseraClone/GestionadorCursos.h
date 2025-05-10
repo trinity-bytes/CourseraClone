@@ -28,15 +28,15 @@ private:
 
 public:
     GestionadorCursos() {
-        cargarCursos();
-        cargarEspecializaciones();
+        //cargarCursos();
+        //cargarEspecializaciones();
     }
 
 
     GestionadorCursos(vector<int>& _idsCursos) : idsCursos(_idsCursos)
     {
-        cargarCursos();
-        cargarEspecializaciones();
+        //cargarCursos();
+        //cargarEspecializaciones();
     }
 
     ~GestionadorCursos() {
@@ -286,28 +286,6 @@ public:
     }
 
 private:
-    void cargarCursos() {
-        ifstream archivo(RUTA_CURSOS);
-        if (!archivo.is_open()) return;
-
-        string linea;
-        while (getline(archivo, linea)) {
-            // Parsear línea y crear curso
-            // Implementar según el formato del archivo
-        }
-    }
-
-    void cargarEspecializaciones() {
-        ifstream archivo(RUTA_ESPECIALIZACIONES);
-        if (!archivo.is_open()) return;
-
-        string linea;
-        while (getline(archivo, linea)) {
-            // Parsear línea y crear especialización
-            // Implementar según el formato del archivo
-        }
-    }
-
     void guardarCursos() {
         ofstream archivo(RUTA_CURSOS);
         if (!archivo.is_open()) return;
