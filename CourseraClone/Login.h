@@ -1,6 +1,7 @@
 #pragma once
 #include "Pantalla.h"
-#include "Usuario.h"
+#include "Estudiante.h"
+#include "Empresa.h"
 #include "ExtendedFunctions.h"
 #include "UI_Ascii.h"
 #include <string>
@@ -20,6 +21,8 @@ private:
     bool error;
     string mensajeError;
     int tipoUsuarioActual = 0; // 0: Estudiante, 1: Organización
+    std::unique_ptr<Estudiante>* estudiante;
+    std::unique_ptr<Empresa>* empresa;
 
     // Coordenadas para dibujar
     COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {34, 15}, {34, 20} };
@@ -123,7 +126,19 @@ public:
         campoAnterior(-1), 
         primeraRenderizacion(true), 
         error(false), 
-        tipoUsuarioActual(0) {}
+        tipoUsuarioActual(0),
+        estudiante(nullptr),
+        empresa(nullptr)    {
+    }
+
+    Login(unique_ptr<Estudiante>& _estudiante, unique_ptr<Empresa>& _empresa) : campoActual(0),
+        campoAnterior(-1),
+        primeraRenderizacion(true),
+        error(false),
+        tipoUsuarioActual(0),
+        estudiante(&_estudiante),
+        empresa(&_empresa)      {
+    }
 
     ResultadoPantalla ejecutar() override 
     {
@@ -191,15 +206,19 @@ public:
                         LoginStatus status = usuarioTemp.login(usuarioTemp, tipoUsuario, password, index);
 
                         if (status == LoginStatus::SUCCESS) {
-                            // Credenciales válidas, prepara los datos para la Controladora
                             res.email = email;
                             res.password = password;
                             res.tipoUsuario = tipoUsuario;
 
                             if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+                                *estudiante = make_unique<Estudiante>(index, usuarioTemp.getNombreCompleto(), email, "" );
+                                empresa->reset();
+
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
                             }
                             else {
+                                *empresa = make_unique<Empresa>(index, usuarioTemp.getNombreCompleto(), email, "");
+                                estudiante->reset();
                                 // throw runtime_error("ldfkjlajf");
                                 // Cuando se implemente el dashboard de organización:
                                 // res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;

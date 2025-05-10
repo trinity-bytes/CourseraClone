@@ -5,7 +5,8 @@
 #include "Actividad.h"
 //#include "GestionadorUsuarios.h"
 #include "GestionadorCursos.h"
-#include "Usuario.h"
+#include "Estudiante.h"
+#include "Empresa.h"
 #include "Login.h"
 #include "LandingPage.h"
 #include "DashboardEstudiante.h"
@@ -13,7 +14,6 @@
 #include "PantallaResultado.h"
 
 // Forward declarations
-class GestionadorUsuarios;
 class GestionadorCursos;
 class Usuario;
 class Curso;
@@ -36,7 +36,8 @@ private:
 	//unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
 	unique_ptr<GestionadorCursos> gestionadorCursos;
 	vector<Actividad> actividades;
-	unique_ptr<Usuario> usuarioActual; // Cambiamos a unique_ptr para gestionar memoria
+	unique_ptr<Estudiante> estudiante; // Cambiamos a unique_ptr para gestionar memoria
+	unique_ptr<Empresa> empresa;
 	bool ejecutando;
 
 	void cargarDatosArchivo() {
@@ -88,9 +89,11 @@ private:
 	}
 
 public:
-	Controladora() : usuarioActual(nullptr), ejecutando(true) {
+	Controladora() : ejecutando(true) {
 		// Inicializar gestores
-		//gestionadorUsuarios = make_unique<GestionadorUsuarios>();
+		//gestionadorUsuarios = make_unique<GestionadorUsuarios>()
+		estudiante = nullptr;
+		empresa = nullptr;
 		gestionadorCursos = make_unique<GestionadorCursos>();
 		
 		// Cargar datos iniciales
@@ -107,16 +110,17 @@ public:
 			switch (resultado.accion) 
 			{
 				case AccionPantalla::IR_A_LOGIN:
-					pantallaActual = make_unique<Login>();
+					pantallaActual = make_unique<Login>(estudiante, empresa);
 					break;
 				case AccionPantalla::IR_A_REGISTRO:
 					pantallaActual = make_unique<Registro>();
 					break;
 				case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
 					// El Login ya validó las credenciales, simplemente establecemos el usuario
-					establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
-					if (usuarioActual) {
+					//establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
+					if (estudiante) {
 						pantallaActual = make_unique<DashboardEstudiante>();
+						// throw runtime_error(estudiante->getNombreCompleto());
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
@@ -137,6 +141,7 @@ public:
 		}
 	}
 
+	/*
 	bool establecerUsuarioActual(const string& email, TipoUsuario tipo) {
 		try {
 			// Creamos un objeto Usuario temporal
@@ -184,6 +189,7 @@ public:
 			return false;
 		}
 	}
+	*/
 
 	/*
 	// Autenticación

@@ -134,6 +134,13 @@ public:
         contrasenaHash(_contrasenaHash)
     { }
 
+    void establecerDatosBase(Usuario otroUsuario) {
+        tipoUsuario = otroUsuario.getTipoUsuario();
+        nombreCompleto = otroUsuario.getNombreCompleto();
+        username = otroUsuario.getUsername();
+        contrasenaHash = otroUsuario.getContrasenaHash();
+    }
+
     static string hashContrasena(const string& contrasena) 
     {
         string mockHash = "atalapastrukaGohGohGoh"; // Hash inicial con la palabra de seguridad xd
@@ -400,6 +407,7 @@ public:
     string getNombreCompleto() const { return nombreCompleto; } // Agregado const
     TipoUsuario getTipoUsuario() const { return tipoUsuario; } // Agregado const
     string getUsername() const { return username; } // Agregado const
+    string getContrasenaHash() const { return contrasenaHash; }
 	// string getContrasenaHash() const { return contrasenaHash; } // No deberiamos exponer el hash OwO, no es necesario
 
     // Setter para el ID si es necesario establecerlo después de la creación
