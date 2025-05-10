@@ -119,5 +119,8 @@
     <ClInclude Include="Stack.h">
       <Filter>Header Files\Estructuras</Filter>
     </ClInclude>
+    <ClInclude Include="DashboardOrganizacion.h">
+      <Filter>Header Files\Pantallas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
