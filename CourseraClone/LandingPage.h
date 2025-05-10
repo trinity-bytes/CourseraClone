@@ -22,6 +22,10 @@ private:
     static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
     static const int MAX_ALTO_CARACTERES_CUADRO = 4;
 
+    // Rutas de los archivos
+    const std::string RUTA_CURSOS = ".\\Resources\\Data\\cursos_muestra.txt";
+    const std::string RUTA_ESPECIALIDADES = ".\\Resources\\Data\\especialidades_muestra.txt";
+
     // Elementos del menú
     const std::vector<std::string> ELEMENTOS_CABECERA = {
         " Iniciar Sesion ",
@@ -29,18 +33,9 @@ private:
         " Sobre Nosotros "
     };
 
-    // Datos por defecto
-    std::vector<ElementoMenu> especialidadesDefecto = {
-        {"Desarrollo Web", "Frontend & Backend"},
-        {"Ciencia de Datos", "Analisis y ML"},
-        {"Marketing Digital", "SEO, SEM & Ads"}
-    };
-
-    std::vector<ElementoMenu> cursosDefecto = {
-        {"Curso C++ CLI", "Interaccion consola"},
-        {"Curso Python DS", "Data science intro"},
-        {"Curso React JS", "Web UI development"}
-    };
+    // Datos del menú
+    std::vector<ElementoMenu> especialidades;
+    std::vector<ElementoMenu> cursos;
 
     // Estado actual
     int seccionActual;
@@ -51,16 +46,99 @@ private:
     bool primeraRenderizacion;
 	bool presionEnter; // Para evitar que se ejecute el evento de enter al iniciar la pantalla
 
-    // Datos del menú
-    std::vector<ElementoMenu> especialidades;
-    std::vector<ElementoMenu> cursos;
-
     // Coordenadas para dibujar
     COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {67, 3}, {84, 3}, {98, 3} };
     COORD coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 15}, {45, 15}, {79, 15} };
     COORD coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 17}, {45, 17}, {79, 17} };
     COORD coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { {11, 25}, {45, 25}, {79, 25} };
     COORD coordsDescCurso[MAX_ELEMENTOS_CURSO] = { {11, 27}, {45, 27}, {79, 27} };
+
+    void cargarDatos() 
+    {
+        cargarEspecialidades();
+        cargarCursos();
+    }
+
+    void cargarEspecialidades() 
+    {
+        std::ifstream archivo(RUTA_ESPECIALIDADES);
+        if (!archivo.is_open()) 
+        {
+            std::cerr << "Error al abrir el archivo de especialidades: " << RUTA_ESPECIALIDADES << std::endl;
+            return;
+        }
+
+        std::string linea;
+        while (std::getline(archivo, linea)) {
+            std::istringstream ss(linea);
+            std::string titulo, descripcion;
+
+            if (std::getline(ss, titulo, '|') && std::getline(ss, descripcion)) {
+                especialidades.emplace_back(titulo, descripcion);
+            }
+        }
+
+        archivo.close();
+    }
+
+    void cargarCursos() {
+        std::ifstream archivo(RUTA_CURSOS);
+        if (!archivo.is_open()) {
+            std::cerr << "Error al abrir el archivo de cursos: " << RUTA_CURSOS << std::endl;
+            return;
+        }
+
+        std::string linea;
+        while (std::getline(archivo, linea)) {
+            std::istringstream ss(linea);
+            std::string titulo, descripcion;
+
+            if (std::getline(ss, titulo, '|') && std::getline(ss, descripcion)) {
+                cursos.emplace_back(titulo, descripcion);
+            }
+        }
+
+        archivo.close();
+    }
+
+    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
+        std::string resultado;
+        std::string textoRestante = texto;
+
+        for (int linea = 0; linea < altoMax; ++linea) {
+            if (textoRestante.empty()) break;
+
+            if (linea == altoMax - 1 && textoRestante.length() > anchoMax) {
+                resultado += textoRestante.substr(0, anchoMax - 3) + "...";
+                break;
+            }
+
+            if (textoRestante.length() <= anchoMax) {
+                resultado += textoRestante;
+                textoRestante.clear();
+            }
+            else {
+                int posCorte = anchoMax;
+                while (posCorte > 0 && textoRestante[posCorte] != ' ' && textoRestante[posCorte - 1] != ' ') {
+                    posCorte--;
+                }
+
+                if (posCorte <= 0) {
+                    posCorte = anchoMax;
+                }
+
+                resultado += textoRestante.substr(0, posCorte);
+                textoRestante = textoRestante.substr(posCorte);
+                textoRestante.erase(0, textoRestante.find_first_not_of(" "));
+            }
+
+            if (linea < altoMax - 1 && !textoRestante.empty()) {
+                resultado += "\n";
+            }
+        }
+
+        return resultado;
+    }
 
     void actualizarSeleccion() {
         if (seccionActual != seccionAnterior) {
@@ -202,52 +280,6 @@ private:
 
         gotoXY(0, ALTO_CONSOLA - 1);
     }
-
-    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
-        std::string resultado;
-        std::string textoRestante = texto;
-
-        for (int linea = 0; linea < altoMax; ++linea) {
-            if (textoRestante.empty()) break;
-
-            if (linea == altoMax - 1 && textoRestante.length() > anchoMax) {
-                resultado += textoRestante.substr(0, anchoMax - 3) + "...";
-                break;
-            }
-
-            if (textoRestante.length() <= anchoMax) {
-                resultado += textoRestante;
-                textoRestante.clear();
-            }
-            else {
-                int posCorte = anchoMax;
-                while (posCorte > 0 && textoRestante[posCorte] != ' ' && textoRestante[posCorte - 1] != ' ') {
-                    posCorte--;
-                }
-
-                if (posCorte <= 0) {
-                    posCorte = anchoMax;
-                }
-
-                resultado += textoRestante.substr(0, posCorte);
-                textoRestante = textoRestante.substr(posCorte);
-                textoRestante.erase(0, textoRestante.find_first_not_of(" "));
-            }
-
-            if (linea < altoMax - 1 && !textoRestante.empty()) {
-                resultado += "\n";
-            }
-        }
-
-        return resultado;
-    }
-
-    void cargarDatos() {
-        // TODO: Implementar carga de datos desde la controladora
-        especialidades = especialidadesDefecto;
-        cursos = cursosDefecto;
-    }
-
 public:
 
     LandingPage() 

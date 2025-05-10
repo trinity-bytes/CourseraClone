@@ -2,6 +2,7 @@
 
 #include "Pantalla.h"
 #include "ExtendedFunctions.h"
+#include "UI_Ascii.h"
 #include <vector>
 #include <string>
 
@@ -46,8 +47,12 @@ private:
         setColor(Colors::NORMAL);
     }
 
-    void dibujarInterfazCompleta() {
-        for (int i = 0; i < TOTAL_SECCIONES; ++i) {
+    void dibujarInterfazCompleta() 
+    {
+        UI_StudentDashboard();
+
+        for (int i = 0; i < TOTAL_SECCIONES; ++i) 
+        {
             actualizarElementoMenu(i, seccionActual == i);
         }
         // Aquí puedes dibujar el contenido de la sección seleccionada
