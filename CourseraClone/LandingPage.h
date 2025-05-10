@@ -65,19 +65,24 @@ private:
     COORD coordsDescCurso[MAX_ELEMENTOS_CURSO] = { {11, 27}, {45, 27}, {79, 27} };
 
     void actualizarSeleccion() {
-        if (seccionActual != seccionAnterior) {
-            switch (seccionAnterior) {
-            case SECCION_CABECERA:
-                actualizarElementoCabecera(elementoAnterior, false);
-                break;
-            case SECCION_ESPECIALIDADES:
-                actualizarElementoEspecialidad(elementoAnterior, false);
-                break;
-            case SECCION_CURSOS:
-                actualizarElementoCurso(elementoAnterior, false);
-                break;
+        // Si es la primera renderización o cambió de sección
+        if (seccionAnterior == -1 || seccionActual != seccionAnterior) {
+            // Si no es la primera renderización, deseleccionar el elemento anterior
+            if (seccionAnterior != -1) {
+                switch (seccionAnterior) {
+                case SECCION_CABECERA:
+                    actualizarElementoCabecera(elementoAnterior, false);
+                    break;
+                case SECCION_ESPECIALIDADES:
+                    actualizarElementoEspecialidad(elementoAnterior, false);
+                    break;
+                case SECCION_CURSOS:
+                    actualizarElementoCurso(elementoAnterior, false);
+                    break;
+                }
             }
 
+            // Seleccionar el nuevo elemento
             switch (seccionActual) {
             case SECCION_CABECERA:
                 actualizarElementoCabecera(elementoActual, true);
@@ -90,6 +95,7 @@ private:
                 break;
             }
         }
+        // Si solo cambió el elemento dentro de la misma sección
         else if (elementoActual != elementoAnterior) {
             switch (seccionActual) {
             case SECCION_CABECERA:
@@ -156,7 +162,9 @@ private:
         if (seleccionado) SetConsoleColor(1, 13);
         else SetConsoleColor(15, 1);
 
-        std::cout << elemento.titulo;
+		string tituloFormateado = truncarTitulo(elemento.titulo, MAX_ANCHO_CARACTERES_CUADRO);
+
+        std::cout << tituloFormateado;
         SetConsoleColor(15, 1);
 
         std::string descFormateada = formatearDescripcion(
@@ -202,7 +210,19 @@ private:
             actualizarElementoCurso(i, seccionActual == SECCION_CURSOS && elementoActual == i);
         }
 
+        // Inicializar estados anteriores
+        seccionAnterior = seccionActual;
+        elementoAnterior = elementoActual;
+
         gotoXY(0, ALTO_CONSOLA - 1);
+    }
+
+    // Método para truncar títulos que excedan el máximo de caracteres
+    std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
+        if (titulo.length() <= maxLongitud) {
+            return titulo;
+        }
+        return titulo.substr(0, maxLongitud - 3) + "...";
     }
 
     std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
@@ -359,25 +379,28 @@ public:
                 seccionActual--;
                 if (seccionActual < 0) seccionActual = 0;
                 elementoActual = 0;
+                actualizarSeleccion();
                 break;
             case 80: // Flecha abajo
                 seccionActual++;
                 if (seccionActual >= TOTAL_SECCIONES)
                     seccionActual = TOTAL_SECCIONES - 1;
                 elementoActual = 0;
+                actualizarSeleccion();
                 break;
             case 75: // Flecha izquierda
                 elementoActual--;
                 if (elementoActual < 0) elementoActual = 0;
+                actualizarSeleccion();
                 break;
             case 77: // Flecha derecha
                 elementoActual++;
                 int maxElementos = obtenerMaxElementosEnSeccion(seccionActual);
                 if (elementoActual >= maxElementos)
                     elementoActual = maxElementos > 0 ? maxElementos - 1 : 0;
+                actualizarSeleccion();
                 break;
             }
-            actualizarSeleccion();
         }
         else if (tecla == 13) // Enter
         {
