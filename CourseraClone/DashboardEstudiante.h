@@ -13,6 +13,8 @@
 #include <sstream>
 #include <algorithm> // Para std::min
 
+using namespace std;
+
 class DashboardEstudiante : public PantallaBase 
 {
 private:
@@ -30,7 +32,7 @@ private:
     static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 4; // 3 especializaciones + "Ver todas"
 
     // Datos del usuario
-    std::string nombreEstudiante;
+    string nombreEstudiante;
     int idEstudiante;
 
     // Coordenadas para dibujar
@@ -55,11 +57,11 @@ private:
     bool primeraRenderizacion;
 
     // Datos cargados
-    std::vector<ElementoMenu> cursosInscritos;
-    std::vector<ElementoMenu> especializacionesInscritas;
+    vector<ElementoMenu> cursosInscritos;
+    vector<ElementoMenu> especializacionesInscritas;
 
     // Ruta del archivo de inscripciones
-    const std::string RUTA_INSCRIPCIONES = ".\\Resources\\Data\\inscripciones.bin";
+    const string RUTA_INSCRIPCIONES = ".\\Resources\\Data\\inscripciones.bin";
 
     void cargarDatos() {
         cargarInscripciones();
@@ -84,7 +86,7 @@ private:
 
     void cargarInscripciones() {
         // Abrir el archivo de inscripciones binario
-        std::ifstream archivo(RUTA_INSCRIPCIONES, std::ios::binary);
+        ifstream archivo(RUTA_INSCRIPCIONES, ios::binary);
         if (!archivo.is_open()) {
             return;
         }
@@ -117,13 +119,13 @@ private:
     Curso* obtenerCursoPorId(int id) {
         // Esta función debería integrarse con GestionadorCursos
         // Por ahora, creamos un curso de ejemplo
-        return new Curso(id, 1, "Empresa", "Curso " + std::to_string(id), "Descripción del curso", "Instructor", 5);
+        return new Curso(id, 1, "Empresa", "Curso " + to_string(id), "Descripción del curso", "Instructor", 5);
     }
 
     Especializacion* obtenerEspecializacionPorId(int id) {
         // Esta función debería integrarse con GestionadorCursos
         // Por ahora, creamos una especialización de ejemplo
-        return new Especializacion(id, 1, "Empresa", "Especialización " + std::to_string(id), 0, "Descripción de la especialización");
+        return new Especializacion(id, 1, "Empresa", "Especialización " + to_string(id), 0, "Descripción de la especialización");
     }
     
     /*
@@ -151,7 +153,7 @@ private:
         // Mostrar nombre de estudiante
         gotoXY(52, 3);
         SetConsoleColor(15, 1);
-        std::cout << nombreEstudiante;
+        cout << nombreEstudiante;
 
         // Botones del header
         for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
@@ -162,7 +164,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
+            cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
         }
 
         SetConsoleColor(15, 1);
@@ -177,7 +179,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS INSCRIPCIONES ");
+            cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS INSCRIPCIONES ");
         }
 
         SetConsoleColor(15, 1);
@@ -195,7 +197,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << cursosInscritos[i].titulo;
+            cout << cursosInscritos[i].titulo;
         }
 
         // Botón "Ver todos"
@@ -206,7 +208,7 @@ private:
         else {
             SetConsoleColor(15, 1); // Color normal
         }
-        std::cout << " Ver todos ";
+        cout << " Ver todos ";
 
         SetConsoleColor(15, 1);
     }
@@ -223,7 +225,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << especializacionesInscritas[i].titulo;
+            cout << especializacionesInscritas[i].titulo;
         }
 
         // Botón "Ver todas"
@@ -234,7 +236,7 @@ private:
         else {
             SetConsoleColor(15, 1); // Color normal
         }
-        std::cout << " Ver todas ";
+        cout << " Ver todas ";
 
         SetConsoleColor(15, 1);
     }
@@ -287,7 +289,7 @@ private:
     }
 
 public:
-    DashboardEstudiante(int _idEstudiante = 1, std::string _nombreEstudiante = "Estudiante de Prueba")
+    DashboardEstudiante(int _idEstudiante = 1, string _nombreEstudiante = "Estudiante de Prueba")
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idEstudiante(_idEstudiante),
