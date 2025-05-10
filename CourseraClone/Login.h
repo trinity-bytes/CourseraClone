@@ -221,7 +221,7 @@ public:
                                 estudiante->reset();
                                 // throw runtime_error("ldfkjlajf");
                                 // Cuando se implemente el dashboard de organización:
-                                // res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
+                                res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
                             }
                             return res;
                         }

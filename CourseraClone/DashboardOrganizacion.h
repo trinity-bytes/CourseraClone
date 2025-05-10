@@ -91,7 +91,7 @@ private:
 
     void renderizarHeader() {
         // Mostrar nombre de la organización
-        gotoXY(56, 3);
+        gotoXY(53, 3);
         SetConsoleColor(15, 1);
         std::cout << nombreOrganizacion;
 

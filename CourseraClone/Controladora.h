@@ -9,6 +9,7 @@
 #include "Login.h"
 #include "LandingPage.h"
 #include "DashboardEstudiante.h"
+#include "DashboardOrganizacion.h"
 #include "Registro.h"
 #include "PantallaResultado.h"
 
@@ -32,10 +33,9 @@ class LinkedList;
 
 class Controladora {
 private:
-	//unique_ptr<GestionadorUsuarios> gestionadorUsuarios;
 	unique_ptr<GestionadorCursos> gestionadorCursos;
 	vector<Actividad> actividades;
-	unique_ptr<Estudiante> estudiante; // Cambiamos a unique_ptr para gestionar memoria
+	unique_ptr<Estudiante> estudiante; 
 	unique_ptr<Empresa> empresa;
 	bool ejecutando;
 
@@ -139,11 +139,19 @@ public:
 					//establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
 					if (estudiante) {
 						pantallaActual = make_unique<DashboardEstudiante>();
-						
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
 						pantallaActual = make_unique<Login>();
+					}
+					break;
+				case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
+					if (empresa) {
+						pantallaActual = make_unique<DashboardOrganizacion>(empresa->getId(), empresa->getNombreCompleto());
+					}
+					else {
+						// En caso de error, volvemos a la pantalla de login
+						pantallaActual = make_unique<Login>(estudiante, empresa);
 					}
 					break;
 				case AccionPantalla::IR_A_LANDING_PAGE:
