@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Usuario.h"
 
 enum class AccionPantalla {
     NINGUNA,
@@ -15,5 +16,6 @@ struct ResultadoPantalla {
     AccionPantalla accion = AccionPantalla::NINGUNA;
     std::string email;
     std::string password;
+    TipoUsuario tipoUsuario;
     // Puedes agregar más campos según lo que necesites transferir
 }; 
