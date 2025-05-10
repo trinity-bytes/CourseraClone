@@ -3,7 +3,6 @@
 // Headers propios
 #include "Pantalla.h"
 #include "Actividad.h"
-//#include "GestionadorUsuarios.h"
 #include "GestionadorCursos.h"
 #include "Estudiante.h"
 #include "Empresa.h"

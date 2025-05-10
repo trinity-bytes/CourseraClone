@@ -328,7 +328,8 @@ public:
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), presionEnter(false)
     {
-        cargarDatos(cursosDatos, especializacionesDatos, 3);
+        //cargarDatos(cursosDatos, especializacionesDatos, 3);
+        cargarDatos();
     }
 
     void renderizar()
