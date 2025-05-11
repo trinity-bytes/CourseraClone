@@ -153,37 +153,29 @@ public:
 	}
 
 	void verBoletas() {
-		//todas las boletas que el estudiante tiene
-		/*
-		ifstream file("boletas.txt");
-		if (!file.is_open()) {
-			cout << "No se pudo abrir el archivo." << endl;
-			return;
+		// Mostrar boletas
+		for (int i = 0; i < boletas.getTamano(); i++) {
+			Boleta* boleta = boletas.get(i);
+			if (boleta) {
+				boleta->mostrar();
+			}
+			else {
+				cout << "No tienes boletas." << endl;
+			}
 		}
-		
-		while (file.read(reinterpret_cast<char*>(&boleta), sizeof(Boleta))) {
-			boleta->mostrar();
-		}
-		*/
 	}
 
 	void verCursosInscritos() {
-		ifstream file("inscripciones.txt");
-		/*
-		if (!file.is_open()) {
-			cout << "No se pudo abrir el archivo." << endl;
-			return;
-		}
-		while (file.read(reinterpret_cast<char*>(&inscripcion), sizeof(Inscripcion))) {
-			if (inscripcion->getIdEstudiante() == id) {
+		// Mostrar cursos inscritos
+		for (int i = 0; i < cursosEs.getTamano(); i++) {
+			Inscripcion* inscripcion = cursosEs.get(i);
+			if (inscripcion) {
 				inscripcion->mostrar();
 			}
 			else {
 				cout << "No tienes cursos inscritos." << endl;
 			}
 		}
-		file.close();
-		*/
 	}
 
 	/*
