@@ -60,9 +60,7 @@ private:
 public:
     Boleta(int _id, int est, int act, string _fecha, double _precio)
         : id(_id), idEstudiante(est), idActividad(act),
-        fecha(_fecha), precio(_precio) {
-
-    }
+        fecha(_fecha), precio(_precio) {}
 
     Boleta(int est, int act, double _precio)
         : idEstudiante(est), idActividad(act),
