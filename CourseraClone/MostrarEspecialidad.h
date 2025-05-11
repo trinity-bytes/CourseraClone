@@ -246,7 +246,7 @@ public:
             // Convertir la lista a un vector para facilitar el acceso
             for (int i = 0; i < cursosLista.getTamano(); i++) {
                 if (i < MAX_CURSOS) {
-                    Curso* curso = cursosLista.get(i); // Usar el método `get` en lugar de `[]`
+                    Curso* curso = cursosLista.get(i);  
                     if (curso != nullptr) {
                         cursos.push_back(curso);
                     }

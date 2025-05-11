@@ -236,14 +236,18 @@ public:
 				    break;
 				case AccionPantalla::IR_A_MOSTRAR_CURSO:
 				{
-					// Obtener el ID del curso desde el resultado
-					int idCurso = resultado.idCursoSeleccionado; // Asumiendo que añadimos este campo a ResultadoPantalla
-
-					// Intentar obtener el curso del GestionadorCursos
+					int idCurso = resultado.idCursoSeleccionado;
 					Curso* cursoSeleccionado = gestionadorCursos->obtenerCursoPorId(idCurso);
 
 					if (cursoSeleccionado) {
-						pantallaActual = make_unique<MostrarCurso>(idCurso, cursoSeleccionado, resultado.accionAnterior);
+						// Pasar el gestionador de cursos y el estudiante actual
+						pantallaActual = make_unique<MostrarCurso>(
+							idCurso,
+							gestionadorCursos.get(),  // Pasar el gestionador
+							estudiante.get(),         // Pasar el estudiante actual (puede ser nullptr si no ha iniciado sesión)
+							cursoSeleccionado,
+							resultado.accionAnterior
+						);
 					}
 					else {
 						// Si no se encuentra el curso, volver a la pantalla anterior

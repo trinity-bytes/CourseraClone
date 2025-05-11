@@ -5,6 +5,8 @@
 #include "UI_Ascii.h"
 #include "Curso.h"
 #include "Clase.h"
+#include "GestionadorCursos.h"
+#include "Estudiante.h"
 #include <vector>
 #include <string>
 #include <algorithm> // Para std::min
@@ -16,6 +18,8 @@ private:
     // Datos del curso
     int idCurso;
     Curso* curso;
+    GestionadorCursos* gestionadorCursos; // Añadir
+    Estudiante* estudiante;
     std::vector<Clase> clases;
 
     // Estado de navegación
@@ -175,6 +179,10 @@ private:
         for (int i = 0; i < numClases; i++) {
             dibujarClase(i, i == claseSeleccionada);
         }
+
+        gotoXY(5, 30);
+        SetConsoleColor(15, 1);
+        std::cout << "Presiona 'I' para inscribirte a este curso";
     }
 
     void dibujarClase(int indice, bool seleccionada) {
@@ -202,17 +210,21 @@ private:
     }
 
 public:
-    MostrarCurso(int _idCurso, Curso* _curso = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE)
+    MostrarCurso(int _idCurso, GestionadorCursos* _gestionadorCursos = nullptr, Estudiante* _estudiante = nullptr, Curso* _curso = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE)
         : idCurso(_idCurso),
+        gestionadorCursos(_gestionadorCursos),
+        estudiante(_estudiante),
         curso(_curso),
         claseSeleccionada(0),
         primeraRenderizacion(true),
         pantallaAnterior(_pantallaAnterior)
     {
         // Si no se proporcionó un curso, intentar cargarlo por ID
-        if (curso == nullptr) {
-            // Aquí deberíamos cargar el curso desde el GestionadorCursos
-            // Por ahora, creamos un curso de ejemplo
+        if (curso == nullptr && gestionadorCursos != nullptr) {
+            curso = gestionadorCursos->obtenerCursoPorId(idCurso);
+        }
+        else if (curso == nullptr) {
+            // Si no hay gestionador, crear un curso de ejemplo
             curso = new Curso(idCurso, 1, "Empresa",
                 "Curso " + std::to_string(idCurso),
                 "Esta es la descripción detallada del curso. Incluye información sobre lo que aprenderán los estudiantes, los requisitos previos y los resultados esperados al finalizar el curso.",
@@ -226,9 +238,8 @@ public:
 
             // Si el curso tiene clases, convertir la lista a un vector para facilitar el acceso
             for (int i = 0; i < clasesLista.getTamano(); i++) {
-                //clases.push_back(clasesLista[i]);
-                Clase nuevaClase("Clase " + std::to_string(i + 1), "Ejemplo de clase");
-                clases.push_back(nuevaClase);
+                Clase clase = clasesLista.get(i); // Usar get() en lugar de []
+                clases.push_back(clase);
             }
 
             // Si no hay clases, crear algunas de ejemplo
@@ -279,7 +290,45 @@ public:
                     break;
                 }
                 break;
+            case 'i': // Inscribirse al curso
+            case 'I':
+                if (estudiante != nullptr) {
+                    if (estudiante->inscribirseACurso(curso)) { // Usar el método de estudiante
+                        // Mostrar mensaje de éxito
+                        gotoXY(5, 25);
+                        SetConsoleColor(2, 0); // Verde sobre negro
+                        std::cout << "¡Inscripción exitosa!";
+                        SetConsoleColor(15, 0); // Restaurar color
+                        _getch(); // Esperar una tecla
 
+                        // Refrescar la pantalla
+                        dibujarInterfazCompleta();
+                    }
+                    else {
+                        // Mostrar mensaje de error
+                        gotoXY(5, 25);
+                        SetConsoleColor(4, 0); // Rojo sobre negro
+                        std::cout << "Error en la inscripción. Es posible que ya estés inscrito.";
+                        SetConsoleColor(15, 0); // Restaurar color
+                        _getch(); // Esperar una tecla
+
+                        // Refrescar la pantalla
+                        dibujarInterfazCompleta();
+                    }
+                }
+                else {
+                    // El usuario no ha iniciado sesión, mostrar mensaje
+                    gotoXY(5, 25);
+                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    std::cout << "Necesitas iniciar sesión para inscribirte.";
+                    SetConsoleColor(15, 0); // Restaurar color
+                    _getch(); // Esperar una tecla
+
+                    // Redirigir a la pantalla de login
+                    res.accion = AccionPantalla::IR_A_LOGIN;
+                    return res;
+                }
+                break;
             case 13: // Enter
                 // Aquí se implementaría la lógica para mostrar el contenido de la clase seleccionada
                 // Por ahora, simplemente volvemos a la pantalla anterior

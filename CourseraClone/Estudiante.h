@@ -65,20 +65,55 @@ public:
 		*/
 	}
 
-	int incribirseAcurso(Actividad actividadNueva) {
-		Inscripcion* nuevaInscripcion = new Inscripcion(10, actividadNueva);
+	bool inscribirseACurso(Curso* curso)
+	{
+		if (!curso) {
+			std::cerr << "Error: Curso inválido" << std::endl;
+			return false;
+		}
 
-		// Guarda en archivo binario
+		// Crear una nueva inscripción
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *curso);
+
+		// Guardar en archivo
 		nuevaInscripcion->guardar();
 
-		// 3. Agregar a la lista del estudiante
-		inscripciones.agregarAlFinal(nuevaInscripcion); 
+		// Agregar a la lista del estudiante
+		inscripciones.agregarAlFinal(nuevaInscripcion);
 
-		//actividadesInscritas.push(nuevaInscripcion);
+		// También agregarlo a la pila de actividades inscritas
+		actividadesInscritas.push(nuevaInscripcion);
 
-		cout << "Inscripción completada para la actividad: " << actividadNueva.getTitulo() << '\n';
-		return 1; 
+		// Actualizar contador de alumnos del curso
+		curso->aumentarAlumno(1);
 
+		std::cout << "Inscripción completada para el curso: " << curso->getTitulo() << std::endl;
+		return true;
 	}
 
+	// Método sobrecargado para inscribirse a una especialización
+	int inscribirseAEspecializacion(Especializacion* especializacion) {
+		if (!especializacion) {
+			std::cerr << "Error: Especialización inválida" << std::endl;
+			return 0;
+		}
+
+		// Crear una nueva inscripción
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *especializacion);
+
+		// Guardar en archivo
+		nuevaInscripcion->guardar();
+
+		// Agregar a la lista del estudiante
+		inscripciones.agregarAlFinal(nuevaInscripcion);
+
+		// También agregarlo a la pila de actividades inscritas
+		actividadesInscritas.push(nuevaInscripcion);
+
+		// Actualizar contador de alumnos de la especialización
+		especializacion->aumentarAlumno(1);
+
+		std::cout << "Inscripción completada para la especialización: " << especializacion->getTitulo() << std::endl;
+		return 1;
+	}
 };
