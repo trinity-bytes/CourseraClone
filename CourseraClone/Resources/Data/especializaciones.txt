@@ -1,4 +1,4 @@
-6
+3
 2
 Microsoft Learning
 Especialización en Desarrollo .NET Full Stack
@@ -10,7 +10,7 @@ Programa completo para convertirte en desarrollador .NET y Angular
 0
 0
 
-8
+2
 2
 Google Academy
 Especialización en Marketing Digital
@@ -22,7 +22,7 @@ Programa completo para dominar estrategias de marketing online
 0
 0
 
-11
+2
 2
 Amazon Web Services
 Especialización en DevOps

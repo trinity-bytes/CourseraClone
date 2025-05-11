@@ -234,7 +234,7 @@ public:
         // Cargar las clases del curso
         if (curso != nullptr) {
             // Intentar obtener las clases del curso
-            LinkedList<Clase> clasesLista = curso->getClases();
+            const LinkedList<Clase>& clasesLista = curso->getClases();
 
             // Si el curso tiene clases, convertir la lista a un vector para facilitar el acceso
             for (int i = 0; i < clasesLista.getTamano(); i++) {
@@ -252,10 +252,7 @@ public:
         }
     }
 
-    ~MostrarCurso() {
-        // Si creamos el curso internamente, liberamos la memoria
-        // Comprobar si el curso se creó aquí y no fue proporcionado externamente
-    }
+    ~MostrarCurso() = default;
 
     ResultadoPantalla ejecutar() override {
         ResultadoPantalla res;
