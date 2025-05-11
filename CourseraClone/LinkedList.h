@@ -41,13 +41,13 @@ public:
         // Operadores de iterador
         T& operator*() const {
             if (current == nullptr)
-                throw std::runtime_error("Intentando desreferenciar un iterador nulo");
+                throw runtime_error("Intentando desreferenciar un iterador nulo");
             return current->data;
         }
 
         T* operator->() const {
             if (current == nullptr)
-                throw std::runtime_error("Intentando acceder a través de un iterador nulo");
+                throw runtime_error("Intentando acceder a través de un iterador nulo");
             return &(current->data);
         }
 

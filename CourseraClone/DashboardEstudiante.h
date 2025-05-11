@@ -11,7 +11,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <algorithm> // Para std::min
+#include <algorithm> // Para min
 
 using namespace std;
 
@@ -278,7 +278,7 @@ private:
     }
 
 public:
-    DashboardEstudiante(int _idEstudiante, std::string _nombreEstudiante)
+    DashboardEstudiante(int _idEstudiante, string _nombreEstudiante)
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idEstudiante(_idEstudiante),

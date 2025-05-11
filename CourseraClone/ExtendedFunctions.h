@@ -161,16 +161,16 @@ void resetColor() {
 }
 
 // Muestra un mensaje de error
-void mostrarError(const std::string& mensaje) {
+void mostrarError(const string& mensaje) {
     setColor(Colors::ERRORES);
-    std::cout << mensaje << std::endl;
+    cout << mensaje << endl;
     resetColor();
 }
 
 // Muestra un mensaje de éxito
-void mostrarExito(const std::string& mensaje) {
+void mostrarExito(const string& mensaje) {
     setColor(Colors::EXITO);
-    std::cout << mensaje << std::endl;
+    cout << mensaje << endl;
     resetColor();
 }
 

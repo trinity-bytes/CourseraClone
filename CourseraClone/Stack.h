@@ -24,7 +24,7 @@ public:
 
 	T get(int index) {
 		if (index < 0 || index >= tamano) {
-			throw std::out_of_range("Índice fuera de rango en Stack::get");
+			throw out_of_range("Índice fuera de rango en Stack::get");
 		}
 		Nodo<T>* actual = head;
 		for (int i = 0; i < index; ++i) {

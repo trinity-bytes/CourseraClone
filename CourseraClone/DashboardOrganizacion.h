@@ -35,7 +35,7 @@ private:
     int estudiantesInscritos = 342;
 
     // Datos del usuario
-    std::string nombreOrganizacion;
+    string nombreOrganizacion;
     int idOrganizacion;
 
     // Coordenadas para dibujar
@@ -61,20 +61,20 @@ private:
     bool primeraRenderizacion;
 
     // Datos cargados
-    std::vector<ElementoMenu> cursos;
-    std::vector<ElementoMenu> especializaciones;
+    vector<ElementoMenu> cursos;
+    vector<ElementoMenu> especializaciones;
 
     void cargarDatos() {
         // Cargar cursos y especializaciones de la organización
         if (cursos.empty()) {
             for (int i = 0; i < 3; i++) {
-                cursos.emplace_back("Curso " + std::to_string(i + 1), "Descripción del curso " + std::to_string(i + 1));
+                cursos.emplace_back("Curso " + to_string(i + 1), "Descripción del curso " + to_string(i + 1));
             }
         }
 
         if (especializaciones.empty()) {
             for (int i = 0; i < 3; i++) {
-                especializaciones.emplace_back("Especialización " + std::to_string(i + 1), "Descripción de la especialización " + std::to_string(i + 1));
+                especializaciones.emplace_back("Especialización " + to_string(i + 1), "Descripción de la especialización " + to_string(i + 1));
             }
         }
     }
@@ -93,7 +93,7 @@ private:
         // Mostrar nombre de la organización
         gotoXY(53, 3);
         SetConsoleColor(15, 1);
-        std::cout << nombreOrganizacion;
+        cout << nombreOrganizacion;
 
         // Botones del header
         for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
@@ -104,7 +104,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
+            cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
         }
 
         SetConsoleColor(15, 1);
@@ -113,13 +113,13 @@ private:
     void renderizarEstadisticas() {
         gotoXY(coordsEstadisticas[0].X, coordsEstadisticas[0].Y);
         SetConsoleColor(15, 1);
-        std::cout << "Cursos publicados: " << cursosPublicados;
+        cout << "Cursos publicados: " << cursosPublicados;
 
         gotoXY(coordsEstadisticas[1].X, coordsEstadisticas[1].Y);
-        std::cout << "Especialidades publicadas: " << especialidadesPublicadas;
+        cout << "Especialidades publicadas: " << especialidadesPublicadas;
 
         gotoXY(coordsEstadisticas[2].X, coordsEstadisticas[2].Y);
-        std::cout << "Estudiantes inscritos: " << estudiantesInscritos;
+        cout << "Estudiantes inscritos: " << estudiantesInscritos;
     }
 
     void renderizarMenuSuperior() {
@@ -131,7 +131,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS CURSOS ");
+            cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS CURSOS ");
         }
 
         SetConsoleColor(15, 1);
@@ -148,7 +148,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << cursos[i].titulo;
+            cout << cursos[i].titulo;
         }
 
         // Botón "Ver todos"
@@ -159,7 +159,7 @@ private:
         else {
             SetConsoleColor(15, 1); // Color normal
         }
-        std::cout << " Ver todos ";
+        cout << " Ver todos ";
 
         SetConsoleColor(15, 1);
     }
@@ -175,7 +175,7 @@ private:
             else {
                 SetConsoleColor(15, 1); // Color normal
             }
-            std::cout << especializaciones[i].titulo;
+            cout << especializaciones[i].titulo;
         }
 
         // Botón "Ver todas"
@@ -186,7 +186,7 @@ private:
         else {
             SetConsoleColor(15, 1); // Color normal
         }
-        std::cout << " Ver todas ";
+        cout << " Ver todas ";
 
         SetConsoleColor(15, 1);
     }
@@ -239,7 +239,7 @@ private:
     }
 
 public:
-    DashboardOrganizacion(int _idOrganizacion = 1, std::string _nombreOrganizacion = "Organización de Prueba")
+    DashboardOrganizacion(int _idOrganizacion = 1, string _nombreOrganizacion = "Organización de Prueba")
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idOrganizacion(_idOrganizacion),

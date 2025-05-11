@@ -9,8 +9,8 @@
 #include "string"
 #include "vector"     // Podría ser útil para manejar indices temporalmente en memoria
 #include "cstring"    // Para strncpy, strncmp, memset
-#include "limits"     // Para std::numeric_limits
-#include "algorithm"  // Para std::sort si manejamos indices en memoria (opcional)
+#include "limits"     // Para numeric_limits
+#include "algorithm"  // Para sort si manejamos indices en memoria (opcional)
 
 using namespace std;
 

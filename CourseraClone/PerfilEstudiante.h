@@ -11,8 +11,8 @@ class PerfilEstudiante : public PantallaBase
 private:
     // Datos del estudiante
     int idEstudiante;
-    std::string nombreEstudiante;
-    std::string correoEstudiante;
+    string nombreEstudiante;
+    string correoEstudiante;
 
     // Estado actual
     bool primeraRenderizacion;
@@ -30,23 +30,23 @@ private:
 
         // Datos del estudiante
         gotoXY(COL_ETIQUETA, FILA_ID);
-        std::cout << "ID: " << idEstudiante;
+        cout << "ID: " << idEstudiante;
 
         gotoXY(COL_ETIQUETA, FILA_NOMBRE);
-        std::cout << "NOMBRE: " << nombreEstudiante;
+        cout << "NOMBRE: " << nombreEstudiante;
 
         gotoXY(COL_ETIQUETA, FILA_CORREO);
-        std::cout << "CORREO: " << correoEstudiante << "@gmail.com";
+        cout << "CORREO: " << correoEstudiante << "@gmail.com";
 
         // Botón de editar perfil
         gotoXY(92, 12);
         SetConsoleColor(1, 13);
-        std::cout << " EDITAR PERFIL ";
+        cout << " EDITAR PERFIL ";
         SetConsoleColor(15, 1);
     }
 
 public:
-    PerfilEstudiante(int _idEstudiante, std::string _nombreEstudiante, std::string _correoEstudiante)
+    PerfilEstudiante(int _idEstudiante, string _nombreEstudiante, string _correoEstudiante)
         : idEstudiante(_idEstudiante),
         nombreEstudiante(_nombreEstudiante),
         correoEstudiante(_correoEstudiante),

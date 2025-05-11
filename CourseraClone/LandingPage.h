@@ -25,20 +25,20 @@ private:
     GestionadorCursos* gestionCursos;
 
     // Elementos del menú
-    const std::vector<std::string> ELEMENTOS_CABECERA = {
+    const vector<string> ELEMENTOS_CABECERA = {
         " Iniciar Sesion ",
         " Registrarse ",
         " Sobre Nosotros "
     };
 
     // Datos por defecto
-    std::vector<ElementoMenu> especialidadesDefecto = {
+    vector<ElementoMenu> especialidadesDefecto = {
         {"Desarrollo Web", "Frontend & Backend"},
         {"Ciencia de Datos", "Analisis y ML"},
         {"Marketing Digital", "SEO, SEM & Ads"}
     };
 
-    std::vector<ElementoMenu> cursosDefecto = {
+    vector<ElementoMenu> cursosDefecto = {
         {"Curso C++ CLI", "Interaccion consola"},
         {"Curso Python DS", "Data science intro"},
         {"Curso React JS", "Web UI development"}
@@ -54,8 +54,8 @@ private:
     bool presionEnter; // Para evitar que se ejecute el evento de enter al iniciar la pantalla
 
     // Datos del menú
-    std::vector<ElementoMenu> especialidades;
-    std::vector<ElementoMenu> cursos;
+    vector<ElementoMenu> especialidades;
+    vector<ElementoMenu> cursos;
 
     // Coordenadas para dibujar
     COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {67, 3}, {84, 3}, {98, 3} };
@@ -125,7 +125,7 @@ private:
         if (seleccionado) SetConsoleColor(1, 4);
         else SetConsoleColor(15, 1);
 
-        std::cout << ELEMENTOS_CABECERA[indice];
+        cout << ELEMENTOS_CABECERA[indice];
         SetConsoleColor(15, 1);
     }
 
@@ -156,7 +156,7 @@ private:
         bool seleccionado) {
 
         gotoXY(coordTitulo.X, coordTitulo.Y);
-        std::cout << std::string(20, ' ');
+        cout << string(20, ' ');
         gotoXY(coordTitulo.X, coordTitulo.Y);
 
         if (seleccionado) SetConsoleColor(1, 13);
@@ -164,33 +164,33 @@ private:
 
 		string tituloFormateado = truncarTitulo(elemento.titulo, MAX_ANCHO_CARACTERES_CUADRO);
 
-        std::cout << tituloFormateado;
+        cout << tituloFormateado;
         SetConsoleColor(15, 1);
 
-        std::string descFormateada = formatearDescripcion(
+        string descFormateada = formatearDescripcion(
             elemento.descripcion,
             MAX_ANCHO_CARACTERES_CUADRO,
             MAX_ALTO_CARACTERES_CUADRO
         );
 
-        std::vector<std::string> lineas;
-        std::stringstream ss(descFormateada);
-        std::string linea;
+        vector<string> lineas;
+        stringstream ss(descFormateada);
+        string linea;
 
-        while (std::getline(ss, linea, '\n')) {
+        while (getline(ss, linea, '\n')) {
             lineas.push_back(linea);
         }
 
         for (size_t i = 0; i < lineas.size(); ++i) {
             gotoXY(coordDesc.X, coordDesc.Y + i);
-            std::cout << std::string(30, ' ');
+            cout << string(30, ' ');
             gotoXY(coordDesc.X, coordDesc.Y + i);
-            std::cout << lineas[i];
+            cout << lineas[i];
         }
 
         for (size_t i = lineas.size(); i < MAX_ALTO_CARACTERES_CUADRO; ++i) {
             gotoXY(coordDesc.X, coordDesc.Y + i);
-            std::cout << std::string(30, ' ');
+            cout << string(30, ' ');
         }
     }
 
@@ -218,16 +218,16 @@ private:
     }
 
     // Método para truncar títulos que excedan el máximo de caracteres
-    std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
+    string truncarTitulo(const string& titulo, int maxLongitud) {
         if (titulo.length() <= maxLongitud) {
             return titulo;
         }
         return titulo.substr(0, maxLongitud - 3) + "...";
     }
 
-    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
-        std::string resultado;
-        std::string textoRestante = texto;
+    string formatearDescripcion(const string& texto, int anchoMax, int altoMax) {
+        string resultado;
+        string textoRestante = texto;
 
         for (int linea = 0; linea < altoMax; ++linea) {
             if (textoRestante.empty()) break;

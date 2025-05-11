@@ -52,8 +52,8 @@ private:
     };
 
     // Referencias a los objetos de usuario
-    std::unique_ptr<Estudiante>* estudiante;
-    std::unique_ptr<Empresa>* empresa;
+    unique_ptr<Estudiante>* estudiante;
+    unique_ptr<Empresa>* empresa;
 
     void mostrarCursor(bool mostrar) {
         CONSOLE_CURSOR_INFO cursorInfo;
@@ -211,8 +211,8 @@ private:
     }
 
 public:
-    EditarPerfil(int _idUsuario, TipoUsuario _tipoUsuario, std::string _nombre, std::string _email,
-        std::unique_ptr<Estudiante>* _estudiante = nullptr, std::unique_ptr<Empresa>* _empresa = nullptr)
+    EditarPerfil(int _idUsuario, TipoUsuario _tipoUsuario, string _nombre, string _email,
+        unique_ptr<Estudiante>* _estudiante = nullptr, unique_ptr<Empresa>* _empresa = nullptr)
         : idUsuario(_idUsuario),
         tipoUsuario(_tipoUsuario),
         nombreOriginal(_nombre),

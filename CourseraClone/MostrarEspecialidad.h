@@ -18,7 +18,7 @@ private:
     int idEspecializacion;
     Especializacion* especializacion;
 	GestionadorCursos* gestionadorCursos;
-    std::vector<Curso*> cursos;
+    vector<Curso*> cursos;
 
     // Estado de navegación
     int cursoSeleccionadoFila;
@@ -49,20 +49,20 @@ private:
     const int LONGITUD_TITULO_ESPECIALIZACION = 40;
 
     // Método para truncar títulos largos
-    std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
+    string truncarTitulo(const string& titulo, int maxLongitud) {
         if (titulo.length() <= maxLongitud) {
             return titulo;
         }
         return titulo.substr(0, maxLongitud - 3) + "...";
     }
 
-    std::vector<std::string> dividirTituloEnLineas(const std::string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
-        std::vector<std::string> lineas;
+    vector<string> dividirTituloEnLineas(const string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
+        vector<string> lineas;
         if (titulo.empty()) {
             return lineas;
         }
 
-        std::string textoRestante = titulo;
+        string textoRestante = titulo;
 
         for (int i = 0; i < maxLineas && !textoRestante.empty(); ++i) {
             if (textoRestante.length() <= maxLongitudPorLinea) {
@@ -95,7 +95,7 @@ private:
 
         // If text still remains and we've reached max lines, add ellipsis to last line
         if (!textoRestante.empty() && lineas.size() == maxLineas) {
-            std::string& lastLine = lineas.back();
+            string& lastLine = lineas.back();
             if (lastLine.length() > 3) {
                 lastLine = lastLine.substr(0, lastLine.length() - 3) + "...";
             }
@@ -105,9 +105,9 @@ private:
     }
 
     // Método para formatear descripción
-    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
-        std::string resultado;
-        std::string textoRestante = texto;
+    string formatearDescripcion(const string& texto, int anchoMax, int altoMax) {
+        string resultado;
+        string textoRestante = texto;
 
         for (int linea = 0; linea < altoMax; ++linea) {
             if (textoRestante.empty()) break;
@@ -151,23 +151,23 @@ private:
         // Mostrar título de la especialización
         gotoXY(COL_TITULO_ESPECIALIZACION, FILA_TITULO_ESPECIALIZACION);
         SetConsoleColor(15, 1);
-        std::cout << especializacion->getTitulo();
+        cout << especializacion->getTitulo();
         
 
         // Mostrar descripción de la especialización
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION);
         SetConsoleColor(15, 1);
-        std::cout << "Descripcion:";
+        cout << "Descripcion:";
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION + 2);
 
         // Formatear y mostrar descripción
-        std::string descripcionFormateada = formatearDescripcion(especializacion->getDescripcion(), LONGITUD_DESCRIPCION_ESPECIALIDAD, 12);
-        std::istringstream descStream(descripcionFormateada);
-        std::string linea;
+        string descripcionFormateada = formatearDescripcion(especializacion->getDescripcion(), LONGITUD_DESCRIPCION_ESPECIALIDAD, 12);
+        istringstream descStream(descripcionFormateada);
+        string linea;
         int fila = FILA_DESC_ESPECIALIZACION + 2;
-        while (std::getline(descStream, linea)) {
+        while (getline(descStream, linea)) {
             gotoXY(COL_DESC_ESPECIALIZACION, fila++);
-            std::cout << linea;
+            cout << linea;
         }
 
         // Mostrar los cursos en la cuadrícula
@@ -195,22 +195,22 @@ private:
 
         // Dibujar título del curso
         gotoXY(x + 2, y + 1);
-        std::string tituloCurso = truncarTitulo(curso->getTitulo(), LONGITUD_TITULO_CURSO_CELDA);
-        std::cout << tituloCurso;
+        string tituloCurso = truncarTitulo(curso->getTitulo(), LONGITUD_TITULO_CURSO_CELDA);
+        cout << tituloCurso;
 
         // Dibujar descripción del curso
-        std::string descripcionCurso = formatearDescripcion(curso->getDescripcion(), LONGITUD_DESCRIPCION_CURSO_CELDA, 3);
-        std::istringstream descStream(descripcionCurso);
-        std::string linea;
+        string descripcionCurso = formatearDescripcion(curso->getDescripcion(), LONGITUD_DESCRIPCION_CURSO_CELDA, 3);
+        istringstream descStream(descripcionCurso);
+        string linea;
         int lineaY = y + 3;
-        while (std::getline(descStream, linea)) {
+        while (getline(descStream, linea)) {
             gotoXY(x + 2, lineaY++);
-            std::cout << linea;
+            cout << linea;
         }
 
         // Dibujar instructor
         gotoXY(x + 2, y + ALTO_CELDA - 2);
-        std::cout << "Instructor: " << curso->getInstructor();
+        cout << "Instructor: " << curso->getInstructor();
 
         SetConsoleColor(15, 1); // Restaurar color normal
     }
@@ -234,12 +234,12 @@ public:
         if (especializacion == nullptr) {
             especializacion = new Especializacion(
                 idEspecializacion, 1, "Empresa",
-                "Especialización " + std::to_string(idEspecializacion),
+                "Especialización " + to_string(idEspecializacion),
                 0, "Esta especialización no pudo ser cargada correctamente.");
         }
 
         // Intentar cargar los cursos de la especialización
-        std::vector<int> idsCursosEsp = especializacion->getIdsCursosVector();
+        vector<int> idsCursosEsp = especializacion->getIdsCursosVector();
 
         // Verificar si tenemos IDs de cursos asociados
         bool tieneCursosAsociados = !idsCursosEsp.empty();
@@ -256,19 +256,19 @@ public:
 
         // Si no se encontraron cursos, crear cursos de ejemplo basados en la especialización
         if (cursos.empty()) {
-            std::string tituloBase = especializacion->getTitulo();
+            string tituloBase = especializacion->getTitulo();
             if (tituloBase.length() > 15) {
                 tituloBase = tituloBase.substr(0, 12) + "...";
             }
 
             // Crear 4 cursos de ejemplo relacionados con la especialización
             for (int i = 1; i <= MAX_CURSOS; i++) {
-                std::string titulo = "Módulo " + std::to_string(i) + " de " + tituloBase;
-                std::string descripcion = "Este módulo cubre conceptos fundamentales relacionados con " +
-                    especializacion->getTitulo() + ". Parte " + std::to_string(i) + ".";
+                string titulo = "Módulo " + to_string(i) + " de " + tituloBase;
+                string descripcion = "Este módulo cubre conceptos fundamentales relacionados con " +
+                    especializacion->getTitulo() + ". Parte " + to_string(i) + ".";
 
                 // Diferentes instructores para diversidad
-                std::string instructor = "Profesor " + std::string(1, 'A' + (i - 1) % 26);
+                string instructor = "Profesor " + string(1, 'A' + (i - 1) % 26);
 
                 Curso* cursoDemo = new Curso(1000 + i,
                     especializacion->getIdEmpresa(),

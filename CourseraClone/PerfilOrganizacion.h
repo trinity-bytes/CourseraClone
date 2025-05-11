@@ -11,8 +11,8 @@ class PerfilOrganizacion : public PantallaBase
 private:
     // Datos de la organización
     int idOrganizacion;
-    std::string nombreOrganizacion;
-    std::string correoOrganizacion;
+    string nombreOrganizacion;
+    string correoOrganizacion;
 
     // Estado actual
     bool primeraRenderizacion;
@@ -30,23 +30,23 @@ private:
 
         // Datos de la organización
         gotoXY(COL_ETIQUETA, FILA_ID);
-        std::cout << "ID: " << idOrganizacion;
+        cout << "ID: " << idOrganizacion;
 
         gotoXY(COL_ETIQUETA, FILA_NOMBRE);
-        std::cout << "ORGANIZACION: " << nombreOrganizacion;
+        cout << "ORGANIZACION: " << nombreOrganizacion;
 
         gotoXY(COL_ETIQUETA, FILA_CORREO);
-        std::cout << "CORREO: " << correoOrganizacion << "@gmail.edu.com";
+        cout << "CORREO: " << correoOrganizacion << "@gmail.edu.com";
 
         // Botón de editar perfil
         gotoXY(92, 12);
         SetConsoleColor(1, 13);
-        std::cout << " EDITAR PERFIL ";
+        cout << " EDITAR PERFIL ";
         SetConsoleColor(15, 1);
     }
 
 public:
-    PerfilOrganizacion(int _idOrganizacion, std::string _nombreOrganizacion, std::string _correoOrganizacion)
+    PerfilOrganizacion(int _idOrganizacion, string _nombreOrganizacion, string _correoOrganizacion)
         : idOrganizacion(_idOrganizacion),
         nombreOrganizacion(_nombreOrganizacion),
         correoOrganizacion(_correoOrganizacion),

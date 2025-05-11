@@ -21,8 +21,9 @@ private:
     bool error;
     string mensajeError;
     int tipoUsuarioActual = 0; // 0: Estudiante, 1: Organización
-    std::unique_ptr<Estudiante>* estudiante;
-    std::unique_ptr<Empresa>* empresa;
+    
+    unique_ptr<Estudiante>* estudiante;
+    unique_ptr<Empresa>* empresa;
 
     // Coordenadas para dibujar
     COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {34, 15}, {34, 20} };

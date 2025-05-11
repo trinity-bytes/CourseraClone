@@ -144,7 +144,7 @@ public:
         // Agregar los IDs de los cursos a la especialización
         for (int idCurso : idsCursosParam) {
             nuevaEspecializacion->anadirCursoPorId(idCurso);
-            std::cerr << "Añadido curso ID " << idCurso << " a especialización " << titulo << std::endl;
+            cerr << "Añadido curso ID " << idCurso << " a especialización " << titulo << endl;
         }
 
         especializaciones.agregarAlFinal(nuevaEspecializacion);
