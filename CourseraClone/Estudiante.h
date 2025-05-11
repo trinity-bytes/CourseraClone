@@ -4,6 +4,7 @@
 #include"Stack.h"
 #include"Queue.h"
 #include"Inscripcion.h"
+#include "GestionadorCursos.h"
 #include "Boleta.h"
 #include "Curso.h"
 #include "algoritmosOrdenamiento.h"
@@ -27,6 +28,7 @@ private:
 	LinkedList<Boleta*> boletas;
 	Stack<Inscripcion*> cursosEs;
 	Stack<Inscripcion*> especializacionesEs;
+	GestionadorCursos* gestorCursos;
 public:
 	
 	Estudiante(int _id, string nombreCompleto, 
@@ -204,16 +206,13 @@ public:
 
 	// Función auxiliar para obtener el curso asociado a una boleta
 	Curso* obtenerCursoPorId(int idCurso) {
-		// Esta función debería buscar el curso en el sistema
-		// Por ahora, simplemente devolvemos nullptr
-		return nullptr; // Se completaría si tuviéramos acceso al GestionadorCursos
+		return gestorCursos->obtenerCursoPorId(idCurso);
 	}
 
 	// Función auxiliar para obtener la especialización asociada a una boleta
 	Especializacion* obtenerEspecializacionPorId(int idEspecializacion) {
-		// Esta función debería buscar la especialización en el sistema
-		// Por ahora, simplemente devolvemos nullptr
-		return nullptr; // Se completaría si tuviéramos acceso al GestionadorCursos
+
+		return gestorCursos->obtenerEspecializacionPorId(idEspecializacion);
 	}
 
 	void verBoletas() {
