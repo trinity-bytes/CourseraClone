@@ -67,6 +67,7 @@ public:
 		*/
 	}
 
+	/*
 	bool inscribirseACurso(Curso* curso, GestionadorCursos* gestionadorCursos)
 	{
 		if (!curso) {
@@ -93,6 +94,35 @@ public:
 
 		return false;
 	}
+	*/
+	bool Estudiante::inscribirseACurso(Curso* curso) {
+		if (!curso) {
+			std::cerr << "Error: Curso inválido" << std::endl;
+			return false;
+		}
+
+		// Verificar si ya está inscrito al curso
+		for (int i = 0; i < cursosEs.getTamano(); i++) {
+			Inscripcion* inscripcionExistente = cursosEs.get(i);
+			if (inscripcionExistente && inscripcionExistente->getIdActividad() == curso->getId()) {
+				std::cerr << "Error: Ya estás inscrito en este curso" << std::endl;
+				return false;
+			}
+		}
+
+		// Crear una nueva inscripción
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *curso);
+
+		// Guardar en archivo
+		nuevaInscripcion->guardar();
+
+		// Agregar a la pila de cursos inscritos
+		cursosEs.push(nuevaInscripcion);
+
+		// Actualizar contador de alumnos del curso
+		curso->aumentarAlumno(1);
+		return true;
+	}
 
 	// Método sobrecargado para inscribirse a una especialización
 	bool inscribirseAEspecializacion(Especializacion* especializacion) {
@@ -101,11 +131,11 @@ public:
 			return false;
 		}
 
-		// Verificar si ya está inscrito
-		for (int i = 0; i < this->especializacionesEs.getTamano(); i++) {
-			Inscripcion* inscripcion = this->especializacionesEs.get(i);
-			if (inscripcion && inscripcion->getIdActividad() == especializacion->getId()) {
-				std::cerr << "Error: Ya estás inscrito en esta especialización." << std::endl;
+		// Verificar si ya está inscrito a la especialización
+		for (int i = 0; i < especializacionesEs.getTamano(); i++) {
+			Inscripcion* inscripcionExistente = especializacionesEs.get(i);
+			if (inscripcionExistente && inscripcionExistente->getIdActividad() == especializacion->getId()) {
+				std::cerr << "Error: Ya estás inscrito en esta especialización" << std::endl;
 				return false;
 			}
 		}
@@ -121,7 +151,6 @@ public:
 
 		// Actualizar contador de alumnos de la especialización
 		especializacion->aumentarAlumno(1);
-
 		return true;
 	}
 };
