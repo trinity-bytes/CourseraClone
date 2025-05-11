@@ -58,6 +58,15 @@ public:
 		return nullptr;
 	}
 
+    Especializacion* obtenerEspecializacionPorId(int id) {
+        for (auto& especializacion : especializaciones) {
+            if (especializacion->getId() == id) {
+                return especializacion;
+            }
+        }
+        return nullptr; // Si no se encuentra
+    }
+
     bool crearCurso(
         int idEmpresa,
         const string& titulo,

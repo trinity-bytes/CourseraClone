@@ -13,6 +13,7 @@
 #include "PerfilOrganizacion.h"
 #include "EditarPerfil.h"
 #include "MostrarCurso.h"
+#include "MostrarEspecialidad.h"
 #include "Registro.h"
 #include "PantallaResultado.h"
 
@@ -246,6 +247,23 @@ public:
 					}
 					else {
 						// Si no se encuentra el curso, volver a la pantalla anterior
+						pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+					}
+					break;
+				}
+				case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
+				{
+					// Obtener el ID de la especialización desde el resultado
+					int idEspecializacion = resultado.idCursoSeleccionado; // Reutilizamos este campo para IDs de especialización
+
+					// Intentar obtener la especialización del GestionadorCursos
+					Especializacion* especializacionSeleccionada = gestionadorCursos->obtenerEspecializacionPorId(idEspecializacion);
+
+					if (especializacionSeleccionada) {
+						pantallaActual = make_unique<MostrarEspecialidad>(idEspecializacion, especializacionSeleccionada, resultado.accionAnterior);
+					}
+					else {
+						// Si no se encuentra la especialización, volver a la pantalla anterior
 						pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					}
 					break;

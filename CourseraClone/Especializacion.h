@@ -1,6 +1,7 @@
 #pragma once
 #include "Actividad.h"
 #include "Curso.h"
+#include "GestionadorCursos.h"
 #include <vector>
 #include "LinkedList.h"
 #include <string>
@@ -8,6 +9,7 @@
 
 class Especializacion : public Actividad {
 private:
+	std::vector<int> idsCursos;
 	LinkedList<Curso*> cursos;
 	string categoria;
 	vector<string> requisitos;
@@ -142,6 +144,37 @@ public:
 		}
 		
 		return ss.str();
+	}
+
+	LinkedList<Curso*> getIdsCursos(GestionadorCursos* gestionadorCursos) const {
+		LinkedList<Curso*> cursosAsociados;
+
+		for (int idCurso : idsCursos) {
+			Curso* curso = gestionadorCursos->obtenerCursoPorId(idCurso);
+			if (curso != nullptr) {
+				cursosAsociados.agregarAlFinal(curso);
+			} else {
+				// Depuración: Si no se encuentra el curso, imprimir un mensaje
+				std::cerr << "Error: No se encontró el curso con ID " << idCurso << std::endl;
+			}
+		}
+
+		return cursosAsociados;
+	}
+
+	// Método para agregar un ID de curso a la especialización
+	void anadirCursoPorId(int idCurso) {
+		idsCursos.push_back(idCurso);
+	}
+
+	// Método para eliminar un ID de curso de la especialización
+	bool eliminarCursoPorId(int idCurso) {
+		auto it = std::find(idsCursos.begin(), idsCursos.end(), idCurso);
+		if (it != idsCursos.end()) {
+			idsCursos.erase(it);
+			return true;
+		}
+		return false;
 	}
 
 	void guardar() {

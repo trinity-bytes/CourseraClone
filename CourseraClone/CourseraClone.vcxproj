@@ -136,6 +136,7 @@
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Login.h" />
     <ClInclude Include="MostrarCurso.h" />
+    <ClInclude Include="MostrarEspecialidad.h" />
     <ClInclude Include="Nodo.h" />
     <ClInclude Include="Pantalla.h" />
     <ClInclude Include="PantallaResultado.h" />
