@@ -129,6 +129,7 @@
     <ClInclude Include="Empresa.h" />
     <ClInclude Include="Especializacion.h" />
     <ClInclude Include="Estudiante.h" />
+    <ClInclude Include="ExplorarCursosYEspecialidades.h" />
     <ClInclude Include="ExtendedFunctions.h" />
     <ClInclude Include="GestionadorCursos.h" />
     <ClInclude Include="Inscripcion.h" />
