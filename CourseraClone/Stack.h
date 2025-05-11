@@ -22,6 +22,17 @@ public:
 		eliminarDatos();
 	}
 
+	T get(int index) {
+		if (index < 0 || index >= tamano) {
+			throw std::out_of_range("Índice fuera de rango en Stack::get");
+		}
+		Nodo<T>* actual = head;
+		for (int i = 0; i < index; ++i) {
+			actual = actual->next;
+		}
+		return actual->data; // Aquí está el problema
+	}
+
 	int getTamano() {
 		return tamano;
 	}
@@ -74,5 +85,6 @@ public:
 	bool estaVacio() {
 		return tamano == 0;
 	}
-
+	
+	
 };
