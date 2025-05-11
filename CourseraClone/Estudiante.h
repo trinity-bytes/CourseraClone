@@ -9,18 +9,7 @@
 #include "Curso.h"
 #include "algoritmosOrdenamiento.h"
 
-struct BoletaBinaria {
-	int id;
-	int idEstudiante;
-	int idActividad;
-	int tipoActividad; // 1 para curso, 2 para especialización
-	char fecha[20];    // Formato: YYYY-MM-DD
-	double precio;
 
-	BoletaBinaria() : id(0), idEstudiante(0), idActividad(0), tipoActividad(0), precio(0.0) {
-		memset(fecha, 0, sizeof(fecha));
-	}
-};
 
 class Estudiante :public Usuario
 {
@@ -213,7 +202,7 @@ public:
 		throw runtime_error(to_string(cursosEs.getTamano()));
 	}
 
-	void cargarDatos() 
+	void cargarDatos()
 	{
 		// Cargar boletas del estudiante desde el archivo
 		ifstream archivo("Resources/Data/boletas.dat", ios::binary);
@@ -223,33 +212,25 @@ public:
 		}
 
 		BoletaBinaria boletaBin;
+		int cantidad = 0;
 		while (archivo.read(reinterpret_cast<char*>(&boletaBin), sizeof(BoletaBinaria))) {
 			// Solo cargar las boletas del estudiante actual
 			if (boletaBin.idEstudiante == this->getId()) {
-				// Determinar si la boleta es para un curso o una especialización
-				Actividad* actividad = nullptr;
-				if (boletaBin.tipoActividad == 1) { // Curso
-					actividad = obtenerCursoPorId(boletaBin.idActividad);
-				}
-				else if (boletaBin.tipoActividad == 2) { // Especialización
-					actividad = obtenerEspecializacionPorId(boletaBin.idActividad);
-				}
+				Boleta* nuevaBoleta = new Boleta(
+					cantidad,
+					boletaBin.idEstudiante,
+					boletaBin.idActividad,
+					boletaBin.fecha,
+					boletaBin.precio
+				);
+				boletas.agregarAlFinal(nuevaBoleta);
 
-				if (actividad != nullptr) {
-					Boleta* nuevaBoleta = new Boleta(
-						boletaBin.id,
-						boletaBin.idEstudiante,
-						boletaBin.idActividad,
-						boletaBin.fecha,
-						boletaBin.precio
-					);
-					boletas.agregarAlFinal(nuevaBoleta);
-				}
 			}
+			cantidad++;
 		}
 		archivo.close();
 	}
-	
+
 	LinkedList<Boleta*> getBoletas() const {
 		return boletas;
 	}
