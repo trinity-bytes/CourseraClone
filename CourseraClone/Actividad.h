@@ -6,9 +6,9 @@ class Actividad
 protected:
 	int id;
 	int idEmpresa;
-	std::string nombreEmpresa;
-	std::string titulo;
-	std::string descripcion;
+	string nombreEmpresa;
+	string titulo;
+	string descripcion;
 	int cantidadAlumnos;
 	int tipo;
 
@@ -26,11 +26,11 @@ public:
 	Actividad(
 		int _id, 
 		int _idEmpresa, 
-		const std::string& _nombreEmpresa, 
-		const std::string& _titulo, 
+		const string& _nombreEmpresa, 
+		const string& _titulo, 
 		int _cantidadAlumnos, 
 		int _tipo, 
-		const std::string& _descripcion
+		const string& _descripcion
 	) : 
 		id(_id),
 		idEmpresa(_idEmpresa),
@@ -49,10 +49,10 @@ public:
 
 	// -- Getters --
 	int getIdEmpresa() const { return idEmpresa; }
-	const std::string& getNombreEmpresa() const { return nombreEmpresa; }
+	const string& getNombreEmpresa() const { return nombreEmpresa; }
 	int getId() const { return id; }
 	int getTipo() const { return tipo; }
 	int getCantidadAlumnos() const { return cantidadAlumnos; }
-	const std::string& getTitulo() const { return titulo; }
-	const std::string& getDescripcion() const { return descripcion; }
+	const string& getTitulo() const { return titulo; }
+	const string& getDescripcion() const { return descripcion; }
 };
