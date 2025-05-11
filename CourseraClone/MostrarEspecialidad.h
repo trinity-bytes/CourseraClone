@@ -241,7 +241,7 @@ public:
 
         // Cargar los cursos de la especialización
         if (especializacion != nullptr) {
-            LinkedList<Curso*> cursosLista = especializacion->getIdsCursos(gestionadorCursos);
+            LinkedList<Curso*> cursosLista = especializacion->getIdsCursos(gestionadorCursos->getCursos());
 
             // Convertir la lista a un vector para facilitar el acceso
             for (int i = 0; i < cursosLista.getTamano(); i++) {

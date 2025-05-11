@@ -261,7 +261,7 @@ public:
 					Especializacion* especializacionSeleccionada = gestionadorCursos->obtenerEspecializacionPorId(idEspecializacion);
 
 					if (especializacionSeleccionada) {
-						pantallaActual = make_unique<MostrarEspecialidad>(idEspecializacion, especializacionSeleccionada, resultado.accionAnterior);
+						pantallaActual = make_unique<MostrarEspecialidad>(idEspecializacion, gestionadorCursos.get(), especializacionSeleccionada, resultado.accionAnterior);
 					}
 					else {
 						// Si no se encuentra la especialización, volver a la pantalla anterior

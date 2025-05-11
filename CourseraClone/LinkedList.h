@@ -269,12 +269,12 @@ public:
             throw out_of_range("Indice fuera de rango");
         }
 
-        Nodo<T>* actual = cabeza; 
+        Nodo<T>* actual = head; 
         for (int i = 0; i < index; ++i) {
-            actual = actual->siguiente;
+            actual = actual->next;
         }
 
-        return actual->dato;
+        return actual->data;
     }
 
     // Verificar si existe un valor

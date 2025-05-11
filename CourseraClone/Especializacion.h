@@ -146,11 +146,11 @@ public:
 		return ss.str();
 	}
 
-	LinkedList<Curso*> getIdsCursos(GestionadorCursos* gestionadorCursos) const {
+	LinkedList<Curso*> getIdsCursos(LinkedList<Curso*> cursoLista) const {
 		LinkedList<Curso*> cursosAsociados;
 
 		for (int idCurso : idsCursos) {
-			Curso* curso = gestionadorCursos->obtenerCursoPorId(idCurso);
+			Curso* curso = cursoLista.get(idCurso);
 			if (curso != nullptr) {
 				cursosAsociados.agregarAlFinal(curso);
 			} else {
