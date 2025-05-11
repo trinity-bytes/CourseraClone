@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <ctime>
 #include <fstream>
@@ -61,12 +60,13 @@ private:
 public:
     Boleta(int _id, int est, int act, string _fecha, double _precio)
         : id(_id), idEstudiante(est), idActividad(act),
-        fecha(_fecha), precio(_precio) {}
+        fecha(_fecha), precio(_precio) {
+    }
 
     Boleta(int est, int act, double _precio)
         : idEstudiante(est), idActividad(act),
         fecha(generarFechaActual()), precio(_precio) {
-        
+
         ifstream archivo("Resources/Data/boletas.dat", ios::binary);
         if (archivo.is_open()) {
             id = int(archivo.tellg() / sizeof(BoletaBinaria));
@@ -95,7 +95,7 @@ public:
             archivo.write(reinterpret_cast<char*>(&boleBin), sizeof(boleBin));
             archivo.close();
         }
-        
+
         fstream indiceArchivo("Resources/Data/indices/boletas.dat", ios::binary | ios::in | ios::out);
         if (indiceArchivo.is_open()) {
             indiceArchivo.seekg(0, ios::end);
@@ -124,14 +124,14 @@ public:
             indiceArchivo.write(reinterpret_cast<char*>(&nuevo), sizeof(nuevo));
             indiceArchivo.close();
         }
-        
+
     }
     void mostrar() {
-		cout << "Boleta ID: " << id << endl;
-		cout << "ID Estudiante: " << idEstudiante << endl;
-		cout << "ID Actividad: " << idActividad << endl;
-		cout << "Fecha: " << fecha << endl;
-		cout << "Precio: " << precio << endl;
+        cout << "Boleta ID: " << id << endl;
+        cout << "ID Estudiante: " << idEstudiante << endl;
+        cout << "ID Actividad: " << idActividad << endl;
+        cout << "Fecha: " << fecha << endl;
+        cout << "Precio: " << precio << endl;
     }
 
     int getId() { return id; }

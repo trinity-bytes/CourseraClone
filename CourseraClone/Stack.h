@@ -6,7 +6,7 @@ class Stack {
 private:
 	Nodo<T>* head;
 	int tamano;
-	
+
 private:
 	void eliminarDatos() {
 		while (head) {
