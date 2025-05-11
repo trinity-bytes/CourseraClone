@@ -461,6 +461,16 @@ public:
                     }
                 }
 
+                if (seccionActual == SECCION_ESPECIALIDADES) {
+                    if (elementoActual < especialidades.size()) {
+                        int idEspecializacionSeleccionada = especialidades[elementoActual].id; // Obtener el ID de la especialización
+                        res.idCursoSeleccionado = idEspecializacionSeleccionada; // Reutilizamos este campo
+                        res.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
+                        res.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;
+                        return res;
+                    }
+                }
+
                 // Check if a selection triggers a screen change
                 Pantalla siguiente = getSiguientePantalla();
                 if (siguiente != Pantalla::NONE) {

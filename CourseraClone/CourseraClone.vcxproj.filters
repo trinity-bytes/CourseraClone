@@ -134,5 +134,8 @@
     <ClInclude Include="MostrarCurso.h">
       <Filter>Header Files\Pantallas</Filter>
     </ClInclude>
+    <ClInclude Include="MostrarEspecialidad.h">
+      <Filter>Header Files\Pantallas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
