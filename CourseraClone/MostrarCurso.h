@@ -293,7 +293,7 @@ public:
             case 'i': // Inscribirse al curso
             case 'I':
                 if (estudiante != nullptr) {
-                    if (estudiante->inscribirseACurso(curso)) { // Usar el método de estudiante
+                    if (estudiante->inscribirseACurso(curso, gestionadorCursos)) { // Usar el método de estudiante
                         // Mostrar mensaje de éxito
                         gotoXY(5, 25);
                         SetConsoleColor(2, 0); // Verde sobre negro

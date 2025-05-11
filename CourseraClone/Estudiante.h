@@ -67,44 +67,47 @@ public:
 		*/
 	}
 
-	bool inscribirseACurso(Curso* curso)
+	bool inscribirseACurso(Curso* curso, GestionadorCursos* gestionadorCursos)
 	{
 		if (!curso) {
 			std::cerr << "Error: Curso inválido" << std::endl;
 			return false;
 		}
 
-		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *curso);
+		// Verificar si ya está inscrito
+		for (int i = 0; i < this->cursosEs.getTamano(); i++) {
+			Inscripcion* inscripcion = this->cursosEs.get(i);
+			if (inscripcion && inscripcion->getIdActividad() == curso->getId()) {
+				std::cerr << "Error: Ya estás inscrito en este curso." << std::endl;
+				return false;
+			}
+		}
 
-		// Guardar en archivo
-		nuevaInscripcion->guardar();
-
-		// 3. Agregar a la lista del estudiante
-		if (actividadNueva.getTipo() == 1) {
+		// Usar el GestionadorCursos para la inscripción
+		if (gestionadorCursos->inscribirEstudianteACurso(this->getId(), curso->getId())) {
+			// Si la inscripción fue exitosa en el GestionadorCursos, actualizar localmente
+			Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *curso);
 			cursosEs.push(nuevaInscripcion);
+			return true;
 		}
-		else {
-			especializacionesEs.push(nuevaInscripcion);
-		}
-		// Agregar a la lista del estudiante
-		inscripciones.agregarAlFinal(nuevaInscripcion);
 
-		// También agregarlo a la pila de actividades inscritas
-		actividadesInscritas.push(nuevaInscripcion);
-
-		// Actualizar contador de alumnos del curso
-		curso->aumentarAlumno(1);
-
-		std::cout << "Inscripción completada para el curso: " << curso->getTitulo() << std::endl;
-		return true;
+		return false;
 	}
 
 	// Método sobrecargado para inscribirse a una especialización
-	int inscribirseAEspecializacion(Especializacion* especializacion) {
+	bool inscribirseAEspecializacion(Especializacion* especializacion) {
 		if (!especializacion) {
 			std::cerr << "Error: Especialización inválida" << std::endl;
-			return 0;
+			return false;
+		}
+
+		// Verificar si ya está inscrito
+		for (int i = 0; i < this->especializacionesEs.getTamano(); i++) {
+			Inscripcion* inscripcion = this->especializacionesEs.get(i);
+			if (inscripcion && inscripcion->getIdActividad() == especializacion->getId()) {
+				std::cerr << "Error: Ya estás inscrito en esta especialización." << std::endl;
+				return false;
+			}
 		}
 
 		// Crear una nueva inscripción
@@ -113,16 +116,12 @@ public:
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
 
-		// Agregar a la lista del estudiante
-		inscripciones.agregarAlFinal(nuevaInscripcion);
-
-		// También agregarlo a la pila de actividades inscritas
-		actividadesInscritas.push(nuevaInscripcion);
+		// Agregar a la pila de especializaciones inscritas
+		especializacionesEs.push(nuevaInscripcion);
 
 		// Actualizar contador de alumnos de la especialización
 		especializacion->aumentarAlumno(1);
 
-		std::cout << "Inscripción completada para la especialización: " << especializacion->getTitulo() << std::endl;
-		return 1;
+		return true;
 	}
 };
