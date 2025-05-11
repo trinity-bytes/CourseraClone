@@ -24,18 +24,19 @@ private:
     AccionPantalla pantallaAnterior;
 
     // Constantes para las coordenadas
-    const int COL_TITULO_CURSO = 15;
-    const int FILA_TITULO_CURSO = 17;
+    const int COL_TITULO_CURSO = 7;
+    const int FILA_TITULO_CURSO = 7;
 
-    const int COL_DESC_CURSO = 15;
-    const int FILA_DESC_CURSO = 25;
+    const int COL_DESC_CURSO = 7;
+    const int FILA_DESC_CURSO = 11;
 
-    const int COL_MODULOS = 55;
-    const int FILA_MODULOS_BASE = 25;
-    const int ESPACIO_ENTRE_MODULOS = 7;
+    const int COL_MODULOS = 57;
+    const int FILA_MODULOS_BASE = 10;
+    const int ESPACIO_ENTRE_MODULOS = 4;
 
     const int MAX_MODULOS_VISIBLES = 5;
     const int LONGITUD_TEXTO_MODULO = 40;
+	const int LONGITUD_TITULO_CURSO = 30;
 
     // Método para truncar títulos largos
     std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
@@ -43,6 +44,54 @@ private:
             return titulo;
         }
         return titulo.substr(0, maxLongitud - 3) + "...";
+    }
+
+    std::vector<std::string> dividirTituloEnLineas(const std::string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
+        std::vector<std::string> lineas;
+        if (titulo.empty()) {
+            return lineas;
+        }
+
+        std::string textoRestante = titulo;
+
+        for (int i = 0; i < maxLineas && !textoRestante.empty(); ++i) {
+            if (textoRestante.length() <= maxLongitudPorLinea) {
+                // If remaining text fits on one line
+                lineas.push_back(textoRestante);
+                textoRestante.clear();
+            }
+            else {
+                // Find a good place to break the line
+                int posCorte = maxLongitudPorLinea;
+
+                // Try to cut at a space to avoid breaking words
+                while (posCorte > 0 && textoRestante[posCorte] != ' ' && textoRestante[posCorte - 1] != ' ') {
+                    posCorte--;
+                }
+
+                // If no good break point found, just cut at max length
+                if (posCorte <= 0) {
+                    posCorte = maxLongitudPorLinea;
+                }
+
+                // Add the line
+                lineas.push_back(textoRestante.substr(0, posCorte));
+
+                // Update remaining text
+                textoRestante = textoRestante.substr(posCorte);
+                textoRestante.erase(0, textoRestante.find_first_not_of(" "));
+            }
+        }
+
+        // If text still remains and we've reached max lines, add ellipsis to last line
+        if (!textoRestante.empty() && lineas.size() == maxLineas) {
+            std::string& lastLine = lineas.back();
+            if (lastLine.length() > 3) {
+                lastLine = lastLine.substr(0, lastLine.length() - 3) + "...";
+            }
+        }
+
+        return lineas;
     }
 
     // Método para formatear descripción
@@ -92,7 +141,18 @@ private:
         // Mostrar título del curso
         gotoXY(COL_TITULO_CURSO, FILA_TITULO_CURSO);
         SetConsoleColor(15, 1);
-        std::cout << "Curso de: " << curso->getTitulo();
+        const int INDENTACION_TITULO = COL_TITULO_CURSO + 10;
+		std::vector<std::string> tituloCurso = dividirTituloEnLineas(curso->getTitulo(), LONGITUD_TITULO_CURSO);
+        std::cout << "Curso de: ";
+        if (!tituloCurso.empty()) {
+            std::cout << tituloCurso[0];
+
+            // Display the rest of the lines with proper indentation
+            for (size_t i = 1; i < tituloCurso.size(); ++i) {
+                gotoXY(INDENTACION_TITULO, FILA_TITULO_CURSO + i);
+                std::cout << tituloCurso[i];
+            }
+        }
 
         // Mostrar descripción del curso
         gotoXY(COL_DESC_CURSO, FILA_DESC_CURSO);
@@ -167,15 +227,15 @@ public:
             // Si el curso tiene clases, convertir la lista a un vector para facilitar el acceso
             for (int i = 0; i < clasesLista.getTamano(); i++) {
                 //clases.push_back(clasesLista[i]);
-                Clase nuevaClase("Módulo " + std::to_string(i + 1), "Contenido del módulo");
+                Clase nuevaClase("Clase " + std::to_string(i + 1), "Ejemplo de clase");
                 clases.push_back(nuevaClase);
             }
 
             // Si no hay clases, crear algunas de ejemplo
             if (clases.empty()) {
                 for (int i = 1; i <= 5; i++) {
-                    clases.emplace_back("Módulo " + std::to_string(i) + ": " + curso->getTitulo(),
-                        "Contenido del módulo " + std::to_string(i));
+                    clases.emplace_back("Clase " + std::to_string(i) + ": " + curso->getTitulo(),
+                        "Contenido de la clase" + std::to_string(i));
                 }
             }
         }

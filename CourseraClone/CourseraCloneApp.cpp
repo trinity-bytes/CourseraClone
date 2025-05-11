@@ -18,8 +18,7 @@ void main() {
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
 
-	cout << "Presione una tecla para salir...";
-	_getch();
+	system("pause");
 }
 
 void SecuenciaInicializacion() 

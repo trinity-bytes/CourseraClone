@@ -284,8 +284,9 @@ private:
             return a->getDescripcion();
             };
 
-		idsCursos = priorityCursosLandingPage.extraerDato<int>(idsCursos);
-		idsEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<int>(idsEspecializaciones);
+		auto idActividad = [](Actividad* a) { return a->getId(); };
+        idsCursos = priorityCursosLandingPage.extraerDato<int>(idActividad);
+        idsEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<int>(idActividad);
         titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
         titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
         descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
@@ -309,6 +310,7 @@ private:
 
 
         for (int i = 0; i < maximo; i++) {
+			especialidades[i].id = idsEspecializaciones[i];
             especialidades[i].titulo = titulosEspecializaciones[i];
             especialidades[i].descripcion = descripcionesEspecializaciones[i];
         }
