@@ -27,10 +27,7 @@ private:
 
     void generarBoleta() {
         int siguienteBoletaId = 1;
-        Boleta b(siguienteBoletaId++,
-            idEstudiante,
-            idActividad,
-            precio);
+        Boleta b(idEstudiante,idActividad,precio);
         b.guardar();
     }
 };
