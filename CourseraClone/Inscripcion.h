@@ -46,6 +46,13 @@ private:
 public:
     Inscripcion() : id(0), idEstudiante(0), actividad(), progreso(0.0), completado(false), pagado(false) {}
 
+    Inscripcion(int _idEstudiante, Actividad* _actividad)
+        : idEstudiante(_idEstudiante), actividad(_actividad),
+        progreso(0.0), completado(false), pagado(false)
+    {
+        // aca deberia haber algo?
+    }
+
     Inscripcion(InscripcionBinaria& bin, Actividad* act)
         : idEstudiante(bin.idEstudiante),
         actividad(act),
@@ -55,12 +62,7 @@ public:
     {
     }
 
-	Inscripcion(int _idEstudiante, Actividad* _actividad)
-		: idEstudiante(_idEstudiante), actividad(_actividad), 
-        progreso(0.0), completado(false), pagado(false) 
-    {
-        // aca deberia haber algo?
-	}
+	
 
     void guardar() {
         ofstream archivo("Resources/Data/inscripciones.dat", ios::app);
