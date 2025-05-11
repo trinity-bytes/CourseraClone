@@ -22,17 +22,6 @@ public:
 		eliminarDatos();
 	}
 
-	T get(int index) {
-		if (index < 0 || index >= tamano) {
-			throw out_of_range("Índice fuera de rango en Stack::get");
-		}
-		Nodo<T>* actual = head;
-		for (int i = 0; i < index; ++i) {
-			actual = actual->next;
-		}
-		return actual->data; // Aquí está el problema
-	}
-
 	int getTamano() {
 		return tamano;
 	}
@@ -82,9 +71,50 @@ public:
 		return true;
 	}
 
+	template <typename KeyType, typename Pred>
+	Stack<T> filtrarPorClaves(vector<KeyType>& claves, Pred pred) {
+		// Primero acumulamos en buffer los elementos que coincidan
+		vector<T> datos;
+		Nodo<T>* current = head;
+		while (current) {
+			for (const auto& clave : claves) {
+				if (pred(current->data, clave)) {
+					datos.push_back(current->data);
+					break;
+				}
+			}
+			current = current->next;
+		}
+		// Para devolverlos como Stack, empujamos en orden inverso al buffer
+		Stack<T> resultado;
+		for (auto it = buffer.rbegin(); it != buffer.rend(); ++it) {
+			datos.push(*it);
+		}
+		return resultado;
+	}
+
+	T get(int index) {
+		if (index < 0 || index >= tamano) {
+			throw std::out_of_range("Índice fuera de rango en Stack::get");
+		}
+		Nodo<T>* actual = head;
+		for (int i = 0; i < index; ++i) {
+			actual = actual->next;
+		}
+		return actual->data;
+	}
+
 	bool estaVacio() {
 		return tamano == 0;
 	}
-	
-	
+
+	void cargarDesdeLista(LinkedList<T> lista) {
+		clear();
+		// Extraer todos los valores de la lista en un vector
+		vector<T> valores = lista.extraerDato([](const T& v) { return v; });
+		// Apilar en orden inverso para preservar el orden original de la lista
+		for (auto it = valores.rbegin(); it != valores.rend(); ++it) {
+			push(*it);
+		}
+	}
 };

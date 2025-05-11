@@ -41,9 +41,12 @@ public:
 
     ~GestionadorCursos() {
         // Liberar memoria
+
         for (auto curso : cursos) {
             delete curso;
         }
+        
+   
         for (auto especializacion : especializaciones) {
             delete especializacion;
         }
@@ -144,7 +147,7 @@ public:
         // Agregar los IDs de los cursos a la especialización
         for (int idCurso : idsCursosParam) {
             nuevaEspecializacion->anadirCursoPorId(idCurso);
-            cerr << "Añadido curso ID " << idCurso << " a especialización " << titulo << endl;
+            //cerr << "Añadido curso ID " << idCurso << " a especialización " << titulo << endl;
         }
 
         especializaciones.agregarAlFinal(nuevaEspecializacion);

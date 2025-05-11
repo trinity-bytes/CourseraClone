@@ -98,7 +98,7 @@ private:
 	}
 
 	void cargarDatosInscripciones() {
-		ifstream archivo(".\\Resources\\Data\\inscripciones.bin", ios::binary);
+		ifstream archivo(".\\Resources\\Data\\inscripciones.dat", ios::binary);
 		if (!archivo.is_open()) {
 			throw runtime_error("No se pudo abrir el archivo de inscripciones"); // Nos salta error al ejecutar
 		}
@@ -148,7 +148,7 @@ public:
 			switch (resultado.accion) 
 			{
 				case AccionPantalla::IR_A_LOGIN:
-					pantallaActual = make_unique<Login>(estudiante, empresa);
+					pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					break;
 				case AccionPantalla::IR_A_REGISTRO:
 					pantallaActual = make_unique<Registro>();
@@ -164,7 +164,7 @@ public:
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
-						pantallaActual = make_unique<Login>();
+						pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					}
 					break;
 				case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
@@ -173,7 +173,7 @@ public:
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
-						pantallaActual = make_unique<Login>(estudiante, empresa);
+						pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					}
 					break;
 				case AccionPantalla::IR_A_LANDING_PAGE:
@@ -194,7 +194,7 @@ public:
 				    }
 				    else {
 				        // Si no hay estudiante, redirigir al login
-				        pantallaActual = make_unique<Login>(estudiante, empresa);
+				        pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 				    }
 				    break;
 				case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
@@ -207,7 +207,7 @@ public:
 				    }
 				    else {
 				        // Si no hay empresa, redirigir al login
-				        pantallaActual = make_unique<Login>(estudiante, empresa);
+				        pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 				    }
 				    break;
 				case AccionPantalla::IR_A_EDITAR_PERFIL:
@@ -233,7 +233,7 @@ public:
 				    }
 				    else {
 				        // Si no hay usuario, redirigir al login
-				        pantallaActual = make_unique<Login>(estudiante, empresa);
+				        pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 				    }
 				    break;
 				case AccionPantalla::IR_A_MOSTRAR_CURSO:
@@ -298,7 +298,7 @@ public:
 	}
 
 	// Listados
-	const vector<Actividad>& listarActividades() const { return actividades; }
+	vector<Actividad>& listarActividades() { return actividades; }
 
 	// Getters
 	//Usuario* getUsuarioActual() const { return usuarioActual; }
