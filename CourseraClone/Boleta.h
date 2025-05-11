@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <ctime>
 #include <fstream>
@@ -7,9 +6,9 @@
 using namespace std;
 
 struct BoletaBinaria {
-    int    idEstudiante;
-    int    idActividad;
-    char   fecha[20];    // "dd/MM/yy HH:mm:ss\0"
+    int idEstudiante;
+    int idActividad;
+    char fecha[20];    // "dd/MM/yy HH:mm:ss\0"
     double precio;
 
     BoletaBinaria() : idEstudiante(0), idActividad(0), fecha(), precio(0.0) {}
@@ -28,6 +27,7 @@ private:
     int id;
     int idEstudiante;
     int idActividad;
+    int tipoActividad;
     string fecha;
     double precio;
 
@@ -60,12 +60,13 @@ private:
 public:
     Boleta(int _id, int est, int act, string _fecha, double _precio)
         : id(_id), idEstudiante(est), idActividad(act),
-        fecha(_fecha), precio(_precio) {}
+        fecha(_fecha), precio(_precio) {
+    }
 
     Boleta(int est, int act, double _precio)
         : idEstudiante(est), idActividad(act),
         fecha(generarFechaActual()), precio(_precio) {
-        
+
         ifstream archivo("Resources/Data/boletas.dat", ios::binary);
         if (archivo.is_open()) {
             id = int(archivo.tellg() / sizeof(BoletaBinaria));
@@ -94,7 +95,7 @@ public:
             archivo.write(reinterpret_cast<char*>(&boleBin), sizeof(boleBin));
             archivo.close();
         }
-        
+
         fstream indiceArchivo("Resources/Data/indices/boletas.dat", ios::binary | ios::in | ios::out);
         if (indiceArchivo.is_open()) {
             indiceArchivo.seekg(0, ios::end);
@@ -123,13 +124,18 @@ public:
             indiceArchivo.write(reinterpret_cast<char*>(&nuevo), sizeof(nuevo));
             indiceArchivo.close();
         }
-        
+
     }
     void mostrar() {
-		cout << "Boleta ID: " << id << endl;
-		cout << "ID Estudiante: " << idEstudiante << endl;
-		cout << "ID Actividad: " << idActividad << endl;
-		cout << "Fecha: " << fecha << endl;
-		cout << "Precio: " << precio << endl;
+        cout << "Boleta ID: " << id << endl;
+        cout << "ID Estudiante: " << idEstudiante << endl;
+        cout << "ID Actividad: " << idActividad << endl;
+        cout << "Fecha: " << fecha << endl;
+        cout << "Precio: " << precio << endl;
     }
+
+    int getId() { return id; }
+    string getFecha() { return fecha; }
+    double getPrecio() { return precio; }
+
 };

@@ -9,18 +9,7 @@
 #include "Curso.h"
 #include "algoritmosOrdenamiento.h"
 
-struct BoletaBinaria {
-	int id;
-	int idEstudiante;
-	int idActividad;
-	int tipoActividad; // 1 para curso, 2 para especialización
-	char fecha[20];    // Formato: YYYY-MM-DD
-	double precio;
 
-	BoletaBinaria() : id(0), idEstudiante(0), idActividad(0), tipoActividad(0), precio(0.0) {
-		memset(fecha, 0, sizeof(fecha));
-	}
-};
 
 class Estudiante :public Usuario
 {
@@ -30,10 +19,10 @@ private:
 	Stack<Inscripcion*> especializacionesEs;
 	GestionadorCursos* gestorCursos;
 public:
-	
-	Estudiante(int _id, string nombreCompleto, 
+
+	Estudiante(int _id, string nombreCompleto,
 		string _nickname, string _contrasena) : Usuario(_id, TipoUsuario::ESTUDIANTE, nombreCompleto,
-												_nickname, _contrasena) 
+			_nickname, _contrasena)
 	{
 		cursosEs = Stack<Inscripcion*>();
 		especializacionesEs = Stack<Inscripcion*>();
@@ -41,8 +30,8 @@ public:
 		cargarDatos();
 	}
 
-	InscripcionBinaria leerInscripcionEn(int posicion, string& rutaBinario) {
-		fstream archivo(rutaBinario, ios::binary);
+	InscripcionBinaria leerInscripcionEn(int posicion, string rutaBinario) {
+		fstream archivo(rutaBinario, ios::binary | ios::in);
 		if (!archivo.is_open()) throw runtime_error("No se pudo abrir binario inscripciones");
 		archivo.seekg(posicion * sizeof(InscripcionBinaria), ios::beg);
 
@@ -82,6 +71,54 @@ public:
 		return offsets;
 	}
 
+	/*
+	void cargarInscripciones(LinkedList<Curso*>& cursos, LinkedList<Especializacion*>& listaEspecializaciones) {
+		fstream indiceArchivo("Resources/Data/indices/inscripciones.dat", ios::binary | ios::in);
+		if (!indiceArchivo.is_open()) return;
+
+		vector<int> filas = obtenerOffsetsInscripciones();
+		if (filas.empty()) return;
+
+		// aqui
+		string rutaBin = "Resources/Data/inscripciones.dat";
+		vector<int> cursosOff, especializacionesOff;
+
+		// 3) Para cada offset, leo el registro binario y lo clasifico
+		for (int off : filas) {
+			// leerInscripcionEn espera posición 0-based: por eso off - 1
+			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
+
+			if (bin.tipoActividad == 1) {
+				cursosOff.push_back(bin.idActividad);
+			}
+			else {
+				especializacionesOff.push_back(bin.idActividad);
+			}
+		}
+
+		indiceArchivo.close();
+
+		mergeSort(cursosOff, 0, int(cursosOff.size()));
+		shellSort(especializacionesOff);
+
+
+
+		LinkedList<Curso*> cursosFiltrados = cursos.filtrar<int>(
+			cursosOff, [](Curso* c, const int& id) { return c->getId() == id; }, [](Curso* c, const int& id) { return c->getId() < id; }
+		);
+
+
+		LinkedList<Especializacion*> cursosFiltrados = listaEspecializaciones.filtrar<int>(
+			cursosOff, [](Especializacion* c, const int& id) { return c->getId() == id; }, [](Especializacion* c, const int& id) { return c->getId() < id; }
+		);
+
+		//cursosEs.cargarDesdeLista(cursosFiltrados);
+
+
+
+	}
+	*/
+
 	// En Estudiante.h, dentro de la clase Estudiante:
 	void cargarInscripciones(
 		const LinkedList<Curso*>& cursos,
@@ -93,12 +130,13 @@ public:
 
 		string rutaBin = "Resources/Data/inscripciones.dat";
 
-		// 2) Separa offsets según tipoActividad
+		throw runtime_error(to_string(offsets.size()));
 		vector<int> offsetCursos, offsetEspecializaciones;
 		for (int off : offsets) {
 			// leerInscripcionEn usa off-1 internamente si es 1-based
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
-			if (bin.tipoActividad == 1)
+			throw runtime_error(to_string(bin.tipoActividad));
+			if (bin.tipoActividad == 0)
 				offsetCursos.push_back(off);
 			else
 				offsetEspecializaciones.push_back(off);
@@ -161,9 +199,10 @@ public:
 			Inscripcion* ins = new Inscripcion(bin, act);
 			especializacionesEs.push(ins);
 		}
+		throw runtime_error(to_string(cursosEs.getTamano()));
 	}
 
-	void cargarDatos() 
+	void cargarDatos()
 	{
 		// Cargar boletas del estudiante desde el archivo
 		ifstream archivo("Resources/Data/boletas.dat", ios::binary);
@@ -173,33 +212,25 @@ public:
 		}
 
 		BoletaBinaria boletaBin;
+		int cantidad = 0;
 		while (archivo.read(reinterpret_cast<char*>(&boletaBin), sizeof(BoletaBinaria))) {
 			// Solo cargar las boletas del estudiante actual
 			if (boletaBin.idEstudiante == this->getId()) {
-				// Determinar si la boleta es para un curso o una especialización
-				Actividad* actividad = nullptr;
-				if (boletaBin.tipoActividad == 1) { // Curso
-					actividad = obtenerCursoPorId(boletaBin.idActividad);
-				}
-				else if (boletaBin.tipoActividad == 2) { // Especialización
-					actividad = obtenerEspecializacionPorId(boletaBin.idActividad);
-				}
+				Boleta* nuevaBoleta = new Boleta(
+					cantidad,
+					boletaBin.idEstudiante,
+					boletaBin.idActividad,
+					boletaBin.fecha,
+					boletaBin.precio
+				);
+				boletas.agregarAlFinal(nuevaBoleta);
 
-				if (actividad != nullptr) {
-					Boleta* nuevaBoleta = new Boleta(
-						boletaBin.id,
-						boletaBin.idEstudiante,
-						boletaBin.idActividad,
-						boletaBin.fecha,
-						boletaBin.precio
-					);
-					boletas.agregarAlFinal(nuevaBoleta);
-				}
 			}
+			cantidad++;
 		}
 		archivo.close();
 	}
-	
+
 	LinkedList<Boleta*> getBoletas() const {
 		return boletas;
 	}
@@ -243,7 +274,7 @@ public:
 
 	bool Estudiante::inscribirseACurso(Curso* curso) {
 		if (!curso) {
-			cerr << "Error: Curso inválido" << endl;
+			std::cerr << "Error: Curso inválido" << std::endl;
 			return false;
 		}
 
@@ -251,13 +282,13 @@ public:
 		for (int i = 0; i < cursosEs.getTamano(); i++) {
 			Inscripcion* inscripcionExistente = cursosEs.get(i);
 			if (inscripcionExistente && inscripcionExistente->getIdActividad() == curso->getId()) {
-				cerr << "Error: Ya estás inscrito en este curso" << endl;
+				std::cerr << "Error: Ya estás inscrito en este curso" << std::endl;
 				return false;
 			}
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(id, curso);
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), curso);
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
@@ -273,7 +304,7 @@ public:
 	// Método sobrecargado para inscribirse a una especialización
 	bool inscribirseAEspecializacion(Especializacion* especializacion) {
 		if (!especializacion) {
-			cerr << "Error: Especialización inválida" << endl;
+			std::cerr << "Error: Especialización inválida" << std::endl;
 			return false;
 		}
 
@@ -281,13 +312,13 @@ public:
 		for (int i = 0; i < especializacionesEs.getTamano(); i++) {
 			Inscripcion* inscripcionExistente = especializacionesEs.get(i);
 			if (inscripcionExistente && inscripcionExistente->getIdActividad() == especializacion->getId()) {
-				cerr << "Error: Ya estás inscrito en esta especialización" << endl;
+				std::cerr << "Error: Ya estás inscrito en esta especialización" << std::endl;
 				return false;
 			}
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(id, especializacion);
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), especializacion);
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();

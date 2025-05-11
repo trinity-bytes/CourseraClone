@@ -6,7 +6,7 @@ class Stack {
 private:
 	Nodo<T>* head;
 	int tamano;
-	
+
 private:
 	void eliminarDatos() {
 		while (head) {
@@ -20,6 +20,17 @@ public:
 	Stack() : head(nullptr), tamano(0) {}
 	~Stack() {
 		eliminarDatos();
+	}
+
+	T get(int index) {
+		if (index < 0 || index >= tamano) {
+			throw std::out_of_range("Índice fuera de rango en Stack::get");
+		}
+		Nodo<T>* actual = head;
+		for (int i = 0; i < index; ++i) {
+			actual = actual->next;
+		}
+		return actual->data; // Aquí está el problema
 	}
 
 	int getTamano() {
@@ -91,17 +102,6 @@ public:
 			datos.push(*it);
 		}
 		return resultado;
-	}
-
-	T get(int index) {
-		if (index < 0 || index >= tamano) {
-			throw std::out_of_range("Índice fuera de rango en Stack::get");
-		}
-		Nodo<T>* actual = head;
-		for (int i = 0; i < index; ++i) {
-			actual = actual->next;
-		}
-		return actual->data;
 	}
 
 	bool estaVacio() {
