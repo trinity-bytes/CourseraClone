@@ -11,20 +11,22 @@ class Estudiante :public Usuario
 {
 private:
 	LinkedList<Boleta*> boletas;
-	LinkedList<Inscripcion*> inscripciones;
-	Stack<Inscripcion*> actividadesInscritas;
-	Queue<Inscripcion*> actividadesRecientesCompletadas;
+	Stack<Inscripcion*> cursosEs;
+	Stack<Inscripcion*> especializacionesEs;
 public:
 	
 	Estudiante(int _id, string nombreCompleto, 
 		string _nickname, string _contrasena) : Usuario(_id, TipoUsuario::ESTUDIANTE, nombreCompleto,
 												_nickname, _contrasena) 
 	{
-		inscripciones = LinkedList<Inscripcion*>();
-		actividadesInscritas = Stack<Inscripcion*>();
-		actividadesRecientesCompletadas = Queue<Inscripcion*>();
+		cursosEs = Stack<Inscripcion*>();
+		especializacionesEs = Stack<Inscripcion*>();
 		boletas = LinkedList<Boleta*>();
 		cargarDatos();
+	}
+
+	void cargarInscripciones() {
+
 	}
 
 	void cargarDatos() {
@@ -72,11 +74,16 @@ public:
 		nuevaInscripcion->guardar();
 
 		// 3. Agregar a la lista del estudiante
-		inscripciones.agregarAlFinal(nuevaInscripcion); 
+		if (actividadNueva.getTipo() == 1) {
+			cursosEs.push(nuevaInscripcion);
+		}
+		else {
+			especializacionesEs.push(nuevaInscripcion);
+		}
 
 		//actividadesInscritas.push(nuevaInscripcion);
 
-		cout << "Inscripción completada para la actividad: " << actividadNueva.getTitulo() << '\n';
+		//cout << "Inscripción completada para la actividad: " << actividadNueva.getTitulo() << '\n';
 		return 1; 
 
 	}

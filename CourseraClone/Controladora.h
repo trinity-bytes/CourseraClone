@@ -75,7 +75,7 @@ private:
 					throw runtime_error("Falla carga");
 				} //else throw runtime_error("Logrado");
 
-			}else{
+			} else {
 				int cantidadCursos = 0;
 				archivo >> cantidadCursos;
 				archivo.ignore();
@@ -84,13 +84,14 @@ private:
 					archivo >> idsCursos[i];
 					archivo.ignore();
 				}
-				getline(archivo, descripcion);
 				if (!gestionadorCursos->crearEspecializacion(idEmpresa, nombreEmpresa, tituloActividad, cantidadCursos, descripcionActividad, idsCursos)) {
 					throw runtime_error("Carga Fallida en especializacion");
 				}
+				// else throw runtime_error(tituloActividad);
 			}
 			cantidad++;
 		}
+		//throw runtime_error(to_string(cantidad));
 		archivo.close();
 	}
 

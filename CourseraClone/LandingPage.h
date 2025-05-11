@@ -319,8 +319,10 @@ private:
     void cargarDatos(LinkedList<Curso*>& cursosDatos, LinkedList<Especializacion*>& especializacionesDatos, int maximo) {
         cursos.clear();
         especialidades.clear();
+        //string tamanoA = to_string(cursosDatos.getTamano());
+        //throw runtime_error(tamanoA);
         cargarDatosLanding(cursosDatos, especializacionesDatos, maximo);
-
+        
         int tamanoOriginal;
         if (cursos.size() < maximo) {
             cursos.resize(maximo);

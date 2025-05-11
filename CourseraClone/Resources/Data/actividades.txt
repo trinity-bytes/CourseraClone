@@ -15,7 +15,6 @@ Herencia y polimorfismo
 Conceptos avanzados de POO para crear código más flexible
 Manejo de excepciones y archivos
 Técnicas para manejar errores y trabajar con archivos externos
-
 2
 1
 Google Academy
@@ -31,7 +30,6 @@ Machine Learning básico
 Introducción a algoritmos de aprendizaje supervisado y no supervisado
 Proyecto final integrador
 Desarrolla un proyecto completo de ciencia de datos
-
 3
 1
 Amazon Web Services
@@ -45,7 +43,6 @@ Computación y almacenamiento
 EC2, S3 y servicios relacionados para hosting de aplicaciones
 Redes y seguridad
 VPC, grupos de seguridad y buenas prácticas de protección
-
 4
 1
 Meta Developers
@@ -63,7 +60,6 @@ Enrutamiento con React Router
 Navegación entre páginas en aplicaciones SPA
 Redux y gestión de estado
 Manejo escalable del estado en aplicaciones complejas
-
 5
 1
 Oracle Academy
@@ -76,25 +72,17 @@ Comandos básicos y consultas simples
 Modelo relacional
 Diseño de bases de datos y normalización
 Optimización de consultas
-Índices y técnicas para mejorar el rendimiento
-
+Indices y técnicas para mejorar el rendimiento
 6
 2
 Microsoft Learning
 Especialización en Desarrollo .NET Full Stack
 Programa completo para convertirte en desarrollador .NET y Angular
-Desarrollo Web
-12
-4.7
-128
+4
 3
 1
 4
-7
 2
-Conocimientos básicos de programación
-Fundamentos de HTML y CSS
-
 7
 1
 Cisco Networking
@@ -110,25 +98,16 @@ Dispositivos de red
 Configuración básica de routers y switches
 Protocolos de comunicación
 Análisis de los protocolos más comunes en redes actuales
-
 8
 2
 Google Academy
 Especialización en Marketing Digital
 Programa completo para dominar estrategias de marketing online
-Marketing Digital
-9
-4.8
-256
+4
 3
-9
-10
-11
-3
-Conocimientos básicos de marketing
-Manejo de redes sociales
-Nivel básico de análisis de datos
-
+1
+4
+2
 9
 1
 Google Academy
@@ -142,7 +121,6 @@ Investigación de palabras clave
 Técnicas para identificar términos relevantes para tu negocio
 Analítica web y SEO
 Medición y optimización de resultados con Google Analytics
-
 10
 1
 Meta Developers
@@ -158,21 +136,14 @@ Prototipado y wireframing
 Creación de modelos para validar soluciones
 Test de usabilidad
 Evaluación y mejora de la experiencia del usuario
-
 11
 2
 Amazon Web Services
 Especialización en DevOps
 Programa integral para implementar metodologías DevOps en tu organización
 Ingeniería de Software
-14
-4.5
-198
 4
 3
-5
-7
-10
+1
+4
 2
-Conocimientos de desarrollo de software
-Experiencia básica con sistemas Linux
