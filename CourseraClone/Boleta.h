@@ -7,9 +7,9 @@
 using namespace std;
 
 struct BoletaBinaria {
-    int    idEstudiante;
-    int    idActividad;
-    char   fecha[20];    // "dd/MM/yy HH:mm:ss\0"
+    int idEstudiante;
+    int idActividad;
+    char fecha[20];    // "dd/MM/yy HH:mm:ss\0"
     double precio;
 
     BoletaBinaria() : idEstudiante(0), idActividad(0), fecha(), precio(0.0) {}
@@ -28,6 +28,7 @@ private:
     int id;
     int idEstudiante;
     int idActividad;
+    int tipoActividad;
     string fecha;
     double precio;
 
@@ -132,4 +133,9 @@ public:
 		cout << "Fecha: " << fecha << endl;
 		cout << "Precio: " << precio << endl;
     }
+
+    int getId() { return id; }
+    string getFecha() { return fecha; }
+    double getPrecio() { return precio; }
+
 };
