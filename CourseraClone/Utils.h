@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-
+using namespace std;
 // =====================================================
 // CONSTANTES GLOBALES DEL PROGRAMA
 // Estas constantes son utilizadas en todo el programa
