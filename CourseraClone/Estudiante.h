@@ -242,34 +242,6 @@ public:
 		}
 	}
 
-	/*
-	bool inscribirseACurso(Curso* curso, GestionadorCursos* gestionadorCursos)
-	{
-		if (!curso) {
-			cerr << "Error: Curso inválido" << endl;
-			return false;
-		}
-
-		// Verificar si ya está inscrito
-		for (int i = 0; i < this->cursosEs.getTamano(); i++) {
-			Inscripcion* inscripcion = this->cursosEs.get(i);
-			if (inscripcion && inscripcion->getIdActividad() == curso->getId()) {
-				cerr << "Error: Ya estás inscrito en este curso." << endl;
-				return false;
-			}
-		}
-
-		// Usar el GestionadorCursos para la inscripción
-		if (gestionadorCursos->inscribirEstudianteACurso(this->getId(), curso->getId())) {
-			// Si la inscripción fue exitosa en el GestionadorCursos, actualizar localmente
-			Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *curso);
-			cursosEs.push(nuevaInscripcion);
-			return true;
-		}
-
-		return false;
-	}
-	*/
 	bool Estudiante::inscribirseACurso(Curso* curso) {
 		if (!curso) {
 			cerr << "Error: Curso inválido" << endl;
