@@ -8,6 +8,19 @@
 #include "Curso.h"
 #include "algoritmosOrdenamiento.h"
 
+struct BoletaBinaria {
+	int id;
+	int idEstudiante;
+	int idActividad;
+	int tipoActividad; // 1 para curso, 2 para especialización
+	char fecha[20];    // Formato: YYYY-MM-DD
+	double precio;
+
+	BoletaBinaria() : id(0), idEstudiante(0), idActividad(0), tipoActividad(0), precio(0.0) {
+		memset(fecha, 0, sizeof(fecha));
+	}
+};
+
 class Estudiante :public Usuario
 {
 private:
@@ -148,8 +161,59 @@ public:
 		}
 	}
 
-	void cargarDatos() {
-		// cargar boletas
+	void cargarDatos() 
+	{
+		// Cargar boletas del estudiante desde el archivo
+		ifstream archivo("Resources/Data/boletas.dat", ios::binary);
+		if (!archivo.is_open()) {
+			cerr << "No se pudo abrir el archivo de boletas" << endl;
+			return;
+		}
+
+		BoletaBinaria boletaBin;
+		while (archivo.read(reinterpret_cast<char*>(&boletaBin), sizeof(BoletaBinaria))) {
+			// Solo cargar las boletas del estudiante actual
+			if (boletaBin.idEstudiante == this->getId()) {
+				// Determinar si la boleta es para un curso o una especialización
+				Actividad* actividad = nullptr;
+				if (boletaBin.tipoActividad == 1) { // Curso
+					actividad = obtenerCursoPorId(boletaBin.idActividad);
+				}
+				else if (boletaBin.tipoActividad == 2) { // Especialización
+					actividad = obtenerEspecializacionPorId(boletaBin.idActividad);
+				}
+
+				if (actividad != nullptr) {
+					Boleta* nuevaBoleta = new Boleta(
+						boletaBin.id,
+						boletaBin.idEstudiante,
+						boletaBin.idActividad,
+						boletaBin.fecha,
+						boletaBin.precio
+					);
+					boletas.agregarAlFinal(nuevaBoleta);
+				}
+			}
+		}
+		archivo.close();
+	}
+	
+	LinkedList<Boleta*> getBoletas() const {
+		return boletas;
+	}
+
+	// Función auxiliar para obtener el curso asociado a una boleta
+	Curso* obtenerCursoPorId(int idCurso) {
+		// Esta función debería buscar el curso en el sistema
+		// Por ahora, simplemente devolvemos nullptr
+		return nullptr; // Se completaría si tuviéramos acceso al GestionadorCursos
+	}
+
+	// Función auxiliar para obtener la especialización asociada a una boleta
+	Especializacion* obtenerEspecializacionPorId(int idEspecializacion) {
+		// Esta función debería buscar la especialización en el sistema
+		// Por ahora, simplemente devolvemos nullptr
+		return nullptr; // Se completaría si tuviéramos acceso al GestionadorCursos
 	}
 
 	void verBoletas() {
