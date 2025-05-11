@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "Boleta.h"
 
 class Venta {
@@ -22,12 +23,18 @@ public:
             generarBoleta();
         }
     }
-
 private:
-
     void generarBoleta() {
         int siguienteBoletaId = 1;
         Boleta b(idEstudiante,idActividad,precio);
         b.guardar();
     }
+
+	void mostrar() {
+		cout << "Venta ID: " << idVenta << endl;
+		cout << "Estudiante ID: " << idEstudiante << endl;
+		cout << "Actividad ID: " << idActividad << endl;
+		cout << "Precio: " << precio << endl;
+		cout << "Pagado: " << (pagado ? "Sí" : "No") << endl;
+	}
 };

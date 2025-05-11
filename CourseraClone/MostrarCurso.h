@@ -5,10 +5,12 @@
 #include "UI_Ascii.h"
 #include "Curso.h"
 #include "Clase.h"
+#include "GestionadorCursos.h"
+#include "Estudiante.h"
 #include <vector>
 #include <string>
-#include <algorithm> // Para std::min
-#include <sstream>   // Para std::istringstream
+#include <algorithm> // Para min
+#include <sstream>   // Para istringstream
 
 class MostrarCurso : public PantallaBase
 {
@@ -16,7 +18,9 @@ private:
     // Datos del curso
     int idCurso;
     Curso* curso;
-    std::vector<Clase> clases;
+    GestionadorCursos* gestionadorCursos; // Añadir
+    Estudiante* estudiante;
+    vector<Clase> clases;
 
     // Estado de navegación
     int claseSeleccionada;
@@ -39,20 +43,20 @@ private:
 	const int LONGITUD_TITULO_CURSO = 30;
 
     // Método para truncar títulos largos
-    std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
+    string truncarTitulo(const string& titulo, int maxLongitud) {
         if (titulo.length() <= maxLongitud) {
             return titulo;
         }
         return titulo.substr(0, maxLongitud - 3) + "...";
     }
 
-    std::vector<std::string> dividirTituloEnLineas(const std::string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
-        std::vector<std::string> lineas;
+    vector<string> dividirTituloEnLineas(const string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
+        vector<string> lineas;
         if (titulo.empty()) {
             return lineas;
         }
 
-        std::string textoRestante = titulo;
+        string textoRestante = titulo;
 
         for (int i = 0; i < maxLineas && !textoRestante.empty(); ++i) {
             if (textoRestante.length() <= maxLongitudPorLinea) {
@@ -85,7 +89,7 @@ private:
 
         // If text still remains and we've reached max lines, add ellipsis to last line
         if (!textoRestante.empty() && lineas.size() == maxLineas) {
-            std::string& lastLine = lineas.back();
+            string& lastLine = lineas.back();
             if (lastLine.length() > 3) {
                 lastLine = lastLine.substr(0, lastLine.length() - 3) + "...";
             }
@@ -95,9 +99,9 @@ private:
     }
 
     // Método para formatear descripción
-    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
-        std::string resultado;
-        std::string textoRestante = texto;
+    string formatearDescripcion(const string& texto, int anchoMax, int altoMax) {
+        string resultado;
+        string textoRestante = texto;
 
         for (int linea = 0; linea < altoMax; ++linea) {
             if (textoRestante.empty()) break;
@@ -142,32 +146,32 @@ private:
         gotoXY(COL_TITULO_CURSO, FILA_TITULO_CURSO);
         SetConsoleColor(15, 1);
         const int INDENTACION_TITULO = COL_TITULO_CURSO + 10;
-		std::vector<std::string> tituloCurso = dividirTituloEnLineas(curso->getTitulo(), LONGITUD_TITULO_CURSO);
-        std::cout << "Curso de: ";
+		vector<string> tituloCurso = dividirTituloEnLineas(curso->getTitulo(), LONGITUD_TITULO_CURSO);
+        cout << "Curso de: ";
         if (!tituloCurso.empty()) {
-            std::cout << tituloCurso[0];
+            cout << tituloCurso[0];
 
             // Display the rest of the lines with proper indentation
             for (size_t i = 1; i < tituloCurso.size(); ++i) {
                 gotoXY(INDENTACION_TITULO, FILA_TITULO_CURSO + i);
-                std::cout << tituloCurso[i];
+                cout << tituloCurso[i];
             }
         }
 
         // Mostrar descripción del curso
         gotoXY(COL_DESC_CURSO, FILA_DESC_CURSO);
         SetConsoleColor(15, 1);
-        std::cout << "Descripcion del contenido del curso:";
+        cout << "Descripcion del contenido del curso:";
         gotoXY(COL_DESC_CURSO, FILA_DESC_CURSO + 2);
 
         // Formatear y mostrar descripción
-        std::string descripcionFormateada = formatearDescripcion(curso->getDescripcion(), 40, 5);
-        std::istringstream descStream(descripcionFormateada);
-        std::string linea;
+        string descripcionFormateada = formatearDescripcion(curso->getDescripcion(), 40, 5);
+        istringstream descStream(descripcionFormateada);
+        string linea;
         int fila = FILA_DESC_CURSO + 2;
-        while (std::getline(descStream, linea)) {
+        while (getline(descStream, linea)) {
             gotoXY(COL_DESC_CURSO, fila++);
-            std::cout << linea;
+            cout << linea;
         }
 
         // Mostrar clases del curso
@@ -175,6 +179,10 @@ private:
         for (int i = 0; i < numClases; i++) {
             dibujarClase(i, i == claseSeleccionada);
         }
+
+        gotoXY(5, 30);
+        SetConsoleColor(15, 1);
+        cout << "Presiona 'I' para inscribirte a este curso";
     }
 
     void dibujarClase(int indice, bool seleccionada) {
@@ -189,32 +197,36 @@ private:
             SetConsoleColor(15, 1); // Color normal
 
         // Mostrar número de clase
-        std::cout << indice + 1;
+        cout << indice + 1;
 
         // Posición para el título de la clase
         gotoXY(COL_MODULOS + 5, FILA_MODULOS_BASE + indice * ESPACIO_ENTRE_MODULOS);
 
         // Truncar y mostrar título
-        std::string tituloClase = truncarTitulo(clases[indice].getTitulo(), LONGITUD_TEXTO_MODULO);
-        std::cout << tituloClase;
+        string tituloClase = truncarTitulo(clases[indice].getTitulo(), LONGITUD_TEXTO_MODULO);
+        cout << tituloClase;
 
         SetConsoleColor(15, 1);
     }
 
 public:
-    MostrarCurso(int _idCurso, Curso* _curso = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE)
+    MostrarCurso(int _idCurso, GestionadorCursos* _gestionadorCursos = nullptr, Estudiante* _estudiante = nullptr, Curso* _curso = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE)
         : idCurso(_idCurso),
+        gestionadorCursos(_gestionadorCursos),
+        estudiante(_estudiante),
         curso(_curso),
         claseSeleccionada(0),
         primeraRenderizacion(true),
         pantallaAnterior(_pantallaAnterior)
     {
         // Si no se proporcionó un curso, intentar cargarlo por ID
-        if (curso == nullptr) {
-            // Aquí deberíamos cargar el curso desde el GestionadorCursos
-            // Por ahora, creamos un curso de ejemplo
+        if (curso == nullptr && gestionadorCursos != nullptr) {
+            curso = gestionadorCursos->obtenerCursoPorId(idCurso);
+        }
+        else if (curso == nullptr) {
+            // Si no hay gestionador, crear un curso de ejemplo
             curso = new Curso(idCurso, 1, "Empresa",
-                "Curso " + std::to_string(idCurso),
+                "Curso " + to_string(idCurso),
                 "Esta es la descripción detallada del curso. Incluye información sobre lo que aprenderán los estudiantes, los requisitos previos y los resultados esperados al finalizar el curso.",
                 "Instructor", 5);
         }
@@ -226,16 +238,15 @@ public:
 
             // Si el curso tiene clases, convertir la lista a un vector para facilitar el acceso
             for (int i = 0; i < clasesLista.getTamano(); i++) {
-                //clases.push_back(clasesLista[i]);
-                Clase nuevaClase("Clase " + std::to_string(i + 1), "Ejemplo de clase");
-                clases.push_back(nuevaClase);
+                Clase clase = clasesLista.get(i); // Usar get() en lugar de []
+                clases.push_back(clase);
             }
 
             // Si no hay clases, crear algunas de ejemplo
             if (clases.empty()) {
                 for (int i = 1; i <= 5; i++) {
-                    clases.emplace_back("Clase " + std::to_string(i) + ": " + curso->getTitulo(),
-                        "Contenido de la clase" + std::to_string(i));
+                    clases.emplace_back("Clase " + to_string(i) + ": " + curso->getTitulo(),
+                        "Contenido de la clase" + to_string(i));
                 }
             }
         }
@@ -279,7 +290,45 @@ public:
                     break;
                 }
                 break;
+            case 'i': // Inscribirse al curso
+            case 'I':
+                if (estudiante != nullptr) {
+                    if (estudiante->inscribirseACurso(curso)) { // Usar el método de estudiante
+                        // Mostrar mensaje de éxito
+                        gotoXY(5, 25);
+                        SetConsoleColor(2, 0); // Verde sobre negro
+                        cout << "¡Inscripción exitosa!";
+                        SetConsoleColor(15, 0); // Restaurar color
+                        _getch(); // Esperar una tecla
 
+                        // Refrescar la pantalla
+                        dibujarInterfazCompleta();
+                    }
+                    else {
+                        // Mostrar mensaje de error
+                        gotoXY(5, 25);
+                        SetConsoleColor(4, 0); // Rojo sobre negro
+                        cout << "Error en la inscripción. Es posible que ya estés inscrito.";
+                        SetConsoleColor(15, 0); // Restaurar color
+                        _getch(); // Esperar una tecla
+
+                        // Refrescar la pantalla
+                        dibujarInterfazCompleta();
+                    }
+                }
+                else {
+                    // El usuario no ha iniciado sesión, mostrar mensaje
+                    gotoXY(5, 25);
+                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    cout << "Necesitas iniciar sesión para inscribirte.";
+                    SetConsoleColor(15, 0); // Restaurar color
+                    _getch(); // Esperar una tecla
+
+                    // Redirigir a la pantalla de login
+                    res.accion = AccionPantalla::IR_A_LOGIN;
+                    return res;
+                }
+                break;
             case 13: // Enter
                 // Aquí se implementaría la lógica para mostrar el contenido de la clase seleccionada
                 // Por ahora, simplemente volvemos a la pantalla anterior

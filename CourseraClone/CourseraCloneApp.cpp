@@ -13,9 +13,10 @@ void main() {
 	{
 		Controladora app;
 		app.run();
-	} catch (const std::exception& e) 
+	} catch (const 
+		exception& e) 
 	{
-		std::cerr << "Error: " << e.what() << std::endl;
+		cerr << "Error: " << e.what() << endl;
 	}
 
 	system("pause");

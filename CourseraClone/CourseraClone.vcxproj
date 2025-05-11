@@ -132,6 +132,7 @@
     <ClInclude Include="ExtendedFunctions.h" />
     <ClInclude Include="GestionadorCursos.h" />
     <ClInclude Include="Inscripcion.h" />
+    <ClInclude Include="InscripcionEspecialidad.h" />
     <ClInclude Include="LandingPage.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Login.h" />

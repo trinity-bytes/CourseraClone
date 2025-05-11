@@ -137,5 +137,8 @@
     <ClInclude Include="MostrarEspecialidad.h">
       <Filter>Header Files\Pantallas</Filter>
     </ClInclude>
+    <ClInclude Include="InscripcionEspecialidad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

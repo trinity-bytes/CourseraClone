@@ -100,6 +100,7 @@ public:
         return true;
     }
 
+    /*
     bool crearEspecializacion(
         int idEmpresa, 
         const string& nombreEmpresa,
@@ -121,9 +122,38 @@ public:
         guardarEspecializaciones();
         return true;
     }
+    */
 
     LinkedList<Curso*>& getCursos() { return cursos; }
     LinkedList<Especializacion*>& getEspecializaciones() { return especializaciones; }
+
+    bool crearEspecializacion(
+        int idEmpresa,
+        const string& nombreEmpresa,
+        const string& titulo,
+        int cantidadCursos,
+        const string& descripcion,
+        vector<int>& idsCursosParam) {
+
+        Especializacion* nuevaEspecializacion = new Especializacion(
+            especializaciones.getTamano() + 1, // ID autoincremental
+            idEmpresa,
+            nombreEmpresa,
+            titulo,
+            0, // cantidadAlumnos inicial
+            descripcion
+        );
+
+        // Agregar los IDs de los cursos a la especialización
+        for (int idCurso : idsCursosParam) {
+            nuevaEspecializacion->anadirCursoPorId(idCurso);
+            std::cerr << "Añadido curso ID " << idCurso << " a especialización " << titulo << std::endl;
+        }
+
+        especializaciones.agregarAlFinal(nuevaEspecializacion);
+        guardarEspecializaciones();
+        return true;
+    }
 
     vector<Curso*> buscarCursos(const string& criterio) {
         vector<Curso*> resultados;
