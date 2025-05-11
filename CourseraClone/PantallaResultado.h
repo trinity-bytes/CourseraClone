@@ -13,6 +13,7 @@ enum class AccionPantalla {
 	IR_A_PERFIL_ESTUDIANTE,
 	IR_A_PERFIL_ORGANIZACION,
 	IR_A_EDITAR_PERFIL,
+	IR_A_MOSTRAR_CURSO,
     SALIR
 };
 
@@ -21,5 +22,6 @@ struct ResultadoPantalla {
     std::string email;
     std::string password;
     TipoUsuario tipoUsuario;
-    // Puedes agregar más campos según lo que necesites transferir
+    int idCursoSeleccionado;
+	AccionPantalla accionAnterior;
 }; 

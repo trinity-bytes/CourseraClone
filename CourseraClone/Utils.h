@@ -26,6 +26,7 @@ const int ALTO_CONSOLA = 33;
 // Utilizada en LandingPage y otras pantallas que muestran
 // elementos con título y descripción.
 struct ElementoMenu {
+	int id; // ID del elemento (opcional)
     std::string titulo;
     std::string descripcion;
 

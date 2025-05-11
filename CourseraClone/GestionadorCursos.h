@@ -49,6 +49,15 @@ public:
         }
     }
 
+	Curso* obtenerCursoPorId(int id) {
+		for (auto curso : cursos) {
+			if (curso->getId() == id) {
+				return curso;
+			}
+		}
+		return nullptr;
+	}
+
     bool crearCurso(
         int idEmpresa,
         const string& titulo,

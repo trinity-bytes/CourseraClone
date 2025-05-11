@@ -275,7 +275,7 @@ private:
         priorityCursosLandingPage.llenarDesde<int>(cursosDatos, cantidad);
         priorityEspecializacionesLandingPage.llenarDesde<int>(especializacionesDatos, cantidad);
 
-
+		vector<int> idsCursos, idsEspecializaciones;
         vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
         auto tituloActividad = [](Actividad* a) { // Retorna el dato de titulo
             return a->getTitulo();
@@ -284,6 +284,8 @@ private:
             return a->getDescripcion();
             };
 
+		idsCursos = priorityCursosLandingPage.extraerDato<int>(idsCursos);
+		idsEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<int>(idsEspecializaciones);
         titulosCursos = priorityCursosLandingPage.extraerDato<string>(tituloActividad);
         titulosEspecializaciones = priorityEspecializacionesLandingPage.extraerDato<string>(tituloActividad);
         descripcionesCursos = priorityCursosLandingPage.extraerDato<string>(descripcionActividad);
@@ -295,6 +297,7 @@ private:
 
 
         for (int i = 0; i < maximo; i++) {
+			cursos[i].id = idsCursos[i];
             cursos[i].titulo = titulosCursos[i];
             cursos[i].descripcion = descripcionesCursos[i];
         }
@@ -442,6 +445,18 @@ public:
 
             if (presionEnter)
             {
+                if (seccionActual == SECCION_CURSOS) {
+                    // Si se seleccionó un curso específico (no "Ver todos")
+                    if (elementoActual < cursos.size()) {
+                        // Obtener el ID del curso seleccionado (asumiendo que tienes acceso a él)
+                        int idCursoSeleccionado = obtenerIdCurso(elementoActual); // Implementar este método
+                        res.idCursoSeleccionado = idCursoSeleccionado;
+                        res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
+                        res.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;
+                        return res;
+                    }
+                }
+
                 // Check if a selection triggers a screen change
                 Pantalla siguiente = getSiguientePantalla();
                 if (siguiente != Pantalla::NONE) {
@@ -478,6 +493,12 @@ public:
     }
 
 private:
+	int obtenerIdCurso(int indice) {
+		// Aquí deberías implementar la lógica para obtener el ID del curso
+		// basado en el índice seleccionado. Por ahora, retornamos un valor de ejemplo.
+		return indice + 1; // Ejemplo: ID del curso es el índice + 1
+	}
+
     int obtenerMaxElementosEnSeccion(int seccion)
     {
         switch (seccion)

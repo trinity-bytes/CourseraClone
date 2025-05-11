@@ -12,6 +12,7 @@
 #include "PerfilEstudiante.h"
 #include "PerfilOrganizacion.h"
 #include "EditarPerfil.h"
+#include "MostrarCurso.h"
 #include "Registro.h"
 #include "PantallaResultado.h"
 
@@ -232,6 +233,23 @@ public:
 				        pantallaActual = make_unique<Login>(estudiante, empresa);
 				    }
 				    break;
+				case AccionPantalla::IR_A_MOSTRAR_CURSO:
+				{
+					// Obtener el ID del curso desde el resultado
+					int idCurso = resultado.idCursoSeleccionado; // Asumiendo que añadimos este campo a ResultadoPantalla
+
+					// Intentar obtener el curso del GestionadorCursos
+					Curso* cursoSeleccionado = gestionadorCursos->obtenerCursoPorId(idCurso);
+
+					if (cursoSeleccionado) {
+						pantallaActual = make_unique<MostrarCurso>(idCurso, cursoSeleccionado, resultado.accionAnterior);
+					}
+					else {
+						// Si no se encuentra el curso, volver a la pantalla anterior
+						pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+					}
+					break;
+				}
 				default:
 					break;
 			}
