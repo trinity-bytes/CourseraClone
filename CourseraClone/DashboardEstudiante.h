@@ -293,64 +293,75 @@ public:
                 system("cls");
                 dibujarInterfazCompleta();
                 primeraRenderizacion = false;
-            } else {
+            }
+            else {
                 actualizarSeleccion();
             }
 
             int tecla = _getch();
             switch (tecla) {
-                case 224: // Tecla extendida
-                    tecla = _getch();
-                    switch (tecla) {
-                    case 72: // Flecha arriba
-                        if (seccionActual > SECCION_HEADER) {
-                            seccionActual--;
-                            elementoActual = 0;
-                        }
-                        break;
-                    case 80: // Flecha abajo
-                        if (seccionActual < TOTAL_SECCIONES - 1) {
-                            seccionActual++;
-                            elementoActual = 0;
-                        }
-                        break;
-                    case 75: // Flecha izquierda
-                        if (elementoActual > 0) {
-                            elementoActual--;
-                        }
-                        break;
-                    case 77: // Flecha derecha
-                        if (elementoActual < obtenerMaxElementosEnSeccion(seccionActual) - 1) {
-                            elementoActual++;
-                        }
-                        break;
+            case 224: // Tecla extendida
+                tecla = _getch();
+                switch (tecla) {
+                case 72: // Flecha arriba
+                    if (seccionActual > SECCION_HEADER) {
+                        seccionActual--;
+                        elementoActual = 0;
                     }
                     break;
-                case 13: // Enter
-                    // Procesar la acción según la sección y elemento actual
-                    if (seccionActual == SECCION_HEADER) {
-                        if (elementoActual == 0) {
-                            // Ver perfil
-                            ResultadoPantalla res;
-                            res.accion = AccionPantalla::IR_A_PERFIL_ESTUDIANTE;
-                            return res;
-                        }
-                        else if (elementoActual == 1) {
-                            // Cerrar sesión
-                            ResultadoPantalla res;
-                            res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-                            return res;
-                        }
+                case 80: // Flecha abajo
+                    if (seccionActual < TOTAL_SECCIONES - 1) {
+                        seccionActual++;
+                        elementoActual = 0;
                     }
                     break;
-                /*
-                case 27: // ESC
-                {
-                    ResultadoPantalla res;
-                    res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-                    return res;
+                case 75: // Flecha izquierda
+                    if (elementoActual > 0) {
+                        elementoActual--;
+                    }
+                    break;
+                case 77: // Flecha derecha
+                    if (elementoActual < obtenerMaxElementosEnSeccion(seccionActual) - 1) {
+                        elementoActual++;
+                    }
+                    break;
                 }
-                */
+                break;
+            case 13: // Enter
+                // Procesar la acción según la sección y elemento actual
+                if (seccionActual == SECCION_HEADER) {
+                    if (elementoActual == 0) {
+                        // Ver perfil
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_PERFIL_ESTUDIANTE;
+                        return res;
+                    }
+                    else if (elementoActual == 1) {
+                        // Cerrar sesión
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+                        return res;
+                    }
+                }
+                else if (seccionActual == SECCION_MENU_SUPERIOR) {
+                    if (elementoActual == 0) {
+                        // Explorar cursos y especialidades
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES; // Nueva acción que debemos añadir
+                        return res;
+                    }
+                    else if (elementoActual == 1) {
+                        // Gestionar mis inscripciones
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_GESTIONAR_INSCRIPCIONES; // Nueva acción que debemos añadir
+                        return res;
+                    }
+                }
+                break;
+            case 27: // ESC
+                ResultadoPantalla res;
+                res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+                return res;
             }
         }
     }

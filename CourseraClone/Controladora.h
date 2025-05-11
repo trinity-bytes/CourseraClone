@@ -15,6 +15,7 @@
 #include "MostrarCurso.h"
 #include "MostrarEspecialidad.h"
 #include "Registro.h"
+#include "ExplorarCursosYEspecialidades.h"
 #include "PantallaResultado.h"
 
 // Forward declarations
@@ -271,6 +272,23 @@ public:
 						// Si no se encuentra la especialización, volver a la pantalla anterior
 						pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					}
+					break;
+				}
+				// En el switch de acciones dentro de run()
+				case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
+				{
+					// Crear una instancia de la nueva pantalla de exploración
+					pantallaActual = make_unique<ExplorarCursosYEspecialidades>(gestionadorCursos.get());
+					break;
+				}
+
+				case AccionPantalla::IR_A_GESTIONAR_INSCRIPCIONES:
+				{
+					// Por ahora podemos redirigir al dashboard, después implementaremos esta función
+					pantallaActual = make_unique<DashboardEstudiante>(
+						estudiante->getId(),
+						estudiante->getNombreCompleto()
+					);
 					break;
 				}
 				default:

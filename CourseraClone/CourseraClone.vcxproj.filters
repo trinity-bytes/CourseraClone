@@ -140,5 +140,8 @@
     <ClInclude Include="InscripcionEspecialidad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ExplorarCursosYEspecialidades.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
