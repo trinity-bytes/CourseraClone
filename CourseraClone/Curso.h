@@ -64,7 +64,7 @@ public:
     // Getters
     string getInstructor() const { return instructor; }
     int getCantidadClases() const { return cantidadClases; }
-    LinkedList<Clase> getClases() const { return clases; }
+    const LinkedList<Clase>& getClases() const { return clases; }
     string getCategoria() const { return categoria; }
     float getCalificacionPromedio() const { return calificacionPromedio; }
     int getTotalCalificaciones() const { return totalCalificaciones; }
