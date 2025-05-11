@@ -20,8 +20,8 @@ enum class AccionPantalla {
 
 struct ResultadoPantalla {
     AccionPantalla accion = AccionPantalla::NINGUNA;
-    std::string email;
-    std::string password;
+    string email;
+    string password;
     TipoUsuario tipoUsuario;
     int idCursoSeleccionado;
 	AccionPantalla accionAnterior;

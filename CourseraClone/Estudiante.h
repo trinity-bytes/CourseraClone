@@ -71,7 +71,7 @@ public:
 	bool inscribirseACurso(Curso* curso, GestionadorCursos* gestionadorCursos)
 	{
 		if (!curso) {
-			std::cerr << "Error: Curso inválido" << std::endl;
+			cerr << "Error: Curso inválido" << endl;
 			return false;
 		}
 
@@ -79,7 +79,7 @@ public:
 		for (int i = 0; i < this->cursosEs.getTamano(); i++) {
 			Inscripcion* inscripcion = this->cursosEs.get(i);
 			if (inscripcion && inscripcion->getIdActividad() == curso->getId()) {
-				std::cerr << "Error: Ya estás inscrito en este curso." << std::endl;
+				cerr << "Error: Ya estás inscrito en este curso." << endl;
 				return false;
 			}
 		}
@@ -97,7 +97,7 @@ public:
 	*/
 	bool Estudiante::inscribirseACurso(Curso* curso) {
 		if (!curso) {
-			std::cerr << "Error: Curso inválido" << std::endl;
+			cerr << "Error: Curso inválido" << endl;
 			return false;
 		}
 
@@ -105,7 +105,7 @@ public:
 		for (int i = 0; i < cursosEs.getTamano(); i++) {
 			Inscripcion* inscripcionExistente = cursosEs.get(i);
 			if (inscripcionExistente && inscripcionExistente->getIdActividad() == curso->getId()) {
-				std::cerr << "Error: Ya estás inscrito en este curso" << std::endl;
+				cerr << "Error: Ya estás inscrito en este curso" << endl;
 				return false;
 			}
 		}
@@ -127,7 +127,7 @@ public:
 	// Método sobrecargado para inscribirse a una especialización
 	bool inscribirseAEspecializacion(Especializacion* especializacion) {
 		if (!especializacion) {
-			std::cerr << "Error: Especialización inválida" << std::endl;
+			cerr << "Error: Especialización inválida" << endl;
 			return false;
 		}
 
@@ -135,7 +135,7 @@ public:
 		for (int i = 0; i < especializacionesEs.getTamano(); i++) {
 			Inscripcion* inscripcionExistente = especializacionesEs.get(i);
 			if (inscripcionExistente && inscripcionExistente->getIdActividad() == especializacion->getId()) {
-				std::cerr << "Error: Ya estás inscrito en esta especialización" << std::endl;
+				cerr << "Error: Ya estás inscrito en esta especialización" << endl;
 				return false;
 			}
 		}

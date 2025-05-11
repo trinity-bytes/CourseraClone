@@ -9,7 +9,7 @@
 
 class Especializacion : public Actividad {
 private:
-	std::vector<int> idsCursos;
+	vector<int> idsCursos;
 	LinkedList<Curso*> cursos;
 	string categoria;
 	vector<string> requisitos;
@@ -59,7 +59,7 @@ public:
 		return true;
 	}
 
-	std::vector<int> getIdsCursosVector() const {
+	vector<int> getIdsCursosVector() const {
 		return idsCursos; // Devuelve una copia del vector para proteger los datos internos
 	}
 
@@ -153,11 +153,11 @@ public:
 	LinkedList<Curso*> getIdsCursos(LinkedList<Curso*> cursosDisponibles) const {
 		LinkedList<Curso*> cursosAsociados;
 
-		std::cerr << "Buscando " << idsCursos.size() << " cursos asociados a especialización " << this->getTitulo() << std::endl;
+		cerr << "Buscando " << idsCursos.size() << " cursos asociados a especialización " << this->getTitulo() << endl;
 
 		// Recorrer todos los IDs de cursos asociados a esta especialización
 		for (int idCurso : idsCursos) {
-			std::cerr << "Buscando curso con ID: " << idCurso << std::endl;
+			cerr << "Buscando curso con ID: " << idCurso << endl;
 			bool encontrado = false;
 
 			// Buscar este curso en la lista de cursos disponibles
@@ -166,17 +166,17 @@ public:
 				if (curso && curso->getId() == idCurso) {
 					cursosAsociados.agregarAlFinal(curso);
 					encontrado = true;
-					std::cerr << "  ✓ Encontrado curso: " << curso->getTitulo() << " (ID: " << curso->getId() << ")" << std::endl;
+					cerr << "  ✓ Encontrado curso: " << curso->getTitulo() << " (ID: " << curso->getId() << ")" << endl;
 					break;  // Encontrado, no necesitamos seguir buscando
 				}
 			}
 
 			if (!encontrado) {
-				std::cerr << "  ✗ No se encontró el curso con ID " << idCurso << std::endl;
+				cerr << "  ✗ No se encontró el curso con ID " << idCurso << endl;
 			}
 		}
 
-		std::cerr << "Total de cursos asociados encontrados: " << cursosAsociados.getTamano() << std::endl;
+		cerr << "Total de cursos asociados encontrados: " << cursosAsociados.getTamano() << endl;
 		return cursosAsociados;
 	}
 
@@ -194,7 +194,7 @@ public:
 
 	// Método para eliminar un ID de curso de la especialización
 	bool eliminarCursoPorId(int idCurso) {
-		auto it = std::find(idsCursos.begin(), idsCursos.end(), idCurso);
+		auto it = find(idsCursos.begin(), idsCursos.end(), idCurso);
 		if (it != idsCursos.end()) {
 			idsCursos.erase(it);
 			return true;

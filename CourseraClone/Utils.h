@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-
+using namespace std;
 // =====================================================
 // CONSTANTES GLOBALES DEL PROGRAMA
 // Estas constantes son utilizadas en todo el programa
@@ -27,12 +27,12 @@ const int ALTO_CONSOLA = 33;
 // elementos con título y descripción.
 struct ElementoMenu {
 	int id; // ID del elemento (opcional)
-    std::string titulo;
-    std::string descripcion;
+    string titulo;
+    string descripcion;
 
     ElementoMenu() : titulo(""), descripcion("") {}
 
-    ElementoMenu(const std::string& t, const std::string& d)
+    ElementoMenu(const string& t, const string& d)
         : titulo(t), descripcion(d) {}
 };
 

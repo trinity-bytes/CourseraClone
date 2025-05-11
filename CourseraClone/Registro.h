@@ -9,23 +9,23 @@ private:
     static const int ELEMENTOS_INPUT = 4;
     static const int CANT_BOTONES = 3;
 
-    std::string nombre;
-    std::string email;
-    std::string password;
-    std::string confirmarPassword;
+    string nombre;
+    string email;
+    string password;
+    string confirmarPassword;
     TipoUsuario tipoUsuario;
     int campoActual;
     int campoAnterior;
     bool error;
-    std::string mensajeError;
+    string mensajeError;
     bool primeraRenderizacion;
     int tipoUsuarioActual = 0; // 0: Estudiante, 1: Organización
 
     // Coordenadas para dibujar
     COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {11, 15}, {11, 20}, {11, 25}, {63, 25} };
     COORD coordsBotones[CANT_BOTONES] = { {68, 20}, {90, 20}, {53, 29} };
-    const std::string textosBotones[CANT_BOTONES] = { " Soy un Estudiante ", " Soy una Organizacion ", " Crear Cuenta "};
-    const std::string etiquetas[ELEMENTOS_INPUT] = { " ", " ", " ", " " };
+    const string textosBotones[CANT_BOTONES] = { " Soy un Estudiante ", " Soy una Organizacion ", " Crear Cuenta "};
+    const string etiquetas[ELEMENTOS_INPUT] = { " ", " ", " ", " " };
 
     void mostrarCursor(bool mostrar) {
         CONSOLE_CURSOR_INFO cursorInfo;
@@ -34,18 +34,18 @@ private:
         SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
     }
 
-    void renderizarCampo(const std::string& etiqueta, const std::string& valor, int indice, bool seleccionado) {
+    void renderizarCampo(const string& etiqueta, const string& valor, int indice, bool seleccionado) {
         gotoXY(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
         if (seleccionado) mostrarCursor(true);
         else mostrarCursor(false);
         SetConsoleColor(15, 1);
         if (indice == 2 || indice == 3) // Contraseña
-            std::cout << std::string(valor.length(), '*');
+            cout << string(valor.length(), '*');
         else
-            std::cout << valor;
+            cout << valor;
     }
 
-    void renderizarBoton(const std::string& texto, int indice, bool seleccionado) {
+    void renderizarBoton(const string& texto, int indice, bool seleccionado) {
         gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
 
         // Resaltar botones de tipo usuario basado en la selección actual o el tipo activo
@@ -67,7 +67,7 @@ private:
         }
 
         //mostrarCursor(false);
-        std::cout << texto;
+        cout << texto;
         SetConsoleColor(15, 1);
     }
 
@@ -75,7 +75,7 @@ private:
         system("cls");
         UI_Signup();
         for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
-            std::string valor = (i == 2) ? std::string(password.length(), '*') : (i == 3) ? std::string(confirmarPassword.length(), '*') : (i == 0) ? nombre : email;
+            string valor = (i == 2) ? string(password.length(), '*') : (i == 3) ? string(confirmarPassword.length(), '*') : (i == 0) ? nombre : email;
             renderizarCampo(etiquetas[i], (i == 0) ? nombre : (i == 1) ? email : (i == 2) ? password : confirmarPassword, i, campoActual == i);
         }
         //renderizarTipoUsuario();
@@ -85,7 +85,7 @@ private:
         if (error) {
             gotoXY(20, 23);
             SetConsoleColor(1, 4);
-            std::cout << mensajeError;
+            cout << mensajeError;
             SetConsoleColor(15, 1);
         }
         //gotoxy(11, 15);
@@ -237,7 +237,7 @@ public:
                 case 8: // Backspace
                     if (campoActual >= 0 && campoActual < ELEMENTOS_INPUT) 
                     {
-                        std::string* campo = nullptr;
+                        string* campo = nullptr;
                         switch (campoActual) {
                             case 0: campo = &nombre; break;
                             case 1: campo = &email; break;
@@ -254,7 +254,7 @@ public:
                 default:
                     if (tecla >= 32 && tecla <= 126) 
                     {
-                        std::string* campo = nullptr;
+                        string* campo = nullptr;
                         switch (campoActual) {
                             case 0: campo = &nombre; break;
                             case 1: campo = &email; break;
