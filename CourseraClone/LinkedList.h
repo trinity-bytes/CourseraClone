@@ -113,6 +113,45 @@ public:
         return head == nullptr;
     }
 
+    // dentro de LinkedList<T>, tras los métodos existentes:
+    template<typename Key, typename CompIgual, typename CompMenor>
+    LinkedList<T> filtrar(vector<Key>& claves, CompIgual igual, CompMenor menor) const {
+        LinkedList<T> resultado;
+        Nodo<T>* current = head;
+        int i = 0;                 // índice en `claves`
+
+        while (current != nullptr && i < claves.size()) {
+            if (igual(current->data, claves[i])) {
+                resultado.agregarAlFinal(current->data);
+                current = current->next;
+                i++;
+            }
+            else if (menor(current->data, claves[i])) {
+                current = current->next;
+            }
+            else {
+                i++;
+            }
+        }
+
+        return resultado;
+    }
+
+    template<typename Key, typename Comparator>
+    LinkedList<T> filtrar(vector<Key>& claves, Comparator comp) {
+        LinkedList<T> resultado;
+        for (Key& clave : claves) {
+            Nodo<T>* current = head;
+            while (current) {
+                if (comp(current->data, clave)) {
+                    resultado.agregarAlFinal(current->data);
+                    break; 
+                }
+                current = current->next;
+            }
+        }
+        return resultado;
+    }
     // Método para extraer datos usando una función
     template <typename ResultType>
     vector<ResultType> extraerDato(function<ResultType(const T&)> requerido) const {
@@ -307,4 +346,18 @@ public:
             throw runtime_error("Lista vacía: No hay último elemento");
         return tail->data;
     }
+
+    /*
+    template<typename KeyType, typename Pred>
+    T getBy(const KeyType& key, Pred pred) const {
+        Nodo<T>* current = head;
+        while (current) {
+            if (pred(current->data, key)) {
+                return current->data;
+            }
+            current = current->next;
+        }
+        throw std::out_of_range("Elemento no encontrado en LinkedList");
+    }
+    */
 };

@@ -3,6 +3,9 @@
 #include "Estudiante.h"
 #include "Empresa.h"
 #include "ExtendedFunctions.h"
+#include "LinkedList.h"
+#include "Curso.h"
+#include "Especializacion.h"
 #include "UI_Ascii.h"
 #include <string>
 
@@ -23,6 +26,9 @@ private:
     int tipoUsuarioActual = 0; // 0: Estudiante, 1: Organización
     std::unique_ptr<Estudiante>* estudiante;
     std::unique_ptr<Empresa>* empresa;
+
+    const LinkedList<Curso*>* cursos;
+    const LinkedList<Especializacion*>* especialidades;
 
     // Coordenadas para dibujar
     COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {34, 15}, {34, 20} };
@@ -128,16 +134,21 @@ public:
         error(false), 
         tipoUsuarioActual(0),
         estudiante(nullptr),
-        empresa(nullptr)    {
-    }
+        empresa(nullptr),
+        cursos(nullptr),
+        especialidades(nullptr)
+        {}
 
-    Login(unique_ptr<Estudiante>& _estudiante, unique_ptr<Empresa>& _empresa) : campoActual(0),
+    Login(unique_ptr<Estudiante>& _estudiante, unique_ptr<Empresa>& _empresa, const LinkedList<Curso*>& _cursos, const LinkedList<Especializacion*>& _especialidades) : campoActual(0),
         campoAnterior(-1),
         primeraRenderizacion(true),
         error(false),
         tipoUsuarioActual(0),
         estudiante(&_estudiante),
-        empresa(&_empresa)      {
+        empresa(&_empresa), 
+        cursos(&_cursos),
+        especialidades(&_especialidades)
+        {
     }
 
     ResultadoPantalla ejecutar() override 
@@ -212,6 +223,7 @@ public:
 
                             if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
                                 *estudiante = make_unique<Estudiante>(index, usuarioTemp.getNombreCompleto(), email, "" );
+                                estudiante->get()->cargarInscripciones(*cursos, *especialidades);
                                 empresa->reset();
 
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;

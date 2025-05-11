@@ -38,7 +38,7 @@ class Inscripcion {
 private:
     int id;
     int idEstudiante;
-    Actividad actividad;
+    Actividad* actividad;
     double progreso;
     bool completado;
     bool pagado;
@@ -46,7 +46,16 @@ private:
 public:
     Inscripcion() : id(0), idEstudiante(0), actividad(), progreso(0.0), completado(false), pagado(false) {}
 
-	Inscripcion(int _idEstudiante, Actividad _actividad)
+    Inscripcion(InscripcionBinaria& bin, Actividad* act)
+        : idEstudiante(bin.idEstudiante),
+        actividad(act),
+        progreso(bin.progreso),
+        completado(bin.completado),
+        pagado(bin.pagado)
+    {
+    }
+
+	Inscripcion(int _idEstudiante, Actividad* _actividad)
 		: idEstudiante(_idEstudiante), actividad(_actividad), 
         progreso(0.0), completado(false), pagado(false) 
     {
@@ -58,8 +67,8 @@ public:
         int offsetRegistro = 0;
         if (archivo.is_open()) 
         {
-            InscripcionBinaria nuevo(idEstudiante, actividad.getId(), 
-                actividad.getTipo(), progreso, completado, pagado);
+            InscripcionBinaria nuevo(idEstudiante, actividad->getId(), 
+                actividad->getTipo(), progreso, completado, pagado);
 
             archivo.seekp(0, ios::end);
             offsetRegistro = int((archivo.tellp() / sizeof(InscripcionBinaria))) + 1;
@@ -103,14 +112,14 @@ public:
 		return idEstudiante;
 	}
 	int getIdActividad() {
-		return actividad.getId();
+		return actividad->getId();
 	}
 	int getId() {
 		return id;
 	}
     void mostrar() {
 		cout << "ID Estudiante: " << idEstudiante << endl;
-		cout << "ID Actividad: " << actividad.getId() << endl;
+		cout << "ID Actividad: " << actividad->getId() << endl;
 		cout << "Progreso: " << progreso << endl;
 		cout << "Completado: " << (completado ? "S�" : "No") << endl;
 		cout << "Pagado: " << (pagado ? "S�" : "No") << endl;

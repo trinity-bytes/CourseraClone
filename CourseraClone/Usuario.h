@@ -111,7 +111,7 @@ struct UsuarioIndex
 
 /// --- Clase Usuario ---
 class Usuario {
-private: // Miembros protegidos no tienen mucho sentido si no hay herencia planeada y usada
+protected: // Miembros protegidos no tienen mucho sentido si no hay herencia planeada y usada
     int id; 
     TipoUsuario tipoUsuario;
     string nombreCompleto, username;

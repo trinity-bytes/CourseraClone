@@ -54,4 +54,36 @@ void mergeSort(vector<T>& arr, int l, int r) {
 	merge(arr, l, r, mid);
 }
 
+template <typename T>
+void bubbleSort(vector<T>& arr) {
+	int n = arr.size();
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n - 1 - i; ++j) {
+			if (arr[j] > arr[j + 1]) {
+				T tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp;
+			}
+		}
+	}
+}
+
+// Shell sort
+// Usa gaps decrecientes para comparar e intercambiar elementos
+template <typename T>
+void shellSort(vector<T>& arr) {
+	int n = arr.size();
+	for (int gap = n / 2; gap > 0; gap /= 2) {
+		for (int i = gap; i < n; ++i) {
+			T temp = arr[i];
+			int j = i;
+			while (j >= gap && arr[j - gap] > temp) {
+				arr[j] = arr[j - gap];
+				j -= gap;
+			}
+			arr[j] = temp;
+		}
+	}
+}
+
 

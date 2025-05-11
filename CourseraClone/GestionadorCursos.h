@@ -41,9 +41,12 @@ public:
 
     ~GestionadorCursos() {
         // Liberar memoria
+
         for (auto curso : cursos) {
             delete curso;
         }
+        
+   
         for (auto especializacion : especializaciones) {
             delete especializacion;
         }
