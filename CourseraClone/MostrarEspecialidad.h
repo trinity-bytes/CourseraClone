@@ -43,8 +43,9 @@ private:
     const int COLUMNAS_CUADRICULA = 2;
     const int MAX_CURSOS = FILAS_CUADRICULA * COLUMNAS_CUADRICULA; // 4 cursos en total (2x2)
 
+    const int LONGITUD_DESCRIPCION_ESPECIALIDAD = 30;
     const int LONGITUD_TITULO_CURSO_CELDA = 30;
-    const int LONGITUD_DESCRIPCION_CURSO_CELDA = 35;
+    const int LONGITUD_DESCRIPCION_CURSO_CELDA = 30;
     const int LONGITUD_TITULO_ESPECIALIZACION = 40;
 
     // Método para truncar títulos largos
@@ -150,27 +151,17 @@ private:
         // Mostrar título de la especialización
         gotoXY(COL_TITULO_ESPECIALIZACION, FILA_TITULO_ESPECIALIZACION);
         SetConsoleColor(15, 1);
-        const int INDENTACION_TITULO = COL_TITULO_ESPECIALIZACION + 16; // "Especialidad en: " tiene 16 caracteres
-        std::vector<std::string> tituloEspecializacion = dividirTituloEnLineas(especializacion->getTitulo(), LONGITUD_TITULO_ESPECIALIZACION);
+        std::cout << especializacion->getTitulo();
         
-        if (!tituloEspecializacion.empty()) {
-            std::cout << tituloEspecializacion[0];
-
-            // Display the rest of the lines with proper indentation
-            for (size_t i = 1; i < tituloEspecializacion.size(); ++i) {
-                gotoXY(INDENTACION_TITULO, FILA_TITULO_ESPECIALIZACION + i);
-                std::cout << tituloEspecializacion[i];
-            }
-        }
 
         // Mostrar descripción de la especialización
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION);
         SetConsoleColor(15, 1);
-        std::cout << "Descripcion de la especializacion:";
+        std::cout << "Descripcion:";
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION + 2);
 
         // Formatear y mostrar descripción
-        std::string descripcionFormateada = formatearDescripcion(especializacion->getDescripcion(), 40, 5);
+        std::string descripcionFormateada = formatearDescripcion(especializacion->getDescripcion(), LONGITUD_DESCRIPCION_ESPECIALIDAD, 12);
         std::istringstream descStream(descripcionFormateada);
         std::string linea;
         int fila = FILA_DESC_ESPECIALIZACION + 2;
