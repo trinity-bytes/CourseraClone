@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include "Pantalla.h"
 #include "ExtendedFunctions.h"
@@ -20,7 +20,7 @@ private:
 	GestionadorCursos* gestionadorCursos;
     std::vector<Curso*> cursos;
 
-    // Estado de navegaciÛn
+    // Estado de navegaci√≥n
     int cursoSeleccionadoFila;
     int cursoSeleccionadoColumna;
     bool primeraRenderizacion;
@@ -33,22 +33,22 @@ private:
     const int COL_DESC_ESPECIALIZACION = 7;
     const int FILA_DESC_ESPECIALIZACION = 11;
 
-    // Constantes para la cuadrÌcula de cursos
-    const int COL_INICIO_CUADRICULA = 30;
-    const int FILA_INICIO_CUADRICULA = 20;
-    const int ANCHO_CELDA = 40;
-    const int ALTO_CELDA = 10;
-    const int ESPACIO_ENTRE_CELDAS = 5;
+    // Constantes para la cuadr√≠cula de cursos
+    const int COL_INICIO_CUADRICULA = 38;
+    const int FILA_INICIO_CUADRICULA = 9;
+    const int ANCHO_CELDA = 35;
+    const int ALTO_CELDA = 9;
+    const int ESPACIO_ENTRE_CELDAS = 0;
     const int FILAS_CUADRICULA = 2;
     const int COLUMNAS_CUADRICULA = 2;
     const int MAX_CURSOS = FILAS_CUADRICULA * COLUMNAS_CUADRICULA; // 4 cursos en total (2x2)
 
     const int LONGITUD_DESCRIPCION_ESPECIALIDAD = 30;
-    const int LONGITUD_TITULO_CURSO_CELDA = 30;
-    const int LONGITUD_DESCRIPCION_CURSO_CELDA = 30;
+    const int LONGITUD_TITULO_CURSO_CELDA = 35;
+    const int LONGITUD_DESCRIPCION_CURSO_CELDA = 34;
     const int LONGITUD_TITULO_ESPECIALIZACION = 40;
 
-    // MÈtodo para truncar tÌtulos largos
+    // M√©todo para truncar t√≠tulos largos
     std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
         if (titulo.length() <= maxLongitud) {
             return titulo;
@@ -104,7 +104,7 @@ private:
         return lineas;
     }
 
-    // MÈtodo para formatear descripciÛn
+    // M√©todo para formatear descripci√≥n
     std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
         std::string resultado;
         std::string textoRestante = texto;
@@ -146,21 +146,21 @@ private:
 
     void dibujarInterfazCompleta() {
         system("cls");
-        UI_VistaEspecialidad(); // Asumimos que existe esta funciÛn en UI_Ascii.h
+        UI_VistaEspecialidad(); // Asumimos que existe esta funci√≥n en UI_Ascii.h
 
-        // Mostrar tÌtulo de la especializaciÛn
+        // Mostrar t√≠tulo de la especializaci√≥n
         gotoXY(COL_TITULO_ESPECIALIZACION, FILA_TITULO_ESPECIALIZACION);
         SetConsoleColor(15, 1);
         std::cout << especializacion->getTitulo();
         
 
-        // Mostrar descripciÛn de la especializaciÛn
+        // Mostrar descripci√≥n de la especializaci√≥n
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION);
         SetConsoleColor(15, 1);
         std::cout << "Descripcion:";
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION + 2);
 
-        // Formatear y mostrar descripciÛn
+        // Formatear y mostrar descripci√≥n
         std::string descripcionFormateada = formatearDescripcion(especializacion->getDescripcion(), LONGITUD_DESCRIPCION_ESPECIALIDAD, 12);
         std::istringstream descStream(descripcionFormateada);
         std::string linea;
@@ -170,7 +170,7 @@ private:
             std::cout << linea;
         }
 
-        // Mostrar los cursos en la cuadrÌcula
+        // Mostrar los cursos en la cuadr√≠cula
         for (int i = 0; i < FILAS_CUADRICULA; i++) {
             for (int j = 0; j < COLUMNAS_CUADRICULA; j++) {
                 int indice = i * COLUMNAS_CUADRICULA + j;
@@ -187,18 +187,18 @@ private:
 
         // Dibujar el borde de la celda
         if (seleccionado) {
-            SetConsoleColor(1, 13); // Color para selecciÛn
+            SetConsoleColor(1, 13); // Color para selecci√≥n
         }
         else {
             SetConsoleColor(15, 1); // Color normal
         }
 
-        // Dibujar tÌtulo del curso
+        // Dibujar t√≠tulo del curso
         gotoXY(x + 2, y + 1);
         std::string tituloCurso = truncarTitulo(curso->getTitulo(), LONGITUD_TITULO_CURSO_CELDA);
         std::cout << tituloCurso;
 
-        // Dibujar descripciÛn del curso
+        // Dibujar descripci√≥n del curso
         std::string descripcionCurso = formatearDescripcion(curso->getDescripcion(), LONGITUD_DESCRIPCION_CURSO_CELDA, 3);
         std::istringstream descStream(descripcionCurso);
         std::string linea;
@@ -216,7 +216,7 @@ private:
     }
 
 public:
-    MostrarEspecialidad(int _idEspecializacion, GestionadorCursos* _gestionadorCursos, Especializacion* _especializacion = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE)
+    MostrarEspecialidad::MostrarEspecialidad(int _idEspecializacion, GestionadorCursos* _gestionadorCursos, Especializacion* _especializacion, AccionPantalla _pantallaAnterior)
         : idEspecializacion(_idEspecializacion),
         gestionadorCursos(_gestionadorCursos),
         especializacion(_especializacion),
@@ -225,33 +225,66 @@ public:
         primeraRenderizacion(true),
         pantallaAnterior(_pantallaAnterior)
     {
-        // Si no se proporcionÛ una especializaciÛn, intentar cargarla por ID
+        // Si no se proporcion√≥ una especializaci√≥n, intentar cargarla por ID
         if (especializacion == nullptr) {
             especializacion = gestionadorCursos->obtenerEspecializacionPorId(idEspecializacion);
         }
 
-        // Cargar los cursos de la especializaciÛn
-        if (especializacion != nullptr) {
-            LinkedList<Curso*> cursosLista = especializacion->getIdsCursos(gestionadorCursos->getCursos());
+        // Si todav√≠a no tenemos una especializaci√≥n, crear una de ejemplo para que la UI no est√© vac√≠a
+        if (especializacion == nullptr) {
+            especializacion = new Especializacion(
+                idEspecializacion, 1, "Empresa",
+                "Especializaci√≥n " + std::to_string(idEspecializacion),
+                0, "Esta especializaci√≥n no pudo ser cargada correctamente.");
+        }
 
-            // Convertir la lista a un vector para facilitar el acceso
-            for (int i = 0; i < cursosLista.getTamano(); i++) {
-                if (i < MAX_CURSOS) {
-                    Curso* curso = cursosLista.get(i);  
-                    if (curso != nullptr) {
-                        cursos.push_back(curso);
-                    }
-                    else {
-                        std::cerr << "Error: Curso nulo en la posiciÛn " << i << " de la lista." << std::endl;
-                    }
+        // Intentar cargar los cursos de la especializaci√≥n
+        std::vector<int> idsCursosEsp = especializacion->getIdsCursosVector();
+
+        // Verificar si tenemos IDs de cursos asociados
+        bool tieneCursosAsociados = !idsCursosEsp.empty();
+
+        // Primero, intentar cargar cursos desde el gestionador si hay IDs asociados
+        if (tieneCursosAsociados && gestionadorCursos) {
+            for (int idCurso : idsCursosEsp) {
+                Curso* curso = gestionadorCursos->obtenerCursoPorId(idCurso);
+                if (curso) {
+                    cursos.push_back(curso);
                 }
+            }
+        }
+
+        // Si no se encontraron cursos, crear cursos de ejemplo basados en la especializaci√≥n
+        if (cursos.empty()) {
+            std::string tituloBase = especializacion->getTitulo();
+            if (tituloBase.length() > 15) {
+                tituloBase = tituloBase.substr(0, 12) + "...";
+            }
+
+            // Crear 4 cursos de ejemplo relacionados con la especializaci√≥n
+            for (int i = 1; i <= MAX_CURSOS; i++) {
+                std::string titulo = "M√≥dulo " + std::to_string(i) + " de " + tituloBase;
+                std::string descripcion = "Este m√≥dulo cubre conceptos fundamentales relacionados con " +
+                    especializacion->getTitulo() + ". Parte " + std::to_string(i) + ".";
+
+                // Diferentes instructores para diversidad
+                std::string instructor = "Profesor " + std::string(1, 'A' + (i - 1) % 26);
+
+                Curso* cursoDemo = new Curso(1000 + i,
+                    especializacion->getIdEmpresa(),
+                    especializacion->getNombreEmpresa(),
+                    titulo,
+                    descripcion,
+                    instructor,
+                    5);
+                cursos.push_back(cursoDemo);
             }
         }
     }
 
     ~MostrarEspecialidad() {
         // Liberar memoria si es necesario
-        // Cuidado con los punteros que podrÌan ser utilizados en otras partes
+        // Cuidado con los punteros que podr√≠an ser utilizados en otras partes
     }
 
     ResultadoPantalla ejecutar() override {

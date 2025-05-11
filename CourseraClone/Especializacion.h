@@ -59,6 +59,10 @@ public:
 		return true;
 	}
 
+	std::vector<int> getIdsCursosVector() const {
+		return idsCursos; // Devuelve una copia del vector para proteger los datos internos
+	}
+
 	// Métodos de categoría y requisitos
 	void setCategoria(const string& _categoria) { categoria = _categoria; }
 	string getCategoria() const { return categoria; }
@@ -146,27 +150,45 @@ public:
 		return ss.str();
 	}
 
-	LinkedList<Curso*> getIdsCursos(LinkedList<Curso*> cursoLista) const {
+	LinkedList<Curso*> getIdsCursos(LinkedList<Curso*> cursosDisponibles) const {
 		LinkedList<Curso*> cursosAsociados;
 
-		// Iterar sobre cada ID de curso almacenado en la especialización
+		std::cerr << "Buscando " << idsCursos.size() << " cursos asociados a especialización " << this->getTitulo() << std::endl;
+
+		// Recorrer todos los IDs de cursos asociados a esta especialización
 		for (int idCurso : idsCursos) {
-			Curso* curso = cursoLista.get(idCurso);
-			if (curso != nullptr) {
-				// Si el curso existe, agregarlo a la lista
-				cursosAsociados.agregarAlFinal(curso);
+			std::cerr << "Buscando curso con ID: " << idCurso << std::endl;
+			bool encontrado = false;
+
+			// Buscar este curso en la lista de cursos disponibles
+			for (int i = 0; i < cursosDisponibles.getTamano(); i++) {
+				Curso* curso = cursosDisponibles.get(i);
+				if (curso && curso->getId() == idCurso) {
+					cursosAsociados.agregarAlFinal(curso);
+					encontrado = true;
+					std::cerr << "  ✓ Encontrado curso: " << curso->getTitulo() << " (ID: " << curso->getId() << ")" << std::endl;
+					break;  // Encontrado, no necesitamos seguir buscando
+				}
 			}
-			else {
-				// Mensaje de depuración para indicar que no se encontró el curso
-				std::cerr << "Error: No se encontró el curso con ID " << idCurso << std::endl;
+
+			if (!encontrado) {
+				std::cerr << "  ✗ No se encontró el curso con ID " << idCurso << std::endl;
 			}
 		}
 
+		std::cerr << "Total de cursos asociados encontrados: " << cursosAsociados.getTamano() << std::endl;
 		return cursosAsociados;
 	}
 
 	// Método para agregar un ID de curso a la especialización
 	void anadirCursoPorId(int idCurso) {
+		// Verificar si el ID ya está en la lista para evitar duplicados
+		for (int id : idsCursos) {
+			if (id == idCurso) {
+				return; // El ID ya está en la lista
+			}
+		}
+		// Añadir el ID a la lista
 		idsCursos.push_back(idCurso);
 	}
 
