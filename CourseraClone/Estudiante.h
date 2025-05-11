@@ -67,6 +67,54 @@ public:
 		return offsets;
 	}
 
+	/*
+	void cargarInscripciones(LinkedList<Curso*>& cursos, LinkedList<Especializacion*>& listaEspecializaciones) {
+		fstream indiceArchivo("Resources/Data/indices/inscripciones.dat", ios::binary | ios::in);
+		if (!indiceArchivo.is_open()) return;
+
+		vector<int> filas = obtenerOffsetsInscripciones();
+		if (filas.empty()) return;
+
+		// aqui
+		string rutaBin = "Resources/Data/inscripciones.dat";
+		vector<int> cursosOff, especializacionesOff;
+
+		// 3) Para cada offset, leo el registro binario y lo clasifico
+		for (int off : filas) {
+			// leerInscripcionEn espera posición 0-based: por eso off - 1
+			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
+
+			if (bin.tipoActividad == 1) {
+				cursosOff.push_back(bin.idActividad);
+			}
+			else {
+				especializacionesOff.push_back(bin.idActividad);
+			}
+		}
+
+		indiceArchivo.close();
+
+		mergeSort(cursosOff, 0, int(cursosOff.size()));
+		shellSort(especializacionesOff);
+
+
+
+		LinkedList<Curso*> cursosFiltrados = cursos.filtrar<int>(
+			cursosOff, [](Curso* c, const int& id) { return c->getId() == id; }, [](Curso* c, const int& id) { return c->getId() < id; }
+		);
+
+
+		LinkedList<Especializacion*> cursosFiltrados = listaEspecializaciones.filtrar<int>(
+			cursosOff, [](Especializacion* c, const int& id) { return c->getId() == id; }, [](Especializacion* c, const int& id) { return c->getId() < id; }
+		);
+
+		//cursosEs.cargarDesdeLista(cursosFiltrados);
+
+		
+		
+	}
+	*/
+
 	// En Estudiante.h, dentro de la clase Estudiante:
 	void cargarInscripciones(
 		const LinkedList<Curso*>& cursos,
@@ -148,6 +196,7 @@ public:
 		}
 	}
 
+
 	void cargarDatos() {
 		// cargar boletas
 	}
@@ -190,7 +239,7 @@ public:
 	bool inscribirseACurso(Curso* curso, GestionadorCursos* gestionadorCursos)
 	{
 		if (!curso) {
-			cerr << "Error: Curso inválido" << endl;
+			std::cerr << "Error: Curso inválido" << std::endl;
 			return false;
 		}
 
@@ -198,7 +247,7 @@ public:
 		for (int i = 0; i < this->cursosEs.getTamano(); i++) {
 			Inscripcion* inscripcion = this->cursosEs.get(i);
 			if (inscripcion && inscripcion->getIdActividad() == curso->getId()) {
-				cerr << "Error: Ya estás inscrito en este curso." << endl;
+				std::cerr << "Error: Ya estás inscrito en este curso." << std::endl;
 				return false;
 			}
 		}
@@ -216,7 +265,7 @@ public:
 	*/
 	bool Estudiante::inscribirseACurso(Curso* curso) {
 		if (!curso) {
-			cerr << "Error: Curso inválido" << endl;
+			std::cerr << "Error: Curso inválido" << std::endl;
 			return false;
 		}
 
@@ -224,13 +273,13 @@ public:
 		for (int i = 0; i < cursosEs.getTamano(); i++) {
 			Inscripcion* inscripcionExistente = cursosEs.get(i);
 			if (inscripcionExistente && inscripcionExistente->getIdActividad() == curso->getId()) {
-				cerr << "Error: Ya estás inscrito en este curso" << endl;
+				std::cerr << "Error: Ya estás inscrito en este curso" << std::endl;
 				return false;
 			}
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(id, curso);
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *curso);
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
@@ -246,7 +295,7 @@ public:
 	// Método sobrecargado para inscribirse a una especialización
 	bool inscribirseAEspecializacion(Especializacion* especializacion) {
 		if (!especializacion) {
-			cerr << "Error: Especialización inválida" << endl;
+			std::cerr << "Error: Especialización inválida" << std::endl;
 			return false;
 		}
 
@@ -254,13 +303,13 @@ public:
 		for (int i = 0; i < especializacionesEs.getTamano(); i++) {
 			Inscripcion* inscripcionExistente = especializacionesEs.get(i);
 			if (inscripcionExistente && inscripcionExistente->getIdActividad() == especializacion->getId()) {
-				cerr << "Error: Ya estás inscrito en esta especialización" << endl;
+				std::cerr << "Error: Ya estás inscrito en esta especialización" << std::endl;
 				return false;
 			}
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(id, especializacion);
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *especializacion);
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
