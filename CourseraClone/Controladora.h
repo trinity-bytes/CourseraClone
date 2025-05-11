@@ -176,7 +176,7 @@ public:
 					}
 					break;
 				case AccionPantalla::IR_A_LANDING_PAGE:
-					pantallaActual = make_unique<LandingPage>();
+					pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					break;
 				case AccionPantalla::SALIR:
 					ejecutando = false;

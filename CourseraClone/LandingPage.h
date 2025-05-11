@@ -435,7 +435,6 @@ public:
     ResultadoPantalla ejecutar() override
     {
         ResultadoPantalla res;
-
         renderizar();
 
         int tecla;
