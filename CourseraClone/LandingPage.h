@@ -14,7 +14,7 @@ private:
     static const int TOTAL_SECCIONES = 3;
 
     // Items max visibles por seccion
-    static const int MAX_ELEMENTOS_CABECERA = 3;
+    static const int MAX_ELEMENTOS_CABECERA = 2;
     static const int MAX_ELEMENTOS_ESPECIALIDAD = 3;
     static const int MAX_ELEMENTOS_CURSO = 3;
 
@@ -58,7 +58,7 @@ private:
     vector<ElementoMenu> cursos;
 
     // Coordenadas para dibujar
-    COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {67, 3}, {84, 3}, {98, 3} };
+    COORD coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { {67, 3}, {84, 3} /*, {98, 3}*/};
     COORD coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 15}, {45, 15}, {79, 15} };
     COORD coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { {11, 17}, {45, 17}, {79, 17} };
     COORD coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { {11, 25}, {45, 25}, {79, 25} };
@@ -424,8 +424,10 @@ public:
                 return Pantalla::LOGIN;
             case 1: // Registrarse
                 return Pantalla::REGISTRO;
+                /*
             case 2: // Sobre Nosotros
                 return Pantalla::SOBRE_NOSOTROS;
+                */
             default:
                 return Pantalla::NONE;
             }
@@ -484,11 +486,13 @@ public:
                             res.accion = AccionPantalla::IR_A_REGISTRO; // Assuming you have AccionPantalla::IR_A_REGISTRO
                         }
                         break;
+                    /*
                     case Pantalla::SOBRE_NOSOTROS: // Assuming you have a Pantalla::SOBRE_NOSOTROS enum value
                         if (seccionActual == SECCION_CABECERA && elementoActual == 2) { // Assuming Sobre Nosotros is at index 2
                             res.accion = AccionPantalla::IR_A_SOBRE_NOSOTROS; // Assuming you have AccionPantalla::IR_A_SOBRE_NOSOTROS
                         }
                         break;
+                    */
                     default:
                         // Handle other possible next screens if needed
                         break;
