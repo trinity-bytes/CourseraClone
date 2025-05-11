@@ -63,7 +63,7 @@ private:
 
     void dibujarInterfazCompleta() {
         system("cls");
-        //UI_ExplorarCursosEspecialidades(); // Suponemos que existe esta función en UI_Ascii.h
+        UI_ExplorarCursosAndEspecialidades();
 
         // Dibujar título
         gotoXY(COL_TITULO, FILA_TITULO);
@@ -135,13 +135,13 @@ private:
         if (indiceInicioCursos > 0) {
             gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS);
             SetConsoleColor(15, 1);
-            cout << "Más arriba (Flecha ARRIBA)";
+            cout << "Mas arriba (Flecha ARRIBA)";
         }
 
         if (indiceInicioCursos + cursosPorPagina < totalCursos) {
             gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS + (cursosAMostrar * 2) - 2);
             SetConsoleColor(15, 1);
-            cout << "Más abajo (Flecha ABAJO)";
+            cout << "Mas abajo (Flecha ABAJO)";
         }
 
         SetConsoleColor(15, 1); // Restaurar color normal
@@ -194,13 +194,13 @@ private:
         if (indiceInicioEspecialidades > 0) {
             gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES);
             SetConsoleColor(15, 1);
-            cout << "▲ Más arriba";
+            cout << "Mas arriba (Flecha ARRIBA)";
         }
 
         if (indiceInicioEspecialidades + especialidadesPorPagina < totalEspecialidades) {
             gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES + (especialidadesAMostrar * 2) - 2);
             SetConsoleColor(15, 1);
-            cout << "▼ Más abajo";
+            cout << "Ms abajo Flecha ABAJO)";
         }
 
         SetConsoleColor(15, 1); // Restaurar color normal
@@ -219,10 +219,10 @@ private:
     void limpiarAreaIndicadoresCursos() {
         // Limpiar área de indicadores de paginación para cursos
         gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS);
-        cout << string(15, ' '); // Espacio para "▲ Más arriba"
+        cout << string(26, ' '); // Espacio para "▲ Más arriba"
 
         gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS + (cursosPorPagina * 2) - 2);
-        cout << string(15, ' '); // Espacio para "▼ Más abajo"
+        cout << string(26, ' '); // Espacio para "▼ Más abajo"
     }
 
     void limpiarAreaEspecialidades() {
@@ -236,10 +236,10 @@ private:
     void limpiarAreaIndicadoresEspecialidades() {
         // Limpiar área de indicadores de paginación para especialidades
         gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES);
-        cout << string(15, ' '); // Espacio para "▲ Más arriba"
+        cout << string(26, ' '); // Espacio para "▲ Más arriba"
 
         gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES + (especialidadesPorPagina * 2) - 2);
-        cout << string(15, ' '); // Espacio para "▼ Más abajo"
+        cout << string(26, ' '); // Espacio para "▼ Más abajo"
     }
 
     void actualizarInterfaz() {
