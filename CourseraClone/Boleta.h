@@ -125,4 +125,11 @@ public:
         }
         
     }
+    void mostrar() {
+		cout << "Boleta ID: " << id << endl;
+		cout << "ID Estudiante: " << idEstudiante << endl;
+		cout << "ID Actividad: " << idActividad << endl;
+		cout << "Fecha: " << fecha << endl;
+		cout << "Precio: " << precio << endl;
+    }
 };

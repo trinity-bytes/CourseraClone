@@ -16,6 +16,7 @@
 #include "MostrarEspecialidad.h"
 #include "Registro.h"
 #include "ExplorarCursosYEspecialidades.h"
+#include "VerBboletas.h"
 #include "PantallaResultado.h"
 
 // Forward declarations
@@ -289,6 +290,19 @@ public:
 						estudiante->getId(),
 						estudiante->getNombreCompleto()
 					);
+					break;
+				}
+				case AccionPantalla::IR_A_VER_BOLETAS:
+				{
+					// Verificar si hay un estudiante logueado
+					if (estudiante) {
+						// Crear una instancia de la pantalla VerBoletas
+						pantallaActual = make_unique<VerBoletas>(estudiante.get());
+					}
+					else {
+						// Si no hay estudiante, redirigir al login
+						pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+					}
 					break;
 				}
 				default:

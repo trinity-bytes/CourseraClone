@@ -9,69 +9,149 @@
 class PerfilEstudiante : public PantallaBase
 {
 private:
-    // Datos del estudiante
+    // Constantes para secciones
+    static const int SECCION_BOTONES = 0;
+    static const int TOTAL_SECCIONES = 1;
+
+    // Constantes para botones
+    static const int BOTON_CERTIFICADOS = 0;
+    static const int BOTON_BOLETAS = 1;
+    static const int BOTON_EDITAR = 2;
+    static const int TOTAL_BOTONES = 3;
+
+    // Datos del usuario
     int idEstudiante;
     string nombreEstudiante;
-    string correoEstudiante;
+    string emailEstudiante;
 
     // Estado actual
+    int seccionActual;
+    int botonActual;
     bool primeraRenderizacion;
 
-    // Coordenadas para dibujar
-    const int COL_ETIQUETA = 22;
-    const int FILA_ID = 16; 
-    const int FILA_NOMBRE = 20;
-    const int FILA_CORREO = 24;
+    // Coordenadas para botones
+    COORD coordsBotones[TOTAL_BOTONES] = {
+        {34, 11}, // MIS CERTIFICADOS
+        {62, 11}, // MIS BOLETAS
+        {85, 11}  // EDITAR PERFIL
+    };
 
     void dibujarInterfazCompleta() {
         system("cls");
-        // Dibujar marco y título
         UI_UserProfile();
 
-        // Datos del estudiante
-        gotoXY(COL_ETIQUETA, FILA_ID);
-        cout << "ID: " << idEstudiante;
+        // Mostrar datos del perfil
+        gotoXY(32, 16);
+        cout << idEstudiante;
 
-        gotoXY(COL_ETIQUETA, FILA_NOMBRE);
-        cout << "NOMBRE: " << nombreEstudiante;
+        gotoXY(32, 21);
+        cout << nombreEstudiante;
 
-        gotoXY(COL_ETIQUETA, FILA_CORREO);
-        cout << "CORREO: " << correoEstudiante << "@gmail.com";
+        gotoXY(32, 26);
+        cout << emailEstudiante;
 
-        // Botón de editar perfil
-        gotoXY(92, 12);
-        SetConsoleColor(1, 13);
-        cout << " EDITAR PERFIL ";
-        SetConsoleColor(15, 1);
+        // Renderizar botones
+        for (int i = 0; i < TOTAL_BOTONES; i++) {
+            renderizarBoton(i, i == botonActual && seccionActual == SECCION_BOTONES);
+        }
+    }
+
+    void renderizarBoton(int indice, bool seleccionado) {
+        gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
+
+        if (seleccionado) {
+            SetConsoleColor(1, 13); // Color para selección
+        }
+        else {
+            SetConsoleColor(15, 1); // Color normal
+        }
+
+        switch (indice) {
+        case BOTON_CERTIFICADOS:
+            cout << "MIS CERTIFICADOS";
+            break;
+        case BOTON_BOLETAS:
+            cout << "MIS BOLETAS";
+            break;
+        case BOTON_EDITAR:
+            cout << "EDITAR PERFIL";
+            break;
+        }
+
+        SetConsoleColor(15, 1); // Restaurar color
+    }
+
+    void actualizarSeleccion() {
+        for (int i = 0; i < TOTAL_BOTONES; i++) {
+            renderizarBoton(i, i == botonActual && seccionActual == SECCION_BOTONES);
+        }
     }
 
 public:
-    PerfilEstudiante(int _idEstudiante, string _nombreEstudiante, string _correoEstudiante)
+    PerfilEstudiante(int _idEstudiante, string _nombreEstudiante, string _emailEstudiante)
         : idEstudiante(_idEstudiante),
         nombreEstudiante(_nombreEstudiante),
-        correoEstudiante(_correoEstudiante),
+        emailEstudiante(_emailEstudiante),
+        seccionActual(SECCION_BOTONES),
+        botonActual(0),
         primeraRenderizacion(true) {
     }
 
     ResultadoPantalla ejecutar() override {
+        ResultadoPantalla res;
+
         if (primeraRenderizacion) {
             dibujarInterfazCompleta();
             primeraRenderizacion = false;
         }
 
-        ResultadoPantalla res;
-
         while (true) {
+            // Manejar entrada del usuario
             int tecla = _getch();
 
-            if (tecla == 13) { // Enter para editar perfil
-                res.accion = AccionPantalla::IR_A_EDITAR_PERFIL;
-                return res;
-            }
-            if (tecla == 27) { // ESC para volver
+            switch (tecla) {
+            case 224: // Tecla extendida
+                tecla = _getch();
+                switch (tecla) {
+                case 75: // Flecha izquierda
+                    if (botonActual > 0) {
+                        botonActual--;
+                        actualizarSeleccion();
+                    }
+                    break;
+                case 77: // Flecha derecha
+                    if (botonActual < TOTAL_BOTONES - 1) {
+                        botonActual++;
+                        actualizarSeleccion();
+                    }
+                    break;
+                }
+                break;
+
+            case 13: // Enter
+                if (seccionActual == SECCION_BOTONES) {
+                    switch (botonActual) {
+                    case BOTON_CERTIFICADOS:
+                        // Para una futura implementación
+                        break;
+                    case BOTON_BOLETAS:
+                        // Ir a la pantalla de Ver Boletas
+                        res.accion = AccionPantalla::IR_A_VER_BOLETAS;
+                        return res;
+                    case BOTON_EDITAR:
+                        // Ir a la pantalla de editar perfil
+                        res.accion = AccionPantalla::IR_A_EDITAR_PERFIL;
+                        return res;
+                    }
+                }
+                break;
+
+            case 27: // ESC - Volver al dashboard
                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
                 return res;
             }
         }
+
+        return res;
     }
 };

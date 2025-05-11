@@ -143,5 +143,8 @@
     <ClInclude Include="ExplorarCursosYEspecialidades.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VerBboletas.h">
+      <Filter>Header Files\Pantallas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
