@@ -152,7 +152,7 @@ private:
         SetConsoleColor(15, 1);
         const int INDENTACION_TITULO = COL_TITULO_ESPECIALIZACION + 16; // "Especialidad en: " tiene 16 caracteres
         std::vector<std::string> tituloEspecializacion = dividirTituloEnLineas(especializacion->getTitulo(), LONGITUD_TITULO_ESPECIALIZACION);
-        std::cout << "Especialidad en: ";
+        
         if (!tituloEspecializacion.empty()) {
             std::cout << tituloEspecializacion[0];
 
