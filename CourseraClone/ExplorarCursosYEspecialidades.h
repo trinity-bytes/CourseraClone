@@ -35,6 +35,8 @@ private:
 	int seccionAnterior;
 	int elementoAnterior;
     bool primeraRenderizacion;
+    bool necesitaRerenderizarCursos;
+    bool necesitaRerenderizarEspecialidades;
 
     // Datos
     GestionadorCursos* gestionadorCursos;
@@ -82,9 +84,16 @@ private:
         SetConsoleColor(15, 1);
         renderizarCursos();
         renderizarEspecialidades();
+
+        necesitaRerenderizarCursos = false;
+        necesitaRerenderizarEspecialidades = false;
     }
 
-    void renderizarCursos() {
+    void renderizarCursos() 
+    {
+        limpiarAreaCursos();
+        limpiarAreaIndicadoresCursos();
+
         // Título de sección cursos
         gotoXY(COL_TITULO_CURSOS, FILA_TITULO_CURSOS);
         SetConsoleColor(14, 1);  // Amarillo sobre azul
@@ -126,19 +135,24 @@ private:
         if (indiceInicioCursos > 0) {
             gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS);
             SetConsoleColor(15, 1);
-            cout << "▲ Más arriba";
+            cout << "Más arriba (Flecha ARRIBA)";
         }
 
         if (indiceInicioCursos + cursosPorPagina < totalCursos) {
             gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS + (cursosAMostrar * 2) - 2);
             SetConsoleColor(15, 1);
-            cout << "▼ Más abajo";
+            cout << "Más abajo (Flecha ABAJO)";
         }
 
         SetConsoleColor(15, 1); // Restaurar color normal
+        necesitaRerenderizarCursos = false;
     }
 
-    void renderizarEspecialidades() {
+    void renderizarEspecialidades() 
+    {
+        limpiarAreaEspecialidades();
+        limpiarAreaIndicadoresEspecialidades();
+
         // Título de sección especialidades
         gotoXY(COL_TITULO_ESPECIALIDADES, FILA_TITULO_ESPECIALIDADES);
         SetConsoleColor(14, 1);  // Amarillo sobre azul
@@ -190,6 +204,7 @@ private:
         }
 
         SetConsoleColor(15, 1); // Restaurar color normal
+        necesitaRerenderizarEspecialidades = false;
     }
 
     // Métodos para limpieza de áreas
@@ -228,51 +243,41 @@ private:
     }
 
     void actualizarInterfaz() {
-        // Primero, limpiamos la selección anterior si cambiamos de sección
-        if (seccionActual != seccionAnterior) {
-            // Guardar la última selección en la sección anterior
-            ultimoElementoSeleccionadoPorSeccion[seccionAnterior] = elementoAnterior;
+        // Si necesitamos rerenderizar alguna sección completa, lo hacemos primero
+        if (necesitaRerenderizarCursos) {
+            renderizarCursos();
+        }
+        if (necesitaRerenderizarEspecialidades) {
+            renderizarEspecialidades();
+        }
 
-            // Limpiar la selección anterior
+        // Limpiamos la selección anterior
+        if (seccionAnterior >= 0 && seccionAnterior < TOTAL_SECCIONES) {
             switch (seccionAnterior) {
             case SECCION_HEADER:
-                // Actualizar botón volver sin selección
+                // Botón volver sin selección
                 gotoXY(COL_VOLVER, FILA_VOLVER);
                 SetConsoleColor(15, 1); // Color normal
                 cout << " VOLVER ";
                 break;
+
             case SECCION_CURSOS:
-                // Redibujar el último elemento seleccionado sin selección
-                if (elementoAnterior < cursosPorPagina && indiceInicioCursos + elementoAnterior < cursos.getTamano()) {
-                    int indice = indiceInicioCursos + elementoAnterior;
-                    Curso* curso = cursos.get(indice);
-                    gotoXY(COL_LISTA_CURSOS, FILA_LISTA_CURSOS + elementoAnterior * 2);
-                    SetConsoleColor(15, 1); // Color normal
-                    string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
-                    if (titulo.length() > ANCHO_ELEMENTO) {
-                        titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
-                    }
-                    cout << titulo;
+                // Solo si estamos en la misma página, limpiamos el elemento anterior
+                if (seccionActual != SECCION_CURSOS || elementoActual != elementoAnterior) {
+                    limpiarYRedibujarElementoCurso(elementoAnterior);
                 }
                 break;
+
             case SECCION_ESPECIALIDADES:
-                // Redibujar el último elemento seleccionado sin selección
-                if (elementoAnterior < especialidadesPorPagina && indiceInicioEspecialidades + elementoAnterior < especialidades.getTamano()) {
-                    int indice = indiceInicioEspecialidades + elementoAnterior;
-                    Especializacion* especializacion = especialidades.get(indice);
-                    gotoXY(COL_LISTA_ESPECIALIDADES, FILA_LISTA_ESPECIALIDADES + elementoAnterior * 2);
-                    SetConsoleColor(15, 1); // Color normal
-                    string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
-                    if (titulo.length() > ANCHO_ELEMENTO) {
-                        titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
-                    }
-                    cout << titulo;
+                // Solo si estamos en la misma página, limpiamos el elemento anterior
+                if (seccionActual != SECCION_ESPECIALIDADES || elementoActual != elementoAnterior) {
+                    limpiarYRedibujarElementoEspecializacion(elementoAnterior);
                 }
                 break;
             }
         }
 
-        // Luego, dibujamos la nueva selección
+        // Dibujamos la nueva selección
         switch (seccionActual) {
         case SECCION_HEADER:
             // Actualizar botón volver
@@ -280,14 +285,110 @@ private:
             SetConsoleColor(1, 13); // Color para selección
             cout << " VOLVER ";
             break;
+
         case SECCION_CURSOS:
-            // Redibujar solo el curso actualmente seleccionado
-            renderizarCursoSeleccionado();
+            dibujarElementoCursoSeleccionado(elementoActual);
             break;
+
         case SECCION_ESPECIALIDADES:
-            // Redibujar solo la especialidad actualmente seleccionada
-            renderizarEspecializacionSeleccionada();
+            dibujarElementoEspecializacionSeleccionado(elementoActual);
             break;
+        }
+
+        // Actualizar registros de selección
+        elementoAnterior = elementoActual;
+        seccionAnterior = seccionActual;
+    }
+
+    void limpiarYRedibujarElementoCurso(int indice) {
+        if (indice >= 0 && indice < cursosPorPagina &&
+            indiceInicioCursos + indice < cursos.getTamano()) {
+
+            int x = COL_LISTA_CURSOS;
+            int y = FILA_LISTA_CURSOS + indice * 2;
+
+            // Limpiar la línea completa
+            gotoXY(x, y);
+            cout << string(ANCHO_ELEMENTO, ' ');
+
+            // Redibujar con color normal
+            Curso* curso = cursos.get(indiceInicioCursos + indice);
+            gotoXY(x, y);
+            SetConsoleColor(15, 1); // Color normal
+            string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
+            if (titulo.length() > ANCHO_ELEMENTO) {
+                titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
+            }
+            cout << titulo;
+        }
+    }
+
+    void limpiarYRedibujarElementoEspecializacion(int indice) {
+        if (indice >= 0 && indice < especialidadesPorPagina &&
+            indiceInicioEspecialidades + indice < especialidades.getTamano()) {
+
+            int x = COL_LISTA_ESPECIALIDADES;
+            int y = FILA_LISTA_ESPECIALIDADES + indice * 2;
+
+            // Limpiar la línea completa
+            gotoXY(x, y);
+            cout << string(ANCHO_ELEMENTO, ' ');
+
+            // Redibujar con color normal
+            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice);
+            gotoXY(x, y);
+            SetConsoleColor(15, 1); // Color normal
+            string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
+            if (titulo.length() > ANCHO_ELEMENTO) {
+                titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
+            }
+            cout << titulo;
+        }
+    }
+
+    void dibujarElementoCursoSeleccionado(int indice) {
+        if (indice >= 0 && indice < cursosPorPagina &&
+            indiceInicioCursos + indice < cursos.getTamano()) {
+
+            int x = COL_LISTA_CURSOS;
+            int y = FILA_LISTA_CURSOS + indice * 2;
+
+            // Limpiar la línea completa primero
+            gotoXY(x, y);
+            cout << string(ANCHO_ELEMENTO, ' ');
+
+            // Redibujar con color seleccionado
+            Curso* curso = cursos.get(indiceInicioCursos + indice);
+            gotoXY(x, y);
+            SetConsoleColor(1, 13); // Color seleccionado
+            string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
+            if (titulo.length() > ANCHO_ELEMENTO) {
+                titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
+            }
+            cout << titulo;
+        }
+    }
+
+    void dibujarElementoEspecializacionSeleccionado(int indice) {
+        if (indice >= 0 && indice < especialidadesPorPagina &&
+            indiceInicioEspecialidades + indice < especialidades.getTamano()) {
+
+            int x = COL_LISTA_ESPECIALIDADES;
+            int y = FILA_LISTA_ESPECIALIDADES + indice * 2;
+
+            // Limpiar la línea completa primero
+            gotoXY(x, y);
+            cout << string(ANCHO_ELEMENTO, ' ');
+
+            // Redibujar con color seleccionado
+            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice);
+            gotoXY(x, y);
+            SetConsoleColor(1, 13); // Color seleccionado
+            string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
+            if (titulo.length() > ANCHO_ELEMENTO) {
+                titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
+            }
+            cout << titulo;
         }
     }
 
@@ -321,6 +422,11 @@ private:
 
     void manejarMovimientoTeclas(int tecla) {
         int maxElementos = 0;
+        int seccionPrevia = seccionActual;
+        int elementoPrevio = elementoActual;
+        int indiceInicioCursosPrevio = indiceInicioCursos;
+        int indiceInicioEspecialidadesPrevio = indiceInicioEspecialidades;
+
 
         switch (seccionActual) {
         case SECCION_HEADER:
@@ -408,6 +514,25 @@ private:
             }
             break;
         }
+        // Después de manejar las teclas, verificar si necesitamos rerenderizar
+        if (seccionActual == SECCION_CURSOS && indiceInicioCursosPrevio != indiceInicioCursos) {
+            necesitaRerenderizarCursos = true;
+        }
+
+        if (seccionActual == SECCION_ESPECIALIDADES && indiceInicioEspecialidadesPrevio != indiceInicioEspecialidades) {
+            necesitaRerenderizarEspecialidades = true;
+        }
+
+        // Si cambiamos de sección, puede que necesitemos rerenderizar ambas
+        if (seccionPrevia != seccionActual) {
+            // Si volvemos a una sección que ya estábamos viendo, asegurar que se renderice correctamente
+            if (seccionActual == SECCION_CURSOS) {
+                necesitaRerenderizarCursos = true;
+            }
+            else if (seccionActual == SECCION_ESPECIALIDADES) {
+                necesitaRerenderizarEspecialidades = true;
+            }
+        }
     }
 
 public:
@@ -421,7 +546,10 @@ public:
         especialidadesPorPagina(5),
         primeraRenderizacion(true),
         seccionAnterior(-1),
-        elementoAnterior(-1) {
+        elementoAnterior(-1),
+        necesitaRerenderizarCursos(false),
+        necesitaRerenderizarEspecialidades(false)
+    {
 
         // Inicializar el array de últimas selecciones
         for (int i = 0; i < TOTAL_SECCIONES; i++) {
