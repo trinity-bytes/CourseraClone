@@ -76,7 +76,7 @@ private:
 					throw runtime_error("Falla carga");
 				} //else throw runtime_error("Logrado");
 
-			}else{
+			} else {
 				int cantidadCursos = 0;
 				archivo >> cantidadCursos;
 				archivo.ignore();
@@ -85,13 +85,14 @@ private:
 					archivo >> idsCursos[i];
 					archivo.ignore();
 				}
-				getline(archivo, descripcion);
 				if (!gestionadorCursos->crearEspecializacion(idEmpresa, nombreEmpresa, tituloActividad, cantidadCursos, descripcionActividad, idsCursos)) {
 					throw runtime_error("Carga Fallida en especializacion");
 				}
+				// else throw runtime_error(tituloActividad);
 			}
 			cantidad++;
 		}
+		//throw runtime_error(to_string(cantidad));
 		archivo.close();
 	}
 
@@ -264,7 +265,7 @@ public:
 					Especializacion* especializacionSeleccionada = gestionadorCursos->obtenerEspecializacionPorId(idEspecializacion);
 
 					if (especializacionSeleccionada) {
-						pantallaActual = make_unique<MostrarEspecialidad>(idEspecializacion, especializacionSeleccionada, resultado.accionAnterior);
+						pantallaActual = make_unique<MostrarEspecialidad>(idEspecializacion, gestionadorCursos.get(), especializacionSeleccionada, resultado.accionAnterior);
 					}
 					else {
 						// Si no se encuentra la especialización, volver a la pantalla anterior

@@ -264,6 +264,19 @@ public:
         return end();
     }
 
+    T get(int index) const {
+        if (index < 0 || index >= getTamano()) {
+            throw out_of_range("Indice fuera de rango");
+        }
+
+        Nodo<T>* actual = head; 
+        for (int i = 0; i < index; ++i) {
+            actual = actual->next;
+        }
+
+        return actual->data;
+    }
+
     // Verificar si existe un valor
     bool contiene(const T& value) const {
         return buscar(value) != end();

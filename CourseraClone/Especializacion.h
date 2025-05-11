@@ -146,13 +146,12 @@ public:
 		return ss.str();
 	}
 
-	LinkedList<Curso*> getIdsCursos(GestionadorCursos* gestionadorCursos) const {
+	LinkedList<Curso*> getIdsCursos(LinkedList<Curso*> cursoLista) const {
 		LinkedList<Curso*> cursosAsociados;
 
 		// Iterar sobre cada ID de curso almacenado en la especialización
 		for (int idCurso : idsCursos) {
-			// Obtener el curso correspondiente del GestionadorCursos
-			Curso* curso = gestionadorCursos->obtenerCursoPorId(idCurso);
+			Curso* curso = cursoLista.get(idCurso);
 			if (curso != nullptr) {
 				// Si el curso existe, agregarlo a la lista
 				cursosAsociados.agregarAlFinal(curso);
