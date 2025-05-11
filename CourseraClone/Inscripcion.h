@@ -50,7 +50,7 @@ public:
         : idEstudiante(_idEstudiante), actividad(_actividad),
         progreso(0.0), completado(false), pagado(false)
     {
-        // aca deberia haber algo?
+        // throw runtime_error(to_string(_actividad->getTipo()));
     }
 
     Inscripcion(InscripcionBinaria& bin, Actividad* act)

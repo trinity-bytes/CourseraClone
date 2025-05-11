@@ -137,21 +137,6 @@ public:
         return resultado;
     }
 
-    template<typename Key, typename Comparator>
-    LinkedList<T> filtrar(vector<Key>& claves, Comparator comp) {
-        LinkedList<T> resultado;
-        for (Key& clave : claves) {
-            Nodo<T>* current = head;
-            while (current) {
-                if (comp(current->data, clave)) {
-                    resultado.agregarAlFinal(current->data);
-                    break; 
-                }
-                current = current->next;
-            }
-        }
-        return resultado;
-    }
     // Método para extraer datos usando una función
     template <typename ResultType>
     vector<ResultType> extraerDato(function<ResultType(const T&)> requerido) const {

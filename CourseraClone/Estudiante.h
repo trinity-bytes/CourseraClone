@@ -26,8 +26,8 @@ public:
 		cargarDatos();
 	}
 
-	InscripcionBinaria leerInscripcionEn(int posicion, string& rutaBinario) {
-		fstream archivo(rutaBinario, ios::binary);
+	InscripcionBinaria leerInscripcionEn(int posicion, string rutaBinario) {
+		fstream archivo(rutaBinario, ios::binary | ios::in);
 		if (!archivo.is_open()) throw runtime_error("No se pudo abrir binario inscripciones");
 		archivo.seekg(posicion * sizeof(InscripcionBinaria), ios::beg);
 
@@ -123,15 +123,16 @@ public:
 		// 1) Lee todos los offsets del índice
 		vector<int> offsets = obtenerOffsetsInscripciones();
 		if (offsets.empty()) return;
-
+		
 		string rutaBin = "Resources/Data/inscripciones.dat";
 
-		// 2) Separa offsets según tipoActividad
+		throw runtime_error(to_string(offsets.size()));
 		vector<int> offsetCursos, offsetEspecializaciones;
 		for (int off : offsets) {
 			// leerInscripcionEn usa off-1 internamente si es 1-based
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
-			if (bin.tipoActividad == 1)
+			throw runtime_error(to_string(bin.tipoActividad));
+			if (bin.tipoActividad == 0)
 				offsetCursos.push_back(off);
 			else
 				offsetEspecializaciones.push_back(off);
@@ -194,6 +195,7 @@ public:
 			Inscripcion* ins = new Inscripcion(bin, act);
 			especializacionesEs.push(ins);
 		}
+		throw runtime_error(to_string(cursosEs.getTamano()));
 	}
 
 
@@ -279,7 +281,7 @@ public:
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *curso);
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), curso);
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
@@ -309,7 +311,7 @@ public:
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), *especializacion);
+		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), especializacion);
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
