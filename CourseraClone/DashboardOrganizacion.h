@@ -304,6 +304,16 @@ public:
                         return res;
                     }
                 }
+                else if (seccionActual == SECCION_MENU_SUPERIOR) {
+                    if (elementoActual == 0) {
+                        // Explorar cursos y especialidades
+                        ResultadoPantalla res;
+                        res.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+                        res.tipoUsuario = TipoUsuario::EMPRESA; // Indicar que es una organización
+                        return res;
+                    }
+                    // Aca se pueden agregar mas acciones
+                }
                 break;
             case 27: // ESC
             {

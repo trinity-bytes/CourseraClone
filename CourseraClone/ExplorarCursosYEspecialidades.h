@@ -18,7 +18,6 @@ class ExplorarCursosYEspecialidades : public PantallaBase
 {
 private:
     // Secciones de la pantalla
-    static const int SECCION_HEADER = 0;     // Sección de encabezado (título, botón volver)
     static const int SECCION_CURSOS = 1;      // Lista de cursos
     static const int SECCION_ESPECIALIDADES = 2; // Lista de especialidades
     static const int TOTAL_SECCIONES = 3;
@@ -38,6 +37,8 @@ private:
     bool necesitaRerenderizarCursos;
     bool necesitaRerenderizarEspecialidades;
 
+    TipoUsuario tipoUsuario;
+
     // Datos
     GestionadorCursos* gestionadorCursos;
     LinkedList<Curso*> cursos;
@@ -46,8 +47,6 @@ private:
     // Coordenadas para la interfaz
     const int COL_TITULO = 50;
     const int FILA_TITULO = 3;
-    const int COL_VOLVER = 110;
-    const int FILA_VOLVER = 3;
 
     const int COL_TITULO_CURSOS = 7;
     const int FILA_TITULO_CURSOS = 7;
@@ -69,16 +68,6 @@ private:
         gotoXY(COL_TITULO, FILA_TITULO);
         SetConsoleColor(15, 1);
         cout << "EXPLORAR CURSOS Y ESPECIALIDADES";
-
-        // Dibujar botón volver
-        gotoXY(COL_VOLVER, FILA_VOLVER);
-        if (seccionActual == SECCION_HEADER && elementoActual == 0) {
-            SetConsoleColor(1, 13); // Color para selección
-        }
-        else {
-            SetConsoleColor(15, 1); // Color normal
-        }
-        cout << " VOLVER ";
 
         // Dibujar secciones
         SetConsoleColor(15, 1);
@@ -253,14 +242,8 @@ private:
 
         // Limpiamos la selección anterior
         if (seccionAnterior >= 0 && seccionAnterior < TOTAL_SECCIONES) {
-            switch (seccionAnterior) {
-            case SECCION_HEADER:
-                // Botón volver sin selección
-                gotoXY(COL_VOLVER, FILA_VOLVER);
-                SetConsoleColor(15, 1); // Color normal
-                cout << " VOLVER ";
-                break;
-
+            switch (seccionAnterior) 
+            {
             case SECCION_CURSOS:
                 // Solo si estamos en la misma página, limpiamos el elemento anterior
                 if (seccionActual != SECCION_CURSOS || elementoActual != elementoAnterior) {
@@ -278,14 +261,8 @@ private:
         }
 
         // Dibujamos la nueva selección
-        switch (seccionActual) {
-        case SECCION_HEADER:
-            // Actualizar botón volver
-            gotoXY(COL_VOLVER, FILA_VOLVER);
-            SetConsoleColor(1, 13); // Color para selección
-            cout << " VOLVER ";
-            break;
-
+        switch (seccionActual) 
+        {
         case SECCION_CURSOS:
             dibujarElementoCursoSeleccionado(elementoActual);
             break;
@@ -429,9 +406,6 @@ private:
 
 
         switch (seccionActual) {
-        case SECCION_HEADER:
-            maxElementos = 1; // Solo el botón volver
-            break;
 
         case SECCION_CURSOS:
             maxElementos = min(cursosPorPagina, cursos.getTamano() - indiceInicioCursos);
@@ -536,9 +510,10 @@ private:
     }
 
 public:
-    ExplorarCursosYEspecialidades(GestionadorCursos* _gestionadorCursos)
+    ExplorarCursosYEspecialidades(GestionadorCursos* _gestionadorCursos, TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE)
         : gestionadorCursos(_gestionadorCursos),
-        seccionActual(SECCION_HEADER),
+        tipoUsuario(_tipoUsuario),
+        seccionActual(SECCION_CURSOS),
         elementoActual(0),
         indiceInicioCursos(0),
         indiceInicioEspecialidades(0),
@@ -588,18 +563,16 @@ public:
             }
             // Si es tecla Enter
             else if (tecla == 13) {
-                if (seccionActual == SECCION_HEADER) {
-                    // Volver a la pantalla anterior
-                    resultado.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
-                    return resultado;
-                }
-                else if (seccionActual == SECCION_CURSOS) {
+                if (seccionActual == SECCION_CURSOS) {
                     // Seleccionar un curso y mostrar sus detalles
                     int indiceCurso = indiceInicioCursos + elementoActual;
                     if (indiceCurso < cursos.getTamano()) {
                         resultado.idCursoSeleccionado = cursos.get(indiceCurso)->getId();
                         resultado.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
-                        resultado.accionAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+                        resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
+                            AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
+                            AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
+                        resultado.tipoUsuario = tipoUsuario; // Pasar el tipo de usuario
                         return resultado;
                     }
                 }
@@ -609,14 +582,19 @@ public:
                     if (indiceEspecialidad < especialidades.getTamano()) {
                         resultado.idCursoSeleccionado = especialidades.get(indiceEspecialidad)->getId();
                         resultado.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
-                        resultado.accionAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+                        resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
+                            AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
+                            AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
+                        resultado.tipoUsuario = tipoUsuario; // Pasar el tipo de usuario
                         return resultado;
                     }
                 }
             }
             // Si es tecla Escape
             else if (tecla == 27) {
-                resultado.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+                resultado.accion = tipoUsuario == TipoUsuario::ESTUDIANTE ?
+                    AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
+                    AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
                 return resultado;
             }
         }

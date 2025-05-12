@@ -22,6 +22,8 @@ private:
     Estudiante* estudiante;
     vector<Clase> clases;
 
+    TipoUsuario tipoUsuario;
+
     // Estado de navegación
     int claseSeleccionada;
     bool primeraRenderizacion;
@@ -180,9 +182,17 @@ private:
             dibujarClase(i, i == claseSeleccionada);
         }
 
-        gotoXY(5, 30);
-        SetConsoleColor(15, 1);
-        cout << "Presiona 'I' para inscribirte a este curso";
+        // Muestra la opcion de inscripcion solo a estudiantes
+        if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+            gotoXY(5, 30);
+            SetConsoleColor(15, 1);
+            cout << "Presiona 'I' para inscribirte a este curso";
+        }
+        else if (tipoUsuario == TipoUsuario::EMPRESA) {
+            gotoXY(5, 30);
+            SetConsoleColor(8, 1); // Color gris para indicar deshabilitado
+            cout << "Solo estudiantes pueden inscribirse a cursos";
+        }
     }
 
     void dibujarClase(int indice, bool seleccionada) {
@@ -210,14 +220,17 @@ private:
     }
 
 public:
-    MostrarCurso(int _idCurso, GestionadorCursos* _gestionadorCursos = nullptr, Estudiante* _estudiante = nullptr, Curso* _curso = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE)
+    MostrarCurso(int _idCurso, GestionadorCursos* _gestionadorCursos = nullptr, Estudiante* _estudiante = nullptr,
+        Curso* _curso = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE,
+        TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE)
         : idCurso(_idCurso),
         gestionadorCursos(_gestionadorCursos),
         estudiante(_estudiante),
         curso(_curso),
         claseSeleccionada(0),
         primeraRenderizacion(true),
-        pantallaAnterior(_pantallaAnterior)
+        pantallaAnterior(_pantallaAnterior),
+        tipoUsuario(_tipoUsuario)
     {
         // Si no se proporcionó un curso, intentar cargarlo por ID
         if (curso == nullptr && gestionadorCursos != nullptr) {
@@ -289,6 +302,17 @@ public:
                 break;
             case 'i': // Inscribirse al curso
             case 'I':
+
+                if (tipoUsuario == TipoUsuario::EMPRESA) {
+                    gotoXY(5, 25);
+                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    cout << "Las organizaciones no pueden inscribirse a cursos.";
+                    SetConsoleColor(15, 0); // Restaurar color
+                    _getch(); // Esperar una tecla
+                    dibujarInterfazCompleta();
+                    break;
+                }
+
                 if (estudiante != nullptr) {
                     if (estudiante->inscribirseACurso(curso)) { // Usar el método de estudiante
                         // Mostrar mensaje de éxito

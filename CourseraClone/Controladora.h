@@ -280,10 +280,19 @@ public:
 				case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
 				{
 					// Crear una instancia de la nueva pantalla de exploración
-					pantallaActual = make_unique<ExplorarCursosYEspecialidades>(gestionadorCursos.get());
+					// Pasar el tipo de usuario (estudiante o empresa) según corresponda
+					TipoUsuario tipoUsuario = TipoUsuario::ESTUDIANTE; // Valor predeterminado
+
+					// Determinar el tipo de usuario según desde dónde se está accediendo
+					tipoUsuario = resultado.tipoUsuario;
+
+					pantallaActual = make_unique<ExplorarCursosYEspecialidades>(
+						gestionadorCursos.get(),
+						tipoUsuario
+					);
 					break;
 				}
-
+				/*
 				case AccionPantalla::IR_A_GESTIONAR_INSCRIPCIONES:
 				{
 					// Por ahora podemos redirigir al dashboard, después implementaremos esta función
@@ -294,6 +303,8 @@ public:
 					);
 					break;
 				}
+				*/
+				
 				case AccionPantalla::IR_A_VER_BOLETAS:
 				{
 					// Verificar si hay un estudiante logueado
