@@ -1,40 +1,18 @@
 #pragma once
 #include <iostream>
 #include "Boleta.h"
+#include "LinkedList.h"
 
 class Venta {
-private:
-    int idVenta;
-    int idEstudiante;
-    int idActividad;
-    double precio;
-    bool pagado;
+
 
 public:
 
-    Venta(int _idVenta, int _idEstudiante, int _idActividad, double _precio, bool _pagado)
-        : idVenta(_idVenta), idEstudiante(_idEstudiante), idActividad(_idActividad), precio(_precio), pagado(_pagado) { }
-
-    Venta() : idVenta(0), idEstudiante(0), idActividad(0), precio(0.0), pagado(false) { }
-
-    void pagar() {
-        if (!pagado) {
-            pagado = true;
-            generarBoleta();
-        }
-    }
-private:
-    void generarBoleta() {
-        int siguienteBoletaId = 1;
-        Boleta b(idEstudiante,idActividad,precio);
-        b.guardar();
+    bool pagarInscripcion(int idInscripcion, int idActividad, double precio, LinkedList<Boleta*>* boletas, int idEstudiante) {
+        Boleta* b = new Boleta(idEstudiante, idActividad, precio);
+        b->guardar();
+        boletas->agregarAlFinal(b);
+        return true;
     }
 
-	void mostrar() {
-		cout << "Venta ID: " << idVenta << endl;
-		cout << "Estudiante ID: " << idEstudiante << endl;
-		cout << "Actividad ID: " << idActividad << endl;
-		cout << "Precio: " << precio << endl;
-		cout << "Pagado: " << (pagado ? "Sí" : "No") << endl;
-	}
 };

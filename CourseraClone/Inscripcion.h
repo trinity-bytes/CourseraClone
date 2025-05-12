@@ -3,6 +3,7 @@
 // headers propios
 #include "Actividad.h"
 #include "algoritmosBusqueda.h"
+#include "Venta.h"
 
 // headers de la libreria estandar
 #include "fstream"
@@ -124,7 +125,15 @@ public:
     }
 
     bool estaPagada() const { return pagado; }
-    void marcarComoPagada() { pagado = true; }
+
+    void marcarComoPagada(LinkedList<Boleta*>* boletas) { 
+        if (!estaPagada()) {
+            pagado = true;
+            actualizaPagoEnDisco(id, pagado);
+            Venta prueba;
+            prueba.pagarInscripcion(id, getIdActividad(), 20.5, boletas, idEstudiante);
+        }
+    }
 	int getIdActividad() {
 		return actividad->getId();
 	}
