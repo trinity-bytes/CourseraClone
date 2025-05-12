@@ -139,6 +139,18 @@ private:
 
     void renderizarEspecialidades() 
     {
+        // Convertir LinkedList a vector
+        vector<Especializacion*> especialidadesVector;
+        for (int i = 0; i < especialidades.getTamano(); ++i) {
+            especialidadesVector.push_back(especialidades.get(i));
+        }
+
+        // Aplicar Bubble Sort al vector
+        bubbleSort(especialidadesVector);
+        for (Especializacion* especializacion :especialidadesVector){
+            especialidades.agregarAlFinal(especializacion); 
+        }
+
         limpiarAreaEspecialidades();
         limpiarAreaIndicadoresEspecialidades();
 
