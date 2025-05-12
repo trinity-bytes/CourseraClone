@@ -336,17 +336,12 @@ public:
                         return res;
                     }
                 }
-                else if (seccionActual == SECCION_MENU_SUPERIOR) {
+                else if (seccionActual == SECCION_MENU_SUPERIOR) 
+                {
                     if (elementoActual == 0) {
-                        // Explorar cursos y especialidades
                         ResultadoPantalla res;
-                        res.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES; // Nueva acción que debemos añadir
-                        return res;
-                    }
-                    else if (elementoActual == 1) {
-                        // Gestionar mis inscripciones
-                        ResultadoPantalla res;
-                        res.accion = AccionPantalla::IR_A_GESTIONAR_INSCRIPCIONES; // Nueva acción que debemos añadir
+                        res.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+                        res.tipoUsuario = TipoUsuario::ESTUDIANTE; // Explicitly set student type
                         return res;
                     }
                 }

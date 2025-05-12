@@ -353,11 +353,12 @@ public:
             case 13: // Enter
                 // Aquí se implementaría la lógica para mostrar el contenido de la clase seleccionada
                 // Por ahora, simplemente volvemos a la pantalla anterior
-                res.accion = pantallaAnterior;
-                return res;
+                //res.accion = pantallaAnterior;
+                //return res;
 
             case 27: // ESC
                 res.accion = pantallaAnterior;
+                res.tipoUsuario = tipoUsuario; // Ensure we keep the user type
                 return res;
             }
         }

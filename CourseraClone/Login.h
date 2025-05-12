@@ -225,11 +225,17 @@ public:
                             if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
                                 *estudiante = make_unique<Estudiante>(index, usuarioTemp.getNombreCompleto(), email, "" );
                                 estudiante->get()->cargarInscripciones(*cursos, *especialidades);
-                                //cerr << estudiante->get()->getId();
-                                //system("pause>0");
                                 empresa->reset();
 
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+
+                                if (res.accionAnterior != AccionPantalla::NINGUNA) {
+                                    res.accion = res.accionAnterior;
+                                    res.idCursoSeleccionado = res.idCursoSeleccionado;
+                                }
+                                else {
+                                    res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+                                }
                             }
                             else {
                                 *empresa = make_unique<Empresa>(index, usuarioTemp.getNombreCompleto(), email, "");
