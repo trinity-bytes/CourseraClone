@@ -79,7 +79,9 @@ private:
         }
     }
 
-    void dibujarInterfazCompleta() {
+    void dibujarInterfazCompleta() 
+    {
+        SetConsoleColor(15, 0);
         system("cls");
         UI_OrganizationDashboard();
         renderizarHeader();

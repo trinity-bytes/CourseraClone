@@ -90,6 +90,8 @@ inline void UI_Login()
    ║                                                                                                                ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior
 )";
 
 	cout << ui;

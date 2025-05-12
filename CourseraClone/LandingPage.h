@@ -122,11 +122,11 @@ private:
 
         gotoXY(coordsElementosCabecera[indice].X, coordsElementosCabecera[indice].Y);
 
-        if (seleccionado) SetConsoleColor(1, 4);
-        else SetConsoleColor(15, 1);
+        if (seleccionado) SetConsoleColor(1, 4, true, true);
+        else SetConsoleColor(15, 13, false, true);
 
         cout << ELEMENTOS_CABECERA[indice];
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void actualizarElementoEspecialidad(int indice, bool seleccionado) {

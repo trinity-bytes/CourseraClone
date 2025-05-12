@@ -117,7 +117,7 @@ inline void ConfigurarConsola()
 	SetConsoleCP(CP_UTF8);
 
 	ocultarCursor();
-	CambiarFuenteConsola(L"Cascadia Mono", { 0, 24 });
+	CambiarFuenteConsola(L"Cascadia Mono", { 0, 20 });
 
     // Establecer paleta de colores 
     setColorPalette(0, Palette::CREMA);            // Fondo general
@@ -137,7 +137,7 @@ inline void ConfigurarConsola()
     setColorPalette(14, Palette::SOMBRA_AZUL);     // Sombras de tarjetas
     setColorPalette(15, Palette::NEGRO);           // Texto normal o Límites de tiempo
 
-    SetConsoleColor(15, 1);
+    SetConsoleColor(15, 0);
 
 	Console::SetWindowSize(ANCHO_CONSOLA, ALTO_CONSOLA);
 

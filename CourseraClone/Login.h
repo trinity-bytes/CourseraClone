@@ -48,8 +48,14 @@ private:
     {
         gotoXY(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
     
-        if (seleccionado) mostrarCursor(true);
-		else mostrarCursor(false);
+        if (seleccionado) {
+            SetConsoleColor(15, 4, true, true); 
+            mostrarCursor(true);
+        }
+        else {
+            SetConsoleColor(15, 0); 
+            mostrarCursor(false);
+        }
 
         SetConsoleColor(15, 1);
         cout << valor;
@@ -61,26 +67,49 @@ private:
 
         if (indice == 0 || indice == 1) {
             if (seleccionado || (indice == 0 && tipoUsuarioActual == 0) || (indice == 1 && tipoUsuarioActual == 1)) {
-                SetConsoleColor(1, 13);
+                SetConsoleColor(1, 4, true, true);
             } else {
-                SetConsoleColor(15, 1);
+                SetConsoleColor(7, 0);
             }
         } else {
             if (seleccionado) {
-                SetConsoleColor(1, 4);
+                SetConsoleColor(1, 5, true, true);
             } else {
-                SetConsoleColor(15, 1);
+                SetConsoleColor(5, 1, false, true);
             }
         }
         
         mostrarCursor(false);
         cout << texto;
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void dibujarInterfazCompleta() {
+        SetConsoleColor(15, 0);
+        
         system("cls");
+        
         UI_Login();
+
+        for (int i = 3; i <= 7; i++) {
+            gotoXY(3, i);
+            SetConsoleColor(1, 13, true);
+            cout << string(114, ' ');
+        }
+
+        SetConsoleColor(12, 13, true, true);
+        gotoXY(42, 4);    cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+        gotoXY(42, 5);    cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+        gotoXY(42, 6);    cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
+
+        SetConsoleColor(12, 13, true, true);
+        gotoXY(71, 7);    cout << "C L O N E";
+
+        // Welcome message with soft highlight
+        SetConsoleColor(8, 0, true);
+        gotoXY(44, 9); cout << "- QUE BUENO TENERTE DE VUELTA! -";
+
+        SetConsoleColor(15, 0);
 
         // Campos
         for (int i = 0; i < ELEMENTOS_INPUT; ++i) 
