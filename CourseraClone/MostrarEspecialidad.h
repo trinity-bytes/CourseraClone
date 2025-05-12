@@ -24,9 +24,6 @@ private:
 
     vector<Curso*> cursos;
 
-    // Estado de navegación
-    int cursoSeleccionadoFila;
-    int cursoSeleccionadoColumna;
     bool primeraRenderizacion;
     AccionPantalla pantallaAnterior;
 
@@ -179,7 +176,7 @@ private:
             for (int j = 0; j < COLUMNAS_CUADRICULA; j++) {
                 int indice = i * COLUMNAS_CUADRICULA + j;
                 if (indice < cursos.size()) {
-                    dibujarCursoCelda(i, j, cursos[indice], i == cursoSeleccionadoFila && j == cursoSeleccionadoColumna);
+                    dibujarCursoCelda(i, j, cursos[indice]);
                 }
             }
         }
@@ -197,17 +194,11 @@ private:
         }
     }
 
-    void dibujarCursoCelda(int fila, int columna, Curso* curso, bool seleccionado) {
+    void dibujarCursoCelda(int fila, int columna, Curso* curso) {
         int x = COL_INICIO_CUADRICULA + columna * (ANCHO_CELDA + ESPACIO_ENTRE_CELDAS);
         int y = FILA_INICIO_CUADRICULA + fila * (ALTO_CELDA + ESPACIO_ENTRE_CELDAS);
 
-        // Dibujar el borde de la celda
-        if (seleccionado) {
-            SetConsoleColor(1, 13); // Color para selección
-        }
-        else {
-            SetConsoleColor(15, 1); // Color normal
-        }
+		SetConsoleColor(15, 1); // Color normal
 
         // Dibujar título del curso
         gotoXY(x + 2, y + 1);
@@ -239,8 +230,6 @@ public:
         : idEspecializacion(_idEspecializacion),
         gestionadorCursos(_gestionadorCursos),
         especializacion(_especializacion),
-        cursoSeleccionadoFila(0),
-        cursoSeleccionadoColumna(0),
         primeraRenderizacion(true),
         pantallaAnterior(_pantallaAnterior),
         tipoUsuario(_tipoUsuario),
@@ -284,12 +273,11 @@ public:
 
             // Crear 4 cursos de ejemplo relacionados con la especialización
             for (int i = 1; i <= MAX_CURSOS; i++) {
-                string titulo = "Módulo " + to_string(i) + " de " + tituloBase;
-                string descripcion = "Este módulo cubre conceptos fundamentales relacionados con " +
-                    especializacion->getTitulo() + ". Parte " + to_string(i) + ".";
+                string titulo = "Curso Ejemplo ";
+                string descripcion = "Este curso es de ejemplo.";
 
                 // Diferentes instructores para diversidad
-                string instructor = "Profesor " + string(1, 'A' + (i - 1) % 26);
+                string instructor = "Profesor: UwU*";
 
                 Curso* cursoDemo = new Curso(1000 + i,
                     especializacion->getIdEmpresa(),
@@ -317,53 +305,7 @@ public:
             int tecla = _getch();
 
             switch (tecla) {
-            case 224: // Tecla extendida
-                tecla = _getch();
-
-                switch (tecla) {
-                case 72: // Flecha arriba
-                    if (cursoSeleccionadoFila > 0) {
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], false);
-                        cursoSeleccionadoFila--;
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], true);
-                    }
-                    break;
-
-                case 80: // Flecha abajo
-                    if (cursoSeleccionadoFila < FILAS_CUADRICULA - 1 &&
-                        (cursoSeleccionadoFila + 1) * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna < cursos.size()) {
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], false);
-                        cursoSeleccionadoFila++;
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], true);
-                    }
-                    break;
-
-                case 75: // Flecha izquierda
-                    if (cursoSeleccionadoColumna > 0) {
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], false);
-                        cursoSeleccionadoColumna--;
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], true);
-                    }
-                    break;
-
-                case 77: // Flecha derecha
-                    if (cursoSeleccionadoColumna < COLUMNAS_CUADRICULA - 1 &&
-                        cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna + 1 < cursos.size()) {
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], false);
-                        cursoSeleccionadoColumna++;
-                        dibujarCursoCelda(cursoSeleccionadoFila, cursoSeleccionadoColumna,
-                            cursos[cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna], true);
-                    }
-                    break;
-                }
-                break;
+            
             case 'i': // Inscribirse a la especialización
             case 'I':
                 if (tipoUsuario == TipoUsuario::EMPRESA) {
@@ -411,30 +353,6 @@ public:
                     dibujarInterfazCompleta();
                 }
                 break;
-            case 13: // Enter - seleccionar curso
-            {
-                int indice = cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna;
-                if (indice >= 0 && indice < cursos.size()) {
-                    // Always include these key pieces of information
-                    res.idCursoSeleccionado = cursos[indice]->getId();
-                    res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
-                    res.accionAnterior = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
-                    res.tipoUsuario = tipoUsuario;
-                    // Also store the current specialization ID to return to it
-                    res.idCursoSeleccionado = idEspecializacion;
-                    return res;
-                }
-                else {
-                    // Show an error if we're trying to access an invalid course
-                    gotoXY(5, 25);
-                    SetConsoleColor(4, 0);
-                    cout << "Curso no disponible";
-                    SetConsoleColor(15, 0);
-                    _getch();
-                    dibujarInterfazCompleta();
-                }
-            }
-            break;
 
             case 27: // ESC - volver a la pantalla anterior
                 res.accion = pantallaAnterior;
