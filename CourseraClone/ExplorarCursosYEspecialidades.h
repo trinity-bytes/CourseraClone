@@ -41,8 +41,8 @@ private:
 
     // Datos
     GestionadorCursos* gestionadorCursos;
-    LinkedList<Curso*> cursos;
-    LinkedList<Especializacion*> especialidades;
+    LinkedList<Curso*>& cursos;
+    LinkedList<Especializacion*>& especialidades;
 
     // Coordenadas para la interfaz
     const int COL_TITULO = 50;
@@ -523,7 +523,9 @@ public:
         seccionAnterior(-1),
         elementoAnterior(-1),
         necesitaRerenderizarCursos(false),
-        necesitaRerenderizarEspecialidades(false)
+        necesitaRerenderizarEspecialidades(false),
+        cursos(_gestionadorCursos->getCursos()),
+        especialidades(_gestionadorCursos->getEspecializaciones())
     {
 
         // Inicializar el array de últimas selecciones
@@ -531,9 +533,6 @@ public:
             ultimoElementoSeleccionadoPorSeccion[i] = 0;
         }
 
-        // Cargar cursos y especialidades
-        cursos = gestionadorCursos->getCursos();
-        especialidades = gestionadorCursos->getEspecializaciones();
     }
 
     ~ExplorarCursosYEspecialidades() {
