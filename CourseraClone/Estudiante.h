@@ -71,54 +71,6 @@ public:
 		return offsets;
 	}
 
-	/*
-	void cargarInscripciones(LinkedList<Curso*>& cursos, LinkedList<Especializacion*>& listaEspecializaciones) {
-		fstream indiceArchivo("Resources/Data/indices/inscripciones.dat", ios::binary | ios::in);
-		if (!indiceArchivo.is_open()) return;
-
-		vector<int> filas = obtenerOffsetsInscripciones();
-		if (filas.empty()) return;
-
-		// aqui
-		string rutaBin = "Resources/Data/inscripciones.dat";
-		vector<int> cursosOff, especializacionesOff;
-
-		// 3) Para cada offset, leo el registro binario y lo clasifico
-		for (int off : filas) {
-			// leerInscripcionEn espera posición 0-based: por eso off - 1
-			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
-
-			if (bin.tipoActividad == 1) {
-				cursosOff.push_back(bin.idActividad);
-			}
-			else {
-				especializacionesOff.push_back(bin.idActividad);
-			}
-		}
-
-		indiceArchivo.close();
-
-		mergeSort(cursosOff, 0, int(cursosOff.size()));
-		shellSort(especializacionesOff);
-
-
-
-		LinkedList<Curso*> cursosFiltrados = cursos.filtrar<int>(
-			cursosOff, [](Curso* c, const int& id) { return c->getId() == id; }, [](Curso* c, const int& id) { return c->getId() < id; }
-		);
-
-
-		LinkedList<Especializacion*> cursosFiltrados = listaEspecializaciones.filtrar<int>(
-			cursosOff, [](Especializacion* c, const int& id) { return c->getId() == id; }, [](Especializacion* c, const int& id) { return c->getId() < id; }
-		);
-
-		//cursosEs.cargarDesdeLista(cursosFiltrados);
-
-		
-		
-	}
-	*/
-
 	// En Estudiante.h, dentro de la clase Estudiante:
 	void cargarInscripciones(
 		const LinkedList<Curso*>& cursos,
@@ -126,6 +78,7 @@ public:
 	) {
 		// 1) Lee todos los offsets del índice
 		vector<int> offsets = obtenerOffsetsInscripciones();
+		//throw runtime_error(to_string(offsets.size()));
 		if (offsets.empty()) return;
 		
 		string rutaBin = "Resources/Data/inscripciones.dat";
@@ -136,6 +89,7 @@ public:
 			// leerInscripcionEn usa off-1 internamente si es 1-based
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
 			throw runtime_error(to_string(bin.tipoActividad));
+			system("pause");
 			if (bin.tipoActividad == 0)
 				offsetCursos.push_back(off);
 			else
@@ -272,7 +226,7 @@ public:
 		}
 	}
 
-	bool Estudiante::inscribirseACurso(Curso* curso) {
+	bool inscribirseACurso(Curso* curso) {
 		if (!curso) {
 			std::cerr << "Error: Curso inválido" << std::endl;
 			return false;
@@ -289,6 +243,11 @@ public:
 
 		// Crear una nueva inscripción
 		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), curso);
+		cerr << this->getId();
+		system("pause>0");
+
+
+		// throw runtime_error(to_string(this->getId()));
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();

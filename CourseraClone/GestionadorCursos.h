@@ -41,7 +41,7 @@ public:
 
     ~GestionadorCursos() {
         // Liberar memoria
-
+        /*
         for (auto curso : cursos) {
             delete curso;
         }
@@ -50,6 +50,7 @@ public:
         for (auto especializacion : especializaciones) {
             delete especializacion;
         }
+        */
     }
 
 	Curso* obtenerCursoPorId(int id) {

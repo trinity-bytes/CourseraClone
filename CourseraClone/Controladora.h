@@ -160,7 +160,8 @@ public:
 					if (estudiante) {
 						pantallaActual = make_unique<DashboardEstudiante>(
 							estudiante->getId(),
-							estudiante->getNombreCompleto()
+							estudiante->getNombreCompleto(),
+							gestionadorCursos.get()
 						);
 					}
 					else {
@@ -288,7 +289,8 @@ public:
 					// Por ahora podemos redirigir al dashboard, después implementaremos esta función
 					pantallaActual = make_unique<DashboardEstudiante>(
 						estudiante->getId(),
-						estudiante->getNombreCompleto()
+						estudiante->getNombreCompleto(),
+						gestionadorCursos.get()
 					);
 					break;
 				}

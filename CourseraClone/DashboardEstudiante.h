@@ -63,8 +63,8 @@ private:
     // Ruta del archivo de inscripciones
     const string RUTA_INSCRIPCIONES = ".\\Resources\\Data\\inscripciones.bin";
 
-    void cargarDatos() {
-        cargarInscripciones();
+    void cargarDatos(GestionadorCursos* gestion) {
+        cargarInscripciones(gestion);
 
         // Si no hay datos, agregar algunos de ejemplo
         if (cursosInscritos.empty()) 
@@ -84,8 +84,10 @@ private:
         }
     }
 
-    void cargarInscripciones() {
+    void cargarInscripciones(GestionadorCursos* gestion) {
         // Abrir el archivo de inscripciones binario
+        
+
         ifstream archivo(RUTA_INSCRIPCIONES, ios::binary);
         if (!archivo.is_open()) {
             return;
@@ -94,19 +96,21 @@ private:
         // Leer todas las inscripciones
         InscripcionBinaria inscripcion;
         while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
+
             // Filtrar por el ID del estudiante actual
             if (inscripcion.idEstudiante == idEstudiante) {
+                throw runtime_error("paso");
                 // Determinar si es curso o especialización
                 if (inscripcion.tipoActividad == 1) { // Curso
                     // Buscar el curso en el gestionador
-                    Curso* curso = obtenerCursoPorId(inscripcion.idActividad);
+                    Curso* curso = gestion->obtenerCursoPorId(inscripcion.idActividad);
                     if (curso) {
                         cursosInscritos.emplace_back(curso->getTitulo(), curso->getDescripcion());
                     }
                 }
                 else if (inscripcion.tipoActividad == 2) { // Especialización
                     // Buscar la especialización en el gestionador
-                    Especializacion* especializacion = obtenerEspecializacionPorId(inscripcion.idActividad);
+                    Especializacion* especializacion = gestion->obtenerEspecializacionPorId(inscripcion.idActividad);
                     if (especializacion) {
                         especializacionesInscritas.emplace_back(especializacion->getTitulo(), especializacion->getDescripcion());
                     }
@@ -116,17 +120,6 @@ private:
         archivo.close();
     }
 
-    Curso* obtenerCursoPorId(int id) {
-        // Esta función debería integrarse con GestionadorCursos
-        // Por ahora, creamos un curso de ejemplo
-        return new Curso(id, 1, "Empresa", "Curso " + to_string(id), "Descripción del curso", "Instructor", 5);
-    }
-
-    Especializacion* obtenerEspecializacionPorId(int id) {
-        // Esta función debería integrarse con GestionadorCursos
-        // Por ahora, creamos una especialización de ejemplo
-        return new Especializacion(id, 1, "Empresa", "Especialización " + to_string(id), 0, "Descripción de la especialización");
-    }
 
     void dibujarInterfazCompleta() 
     {
@@ -278,13 +271,13 @@ private:
     }
 
 public:
-    DashboardEstudiante(int _idEstudiante, string _nombreEstudiante)
+    DashboardEstudiante(int _idEstudiante, string _nombreEstudiante, GestionadorCursos* gestion)
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idEstudiante(_idEstudiante),
         nombreEstudiante(_nombreEstudiante) {
 
-        cargarDatos();
+        cargarDatos(gestion);
     }
 
     ResultadoPantalla ejecutar() override {
