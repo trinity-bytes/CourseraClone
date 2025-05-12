@@ -261,19 +261,21 @@ public:
 				}
 				case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
 				{
-					// Obtener el ID de la especialización desde el resultado
-					int idEspecializacion = resultado.idCursoSeleccionado; // Reutilizamos este campo para IDs de especialización
-
-					// Intentar obtener la especialización del GestionadorCursos
-					Especializacion* especializacionSeleccionada = gestionadorCursos->obtenerEspecializacionPorId(idEspecializacion);
-
-					if (especializacionSeleccionada) {
-						pantallaActual = make_unique<MostrarEspecialidad>(idEspecializacion, gestionadorCursos.get(), especializacionSeleccionada, resultado.accionAnterior);
+					Especializacion* especializacion = gestionadorCursos->obtenerEspecializacionPorId(resultado.idCursoSeleccionado);
+					// Determinar si pasamos un estudiante o no
+					Estudiante* estudianteActual = nullptr;
+					if (estudiante != nullptr && resultado.tipoUsuario == TipoUsuario::ESTUDIANTE) {
+						estudianteActual = estudiante.get();
 					}
-					else {
-						// Si no se encuentra la especialización, volver a la pantalla anterior
-						pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-					}
+
+					pantallaActual = make_unique<MostrarEspecialidad>(
+						resultado.idCursoSeleccionado,
+						gestionadorCursos.get(),
+						especializacion,
+						resultado.accionAnterior,
+						resultado.tipoUsuario,
+						estudianteActual
+					);
 					break;
 				}
 				// En el switch de acciones dentro de run()
