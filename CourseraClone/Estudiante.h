@@ -243,8 +243,8 @@ public:
 
 		// Crear una nueva inscripción
 		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), curso);
-		cerr << this->getId();
-		system("pause>0");
+		//cerr << this->getId();
+		//system("pause>0");
 
 
 		// throw runtime_error(to_string(this->getId()));
