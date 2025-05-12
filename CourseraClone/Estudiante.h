@@ -19,10 +19,10 @@ private:
 	Stack<Inscripcion*> especializacionesEs;
 	GestionadorCursos* gestorCursos;
 public:
-	
-	Estudiante(int _id, string nombreCompleto, 
+
+	Estudiante(int _id, string nombreCompleto,
 		string _nickname, string _contrasena) : Usuario(_id, TipoUsuario::ESTUDIANTE, nombreCompleto,
-												_nickname, _contrasena) 
+			_nickname, _contrasena)
 	{
 		cursosEs = Stack<Inscripcion*>();
 		especializacionesEs = Stack<Inscripcion*>();
