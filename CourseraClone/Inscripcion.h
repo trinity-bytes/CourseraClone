@@ -113,6 +113,18 @@ public:
 	int getIdEstudiante() {
 		return idEstudiante;
 	}
+
+    // Funcion critica
+    void actualizaPagoEnDisco(int posicion, bool estado) {
+        fstream archivo("Resources/Data/inscripciones.dat", ios::binary | ios::in | ios::out);
+        if (!archivo) throw runtime_error("Error en el archivo");
+        archivo.seekp(posicion * sizeof(InscripcionBinaria) + offsetof(InscripcionBinaria, pagado),
+            ios::beg);
+        archivo.write(reinterpret_cast<char*>(&estado), sizeof(estado));
+    }
+
+    bool estaPagada() const { return pagado; }
+    void marcarComoPagada() { pagado = true; }
 	int getIdActividad() {
 		return actividad->getId();
 	}
