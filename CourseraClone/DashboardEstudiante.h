@@ -27,7 +27,7 @@ private:
 
     // Elementos por sección
     static const int MAX_ELEMENTOS_HEADER = 2; // Ver mi perfil, Cerrar sesión
-    static const int MAX_ELEMENTOS_MENU = 2; // Explorar cursos, Gestionar inscripciones
+    static const int MAX_ELEMENTOS_MENU = 1; //2 // Explorar cursos, Gestionar inscripciones
     static const int MAX_ELEMENTOS_CURSOS = 4; // 3 cursos + "Ver todos"
     static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 4; // 3 especializaciones + "Ver todas"
 
@@ -37,7 +37,7 @@ private:
 
     // Coordenadas para dibujar
     COORD coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { {84, 3}, {99, 3} }; // Perfil, Cerrar sesión
-    COORD coordsElementosMenu[MAX_ELEMENTOS_MENU] = { {9, 10}, {47, 10} }; // Explorar, Gestionar
+    COORD coordsElementosMenu[MAX_ELEMENTOS_MENU] = { 9,10 /*, {47, 10}*/}; // Explorar, Gestionar
 
     // Coordenadas para cursos
     COORD coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
