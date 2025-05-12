@@ -61,7 +61,7 @@ private:
     vector<ElementoMenu> especializacionesInscritas;
 
     // Ruta del archivo de inscripciones
-    const string RUTA_INSCRIPCIONES = ".\\Resources\\Data\\inscripciones.bin";
+    const string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
 
     void cargarDatos(GestionadorCursos* gestion) {
         cargarInscripciones(gestion);
@@ -90,7 +90,7 @@ private:
 
         ifstream archivo(RUTA_INSCRIPCIONES, ios::binary);
         if (!archivo.is_open()) {
-            return;
+            throw runtime_error("No abrio archivo");
         }
 
         // Leer todas las inscripciones
@@ -99,7 +99,7 @@ private:
 
             // Filtrar por el ID del estudiante actual
             if (inscripcion.idEstudiante == idEstudiante) {
-                throw runtime_error("paso");
+                
                 // Determinar si es curso o especialización
                 if (inscripcion.tipoActividad == 1) { // Curso
                     // Buscar el curso en el gestionador
