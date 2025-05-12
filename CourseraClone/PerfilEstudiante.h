@@ -47,7 +47,7 @@ private:
         gotoXY(34, 20);
         cout << nombreEstudiante;
 
-        gotoXY(30 24);
+        gotoXY(30, 24);
         cout << emailEstudiante;
 
         // Renderizar botones
