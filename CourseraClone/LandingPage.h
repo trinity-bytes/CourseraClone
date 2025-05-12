@@ -122,7 +122,7 @@ private:
 
         gotoXY(coordsElementosCabecera[indice].X, coordsElementosCabecera[indice].Y);
 
-        if (seleccionado) SetConsoleColor(1, 4, true, true);
+        if (seleccionado) SetConsoleColor(15, 4, true, true);
         else SetConsoleColor(15, 13, false, true);
 
         cout << ELEMENTOS_CABECERA[indice];
@@ -160,12 +160,12 @@ private:
         gotoXY(coordTitulo.X, coordTitulo.Y);
 
         if (seleccionado) SetConsoleColor(1, 13);
-        else SetConsoleColor(15, 1);
+        else SetConsoleColor(13, 6);
 
 		string tituloFormateado = truncarTitulo(elemento.titulo, MAX_ANCHO_CARACTERES_CUADRO);
 
         cout << tituloFormateado;
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
 
         string descFormateada = formatearDescripcion(
             elemento.descripcion,
@@ -195,6 +195,23 @@ private:
     }
 
     void dibujarInterfazCompleta() {
+
+        // Draw header background
+        for (int y = 2; y < 6; y++) {
+            for (int x = 4; x < ANCHO_CONSOLA - 4; x++) {
+                gotoXY(x, y);
+                SetConsoleColor(15, 13);
+                cout << " ";
+            }
+        }
+
+        // Draw app name/logo
+        SetConsoleColor(12, 13, true, true); // Yellow on dark blue
+        gotoXY(7, 3);    cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+        gotoXY(7, 4);    cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+        // Draw "CLONE" text
+        gotoXY(39, 3);   cout << "│  C L O N E";
+
         // Cabecera
         for (int i = 0; i < MAX_ELEMENTOS_CABECERA; ++i) {
             actualizarElementoCabecera(i, seccionActual == SECCION_CABECERA && elementoActual == i);

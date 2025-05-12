@@ -48,6 +48,8 @@ inline void UI_LandingPage()
    ║      └──────────────────────────────┘  └──────────────────────────────┘  └──────────────────────────────┘      ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar y ESC para SALIR DEL PROGRAMA
 )";
 
 	cout << ui;
@@ -91,7 +93,7 @@ inline void UI_Login()
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
     Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
-    Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior
+    Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
 )";
 
 	cout << ui;
@@ -134,6 +136,8 @@ inline void UI_Signup()
    ║                                                                                                                ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
 )";
 
 	cout << ui;
@@ -176,6 +180,8 @@ inline void UI_StudentDashboard()
    ║      └───────────────────────────┘  └───────────────────────────┘  └───────────────────────────┘               ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
     cout << ui;
@@ -218,6 +224,8 @@ inline void UI_OrganizationDashboard()
    ║      └───────────────────────────┘  └───────────────────────────┘  └───────────────────────────┘               ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
     cout << ui;
@@ -260,6 +268,8 @@ inline void UI_UserProfile()
    ║                                                                                                                ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (IZQUIERDA, DERECHA) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
     cout << ui;
@@ -302,6 +312,7 @@ inline void UI_OrganizationProfile()
    ║                                                                                                                ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
     cout << ui;
@@ -345,6 +356,8 @@ inline void UI_UserUpdateData()
    ║                                                                                                                ║
    ║                                                                                                                ║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
 )";
 
     cout << ui;
@@ -387,6 +400,8 @@ inline void UI_VistaEspecialidad()
    ║\_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ ║
    ║/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Pulsa I para inscribirte en una especialidad.
+    Pulsa ESC para regresar al menu anterior.
 )";
 
     cout << ui;
@@ -429,6 +444,8 @@ inline void UI_VistaCurso()
    ║ \/__\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/ _\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/ ║
    ║ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\_║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Pulsa I para inscribirte en un curso.
+    Pulsa ESC para regresar al menu anterior.
 )";
 
     cout << ui;
@@ -471,6 +488,8 @@ inline void UI_ExplorarCursosAndEspecialidades()
    ║ \/__\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/ _\/_/  \_\/__\/_/  \_\/__\/_/  \_\/__\/_/ ║
    ║ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\__/\ \__/ /\_║
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
+    Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
 )";
 
     cout << ui;

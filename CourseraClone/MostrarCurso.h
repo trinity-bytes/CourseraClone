@@ -18,13 +18,13 @@ private:
     // Datos del curso
     int idCurso;
     Curso* curso;
-    GestionadorCursos* gestionadorCursos; // Añadir
+    GestionadorCursos* gestionadorCursos; // AÃ±adir
     Estudiante* estudiante;
     vector<Clase> clases;
 
     TipoUsuario tipoUsuario;
 
-    // Estado de navegación
+    // Estado de navegaciÃ³n
     int claseSeleccionada;
     bool primeraRenderizacion;
     AccionPantalla pantallaAnterior;
@@ -44,7 +44,7 @@ private:
     const int LONGITUD_TEXTO_MODULO = 40;
 	const int LONGITUD_TITULO_CURSO = 30;
 
-    // Método para truncar títulos largos
+    // MÃ©todo para truncar tÃ­tulos largos
     string truncarTitulo(const string& titulo, int maxLongitud) {
         if (titulo.length() <= maxLongitud) {
             return titulo;
@@ -100,7 +100,7 @@ private:
         return lineas;
     }
 
-    // Método para formatear descripción
+    // MÃ©todo para formatear descripciÃ³n
     string formatearDescripcion(const string& texto, int anchoMax, int altoMax) {
         string resultado;
         string textoRestante = texto;
@@ -141,14 +141,14 @@ private:
     }
 
     void dibujarInterfazCompleta() {
+        gotoXY(50, 3);
         system("cls");
         UI_VistaCurso();
 
-        // Mostrar título del curso
+        // Mostrar tÃ­tulo del curso
         gotoXY(COL_TITULO_CURSO, FILA_TITULO_CURSO);
-        SetConsoleColor(15, 1);
         const int INDENTACION_TITULO = COL_TITULO_CURSO + 10;
-		vector<string> tituloCurso = dividirTituloEnLineas(curso->getTitulo(), LONGITUD_TITULO_CURSO);
+        vector<string> tituloCurso = dividirTituloEnLineas(curso->getTitulo(), LONGITUD_TITULO_CURSO);
         cout << "Curso de: ";
         if (!tituloCurso.empty()) {
             cout << tituloCurso[0];
@@ -160,13 +160,13 @@ private:
             }
         }
 
-        // Mostrar descripción del curso
+        // Mostrar descripciÃ³n del curso
         gotoXY(COL_DESC_CURSO, FILA_DESC_CURSO);
-        SetConsoleColor(15, 1);
+
         cout << "Descripcion del contenido del curso:";
         gotoXY(COL_DESC_CURSO, FILA_DESC_CURSO + 2);
 
-        // Formatear y mostrar descripción
+        // Formatear y mostrar descripciÃ³n
         string descripcionFormateada = formatearDescripcion(curso->getDescripcion(), 40, 5);
         istringstream descStream(descripcionFormateada);
         string linea;
@@ -184,39 +184,40 @@ private:
 
         // Muestra la opcion de inscripcion solo a estudiantes
         if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
-            gotoXY(5, 30);
-            SetConsoleColor(15, 1);
+            gotoXY(50, 3);
+            SetConsoleColor(0, 13);
             cout << "Presiona 'I' para inscribirte a este curso";
         }
         else if (tipoUsuario == TipoUsuario::EMPRESA) {
-            gotoXY(5, 30);
-            SetConsoleColor(8, 1); // Color gris para indicar deshabilitado
+            gotoXY(50, 3);
+            SetConsoleColor(8, 13); // Color gris para indicar deshabilitado
             cout << "Solo estudiantes pueden inscribirse a cursos";
         }
+        SetConsoleColor(15, 0);
     }
 
     void dibujarClase(int indice, bool seleccionada) {
         if (indice < 0 || indice >= clases.size()) return;
 
-        // Posición para el número del módulo
+        // PosiciÃ³n para el nÃºmero del mÃ³dulo
         gotoXY(COL_MODULOS, FILA_MODULOS_BASE + indice * ESPACIO_ENTRE_MODULOS);
 
         if (seleccionada)
-            SetConsoleColor(1, 13); // Color para selección
+            SetConsoleColor(1, 13); // Color para selecciÃ³n
         else
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 0); // Color normal
 
-        // Mostrar número de clase
+        // Mostrar nÃºmero de clase
         cout << indice + 1;
 
-        // Posición para el título de la clase
+        // PosiciÃ³n para el tÃ­tulo de la clase
         gotoXY(COL_MODULOS + 5, FILA_MODULOS_BASE + indice * ESPACIO_ENTRE_MODULOS);
 
-        // Truncar y mostrar título
+        // Truncar y mostrar tÃ­tulo
         string tituloClase = truncarTitulo(clases[indice].getTitulo(), LONGITUD_TEXTO_MODULO);
         cout << tituloClase;
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
 public:
@@ -232,7 +233,7 @@ public:
         pantallaAnterior(_pantallaAnterior),
         tipoUsuario(_tipoUsuario)
     {
-        // Si no se proporcionó un curso, intentar cargarlo por ID
+        // Si no se proporcionÃ³ un curso, intentar cargarlo por ID
         if (curso == nullptr && gestionadorCursos != nullptr) {
             curso = gestionadorCursos->obtenerCursoPorId(idCurso);
         }
@@ -240,7 +241,7 @@ public:
             // Si no hay gestionador, crear un curso de ejemplo
             curso = new Curso(idCurso, 1, "Empresa",
                 "Curso " + to_string(idCurso),
-                "Esta es la descripción detallada del curso. Incluye información sobre lo que aprenderán los estudiantes, los requisitos previos y los resultados esperados al finalizar el curso.",
+                "Esta es la descripciÃ³n detallada del curso. Incluye informaciÃ³n sobre lo que aprenderÃ¡n los estudiantes, los requisitos previos y los resultados esperados al finalizar el curso.",
                 "Instructor", 5);
         }
 
@@ -314,11 +315,11 @@ public:
                 }
 
                 if (estudiante != nullptr) {
-                    if (estudiante->inscribirseACurso(curso)) { // Usar el método de estudiante
-                        // Mostrar mensaje de éxito
+                    if (estudiante->inscribirseACurso(curso)) { // Usar el mÃ©todo de estudiante
+                        // Mostrar mensaje de Ã©xito
                         gotoXY(5, 25);
                         SetConsoleColor(2, 0); // Verde sobre negro
-                        cout << "¡Inscripción exitosa!";
+                        cout << "InscripciÃ³n exitosa!";
                         SetConsoleColor(15, 0); // Restaurar color
                         _getch(); // Esperar una tecla
 
@@ -329,7 +330,7 @@ public:
                         // Mostrar mensaje de error
                         gotoXY(5, 25);
                         SetConsoleColor(4, 0); // Rojo sobre negro
-                        cout << "Error en la inscripción. Es posible que ya estés inscrito.";
+                        cout << "Error en la inscripciÃ³n. Es posible que ya estÃ©s inscrito.";
                         SetConsoleColor(15, 0); // Restaurar color
                         _getch(); // Esperar una tecla
 
@@ -338,10 +339,10 @@ public:
                     }
                 }
                 else {
-                    // El usuario no ha iniciado sesión, mostrar mensaje
+                    // El usuario no ha iniciado sesiÃ³n, mostrar mensaje
                     gotoXY(5, 25);
                     SetConsoleColor(4, 0); // Rojo sobre negro
-                    cout << "Necesitas iniciar sesión para inscribirte.";
+                    cout << "Necesitas iniciar sesiÃ³n para inscribirte.";
                     SetConsoleColor(15, 0); // Restaurar color
                     _getch(); // Esperar una tecla
 
@@ -351,7 +352,7 @@ public:
                 }
                 break;
             case 13: // Enter
-                // Aquí se implementaría la lógica para mostrar el contenido de la clase seleccionada
+                // AquÃ­ se implementarÃ­a la lÃ³gica para mostrar el contenido de la clase seleccionada
                 // Por ahora, simplemente volvemos a la pantalla anterior
                 //res.accion = pantallaAnterior;
                 //return res;

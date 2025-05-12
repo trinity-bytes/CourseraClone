@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Pantalla.h"
 #include "ExtendedFunctions.h"
@@ -67,11 +67,11 @@ private:
 
         // Dibujar título
         gotoXY(COL_TITULO, FILA_TITULO);
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
         cout << "EXPLORAR CURSOS Y ESPECIALIDADES";
 
         // Dibujar secciones
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
         renderizarCursos();
         renderizarEspecialidades();
 
@@ -86,9 +86,9 @@ private:
 
         // Título de sección cursos
         gotoXY(COL_TITULO_CURSOS, FILA_TITULO_CURSOS);
-        SetConsoleColor(14, 1);  // Amarillo sobre azul
+        SetConsoleColor(14, 0);  // Amarillo sobre negro
         cout << "CURSOS DISPONIBLES";
-        SetConsoleColor(15, 1);  // Blanco sobre azul
+        SetConsoleColor(15, 0);  // Blanco sobre negro
 
         // Dibujar lista de cursos
         int totalCursos = cursos.getTamano();
@@ -130,11 +130,11 @@ private:
 
         if (indiceInicioCursos + cursosPorPagina < totalCursos) {
             gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS + (cursosAMostrar * 2) - 2);
-            SetConsoleColor(15, 1);
+            SetConsoleColor(15, 0);
             cout << "Mas abajo (Flecha ABAJO)";
         }
 
-        SetConsoleColor(15, 1); // Restaurar color normal
+        SetConsoleColor(15, 0); // Restaurar color normal
         necesitaRerenderizarCursos = false;
     }
 
@@ -157,9 +157,9 @@ private:
 
         // Título de sección especialidades
         gotoXY(COL_TITULO_ESPECIALIDADES, FILA_TITULO_ESPECIALIDADES);
-        SetConsoleColor(14, 1);  // Amarillo sobre azul
+        SetConsoleColor(14, 0);  // Amarillo sobre negro
         cout << "ESPECIALIZACIONES DISPONIBLES";
-        SetConsoleColor(15, 1);  // Blanco sobre azul
+        SetConsoleColor(15, 0);  // Blanco sobre negro
 
         // Dibujar lista de especialidades
         int totalEspecialidades = especialidades.getTamano();
@@ -195,17 +195,17 @@ private:
 
         if (indiceInicioEspecialidades > 0) {
             gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES);
-            SetConsoleColor(15, 1);
+            SetConsoleColor(15, 0);
             cout << "Mas arriba (Flecha ARRIBA)";
         }
 
         if (indiceInicioEspecialidades + especialidadesPorPagina < totalEspecialidades) {
             gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES + (especialidadesAMostrar * 2) - 2);
-            SetConsoleColor(15, 1);
-            cout << "Ms abajo Flecha ABAJO)";
+            SetConsoleColor(15, 0);
+            cout << "Mas abajo (Flecha ABAJO)";
         }
 
-        SetConsoleColor(15, 1); // Restaurar color normal
+        SetConsoleColor(15, 0); // Restaurar color normal
         necesitaRerenderizarEspecialidades = false;
     }
 
@@ -304,7 +304,7 @@ private:
             // Redibujar con color normal
             Curso* curso = cursos.get(indiceInicioCursos + indice);
             gotoXY(x, y);
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 0); // Color normal
             string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
@@ -327,7 +327,7 @@ private:
             // Redibujar con color normal
             Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice);
             gotoXY(x, y);
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 0); // Color normal
             string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
@@ -444,14 +444,11 @@ private:
                 indiceInicioEspecialidades--;
                 renderizarEspecialidades(); // Ahora limpia correctamente
             }
-            else if (seccionActual > 0) {
-                seccionActual--;
-                if (seccionActual == SECCION_CURSOS) {
-                    elementoActual = min(cursosPorPagina, cursos.getTamano() - indiceInicioCursos) - 1;
-                }
-                else {
-                    elementoActual = 0; // Para header
-                }
+            else if (seccionActual == SECCION_ESPECIALIDADES) {
+                // Cambiar de sección especialidades a cursos
+                seccionActual = SECCION_CURSOS;
+                // Seleccionar el último elemento de la lista de cursos
+                elementoActual = min(cursosPorPagina, cursos.getTamano() - indiceInicioCursos) - 1;
             }
             break;
 

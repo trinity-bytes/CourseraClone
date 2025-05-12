@@ -36,13 +36,22 @@ private:
 
     void renderizarCampo(const string& etiqueta, const string& valor, int indice, bool seleccionado) {
         gotoXY(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
-        if (seleccionado) mostrarCursor(true);
-        else mostrarCursor(false);
-        SetConsoleColor(15, 1);
+
+        if (seleccionado) {
+            SetConsoleColor(15, 4, true, true); 
+            mostrarCursor(true);
+        }
+        else {
+            SetConsoleColor(15, 0, false, false); 
+            mostrarCursor(false);
+        }
+
         if (indice == 2 || indice == 3) // Contraseña
             cout << string(valor.length(), '*');
         else
             cout << valor;
+
+		SetConsoleColor(15, 0); // Restaurar color normal
     }
 
     void renderizarBoton(const string& texto, int indice, bool seleccionado) {
@@ -51,29 +60,46 @@ private:
         // Resaltar botones de tipo usuario basado en la selección actual o el tipo activo
         if (indice == 0 || indice == 1) {
             if (seleccionado || (indice == 0 && tipoUsuarioActual == 0) || (indice == 1 && tipoUsuarioActual == 1)) {
-                SetConsoleColor(1, 13);
+                SetConsoleColor(15, 4, true, true);
             }
             else {
-                SetConsoleColor(15, 1);
+                SetConsoleColor(15, 13, false, true);
             }
         }
         else {
             if (seleccionado) {
-                SetConsoleColor(1, 13);
+                SetConsoleColor(15, 5, true, true);
             }
             else {
-                SetConsoleColor(15, 1);
+                SetConsoleColor(15, 5, false, false);
             }
         }
 
         //mostrarCursor(false);
         cout << texto;
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void dibujarInterfazCompleta() {
         system("cls");
         UI_Signup();
+
+        for (int i = 3; i <= 7; i++) {
+            gotoXY(3, i);
+            SetConsoleColor(1, 13, true);
+            cout << string(114, ' ');
+        }
+
+        SetConsoleColor(12, 13, true, true);
+        gotoXY(42, 4);    cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+        gotoXY(42, 5);    cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+        gotoXY(42, 6);    cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
+
+        SetConsoleColor(12, 13, true, true);
+        gotoXY(71, 7);    cout << "C L O N E";
+
+        SetConsoleColor(15, 0);
+
         for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
             string valor = (i == 2) ? string(password.length(), '*') : (i == 3) ? string(confirmarPassword.length(), '*') : (i == 0) ? nombre : email;
             renderizarCampo(etiquetas[i], (i == 0) ? nombre : (i == 1) ? email : (i == 2) ? password : confirmarPassword, i, campoActual == i);
@@ -88,8 +114,8 @@ private:
             cout << mensajeError;
             SetConsoleColor(15, 1);
         }
-        //gotoxy(11, 15);
-        SetConsoleColor(15, 1);
+
+        SetConsoleColor(15, 0);
     }
 
     void actualizarSeleccion() {
@@ -106,6 +132,7 @@ private:
         }
 
         campoAnterior = campoActual;
+        SetConsoleColor(15, 0);
     }
 
     bool validarCampos() {

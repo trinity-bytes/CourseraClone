@@ -23,13 +23,13 @@ private:
     static const int SECCION_ESPECIALIZACIONES = 3;
     static const int TOTAL_SECCIONES = 4;
 
-    // Elementos por sección
-    static const int MAX_ELEMENTOS_HEADER = 2; // Ver mi perfil, Cerrar sesión
+    // Elementos por secciï¿½n
+    static const int MAX_ELEMENTOS_HEADER = 2; // Ver mi perfil, Cerrar sesiï¿½n
     static const int MAX_ELEMENTOS_MENU = 2; // Explorar cursos, Gestionar cursos
     static const int MAX_ELEMENTOS_CURSOS = 4; // 3 cursos + "Ver todos"
     static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 4; // 3 especializaciones + "Ver todas"
 
-    // Estadísticas de la organización
+    // Estadï¿½sticas de la organizaciï¿½n
     int cursosPublicados = 35;
     int especialidadesPublicadas = 10;
     int estudiantesInscritos = 342;
@@ -39,9 +39,9 @@ private:
     int idOrganizacion;
 
     // Coordenadas para dibujar
-    COORD coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { {84, 3}, {99, 3} }; // Perfil, Cerrar sesión
+    COORD coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { {84, 3}, {99, 3} }; // Perfil, Cerrar sesiï¿½n
     COORD coordsElementosMenu[MAX_ELEMENTOS_MENU] = { {9, 10}, {47, 10} }; // Explorar, Gestionar
-    COORD coordsEstadisticas[3] = { {11, 7}, {40, 7}, {76, 7} }; // Estadísticas
+    COORD coordsEstadisticas[3] = { {11, 7}, {40, 7}, {76, 7} }; // Estadï¿½sticas
 
     // Coordenadas para cursos
     COORD coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
@@ -65,16 +65,16 @@ private:
     vector<ElementoMenu> especializaciones;
 
     void cargarDatos() {
-        // Cargar cursos y especializaciones de la organización
+        // Cargar cursos y especializaciones de la organizaciï¿½n
         if (cursos.empty()) {
             for (int i = 0; i < 3; i++) {
-                cursos.emplace_back("Curso " + to_string(i + 1), "Descripción del curso " + to_string(i + 1));
+                cursos.emplace_back("Curso " + to_string(i + 1), "Descripciï¿½n del curso " + to_string(i + 1));
             }
         }
 
         if (especializaciones.empty()) {
             for (int i = 0; i < 3; i++) {
-                especializaciones.emplace_back("Especialización " + to_string(i + 1), "Descripción de la especialización " + to_string(i + 1));
+                especializaciones.emplace_back("Especializaciï¿½n " + to_string(i + 1), "Descripciï¿½n de la especializaciï¿½n " + to_string(i + 1));
             }
         }
     }
@@ -92,29 +92,29 @@ private:
     }
 
     void renderizarHeader() {
-        // Mostrar nombre de la organización
+        // Mostrar nombre de la organizaciï¿½n
         gotoXY(53, 3);
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
         cout << nombreOrganizacion;
 
         // Botones del header
         for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
             gotoXY(coordsElementosHeader[i].X, coordsElementosHeader[i].Y);
             if (seccionActual == SECCION_HEADER && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                SetConsoleColor(1, 13); // Color para selecciï¿½n
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 0); // Color normal
             }
             cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
         }
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void renderizarEstadisticas() {
         gotoXY(coordsEstadisticas[0].X, coordsEstadisticas[0].Y);
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
         cout << "Cursos publicados: " << cursosPublicados;
 
         gotoXY(coordsEstadisticas[1].X, coordsEstadisticas[1].Y);
@@ -128,15 +128,15 @@ private:
         for (int i = 0; i < MAX_ELEMENTOS_MENU; ++i) {
             gotoXY(coordsElementosMenu[i].X, coordsElementosMenu[i].Y);
             if (seccionActual == SECCION_MENU_SUPERIOR && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                SetConsoleColor(1, 13); // Color para selecciï¿½n
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 0); // Color normal
             }
             cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS CURSOS ");
         }
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void renderizarCursos() {
@@ -145,25 +145,25 @@ private:
         for (int i = 0; i < numCursos; ++i) {
             gotoXY(coordsTituloCursos[i].X, coordsTituloCursos[i].Y);
             if (seccionActual == SECCION_CURSOS && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                SetConsoleColor(1, 13); // Color para selecciï¿½n
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 0); // Color normal
             }
             cout << cursos[i].titulo;
         }
 
-        // Botón "Ver todos"
+        // Botï¿½n "Ver todos"
         gotoXY(coordsTituloCursos[3].X, coordsTituloCursos[3].Y);
         if (seccionActual == SECCION_CURSOS && elementoActual == 3) {
-            SetConsoleColor(1, 13); // Color para selección
+            SetConsoleColor(1, 13); // Color para selecciï¿½n
         }
         else {
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 0); // Color normal
         }
         cout << " Ver todos ";
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void renderizarEspecializaciones() {
@@ -172,25 +172,25 @@ private:
         for (int i = 0; i < numEspecializaciones; ++i) {
             gotoXY(coordsTituloEspecializaciones[i].X, coordsTituloEspecializaciones[i].Y);
             if (seccionActual == SECCION_ESPECIALIZACIONES && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                SetConsoleColor(1, 13); // Color para selecciï¿½n
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 0); // Color normal
             }
             cout << especializaciones[i].titulo;
         }
 
-        // Botón "Ver todas"
+        // Botï¿½n "Ver todas"
         gotoXY(coordsTituloEspecializaciones[3].X, coordsTituloEspecializaciones[3].Y);
         if (seccionActual == SECCION_ESPECIALIZACIONES && elementoActual == 3) {
-            SetConsoleColor(1, 13); // Color para selección
+            SetConsoleColor(1, 13); // Color para selecciï¿½n
         }
         else {
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 0); // Color normal
         }
         cout << " Ver todas ";
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void actualizarSeleccion() {
@@ -241,7 +241,7 @@ private:
     }
 
 public:
-    DashboardOrganizacion(int _idOrganizacion = 1, string _nombreOrganizacion = "Organización de Prueba")
+    DashboardOrganizacion(int _idOrganizacion = 1, string _nombreOrganizacion = "Organizaciï¿½n de Prueba")
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idOrganizacion(_idOrganizacion),
@@ -291,7 +291,7 @@ public:
                 }
                 break;
             case 13: // Enter
-                // Procesar la acción según la sección y elemento actual
+                // Procesar la acciï¿½n segï¿½n la secciï¿½n y elemento actual
                 if (seccionActual == SECCION_HEADER) {
                     if (elementoActual == 0) {
                         // Ver perfil
@@ -300,7 +300,7 @@ public:
                         return res;
                     }
                     else if (elementoActual == 1) {
-                        // Cerrar sesión
+                        // Cerrar sesiï¿½n
                         ResultadoPantalla res;
                         res.accion = AccionPantalla::IR_A_LANDING_PAGE;
                         return res;
@@ -311,7 +311,7 @@ public:
                         // Explorar cursos y especialidades
                         ResultadoPantalla res;
                         res.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
-                        res.tipoUsuario = TipoUsuario::EMPRESA; // Indicar que es una organización
+                        res.tipoUsuario = TipoUsuario::EMPRESA; // Indicar que es una organizaciï¿½n
                         return res;
                     }
                     // Aca se pueden agregar mas acciones

@@ -147,17 +147,17 @@ private:
 
     void dibujarInterfazCompleta() {
         system("cls");
-        UI_VistaEspecialidad(); // Asumimos que existe esta función en UI_Ascii.h
+        UI_VistaEspecialidad();
 
         // Mostrar título de la especialización
         gotoXY(COL_TITULO_ESPECIALIZACION, FILA_TITULO_ESPECIALIZACION);
-        SetConsoleColor(15, 1);
-        cout << especializacion->getTitulo();
         
+        cout << especializacion->getTitulo();
+
 
         // Mostrar descripción de la especialización
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION);
-        SetConsoleColor(15, 1);
+        
         cout << "Descripcion:";
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION + 2);
 
@@ -170,6 +170,7 @@ private:
             gotoXY(COL_DESC_ESPECIALIZACION, fila++);
             cout << linea;
         }
+        SetConsoleColor(15, 0);
 
         // Mostrar los cursos en la cuadrícula
         for (int i = 0; i < FILAS_CUADRICULA; i++) {
@@ -183,22 +184,23 @@ private:
 
         // Mostrar opción de inscripción según el tipo de usuario
         if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
-            gotoXY(5, 30);
-            SetConsoleColor(15, 1);
+            gotoXY(50, 3);
+            SetConsoleColor(0, 15);
             cout << "Presiona 'I' para inscribirte a esta especializacion";
         }
         else if (tipoUsuario == TipoUsuario::EMPRESA) {
-            gotoXY(5, 30);
-            SetConsoleColor(8, 1); // Color gris para indicar deshabilitado
+            gotoXY(50, 3);
+            SetConsoleColor(8, 13); // Color gris para indicar deshabilitado
             cout << "Solo estudiantes pueden inscribirse a especializaciones";
         }
+        SetConsoleColor(15, 0);
     }
 
     void dibujarCursoCelda(int fila, int columna, Curso* curso) {
         int x = COL_INICIO_CUADRICULA + columna * (ANCHO_CELDA + ESPACIO_ENTRE_CELDAS);
         int y = FILA_INICIO_CUADRICULA + fila * (ALTO_CELDA + ESPACIO_ENTRE_CELDAS);
 
-		SetConsoleColor(15, 1); // Color normal
+        SetConsoleColor(15, 0); // Color normal
 
         // Dibujar título del curso
         gotoXY(x + 2, y + 1);
@@ -219,7 +221,7 @@ private:
         gotoXY(x + 2, y + ALTO_CELDA - 2);
         cout << "Instructor: " << curso->getInstructor();
 
-        SetConsoleColor(15, 1); // Restaurar color normal
+        SetConsoleColor(15, 0); // Restaurar color normal
     }
 
 public:

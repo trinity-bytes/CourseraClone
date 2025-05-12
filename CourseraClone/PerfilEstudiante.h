@@ -41,6 +41,7 @@ private:
         UI_UserProfile();
 
         // Mostrar datos del perfil
+        SetConsoleColor(15, 0);
         gotoXY(26, 16);
         cout << idEstudiante;
 
@@ -49,6 +50,7 @@ private:
 
         gotoXY(30, 24);
         cout << emailEstudiante;
+        SetConsoleColor(15, 0);
 
         // Renderizar botones
         for (int i = 0; i < TOTAL_BOTONES; i++) {
@@ -60,10 +62,10 @@ private:
         gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
 
         if (seleccionado) {
-            SetConsoleColor(1, 13); // Color para selección
+            SetConsoleColor(1, 13); // Color para selecciÃ³n
         }
         else {
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 0); // Color normal
         }
 
         switch (indice) {
@@ -78,7 +80,7 @@ private:
             break;
         }
 
-        SetConsoleColor(15, 1); // Restaurar color
+        SetConsoleColor(15, 0); // Restaurar color
     }
 
     void actualizarSeleccion() {
@@ -132,7 +134,7 @@ public:
                 if (seccionActual == SECCION_BOTONES) {
                     switch (botonActual) {
                     case BOTON_CERTIFICADOS:
-                        // Para una futura implementación
+                        // Para una futura implementaciÃ³n
                         break;
                     case BOTON_BOLETAS:
                         // Ir a la pantalla de Ver Boletas

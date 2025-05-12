@@ -9,7 +9,7 @@
 class PerfilOrganizacion : public PantallaBase
 {
 private:
-    // Datos de la organización
+    // Datos de la organizaciÃ³n
     int idOrganizacion;
     string nombreOrganizacion;
     string correoOrganizacion;
@@ -25,10 +25,11 @@ private:
 
     void dibujarInterfazCompleta() {
         system("cls");
-        // Dibujar marco y título
+        // Dibujar marco y tÃ­tulo
         UI_OrganizationProfile();
 
-        // Datos de la organización
+        // Datos de la organizaciÃ³n
+        SetConsoleColor(15, 0);
         gotoXY(COL_ETIQUETA, FILA_ID);
         cout << "ID: " << idOrganizacion;
 
@@ -37,12 +38,13 @@ private:
 
         gotoXY(COL_ETIQUETA, FILA_CORREO);
         cout << "CORREO: " << correoOrganizacion << "@gmail.edu.com";
+        SetConsoleColor(15, 0);
 
-        // Botón de editar perfil
+        // BotÃ³n de editar perfil
         gotoXY(92, 12);
-        SetConsoleColor(1, 13);
+        SetConsoleColor(15, 0);
         cout << " EDITAR PERFIL ";
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
 public:

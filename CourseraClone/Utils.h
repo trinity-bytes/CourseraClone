@@ -14,7 +14,7 @@ using namespace std;
 // y otras partes del programa. Si necesitas cambiar el tamaño
 // de la consola, modifica estas constantes.
 const int ANCHO_CONSOLA = 120;
-const int ALTO_CONSOLA = 38;
+const int ALTO_CONSOLA = 37;
 
 // =====================================================
 // ESTRUCTURAS DE DATOS COMUNES

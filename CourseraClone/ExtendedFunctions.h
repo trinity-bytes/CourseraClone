@@ -117,7 +117,7 @@ inline void ConfigurarConsola()
 	SetConsoleCP(CP_UTF8);
 
 	ocultarCursor();
-	CambiarFuenteConsola(L"Cascadia Mono", { 0, 20 });
+	CambiarFuenteConsola(L"Cascadia Mono", { 0, 22 });
 
     // Establecer paleta de colores 
     setColorPalette(0, Palette::CREMA);            // Fondo general

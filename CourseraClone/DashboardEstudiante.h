@@ -123,6 +123,7 @@ private:
 
     void dibujarInterfazCompleta() 
     {
+        SetConsoleColor(15, 0);
         system("cls");
         UI_StudentDashboard();
         renderizarHeader();
@@ -136,6 +137,7 @@ private:
         gotoXY(52, 3);
         SetConsoleColor(15, 1);
         cout << nombreEstudiante;
+        SetConsoleColor(15, 0);
 
         // Botones del header
         for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
@@ -144,12 +146,12 @@ private:
                 SetConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 0); // Color normal
             }
             cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
         }
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void renderizarMenuSuperior() {
@@ -159,12 +161,12 @@ private:
                 SetConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 0); // Color normal
             }
             cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS INSCRIPCIONES ");
         }
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void renderizarCursos() 
@@ -177,7 +179,7 @@ private:
                 SetConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 0); // Color normal
             }
             cout << cursosInscritos[i].titulo;
         }
@@ -188,11 +190,11 @@ private:
             SetConsoleColor(1, 13); // Color para selección
         }
         else {
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 0); // Color normal
         }
         cout << " Ver todos ";
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void renderizarEspecializaciones() 
@@ -205,7 +207,7 @@ private:
                 SetConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                SetConsoleColor(15, 13); // Color normal
             }
             cout << especializacionesInscritas[i].titulo;
         }
@@ -216,11 +218,11 @@ private:
             SetConsoleColor(1, 13); // Color para selección
         }
         else {
-            SetConsoleColor(15, 1); // Color normal
+            SetConsoleColor(15, 13); // Color normal
         }
         cout << " Ver todas ";
 
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void actualizarSeleccion() {
@@ -283,7 +285,6 @@ public:
     ResultadoPantalla ejecutar() override {
         while (true) {
             if (primeraRenderizacion) {
-                system("cls");
                 dibujarInterfazCompleta();
                 primeraRenderizacion = false;
             }

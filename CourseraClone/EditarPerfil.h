@@ -48,7 +48,7 @@ private:
         {11, 20}, // Email (sin @gmail.com)
         {11, 25}, // Password
         {63, 25}, // Confirmar Password
-        {52, 29}  // Botón Guardar
+        {52, 29}  // BotÃ³n Guardar
     };
 
     // Referencias a los objetos de usuario
@@ -77,14 +77,14 @@ private:
             gotoXY(coordsCampos[CAMPO_GUARDAR].X - 200, coordsCampos[CAMPO_GUARDAR].Y + 40);
             SetConsoleColor(1, 4);
             cout << mensajeError;
-            SetConsoleColor(15, 1);
+            SetConsoleColor(15, 0);
         }
     }
 
     void renderizarCampo(int campo, const string& valor, bool seleccionado) {
         gotoXY(coordsCampos[campo].X, coordsCampos[campo].Y);
 
-        // Limpiar el área
+        // Limpiar el Ã¡rea
         if (campo == CAMPO_NOMBRE) {
             cout << string(60, ' ');
             gotoXY(coordsCampos[campo].X, coordsCampos[campo].Y);
@@ -95,12 +95,12 @@ private:
             mostrarCursor(true);
         }
         else {
-            SetConsoleColor(15, 1);
+            SetConsoleColor(15, 0);
             mostrarCursor(false);
         }
 
         cout << valor;
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void renderizarBotonGuardar(bool seleccionado) {
@@ -110,11 +110,11 @@ private:
             SetConsoleColor(1, 13);
         }
         else {
-            SetConsoleColor(15, 1);
+            SetConsoleColor(15, 0);
         }
 
         cout << "GUARDAR CAMBIOS";
-        SetConsoleColor(15, 1);
+        SetConsoleColor(15, 0);
     }
 
     void actualizarSeleccion() {
@@ -154,34 +154,34 @@ private:
     }
 
     bool validarCampos() {
-        // Validar que los campos no estén vacíos
+        // Validar que los campos no estÃ¡n vacÃ­os
         if (nombre.empty() || email.empty()) {
             error = true;
             mensajeError = "El nombre y el email son obligatorios";
             return false;
         }
 
-        // Validar que las contraseñas coincidan si se están modificando
+        // Validar que las contraseÃ±as coincidan si se estÃ¡n modificando
         if (!password.empty() && password != confirmarPassword) {
             error = true;
-            mensajeError = "Las contraseñas no coinciden";
+            mensajeError = "Las contraseÃ±as no coinciden";
             return false;
         }
 
-        // Validar longitud mínima de contraseña si se está modificando
+        // Validar longitud mÃ­nima de contraseÃ±a si se estÃ¡ modificando
         if (!password.empty() && password.length() < 6) {
             error = true;
-            mensajeError = "La contraseña debe tener al menos 6 caracteres";
+            mensajeError = "La contraseÃ±a debe tener al menos 6 caracteres";
             return false;
         }
 
-        // Validar que el email no esté ya en uso (excepto si es el mismo usuario)
+        // Validar que el email no estÃ¡ ya en uso (excepto si es el mismo usuario)
         if (email != emailOriginal) {
             Usuario temp;
             int index = temp.buscarIndexUsuario(email, tipoUsuario);
             if (index != -1 && index != idUsuario) {
                 error = true;
-                mensajeError = "Este email ya está en uso por otro usuario";
+                mensajeError = "Este email ya estÃ¡ en uso por otro usuario";
                 return false;
             }
         }
@@ -246,7 +246,7 @@ public:
             switch (tecla) {
             case 72: // Flecha arriba
                 if (campoActual > 0) {
-                    // Navegación especial entre campos
+                    // NavegaciÃ³n especial entre campos
                     if (campoActual == CAMPO_GUARDAR) {
                         campoActual = CAMPO_CONFIRMAR_PASSWORD;
                     }
@@ -261,7 +261,7 @@ public:
 
             case 80: // Flecha abajo
                 if (campoActual < TOTAL_CAMPOS - 1) {
-                    // Navegación especial entre campos
+                    // NavegaciÃ³n especial entre campos
                     if (campoActual == CAMPO_EMAIL) {
                         campoActual = CAMPO_PASSWORD;
                     }
