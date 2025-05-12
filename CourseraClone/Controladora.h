@@ -243,30 +243,23 @@ public:
 					int idCurso = resultado.idCursoSeleccionado;
 					Curso* cursoSeleccionado = gestionadorCursos->obtenerCursoPorId(idCurso);
 
-					if (cursoSeleccionado) {
-						// Pasar el gestionador de cursos y el estudiante actual
-						pantallaActual = make_unique<MostrarCurso>(
-							idCurso,
-							gestionadorCursos.get(),  // Pasar el gestionador
-							estudiante.get(),         // Pasar el estudiante actual (puede ser nullptr si no ha iniciado sesión)
-							cursoSeleccionado,
-							resultado.accionAnterior
-						);
-					}
-					else {
-						// Si no se encuentra el curso, volver a la pantalla anterior
-						pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-					}
+					Estudiante* estudiantePtr = (estudiante != nullptr) ? estudiante.get() : nullptr;
+
+					pantallaActual = make_unique<MostrarCurso>(
+						idCurso,
+						gestionadorCursos.get(),
+						estudiantePtr, 
+						cursoSeleccionado,
+						resultado.accionAnterior,
+						resultado.tipoUsuario
+					);
 					break;
 				}
 				case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
 				{
 					Especializacion* especializacion = gestionadorCursos->obtenerEspecializacionPorId(resultado.idCursoSeleccionado);
-					// Determinar si pasamos un estudiante o no
-					Estudiante* estudianteActual = nullptr;
-					if (estudiante != nullptr && resultado.tipoUsuario == TipoUsuario::ESTUDIANTE) {
-						estudianteActual = estudiante.get();
-					}
+
+					Estudiante* estudiantePtr = (estudiante != nullptr) ? estudiante.get() : nullptr;
 
 					pantallaActual = make_unique<MostrarEspecialidad>(
 						resultado.idCursoSeleccionado,
@@ -274,23 +267,29 @@ public:
 						especializacion,
 						resultado.accionAnterior,
 						resultado.tipoUsuario,
-						estudianteActual
+						estudiantePtr  
 					);
 					break;
 				}
 				// En el switch de acciones dentro de run()
 				case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
 				{
-					// Crear una instancia de la nueva pantalla de exploración
-					// Pasar el tipo de usuario (estudiante o empresa) según corresponda
-					TipoUsuario tipoUsuario = TipoUsuario::ESTUDIANTE; // Valor predeterminado
+					TipoUsuario tipoUsuario = TipoUsuario::NINGUNO;
 
-					// Determinar el tipo de usuario según desde dónde se está accediendo
-					tipoUsuario = resultado.tipoUsuario;
+					if (estudiante != nullptr) {
+						tipoUsuario = TipoUsuario::ESTUDIANTE;
+					}
+					else if (empresa != nullptr) {
+						tipoUsuario = TipoUsuario::EMPRESA;
+					}
+					else if (resultado.tipoUsuario != TipoUsuario::NINGUNO) {
+						tipoUsuario = resultado.tipoUsuario;
+					}
 
 					pantallaActual = make_unique<ExplorarCursosYEspecialidades>(
 						gestionadorCursos.get(),
-						tipoUsuario
+						tipoUsuario,
+						estudiante.get()  
 					);
 					break;
 				}

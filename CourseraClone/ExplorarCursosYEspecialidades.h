@@ -37,6 +37,7 @@ private:
     bool necesitaRerenderizarCursos;
     bool necesitaRerenderizarEspecialidades;
 
+    Estudiante* estudiante;
     TipoUsuario tipoUsuario;
 
     // Datos
@@ -139,6 +140,18 @@ private:
 
     void renderizarEspecialidades() 
     {
+        // Convertir LinkedList a vector
+        vector<Especializacion*> especialidadesVector;
+        for (int i = 0; i < especialidades.getTamano(); ++i) {
+            especialidadesVector.push_back(especialidades.get(i));
+        }
+
+        // Aplicar Bubble Sort al vector
+        bubbleSort(especialidadesVector);
+        for (Especializacion* especializacion :especialidadesVector){
+            especialidades.agregarAlFinal(especializacion); 
+        }
+
         limpiarAreaEspecialidades();
         limpiarAreaIndicadoresEspecialidades();
 
@@ -510,9 +523,12 @@ private:
     }
 
 public:
-    ExplorarCursosYEspecialidades(GestionadorCursos* _gestionadorCursos, TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE)
+    ExplorarCursosYEspecialidades(GestionadorCursos* _gestionadorCursos,
+        TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE,
+        Estudiante* _estudiante = nullptr)
         : gestionadorCursos(_gestionadorCursos),
         tipoUsuario(_tipoUsuario),
+        estudiante(_estudiante), 
         seccionActual(SECCION_CURSOS),
         elementoActual(0),
         indiceInicioCursos(0),
@@ -571,7 +587,7 @@ public:
                         resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
                             AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
                             AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
-                        resultado.tipoUsuario = tipoUsuario; // Pasar el tipo de usuario
+                        resultado.tipoUsuario = tipoUsuario;
                         return resultado;
                     }
                 }
@@ -584,7 +600,7 @@ public:
                         resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
                             AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
                             AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
-                        resultado.tipoUsuario = tipoUsuario; // Pasar el tipo de usuario
+                        resultado.tipoUsuario = tipoUsuario;
                         return resultado;
                     }
                 }

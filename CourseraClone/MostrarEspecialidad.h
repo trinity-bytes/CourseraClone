@@ -368,66 +368,77 @@ public:
             case 'I':
                 if (tipoUsuario == TipoUsuario::EMPRESA) {
                     gotoXY(5, 25);
-                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    SetConsoleColor(4, 0);
                     cout << "Las organizaciones no pueden inscribirse a especializaciones.";
-                    SetConsoleColor(15, 0); // Restaurar color
-                    _getch(); // Esperar una tecla
+                    SetConsoleColor(15, 0);
+                    _getch();
                     dibujarInterfazCompleta();
                     break;
                 }
 
-                if (estudiante != nullptr) {
-                    if (estudiante->inscribirseAEspecializacion(especializacion)) {
-                        // Mostrar mensaje de éxito
-                        gotoXY(5, 25);
-                        SetConsoleColor(2, 0); // Verde sobre negro
-                        cout << "¡Inscripcion exitosa a la especializacion!";
-                        SetConsoleColor(15, 0); // Restaurar color
-                        _getch(); // Esperar una tecla
-
-                        // Refrescar la pantalla
-                        dibujarInterfazCompleta();
-                    }
-                    else {
-                        // Mostrar mensaje de error
-                        gotoXY(5, 25);
-                        SetConsoleColor(4, 0); // Rojo sobre negro
-                        cout << "Error en la inscripcion. Es posible que ya estes inscrito.";
-                        SetConsoleColor(15, 0); // Restaurar color
-                        _getch(); // Esperar una tecla
-
-                        // Refrescar la pantalla
-                        dibujarInterfazCompleta();
-                    }
-                }
-                else {
+                if (estudiante == nullptr) {
                     // El usuario no ha iniciado sesión, mostrar mensaje
                     gotoXY(5, 25);
-                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    SetConsoleColor(4, 0);
                     cout << "Necesitas iniciar sesion para inscribirte.";
-                    SetConsoleColor(15, 0); // Restaurar color
-                    _getch(); // Esperar una tecla
+                    SetConsoleColor(15, 0);
+                    _getch();
 
                     // Redirigir a la pantalla de login
                     res.accion = AccionPantalla::IR_A_LOGIN;
+                    res.accionAnterior = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
+                    res.idCursoSeleccionado = idEspecializacion;
+                    res.tipoUsuario = TipoUsuario::ESTUDIANTE; // Important to set the user type
                     return res;
+                }
+
+                if (estudiante->inscribirseAEspecializacion(especializacion)) {
+                    // Mostrar mensaje de éxito
+                    gotoXY(5, 25);
+                    SetConsoleColor(2, 0);
+                    cout << "¡Inscripcion exitosa a la especializacion!";
+                    SetConsoleColor(15, 0);
+                    _getch();
+                    dibujarInterfazCompleta();
+                }
+                else {
+                    // Mostrar mensaje de error
+                    gotoXY(5, 25);
+                    SetConsoleColor(4, 0);
+                    cout << "Error en la inscripcion. Es posible que ya estes inscrito.";
+                    SetConsoleColor(15, 0);
+                    _getch();
+                    dibujarInterfazCompleta();
                 }
                 break;
             case 13: // Enter - seleccionar curso
             {
                 int indice = cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna;
-                if (indice < cursos.size()) {
-                    // Configurar resultado para ir a la pantalla MostrarCurso con el curso seleccionado
+                if (indice >= 0 && indice < cursos.size()) {
+                    // Always include these key pieces of information
                     res.idCursoSeleccionado = cursos[indice]->getId();
                     res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
                     res.accionAnterior = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
+                    res.tipoUsuario = tipoUsuario;
+                    // Also store the current specialization ID to return to it
+                    res.idCursoSeleccionado = idEspecializacion;
                     return res;
+                }
+                else {
+                    // Show an error if we're trying to access an invalid course
+                    gotoXY(5, 25);
+                    SetConsoleColor(4, 0);
+                    cout << "Curso no disponible";
+                    SetConsoleColor(15, 0);
+                    _getch();
+                    dibujarInterfazCompleta();
                 }
             }
             break;
 
             case 27: // ESC - volver a la pantalla anterior
                 res.accion = pantallaAnterior;
+                res.tipoUsuario = tipoUsuario; // Ensure user type persists
                 return res;
             }
         }

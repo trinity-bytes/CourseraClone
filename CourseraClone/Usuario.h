@@ -27,8 +27,9 @@ const string EMPRESA_INDEX_FILE = INDEX_DIR + "usuarios_empresa.dat";
 const string ESTUDIANTE_INDEX_FILE = INDEX_DIR + "usuarios_estudiante.dat";
 
 // Tipos de usuario (usamos enum para claridad)
-enum class TipoUsuario 
+enum class TipoUsuario
 {
+    NINGUNO = 0,
     ESTUDIANTE = 1,
     EMPRESA = 2
 };
