@@ -126,7 +126,7 @@ public:
 
     bool estaPagada() const { return pagado; }
 
-    void marcarComoPagada(LinkedList<Boleta*>* boletas) { 
+    void marcarComoPagada(LinkedList<Boleta*>& boletas) { 
         if (!estaPagada()) {
             pagado = true;
             actualizaPagoEnDisco(id, pagado);
