@@ -18,6 +18,10 @@ private:
     int idEspecializacion;
     Especializacion* especializacion;
 	GestionadorCursos* gestionadorCursos;
+
+    TipoUsuario tipoUsuario;
+    Estudiante* estudiante;
+
     vector<Curso*> cursos;
 
     // Estado de navegación
@@ -179,6 +183,18 @@ private:
                 }
             }
         }
+
+        // Mostrar opción de inscripción según el tipo de usuario
+        if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+            gotoXY(5, 30);
+            SetConsoleColor(15, 1);
+            cout << "Presiona 'I' para inscribirte a esta especializacion";
+        }
+        else if (tipoUsuario == TipoUsuario::EMPRESA) {
+            gotoXY(5, 30);
+            SetConsoleColor(8, 1); // Color gris para indicar deshabilitado
+            cout << "Solo estudiantes pueden inscribirse a especializaciones";
+        }
     }
 
     void dibujarCursoCelda(int fila, int columna, Curso* curso, bool seleccionado) {
@@ -216,14 +232,19 @@ private:
     }
 
 public:
-    MostrarEspecialidad::MostrarEspecialidad(int _idEspecializacion, GestionadorCursos* _gestionadorCursos, Especializacion* _especializacion, AccionPantalla _pantallaAnterior)
+    MostrarEspecialidad(int _idEspecializacion, GestionadorCursos* _gestionadorCursos,
+        Especializacion* _especializacion, AccionPantalla _pantallaAnterior,
+        TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE,
+        Estudiante* _estudiante = nullptr)
         : idEspecializacion(_idEspecializacion),
         gestionadorCursos(_gestionadorCursos),
         especializacion(_especializacion),
         cursoSeleccionadoFila(0),
         cursoSeleccionadoColumna(0),
         primeraRenderizacion(true),
-        pantallaAnterior(_pantallaAnterior)
+        pantallaAnterior(_pantallaAnterior),
+        tipoUsuario(_tipoUsuario),
+        estudiante(_estudiante)
     {
         // Si no se proporcionó una especialización, intentar cargarla por ID
         if (especializacion == nullptr) {
@@ -282,10 +303,7 @@ public:
         }
     }
 
-    ~MostrarEspecialidad() {
-        // Liberar memoria si es necesario
-        // Cuidado con los punteros que podrían ser utilizados en otras partes
-    }
+    ~MostrarEspecialidad() {}
 
     ResultadoPantalla ejecutar() override {
         ResultadoPantalla res;
@@ -346,7 +364,55 @@ public:
                     break;
                 }
                 break;
+            case 'i': // Inscribirse a la especialización
+            case 'I':
+                if (tipoUsuario == TipoUsuario::EMPRESA) {
+                    gotoXY(5, 25);
+                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    cout << "Las organizaciones no pueden inscribirse a especializaciones.";
+                    SetConsoleColor(15, 0); // Restaurar color
+                    _getch(); // Esperar una tecla
+                    dibujarInterfazCompleta();
+                    break;
+                }
 
+                if (estudiante != nullptr) {
+                    if (estudiante->inscribirseAEspecializacion(especializacion)) {
+                        // Mostrar mensaje de éxito
+                        gotoXY(5, 25);
+                        SetConsoleColor(2, 0); // Verde sobre negro
+                        cout << "¡Inscripcion exitosa a la especializacion!";
+                        SetConsoleColor(15, 0); // Restaurar color
+                        _getch(); // Esperar una tecla
+
+                        // Refrescar la pantalla
+                        dibujarInterfazCompleta();
+                    }
+                    else {
+                        // Mostrar mensaje de error
+                        gotoXY(5, 25);
+                        SetConsoleColor(4, 0); // Rojo sobre negro
+                        cout << "Error en la inscripcion. Es posible que ya estes inscrito.";
+                        SetConsoleColor(15, 0); // Restaurar color
+                        _getch(); // Esperar una tecla
+
+                        // Refrescar la pantalla
+                        dibujarInterfazCompleta();
+                    }
+                }
+                else {
+                    // El usuario no ha iniciado sesión, mostrar mensaje
+                    gotoXY(5, 25);
+                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    cout << "Necesitas iniciar sesion para inscribirte.";
+                    SetConsoleColor(15, 0); // Restaurar color
+                    _getch(); // Esperar una tecla
+
+                    // Redirigir a la pantalla de login
+                    res.accion = AccionPantalla::IR_A_LOGIN;
+                    return res;
+                }
+                break;
             case 13: // Enter - seleccionar curso
             {
                 int indice = cursoSeleccionadoFila * COLUMNAS_CUADRICULA + cursoSeleccionadoColumna;
