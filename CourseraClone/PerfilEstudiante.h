@@ -31,9 +31,9 @@ private:
 
     // Coordenadas para botones
     COORD coordsBotones[TOTAL_BOTONES] = {
-        {34, 11}, // MIS CERTIFICADOS
-        {62, 11}, // MIS BOLETAS
-        {85, 11}  // EDITAR PERFIL
+        {58, 12}, // MIS CERTIFICADOS
+        {78, 12}, // MIS BOLETAS
+        {93, 12}  // EDITAR PERFIL
     };
 
     void dibujarInterfazCompleta() {
@@ -41,13 +41,13 @@ private:
         UI_UserProfile();
 
         // Mostrar datos del perfil
-        gotoXY(32, 16);
+        gotoXY(26, 16);
         cout << idEstudiante;
 
-        gotoXY(32, 21);
+        gotoXY(34, 20);
         cout << nombreEstudiante;
 
-        gotoXY(32, 26);
+        gotoXY(30 24);
         cout << emailEstudiante;
 
         // Renderizar botones
