@@ -83,13 +83,13 @@ public:
 		
 		string rutaBin = "Resources/Data/inscripciones.dat";
 
-		throw runtime_error(to_string(offsets.size()));
+		//throw runtime_error(to_string(offsets.size()));
 		vector<int> offsetCursos, offsetEspecializaciones;
 		for (int off : offsets) {
 			// leerInscripcionEn usa off-1 internamente si es 1-based
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
-			throw runtime_error(to_string(bin.tipoActividad));
-			system("pause");
+			//throw runtime_error(to_string(bin.tipoActividad));
+			//system("pause");
 			if (bin.tipoActividad == 0)
 				offsetCursos.push_back(off);
 			else
@@ -153,7 +153,7 @@ public:
 			Inscripcion* ins = new Inscripcion(bin, act);
 			especializacionesEs.push(ins);
 		}
-		throw runtime_error(to_string(cursosEs.getTamano()));
+		//throw runtime_error(to_string(cursosEs.getTamano()));
 	}
 
 	void cargarDatos()
@@ -185,7 +185,7 @@ public:
 		archivo.close();
 	}
 
-	LinkedList<Boleta*> getBoletas() const {
+	const LinkedList<Boleta*>& getBoletas() const {
 		return boletas;
 	}
 
@@ -239,6 +239,7 @@ public:
 				std::cerr << "Error: Ya estás inscrito en este curso" << std::endl;
 				return false;
 			}
+
 		}
 
 		// Crear una nueva inscripción
@@ -251,6 +252,7 @@ public:
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
+		nuevaInscripcion->marcarComoPagada(boletas);
 
 		// Agregar a la pila de cursos inscritos
 		cursosEs.push(nuevaInscripcion);
@@ -281,6 +283,7 @@ public:
 
 		// Guardar en archivo
 		nuevaInscripcion->guardar();
+		nuevaInscripcion->marcarComoPagada(boletas);
 
 		// Agregar a la pila de especializaciones inscritas
 		especializacionesEs.push(nuevaInscripcion);

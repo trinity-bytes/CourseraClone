@@ -60,6 +60,9 @@ private:
     vector<ElementoMenu> cursosInscritos;
     vector<ElementoMenu> especializacionesInscritas;
 
+    int indCursoVisible = 0;        
+    int indEspVisible = 0;
+
     // Ruta del archivo de inscripciones
     const string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
 
@@ -182,6 +185,9 @@ private:
                 SetConsoleColor(15, 0); // Color normal
             }
             cout << cursosInscritos[i].titulo;
+            //gotoXY(coordsTituloCursos[i].X, coordsTituloCursos[i].Y + 1);
+            //string estado = (ins->estaPagada() ? " (PAGADO)" : " (PAGAR)");
+
         }
 
         // Botón "Ver todos"

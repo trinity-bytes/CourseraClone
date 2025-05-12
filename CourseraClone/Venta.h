@@ -8,10 +8,10 @@ class Venta {
 
 public:
 
-    bool pagarInscripcion(int idInscripcion, int idActividad, double precio, LinkedList<Boleta*>* boletas, int idEstudiante) {
+    bool pagarInscripcion(int idInscripcion, int idActividad, double precio, LinkedList<Boleta*>& boletas, int idEstudiante) {
         Boleta* b = new Boleta(idEstudiante, idActividad, precio);
         b->guardar();
-        boletas->agregarAlFinal(b);
+        boletas.agregarAlFinal(b);
         return true;
     }
 
