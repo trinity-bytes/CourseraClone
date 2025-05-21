@@ -181,6 +181,16 @@ public:
         {
     }
 
+    void clearState() {
+        email.clear();
+        password.clear();
+        tipoUsuarioActual = 0;
+        campoActual = 0;
+        campoAnterior = -1;
+        error = false;
+        mensajeError.clear();
+    }
+
     ResultadoPantalla ejecutar() override 
     {
         ResultadoPantalla res;
@@ -247,17 +257,21 @@ public:
                         LoginStatus status = usuarioTemp.login(usuarioTemp, tipoUsuario, password, index);
 
                         if (status == LoginStatus::SUCCESS) {
+                            //cout << "HI";
+                            //system("pause>0");
+
                             res.email = email;
                             res.password = password;
                             res.tipoUsuario = tipoUsuario;
 
                             if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+                                estudiante->reset();
                                 *estudiante = make_unique<Estudiante>(index, usuarioTemp.getNombreCompleto(), email, "" );
                                 estudiante->get()->cargarInscripciones(*cursos, *especialidades);
                                 empresa->reset();
-
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
 
+                                /*
                                 if (res.accionAnterior != AccionPantalla::NINGUNA) {
                                     res.accion = res.accionAnterior;
                                     res.idCursoSeleccionado = res.idCursoSeleccionado;
@@ -265,14 +279,17 @@ public:
                                 else {
                                     res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
                                 }
+                                */
                             }
                             else {
+                                empresa->reset();
                                 *empresa = make_unique<Empresa>(index, usuarioTemp.getNombreCompleto(), email, "");
                                 estudiante->reset();
                                 // throw runtime_error("ldfkjlajf");
                                 // Cuando se implemente el dashboard de organización:
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
                             }
+                            clearState();
                             return res;
                         }
                         else {

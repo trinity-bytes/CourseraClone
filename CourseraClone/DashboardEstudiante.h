@@ -66,7 +66,7 @@ private:
     // Ruta del archivo de inscripciones
     const string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
 
-    void cargarDatos(GestionadorCursos* gestion) {
+    void cargarDatos(GestionadorCursos& gestion) {
         cargarInscripciones(gestion);
 
         // Si no hay datos, agregar algunos de ejemplo
@@ -87,7 +87,7 @@ private:
         }
     }
 
-    void cargarInscripciones(GestionadorCursos* gestion) {
+    void cargarInscripciones(GestionadorCursos& gestion) {
         // Abrir el archivo de inscripciones binario
         
 
@@ -106,14 +106,14 @@ private:
                 // Determinar si es curso o especialización
                 if (inscripcion.tipoActividad == 1) { // Curso
                     // Buscar el curso en el gestionador
-                    Curso* curso = gestion->obtenerCursoPorId(inscripcion.idActividad);
+                    Curso* curso = gestion.obtenerCursoPorId(inscripcion.idActividad);
                     if (curso) {
                         cursosInscritos.emplace_back(curso->getTitulo(), curso->getDescripcion());
                     }
                 }
                 else if (inscripcion.tipoActividad == 2) { // Especialización
                     // Buscar la especialización en el gestionador
-                    Especializacion* especializacion = gestion->obtenerEspecializacionPorId(inscripcion.idActividad);
+                    Especializacion* especializacion = gestion.obtenerEspecializacionPorId(inscripcion.idActividad);
                     if (especializacion) {
                         especializacionesInscritas.emplace_back(especializacion->getTitulo(), especializacion->getDescripcion());
                     }
@@ -279,7 +279,7 @@ private:
     }
 
 public:
-    DashboardEstudiante(int _idEstudiante, string _nombreEstudiante, GestionadorCursos* gestion)
+    DashboardEstudiante(int _idEstudiante, string _nombreEstudiante, GestionadorCursos& gestion)
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idEstudiante(_idEstudiante),

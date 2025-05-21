@@ -13,7 +13,7 @@
 class VerBoletas : public PantallaBase
 {
 private:
-    Estudiante* estudiante;
+    Estudiante& estudiante;
     vector<Boleta*> boletas;
     int boletaSeleccionada;
     int indiceInicio;
@@ -105,7 +105,7 @@ private:
     }
 
 public:
-    VerBoletas(Estudiante* _estudiante, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE)
+    VerBoletas(Estudiante& _estudiante, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE)
         : estudiante(_estudiante),
         boletaSeleccionada(0),
         indiceInicio(0),
@@ -114,14 +114,18 @@ public:
         pantallaAnterior(_pantallaAnterior)
     {
         // Cargar boletas desde el estudiante
-        if (estudiante) {
-            LinkedList<Boleta*> boletasLista = estudiante->getBoletas();
+        // Problema
+        LinkedList<Boleta*> boletasLista = estudiante.getBoletas();
 
-            // Convertir la lista enlazada a un vector para facilitar el manejo
-            for (int i = 0; i < boletasLista.getTamano(); i++) {
-                boletas.push_back(boletasLista.get(i));
-            }
+        // Convertir la lista enlazada a un vector para facilitar el manejo
+        for (int i = 0; i < boletasLista.getTamano(); i++) {
+            boletas.push_back(boletasLista.get(i));
         }
+        /*
+        if (estudiante != NULL) {
+            
+        }
+        */
     }
 
     ResultadoPantalla ejecutar() override {

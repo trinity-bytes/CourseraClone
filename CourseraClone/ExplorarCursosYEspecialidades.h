@@ -37,11 +37,11 @@ private:
     bool necesitaRerenderizarCursos;
     bool necesitaRerenderizarEspecialidades;
 
-    Estudiante* estudiante;
+    Estudiante& estudiante;
     TipoUsuario tipoUsuario;
 
     // Datos
-    GestionadorCursos* gestionadorCursos;
+    GestionadorCursos& gestionadorCursos;
     LinkedList<Curso*>& cursos;
     LinkedList<Especializacion*>& especialidades;
 
@@ -520,9 +520,9 @@ private:
     }
 
 public:
-    ExplorarCursosYEspecialidades(GestionadorCursos* _gestionadorCursos,
+    ExplorarCursosYEspecialidades(GestionadorCursos& _gestionadorCursos,
         TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE,
-        Estudiante* _estudiante = nullptr)
+        Estudiante& _estudiante = Estudiante(1, "j","j","h"))
         : gestionadorCursos(_gestionadorCursos),
         tipoUsuario(_tipoUsuario),
         estudiante(_estudiante), 
@@ -537,8 +537,8 @@ public:
         elementoAnterior(-1),
         necesitaRerenderizarCursos(false),
         necesitaRerenderizarEspecialidades(false),
-        cursos(_gestionadorCursos->getCursos()),
-        especialidades(_gestionadorCursos->getEspecializaciones())
+        cursos(_gestionadorCursos.getCursos()),
+        especialidades(_gestionadorCursos.getEspecializaciones())
     {
 
         // Inicializar el array de últimas selecciones

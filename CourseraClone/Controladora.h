@@ -161,7 +161,7 @@ public:
 						pantallaActual = make_unique<DashboardEstudiante>(
 							estudiante->getId(),
 							estudiante->getNombreCompleto(),
-							gestionadorCursos.get()
+							*gestionadorCursos.get()
 						);
 					}
 					else {
@@ -179,6 +179,8 @@ public:
 					}
 					break;
 				case AccionPantalla::IR_A_LANDING_PAGE:
+					estudiante.reset();
+					empresa.reset();
 					pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					break;
 				case AccionPantalla::SALIR:
@@ -287,9 +289,9 @@ public:
 					}
 
 					pantallaActual = make_unique<ExplorarCursosYEspecialidades>(
-						gestionadorCursos.get(),
+						*gestionadorCursos.get(),
 						tipoUsuario,
-						estudiante.get()  
+						*estudiante.get()  
 					);
 					break;
 				}
@@ -311,7 +313,7 @@ public:
 					// Verificar si hay un estudiante logueado
 					if (estudiante) {
 						// Crear una instancia de la pantalla VerBoletas
-						pantallaActual = make_unique<VerBoletas>(estudiante.get());
+						pantallaActual = make_unique<VerBoletas>(*estudiante.get());
 					}
 					else {
 						// Si no hay estudiante, redirigir al login

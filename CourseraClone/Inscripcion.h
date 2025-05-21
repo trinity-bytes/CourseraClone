@@ -129,7 +129,7 @@ public:
     void marcarComoPagada(LinkedList<Boleta*>& boletas) { 
         if (!estaPagada()) {
             pagado = true;
-            actualizaPagoEnDisco(id, pagado);
+            //actualizaPagoEnDisco(id, pagado);
             Venta prueba;
             prueba.pagarInscripcion(id, getIdActividad(), 20.5, boletas, idEstudiante);
         }

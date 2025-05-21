@@ -30,6 +30,21 @@ public:
 		cargarDatos();
 	}
 
+	Estudiante(int _id,
+		const string& nombreCompleto,
+		const string& _nickname,
+		const string& _contrasena,
+		GestionadorCursos* _gestor)
+		: Usuario(_id, TipoUsuario::ESTUDIANTE, nombreCompleto, _nickname, _contrasena),
+		gestorCursos(_gestor),
+		boletas(),
+		cursosEs(),
+		especializacionesEs()
+	{
+		cargarDatos();
+		// no cargues inscripciones aquí, lo harás desde Login::ejecutar
+	}
+
 	InscripcionBinaria leerInscripcionEn(int posicion, string rutaBinario) {
 		fstream archivo(rutaBinario, ios::binary | ios::in);
 		if (!archivo.is_open()) throw runtime_error("No se pudo abrir binario inscripciones");
