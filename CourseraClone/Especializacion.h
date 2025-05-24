@@ -10,7 +10,7 @@
 class Especializacion : public Actividad {
 private:
 	vector<int> idsCursos;
-	LinkedList<Curso*> cursos;
+	LinkedList<Curso> cursos;
 	string categoria;
 	vector<string> requisitos;
 	float calificacionPromedio;
@@ -37,7 +37,6 @@ public:
 		2, 
 		_descripcion) 
 	{
-		this->cursos = LinkedList<Curso*>();
 		this->categoria = _categoria;
 		this->calificacionPromedio = 0.0;
 		this->totalCalificaciones = 0;
@@ -45,7 +44,7 @@ public:
 	}
 
 	// Métodos de gestión de cursos
-	void anadirCurso(Curso* _curso) {
+	void anadirCurso(Curso& _curso) {
 		cursos.agregarAlFinal(_curso);
 	}
 
@@ -89,7 +88,7 @@ public:
 	int getDuracionEstimada() const { return duracionEstimada; }
 
 	// Getters
-	LinkedList<Curso*> getCursos() const { return cursos; }
+	LinkedList<Curso> getCursos() const { return cursos; }
 	int getCantidadCursos() const { return cursos.getTamano(); }
 
 	// Método para calcular el progreso de un estudiante
@@ -119,7 +118,7 @@ public:
 		cout << "Total de calificaciones: " << totalCalificaciones << "\n";
 		cout << "Cursos incluidos:\n";
 		for (const auto& curso : cursos) {
-			cout << "- " << curso->getTitulo() << "\n";
+			cout << "- " << curso.getTitulo() << "\n";
 		}
 	}
 
@@ -138,7 +137,7 @@ public:
 		// Guardar cursos
 		ss << cursos.getTamano() << '\n';
 		for (const auto& curso : cursos) {
-			ss << curso->getId() << '\n';
+			ss << curso.getId() << '\n';
 		}
 		
 		// Guardar requisitos
@@ -150,8 +149,8 @@ public:
 		return ss.str();
 	}
 
-	LinkedList<Curso*> getIdsCursos(LinkedList<Curso*> cursosDisponibles) const {
-		LinkedList<Curso*> cursosAsociados;
+	LinkedList<Curso> getIdsCursos(LinkedList<Curso> cursosDisponibles) const {
+		LinkedList<Curso> cursosAsociados;
 
 		cerr << "Buscando " << idsCursos.size() << " cursos asociados a especialización " << this->getTitulo() << endl;
 
@@ -162,11 +161,11 @@ public:
 
 			// Buscar este curso en la lista de cursos disponibles
 			for (int i = 0; i < cursosDisponibles.getTamano(); i++) {
-				Curso* curso = cursosDisponibles.get(i);
-				if (curso && curso->getId() == idCurso) {
+				Curso curso = cursosDisponibles.get(i);
+				if (curso.getId() == idCurso) {
 					cursosAsociados.agregarAlFinal(curso);
 					encontrado = true;
-					cerr << "  ✓ Encontrado curso: " << curso->getTitulo() << " (ID: " << curso->getId() << ")" << endl;
+					cerr << "  ✓ Encontrado curso: " << curso.getTitulo() << " (ID: " << curso.getId() << ")" << endl;
 					break;  // Encontrado, no necesitamos seguir buscando
 				}
 			}

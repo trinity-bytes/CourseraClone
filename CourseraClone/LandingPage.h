@@ -22,8 +22,6 @@ private:
     static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
     static const int MAX_ALTO_CARACTERES_CUADRO = 4;
 
-    GestionadorCursos* gestionCursos;
-
     // Elementos del menú
     const vector<string> ELEMENTOS_CABECERA = {
         " Iniciar Sesion ",

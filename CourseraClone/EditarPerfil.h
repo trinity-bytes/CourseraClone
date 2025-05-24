@@ -52,8 +52,8 @@ private:
     };
 
     // Referencias a los objetos de usuario
-    unique_ptr<Estudiante>* estudiante;
-    unique_ptr<Empresa>* empresa;
+    Estudiante& estudiante;
+    Empresa& empresa;
 
     void mostrarCursor(bool mostrar) {
         CONSOLE_CURSOR_INFO cursorInfo;
@@ -192,27 +192,27 @@ private:
     void guardarCambios() {
         Usuario usuario;
 
-        if (tipoUsuario == TipoUsuario::ESTUDIANTE && estudiante && *estudiante) {
-            (*estudiante)->setNombre(nombre);
-            (*estudiante)->setUsername(email);
+        if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+            estudiante.setNombre(nombre);
+            estudiante.setUsername(email);
             if (!password.empty()) {
-                (*estudiante)->setContrasena(password);
+                estudiante.setContrasena(password);
             }
-            (*estudiante)->guardar();
+            estudiante.guardar();
         }
-        else if (tipoUsuario == TipoUsuario::EMPRESA && empresa && *empresa) {
-            (*empresa)->setNombre(nombre);
-            (*empresa)->setUsername(email);
+        else if (tipoUsuario == TipoUsuario::EMPRESA) {
+            empresa.setNombre(nombre);
+            empresa.setUsername(email);
             if (!password.empty()) {
-                (*empresa)->setContrasena(password);
+                empresa.setContrasena(password);
             }
-            (*empresa)->guardar();
+            empresa.guardar();
         }
     }
 
 public:
     EditarPerfil(int _idUsuario, TipoUsuario _tipoUsuario, string _nombre, string _email,
-        unique_ptr<Estudiante>* _estudiante = nullptr, unique_ptr<Empresa>* _empresa = nullptr)
+        Estudiante& _estudiante, Empresa& _empresa)
         : idUsuario(_idUsuario),
         tipoUsuario(_tipoUsuario),
         nombreOriginal(_nombre),

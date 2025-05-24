@@ -18,8 +18,8 @@ private:
     // Datos del curso
     int idCurso;
     Curso* curso;
-    GestionadorCursos* gestionadorCursos; // Añadir
-    Estudiante* estudiante;
+    GestionadorCursos& gestionadorCursos; // Añadir
+    Estudiante& estudiante;
     vector<Clase> clases;
 
     TipoUsuario tipoUsuario;
@@ -221,8 +221,8 @@ private:
     }
 
 public:
-    MostrarCurso(int _idCurso, GestionadorCursos* _gestionadorCursos = nullptr, Estudiante* _estudiante = nullptr,
-        Curso* _curso = nullptr, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE,
+    MostrarCurso(int _idCurso, GestionadorCursos& _gestionadorCursos, Estudiante& _estudiante,
+        Curso* _curso, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE,
         TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE)
         : idCurso(_idCurso),
         gestionadorCursos(_gestionadorCursos),
@@ -234,8 +234,9 @@ public:
         tipoUsuario(_tipoUsuario)
     {
         // Si no se proporcionó un curso, intentar cargarlo por ID
-        if (curso == nullptr && gestionadorCursos != nullptr) {
-            curso = gestionadorCursos->obtenerCursoPorId(idCurso);
+        /*
+        if (curso.getTitulo() == "" && gestionadorCursos != nullptr) {
+            curso = gestionadorCursos->obtenerCurso(idCurso);
         }
         else if (curso == nullptr) {
             // Si no hay gestionador, crear un curso de ejemplo
@@ -244,15 +245,17 @@ public:
                 "Esta es la descripción detallada del curso. Incluye información sobre lo que aprenderán los estudiantes, los requisitos previos y los resultados esperados al finalizar el curso.",
                 "Instructor", 5);
         }
+        */
 
         // Cargar las clases del curso
-        if (curso != nullptr) {
+        if (curso) {
             // Intentar obtener las clases del curso
             const LinkedList<Clase>& clasesLista = curso->getClases();
+            int tamano = curso->getCantidadClases();
 
             // Si el curso tiene clases, convertir la lista a un vector para facilitar el acceso
-            for (int i = 0; i < clasesLista.getTamano(); i++) {
-                Clase clase = clasesLista.get(i); // Usar get() en lugar de []
+            for (int i = 0; i < tamano; i++) {
+                Clase clase = curso->getClases().get(i); // Usar get() en lugar de []
                 clases.push_back(clase);
             }
 
@@ -314,8 +317,8 @@ public:
                     break;
                 }
 
-                if (estudiante != nullptr) {
-                    if (estudiante->inscribirseACurso(curso)) { // Usar el método de estudiante
+                if (estudiante.getNombreCompleto() == "") {
+                    if (estudiante.inscribirseACurso(curso)) { // Usar el método de estudiante
                         // Mostrar mensaje de éxito
                         gotoXY(5, 25);
                         SetConsoleColor(2, 0); // Verde sobre negro

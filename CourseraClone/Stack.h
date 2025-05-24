@@ -98,8 +98,8 @@ public:
 		}
 		// Para devolverlos como Stack, empujamos en orden inverso al buffer
 		Stack<T> resultado;
-		for (auto it = buffer.rbegin(); it != buffer.rend(); ++it) {
-			datos.push(*it);
+		for (auto it = datos.rbegin(); it != datos.rend(); ++it) {
+			resultado.push(*it);
 		}
 		return resultado;
 	}

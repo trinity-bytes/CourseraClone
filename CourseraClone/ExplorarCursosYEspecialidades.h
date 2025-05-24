@@ -42,8 +42,8 @@ private:
 
     // Datos
     GestionadorCursos& gestionadorCursos;
-    LinkedList<Curso*>& cursos;
-    LinkedList<Especializacion*>& especialidades;
+    LinkedList<Curso*> cursos;
+    LinkedList<Especializacion*> especialidades;
 
     // Coordenadas para la interfaz
     const int COL_TITULO = 50;
@@ -147,8 +147,8 @@ private:
         }
 
         // Aplicar Bubble Sort al vector
-        bubbleSort(especialidadesVector);
-        for (Especializacion* especializacion :especialidadesVector){
+        //bubbleSort(especialidadesVector);
+        for (Especializacion* especializacion : especialidadesVector){
             especialidades.agregarAlFinal(especializacion); 
         }
 
@@ -522,7 +522,7 @@ private:
 public:
     ExplorarCursosYEspecialidades(GestionadorCursos& _gestionadorCursos,
         TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE,
-        Estudiante& _estudiante = Estudiante(1, "j","j","h"))
+        Estudiante& _estudiante = Estudiante())
         : gestionadorCursos(_gestionadorCursos),
         tipoUsuario(_tipoUsuario),
         estudiante(_estudiante), 

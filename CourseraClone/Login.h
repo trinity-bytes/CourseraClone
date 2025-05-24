@@ -25,11 +25,11 @@ private:
     string mensajeError;
     int tipoUsuarioActual = 0; // 0: Estudiante, 1: Organización
     
-    unique_ptr<Estudiante>* estudiante;
-    unique_ptr<Empresa>* empresa;
+    Estudiante& estudiante;
+    Empresa& empresa;
 
-    const LinkedList<Curso*>* cursos;
-    const LinkedList<Especializacion*>* especialidades;
+    LinkedList<Curso*> cursos;
+    LinkedList<Especializacion*> especialidades;
 
     // Coordenadas para dibujar
     COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {34, 15}, {34, 20} };
@@ -163,21 +163,21 @@ public:
         primeraRenderizacion(true), 
         error(false), 
         tipoUsuarioActual(0),
-        estudiante(nullptr),
-        empresa(nullptr),
-        cursos(nullptr),
-        especialidades(nullptr)
+        estudiante(Estudiante()),
+        empresa(Empresa()),
+        cursos(),
+        especialidades()
         {}
 
-    Login(unique_ptr<Estudiante>& _estudiante, unique_ptr<Empresa>& _empresa, const LinkedList<Curso*>& _cursos, const LinkedList<Especializacion*>& _especialidades) : campoActual(0),
+    Login(Estudiante& _estudiante, Empresa& _empresa,  LinkedList<Curso*> _cursos, LinkedList<Especializacion*> _especialidades) : campoActual(0),
         campoAnterior(-1),
         primeraRenderizacion(true),
         error(false),
         tipoUsuarioActual(0),
-        estudiante(&_estudiante),
-        empresa(&_empresa), 
-        cursos(&_cursos),
-        especialidades(&_especialidades)
+        estudiante(_estudiante),
+        empresa(_empresa), 
+        cursos(_cursos),
+        especialidades(_especialidades)
         {
     }
 
@@ -265,10 +265,13 @@ public:
                             res.tipoUsuario = tipoUsuario;
 
                             if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
-                                estudiante->reset();
-                                *estudiante = make_unique<Estudiante>(index, usuarioTemp.getNombreCompleto(), email, "" );
-                                estudiante->get()->cargarInscripciones(*cursos, *especialidades);
-                                empresa->reset();
+                                estudiante.reset();
+                                estudiante.setId(index);
+                                estudiante.setNombre(usuarioTemp.getNombreCompleto());
+                                estudiante.setUsername(email);
+                                estudiante.setContrasena("");
+                                estudiante.cargarInscripciones(cursos, especialidades);
+                                empresa.reset();
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
 
                                 /*
@@ -282,9 +285,12 @@ public:
                                 */
                             }
                             else {
-                                empresa->reset();
-                                *empresa = make_unique<Empresa>(index, usuarioTemp.getNombreCompleto(), email, "");
-                                estudiante->reset();
+                                empresa.reset();
+                                empresa.setId(index);
+                                empresa.setNombre(usuarioTemp.getNombreCompleto());
+                                empresa.setUsername(email);
+                                empresa.setContrasena("");
+                                estudiante.reset();
                                 // throw runtime_error("ldfkjlajf");
                                 // Cuando se implemente el dashboard de organización:
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;

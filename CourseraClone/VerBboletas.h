@@ -14,7 +14,7 @@ class VerBoletas : public PantallaBase
 {
 private:
     Estudiante& estudiante;
-    vector<Boleta*> boletas;
+    vector<Boleta> boletas;
     int boletaSeleccionada;
     int indiceInicio;
     int boletasPorPagina;
@@ -69,7 +69,7 @@ private:
 
         for (int i = 0; i < boletasAMostrar; i++) {
             int indice = indiceInicio + i;
-            Boleta* boleta = boletas[indice];
+            Boleta boleta = boletas[indice];
 
             int y = FILA_LISTA_BOLETAS + i * ESPACIO_ENTRE_BOLETAS;
 
@@ -83,9 +83,9 @@ private:
 
             // Mostrar información de la boleta
             gotoXY(COL_LISTA_BOLETAS, y);
-            cout << "ID: " << boleta->getId()
-                << " | Fecha: " << boleta->getFecha()
-                << " | Precio: $" << fixed << setprecision(2) << boleta->getPrecio();
+            cout << "ID: " << boleta.getId()
+                << " | Fecha: " << boleta.getFecha()
+                << " | Precio: $" << fixed << setprecision(2) << boleta.getPrecio();
         }
 
         // Indicadores de paginación
@@ -115,7 +115,7 @@ public:
     {
         // Cargar boletas desde el estudiante
         // Problema
-        LinkedList<Boleta*> boletasLista = estudiante.getBoletas();
+        LinkedList<Boleta> boletasLista = estudiante.getBoletas();
 
         // Convertir la lista enlazada a un vector para facilitar el manejo
         for (int i = 0; i < boletasLista.getTamano(); i++) {

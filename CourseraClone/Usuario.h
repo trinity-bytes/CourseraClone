@@ -135,6 +135,14 @@ public:
         contrasenaHash(_contrasenaHash)
     { }
 
+    void reset() {
+        id = -1;
+        tipoUsuario = TipoUsuario::NINGUNO;
+        nombreCompleto = "";
+        username = "";
+        contrasenaHash = "";
+    }
+
     void establecerDatosBase(Usuario otroUsuario) {
         tipoUsuario = otroUsuario.getTipoUsuario();
         nombreCompleto = otroUsuario.getNombreCompleto();

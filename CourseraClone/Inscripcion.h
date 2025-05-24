@@ -45,7 +45,7 @@ private:
     bool pagado;
 
 public:
-    Inscripcion() : id(0), idEstudiante(0), actividad(), progreso(0.0), completado(false), pagado(false) {}
+    Inscripcion() : id(0), idEstudiante(0), actividad(nullptr), progreso(0.0), completado(false), pagado(false) {}
 
     Inscripcion(int _idEstudiante, Actividad* _actividad)
         : idEstudiante(_idEstudiante), actividad(_actividad),
@@ -126,7 +126,7 @@ public:
 
     bool estaPagada() const { return pagado; }
 
-    void marcarComoPagada(LinkedList<Boleta*>& boletas) { 
+    void marcarComoPagada(LinkedList<Boleta>& boletas) { 
         if (!estaPagada()) {
             pagado = true;
             //actualizaPagoEnDisco(id, pagado);

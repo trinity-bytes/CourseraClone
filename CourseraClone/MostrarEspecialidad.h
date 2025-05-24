@@ -17,10 +17,10 @@ private:
     // Datos de la especialidad
     int idEspecializacion;
     Especializacion* especializacion;
-	GestionadorCursos* gestionadorCursos;
+	GestionadorCursos& gestionadorCursos;
 
     TipoUsuario tipoUsuario;
-    Estudiante* estudiante;
+    Estudiante& estudiante;
 
     vector<Curso*> cursos;
 
@@ -225,10 +225,10 @@ private:
     }
 
 public:
-    MostrarEspecialidad(int _idEspecializacion, GestionadorCursos* _gestionadorCursos,
+    MostrarEspecialidad(int _idEspecializacion, GestionadorCursos& _gestionadorCursos,
         Especializacion* _especializacion, AccionPantalla _pantallaAnterior,
         TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE,
-        Estudiante* _estudiante = nullptr)
+        Estudiante& _estudiante = Estudiante())
         : idEspecializacion(_idEspecializacion),
         gestionadorCursos(_gestionadorCursos),
         especializacion(_especializacion),
@@ -237,6 +237,7 @@ public:
         tipoUsuario(_tipoUsuario),
         estudiante(_estudiante)
     {
+        /*
         // Si no se proporcionó una especialización, intentar cargarla por ID
         if (especializacion == nullptr) {
             especializacion = gestionadorCursos->obtenerEspecializacionPorId(idEspecializacion);
@@ -249,6 +250,7 @@ public:
                 "Especialización " + to_string(idEspecializacion),
                 0, "Esta especialización no pudo ser cargada correctamente.");
         }
+        */
 
         // Intentar cargar los cursos de la especialización
         vector<int> idsCursosEsp = especializacion->getIdsCursosVector();
@@ -257,23 +259,23 @@ public:
         bool tieneCursosAsociados = !idsCursosEsp.empty();
 
         // Primero, intentar cargar cursos desde el gestionador si hay IDs asociados
-        if (tieneCursosAsociados && gestionadorCursos) {
+        if (tieneCursosAsociados) {
             for (int idCurso : idsCursosEsp) {
-                Curso* curso = gestionadorCursos->obtenerCursoPorId(idCurso);
-                if (curso) {
-                    cursos.push_back(curso);
-                }
+                Curso* curso = gestionadorCursos.obtenerCurso(idCurso);
+                cursos.push_back(curso);
             }
         }
 
         // Si no se encontraron cursos, crear cursos de ejemplo basados en la especialización
+        /*
         if (cursos.empty()) {
-            string tituloBase = especializacion->getTitulo();
+            string tituloBase = especializacion.getTitulo();
             if (tituloBase.length() > 15) {
                 tituloBase = tituloBase.substr(0, 12) + "...";
             }
 
             // Crear 4 cursos de ejemplo relacionados con la especialización
+
             for (int i = 1; i <= MAX_CURSOS; i++) {
                 string titulo = "Curso Ejemplo ";
                 string descripcion = "Este curso es de ejemplo.";
@@ -282,8 +284,8 @@ public:
                 string instructor = "Profesor: UwU*";
 
                 Curso* cursoDemo = new Curso(1000 + i,
-                    especializacion->getIdEmpresa(),
-                    especializacion->getNombreEmpresa(),
+                    especializacion.getIdEmpresa(),
+                    especializacion.getNombreEmpresa(),
                     titulo,
                     descripcion,
                     instructor,
@@ -291,6 +293,7 @@ public:
                 cursos.push_back(cursoDemo);
             }
         }
+        */
     }
 
     ~MostrarEspecialidad() {}
@@ -320,7 +323,7 @@ public:
                     break;
                 }
 
-                if (estudiante == nullptr) {
+                if (estudiante.getNombreCompleto() == "") {
                     // El usuario no ha iniciado sesión, mostrar mensaje
                     gotoXY(5, 25);
                     SetConsoleColor(4, 0);
@@ -336,7 +339,7 @@ public:
                     return res;
                 }
 
-                if (estudiante->inscribirseAEspecializacion(especializacion)) {
+                if (estudiante.inscribirseAEspecializacion(especializacion)) {
                     // Mostrar mensaje de éxito
                     gotoXY(5, 25);
                     SetConsoleColor(2, 0);

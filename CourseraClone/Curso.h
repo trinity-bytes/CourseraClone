@@ -64,7 +64,7 @@ public:
     // Getters
     string getInstructor() const { return instructor; }
     int getCantidadClases() const { return cantidadClases; }
-    const LinkedList<Clase>& getClases() const { return clases; }
+    LinkedList<Clase>& getClases() { return clases; }
     string getCategoria() const { return categoria; }
     float getCalificacionPromedio() const { return calificacionPromedio; }
     int getTotalCalificaciones() const { return totalCalificaciones; }
@@ -128,31 +128,6 @@ public:
         cout << "Categoría: " << categoria << endl;
         cout << "Calificación: " << calificacionPromedio << " (" << totalCalificaciones << " opiniones)" << endl;
         cout << "===========================" << endl;
-    }
-
-    string toString() const {
-        stringstream ss;
-
-        // Datos básicos
-        ss << idEmpresa << '\n'
-            << tipo << '\n'
-            << nombreEmpresa << '\n'
-            << titulo << '\n'
-            << descripcion << '\n'
-            << instructor << '\n'
-            << cantidadClases << '\n'
-            << categoria << '\n'
-            << calificacionPromedio << '\n'
-            << totalCalificaciones << '\n';
-
-        // Serialización de clases
-        ss << clases.getTamano() << '\n';
-        for (const auto& clase : clases) {
-            ss << clase.getTitulo() << '\n'
-                << clase.getContenido() << '\n';
-        }
-
-        return ss.str();
     }
 
     // Método para persistencia

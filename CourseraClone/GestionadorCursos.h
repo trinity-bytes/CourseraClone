@@ -53,24 +53,6 @@ public:
         */
     }
 
-	Curso* obtenerCursoPorId(int id) {
-		for (auto curso : cursos) {
-			if (curso->getId() == id) {
-				return curso;
-			}
-		}
-		return nullptr;
-	}
-
-    Especializacion* obtenerEspecializacionPorId(int id) {
-        for (auto& especializacion : especializaciones) {
-            if (especializacion->getId() == id) {
-                return especializacion;
-            }
-        }
-        return nullptr; // Si no se encuentra
-    }
-
     bool crearCurso(
         int idEmpresa,
         const string& titulo,
@@ -82,8 +64,7 @@ public:
         vector<string> descripciones
     ) 
     {
-        Curso* nuevoCurso = new Curso(
-            cursos.getTamano() + 1, // ID autoincremental
+        Curso* nuevoCurso = new Curso(cursos.getTamano() + 1, // ID autoincremental
             idEmpresa,
             nombreEmpresa,
             titulo,
@@ -94,9 +75,11 @@ public:
 
         for (int i = 0; i < cantidadClases; i++) {
             nuevoCurso->anadirClases(titulos[i], descripciones[i]);
+            //throw runtime_error(titulos[i]);
         }
 
         cursos.agregarAlFinal(nuevoCurso);
+        
         // guardarCursos();
         return true;
     }
@@ -156,7 +139,7 @@ public:
         return true;
     }
 
-    vector<Curso*> buscarCursos(const string& criterio) {
+    vector<Curso*>& buscarCursos(const string& criterio) {
         vector<Curso*> resultados;
         for (auto curso : cursos) {
             if (curso->getTitulo().find(criterio) != string::npos ||
@@ -179,27 +162,27 @@ public:
     }
 
     Curso* obtenerCurso(int id) {
-        for (auto curso : cursos) {
-            if (curso->getId() == id) {
-                return curso;
-            }
-        }
-        return nullptr;
-    }
+        auto busquedaId = [](Curso* c) {
+            return c->getId();
+            };
 
+        int pos = cursos.buscarPorClave(id, busquedaId);
+        return cursos.get(pos);
+    }
+    
     Especializacion* obtenerEspecializacion(int id) {
-        for (auto especializacion : especializaciones) {
-            if (especializacion->getId() == id) {
-                return especializacion;
-            }
-        }
-        return nullptr;
+        auto busquedaId = [](Especializacion* e) {
+            return e->getId(); 
+            };
+
+        int pos = especializaciones.buscarPorClave(id, busquedaId);
+        return especializaciones.get(pos);
     }
 
     // Métodos de inscripción
     bool inscribirEstudianteACurso(int idEstudiante, int idCurso) {
         Curso* curso = obtenerCurso(idCurso);
-        if (!curso) return false;
+        if (curso->getTitulo() == "") return false;
 
         // Crear inscripción
         InscripcionBinaria inscripcion;
@@ -221,7 +204,7 @@ public:
 
     bool inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion) {
         Especializacion* especializacion = obtenerEspecializacion(idEspecializacion);
-        if (!especializacion) return false;
+        if (especializacion->getTitulo() == "") return false;
 
         // Crear inscripción
         InscripcionBinaria inscripcion;
@@ -319,7 +302,7 @@ public:
     // Métodos de gestión de contenido
     bool agregarContenidoCurso(int idCurso, const string& titulo, const string& contenido) {
         Curso* curso = obtenerCurso(idCurso);
-        if (!curso) return false;
+        if (curso->getTitulo() == "") return false;
 
         curso->anadirClases(titulo, contenido);
         //guardarCursos();
@@ -328,7 +311,7 @@ public:
 
     bool modificarContenidoCurso(int idCurso, int idContenido, const string& nuevoContenido) {
         Curso* curso = obtenerCurso(idCurso);
-        if (!curso) return false;
+        if (curso->getTitulo() == "") return false;
 
         if (curso->modificarClase(idContenido, nuevoContenido)) {
             guardarCursos();
@@ -339,20 +322,14 @@ public:
 
 private:
     void guardarCursos() {
-        ofstream archivo(RUTA_CURSOS);
-        if (!archivo.is_open()) return;
-
         for (auto curso : cursos) {
-            archivo << curso->toString() << endl;
+            curso->guardar();
         }
     }
 
     void guardarEspecializaciones() {
-        ofstream archivo(RUTA_ESPECIALIZACIONES);
-        if (!archivo.is_open()) return;
-
         for (auto especializacion : especializaciones) {
-            archivo << especializacion->toString() << endl;
+            especializacion->guardar();
         }
     }
 }; 

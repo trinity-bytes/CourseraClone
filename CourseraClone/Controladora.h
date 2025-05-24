@@ -25,9 +25,6 @@ class Usuario;
 class Curso;
 class Especializacion;
 
-template<typename T>
-class LinkedList;
-
 // Headers de la libreria estandar
 #include <memory>
 #include <vector>
@@ -41,8 +38,8 @@ class Controladora {
 private:
 	unique_ptr<GestionadorCursos> gestionadorCursos;
 	vector<Actividad> actividades;
-	unique_ptr<Estudiante> estudiante; 
-	unique_ptr<Empresa> empresa;
+	Estudiante* estudiante; 
+	Empresa* empresa;
 	bool ejecutando;
 
 	void cargarDatosArchivo() {
@@ -76,7 +73,7 @@ private:
 				}
 				if (!gestionadorCursos->crearCurso(idEmpresa, tituloActividad, nombreEmpresa, cantidadClase, instructor, descripcionActividad, titulos, descripciones)) {
 					throw runtime_error("Falla carga");
-				} //else throw runtime_error("Logrado");
+				}// else throw runtime_error("Logrado");
 
 			} else {
 				int cantidadCursos = 0;
@@ -92,6 +89,7 @@ private:
 				}
 				// else throw runtime_error(tituloActividad);
 			}
+			
 			cantidad++;
 		}
 		//throw runtime_error(to_string(cantidad));
@@ -129,10 +127,11 @@ public:
 	Controladora() : ejecutando(true) {
 		// Inicializar gestores
 		//gestionadorUsuarios = make_unique<GestionadorUsuarios>()
-		estudiante = nullptr;
-		empresa = nullptr;
 		gestionadorCursos = make_unique<GestionadorCursos>();
+		estudiante = new Estudiante( 0,"", "","");
+		empresa = new Empresa(0, "", "", "");
 		
+
 		// Cargar datos iniciales
 		cargarDatosArchivo();
 		cargarDatosInscripciones();
@@ -149,7 +148,7 @@ public:
 			switch (resultado.accion) 
 			{
 				case AccionPantalla::IR_A_LOGIN:
-					pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+					pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					break;
 				case AccionPantalla::IR_A_REGISTRO:
 					pantallaActual = make_unique<Registro>();
@@ -166,7 +165,7 @@ public:
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
-						pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+						pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					}
 					break;
 				case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
@@ -175,12 +174,12 @@ public:
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
-						pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+						pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					}
 					break;
 				case AccionPantalla::IR_A_LANDING_PAGE:
-					estudiante.reset();
-					empresa.reset();
+					estudiante->reset();
+					empresa->reset();
 					pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					break;
 				case AccionPantalla::SALIR:
@@ -198,7 +197,7 @@ public:
 				    }
 				    else {
 				        // Si no hay estudiante, redirigir al login
-				        pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+				        pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 				    }
 				    break;
 				case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
@@ -211,7 +210,7 @@ public:
 				    }
 				    else {
 				        // Si no hay empresa, redirigir al login
-				        pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+				        pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 				    }
 				    break;
 				case AccionPantalla::IR_A_EDITAR_PERFIL:
@@ -221,8 +220,8 @@ public:
 				            TipoUsuario::ESTUDIANTE,
 				            estudiante->getNombreCompleto(),
 				            estudiante->getUsername(),
-				            &estudiante,
-				            nullptr
+				            *estudiante,
+				            *empresa
 				        );
 				    }
 				    else if (empresa) {
@@ -231,26 +230,24 @@ public:
 				            TipoUsuario::EMPRESA,
 				            empresa->getNombreCompleto(),
 				            empresa->getUsername(),
-				            nullptr,
-				            &empresa
+				            *estudiante,
+				            *empresa
 				        );
 				    }
 				    else {
 				        // Si no hay usuario, redirigir al login
-				        pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+				        pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 				    }
 				    break;
 				case AccionPantalla::IR_A_MOSTRAR_CURSO:
 				{
 					int idCurso = resultado.idCursoSeleccionado;
-					Curso* cursoSeleccionado = gestionadorCursos->obtenerCursoPorId(idCurso);
-
-					Estudiante* estudiantePtr = (estudiante != nullptr) ? estudiante.get() : nullptr;
+					Curso* cursoSeleccionado = gestionadorCursos->obtenerCurso(idCurso);
 
 					pantallaActual = make_unique<MostrarCurso>(
 						idCurso,
-						gestionadorCursos.get(),
-						estudiantePtr, 
+						*gestionadorCursos.get(),
+						*estudiante,
 						cursoSeleccionado,
 						resultado.accionAnterior,
 						resultado.tipoUsuario
@@ -259,17 +256,15 @@ public:
 				}
 				case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
 				{
-					Especializacion* especializacion = gestionadorCursos->obtenerEspecializacionPorId(resultado.idCursoSeleccionado);
-
-					Estudiante* estudiantePtr = (estudiante != nullptr) ? estudiante.get() : nullptr;
+					Especializacion* especializacion = gestionadorCursos->obtenerEspecializacion(resultado.idCursoSeleccionado);
 
 					pantallaActual = make_unique<MostrarEspecialidad>(
 						resultado.idCursoSeleccionado,
-						gestionadorCursos.get(),
+						*gestionadorCursos.get(),
 						especializacion,
 						resultado.accionAnterior,
 						resultado.tipoUsuario,
-						estudiantePtr  
+						*estudiante
 					);
 					break;
 				}
@@ -291,7 +286,7 @@ public:
 					pantallaActual = make_unique<ExplorarCursosYEspecialidades>(
 						*gestionadorCursos.get(),
 						tipoUsuario,
-						*estudiante.get()  
+						*estudiante 
 					);
 					break;
 				}
@@ -313,11 +308,11 @@ public:
 					// Verificar si hay un estudiante logueado
 					if (estudiante) {
 						// Crear una instancia de la pantalla VerBoletas
-						pantallaActual = make_unique<VerBoletas>(*estudiante.get());
+						pantallaActual = make_unique<VerBoletas>(*estudiante);
 					}
 					else {
 						// Si no hay estudiante, redirigir al login
-						pantallaActual = make_unique<Login>(estudiante, empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
+						pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
 					}
 					break;
 				}

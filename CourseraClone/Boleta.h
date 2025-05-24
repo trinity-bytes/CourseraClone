@@ -63,6 +63,9 @@ public:
         fecha(_fecha), precio(_precio) {
     }
 
+    Boleta() :
+        id(-1), idEstudiante(-1), idActividad(-1), fecha(""),precio(0) { }
+
     Boleta(int est, int act, double _precio)
         : idEstudiante(est), idActividad(act),
         fecha(generarFechaActual()), precio(_precio) {

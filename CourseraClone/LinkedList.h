@@ -288,18 +288,51 @@ public:
         return end();
     }
 
-    T get(int index) const {
-        if (index < 0 || index >= getTamano()) {
-            throw out_of_range("Indice fuera de rango");
+    T get(int pos) {
+        if (head == nullptr || pos < 1 || pos > tamano) return T();
+        Nodo<T>* current = head;
+        int contador = 1;
+        while (current != nullptr) {
+            if (contador == pos) {
+                return current->data;
+            }
+            contador++;
+            current = current->next;
         }
-
-        Nodo<T>* actual = head; 
-        for (int i = 0; i < index; ++i) {
-            actual = actual->next;
-        }
-
-        return actual->data;
+        return T();
     }
+
+    template <typename KeyType, typename Pred>
+    int buscarPorClave(KeyType clave, Pred pred) {
+        Nodo<T>* current = head;
+        int index = 1;
+
+        while (current) {
+            if (pred(current->data) == clave) {
+                return index;
+            }
+            current = current->next;
+            index++;
+        }
+
+        return -1;
+    }
+
+	void modificar(int pos, T data) {
+		if (head == nullptr) return;
+
+		Nodo<T>* current = head;
+		int contador = 1;
+		while (current != nullptr) {
+			if (contador == pos) {
+				current->data = data;
+				return;
+			}
+			contador++;
+			current = current->next;
+		}
+	}
+
 
     // Verificar si existe un valor
     bool contiene(const T& value) const {

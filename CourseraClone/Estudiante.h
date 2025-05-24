@@ -14,35 +14,27 @@
 class Estudiante :public Usuario
 {
 private:
-	LinkedList<Boleta*> boletas;
-	Stack<Inscripcion*> cursosEs;
-	Stack<Inscripcion*> especializacionesEs;
-	GestionadorCursos* gestorCursos;
+	LinkedList<Boleta> boletas;
+	Stack<Inscripcion> cursosEs;
+	Stack<Inscripcion> especializacionesEs;
 public:
+	Estudiante() :
+		Usuario() { }
+
 
 	Estudiante(int _id, string nombreCompleto,
 		string _nickname, string _contrasena) : Usuario(_id, TipoUsuario::ESTUDIANTE, nombreCompleto,
 			_nickname, _contrasena)
 	{
-		cursosEs = Stack<Inscripcion*>();
-		especializacionesEs = Stack<Inscripcion*>();
-		boletas = LinkedList<Boleta*>();
+
 		cargarDatos();
 	}
 
-	Estudiante(int _id,
-		const string& nombreCompleto,
-		const string& _nickname,
-		const string& _contrasena,
-		GestionadorCursos* _gestor)
-		: Usuario(_id, TipoUsuario::ESTUDIANTE, nombreCompleto, _nickname, _contrasena),
-		gestorCursos(_gestor),
-		boletas(),
-		cursosEs(),
-		especializacionesEs()
-	{
-		cargarDatos();
-		// no cargues inscripciones aquí, lo harás desde Login::ejecutar
+	void reset() {
+		Usuario::reset();
+		boletas.clear();
+		cursosEs.clear();
+		especializacionesEs.clear();
 	}
 
 	InscripcionBinaria leerInscripcionEn(int posicion, string rutaBinario) {
@@ -88,8 +80,8 @@ public:
 
 	// En Estudiante.h, dentro de la clase Estudiante:
 	void cargarInscripciones(
-		const LinkedList<Curso*>& cursos,
-		const LinkedList<Especializacion*>& listaEspecializaciones
+		LinkedList<Curso*> cursos,
+		LinkedList<Especializacion*> listaEspecializaciones
 	) {
 		// 1) Lee todos los offsets del índice
 		vector<int> offsets = obtenerOffsetsInscripciones();
@@ -143,29 +135,22 @@ public:
 		for (int off : offsetCursos) {
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
 			// busca el Curso* correspondiente en cursosFiltrados
-			Curso* act = nullptr;
-			for (auto it = cursosFiltrados.begin(); it != cursosFiltrados.end(); ++it) {
-				if ((*it)->getId() == bin.idActividad) {
-					act = *it;
-					break;
-				}
-			}
-			if (!act) continue;
-			Inscripcion* ins = new Inscripcion(bin, act);
+			int pos = cursosFiltrados.buscarPorClave(bin.idActividad, [](Curso* c) {
+				return c->getId();
+				});
+			Curso* act = cursosFiltrados.get(pos);
+			Inscripcion ins(bin, act);
 			cursosEs.push(ins);
 		}
 
 		for (int off : offsetEspecializaciones) {
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
-			Especializacion* act = nullptr;
-			for (auto it = espeFiltradas.begin(); it != espeFiltradas.end(); ++it) {
-				if ((*it)->getId() == bin.idActividad) {
-					act = *it;
-					break;
-				}
-			}
-			if (!act) continue;
-			Inscripcion* ins = new Inscripcion(bin, act);
+			// busca el Curso* correspondiente en cursosFiltrados
+			int pos = espeFiltradas.buscarPorClave(bin.idActividad, [](Especializacion* c) {
+				return c->getId();
+				});
+			Especializacion* act = espeFiltradas.get(pos);
+			Inscripcion ins(bin, act);
 			especializacionesEs.push(ins);
 		}
 		//throw runtime_error(to_string(cursosEs.getTamano()));
@@ -185,7 +170,7 @@ public:
 		while (archivo.read(reinterpret_cast<char*>(&boletaBin), sizeof(BoletaBinaria))) {
 			// Solo cargar las boletas del estudiante actual
 			if (boletaBin.idEstudiante == this->getId()) {
-				Boleta* nuevaBoleta = new Boleta(
+				Boleta nuevaBoleta(
 					cantidad,
 					boletaBin.idEstudiante,
 					boletaBin.idActividad,
@@ -200,57 +185,41 @@ public:
 		archivo.close();
 	}
 
-	const LinkedList<Boleta*>& getBoletas() const {
+	const LinkedList<Boleta>& getBoletas() const {
 		return boletas;
 	}
 
-	// Función auxiliar para obtener el curso asociado a una boleta
-	Curso* obtenerCursoPorId(int idCurso) {
-		return gestorCursos->obtenerCursoPorId(idCurso);
-	}
-
-	// Función auxiliar para obtener la especialización asociada a una boleta
-	Especializacion* obtenerEspecializacionPorId(int idEspecializacion) {
-
-		return gestorCursos->obtenerEspecializacionPorId(idEspecializacion);
-	}
-
 	void verBoletas() {
-		// Mostrar boletas
+		// Mostrar boleta
+		auto busquedaId = [](Boleta& b) {
+			return b.getId();
+			};
+
 		for (int i = 0; i < boletas.getTamano(); i++) {
-			Boleta* boleta = boletas.get(i);
-			if (boleta) {
-				boleta->mostrar();
-			}
-			else {
-				cout << "No tienes boletas." << endl;
-			}
+			
+			Boleta boleta = boletas.get(i);
+			boleta.mostrar();
 		}
 	}
 
 	void verCursosInscritos() {
 		// Mostrar cursos inscritos
 		for (int i = 0; i < cursosEs.getTamano(); i++) {
-			Inscripcion* inscripcion = cursosEs.get(i);
-			if (inscripcion) {
-				inscripcion->mostrar();
-			}
-			else {
-				cout << "No tienes cursos inscritos." << endl;
-			}
+			Inscripcion inscripcion = cursosEs.get(i);
+			inscripcion.mostrar();
 		}
 	}
 
 	bool inscribirseACurso(Curso* curso) {
-		if (!curso) {
+		if (curso->getTitulo() == "") {
 			std::cerr << "Error: Curso inválido" << std::endl;
 			return false;
 		}
 
 		// Verificar si ya está inscrito al curso
 		for (int i = 0; i < cursosEs.getTamano(); i++) {
-			Inscripcion* inscripcionExistente = cursosEs.get(i);
-			if (inscripcionExistente && inscripcionExistente->getIdActividad() == curso->getId()) {
+			Inscripcion inscripcionExistente = cursosEs.get(i);
+			if (inscripcionExistente.getIdActividad() == curso->getId()) {
 				std::cerr << "Error: Ya estás inscrito en este curso" << std::endl;
 				return false;
 			}
@@ -258,7 +227,7 @@ public:
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), curso);
+		Inscripcion nuevaInscripcion(this->getId(), curso);
 		//cerr << this->getId();
 		//system("pause>0");
 
@@ -266,8 +235,8 @@ public:
 		// throw runtime_error(to_string(this->getId()));
 
 		// Guardar en archivo
-		nuevaInscripcion->guardar();
-		nuevaInscripcion->marcarComoPagada(boletas);
+		nuevaInscripcion.guardar();
+		nuevaInscripcion.marcarComoPagada(boletas);
 
 		// Agregar a la pila de cursos inscritos
 		cursosEs.push(nuevaInscripcion);
@@ -279,26 +248,27 @@ public:
 
 	// Método sobrecargado para inscribirse a una especialización
 	bool inscribirseAEspecializacion(Especializacion* especializacion) {
+		/*
 		if (!especializacion) {
 			std::cerr << "Error: Especialización inválida" << std::endl;
 			return false;
 		}
-
+		*/
 		// Verificar si ya está inscrito a la especialización
 		for (int i = 0; i < especializacionesEs.getTamano(); i++) {
-			Inscripcion* inscripcionExistente = especializacionesEs.get(i);
-			if (inscripcionExistente && inscripcionExistente->getIdActividad() == especializacion->getId()) {
+			Inscripcion inscripcionExistente = especializacionesEs.get(i);
+			if (inscripcionExistente.getIdActividad() == especializacion->getId()) {
 				std::cerr << "Error: Ya estás inscrito en esta especialización" << std::endl;
 				return false;
 			}
 		}
 
 		// Crear una nueva inscripción
-		Inscripcion* nuevaInscripcion = new Inscripcion(this->getId(), especializacion);
+		Inscripcion nuevaInscripcion(this->getId(), especializacion);
 
 		// Guardar en archivo
-		nuevaInscripcion->guardar();
-		nuevaInscripcion->marcarComoPagada(boletas);
+		nuevaInscripcion.guardar();
+		nuevaInscripcion.marcarComoPagada(boletas);
 
 		// Agregar a la pila de especializaciones inscritas
 		especializacionesEs.push(nuevaInscripcion);
