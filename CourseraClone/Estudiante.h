@@ -71,17 +71,20 @@ public:
 			InscripcionIndex tmp;
 			archivoIndice.seekg(i * sizeof(tmp), ios::beg);
 			archivoIndice.read(reinterpret_cast<char*>(&tmp), sizeof(tmp));
+			//throw runtime_error(to_string(tmp.idUsuario));
 			if (tmp.idUsuario != this->getId()) break;
 			offsets.push_back(tmp.offset);
 		}
 
+		//throw runtime_error(to_string(this->getId()));
+		//throw runtime_error(to_string(offsets.size()));
 		return offsets;
 	}
 
 	// En Estudiante.h, dentro de la clase Estudiante:
 	void cargarInscripciones(
-		LinkedList<Curso*> cursos,
-		LinkedList<Especializacion*> listaEspecializaciones
+		LinkedList<Curso*>& cursos,
+		LinkedList<Especializacion*>& listaEspecializaciones
 	) {
 		// 1) Lee todos los offsets del índice
 		vector<int> offsets = obtenerOffsetsInscripciones();
@@ -92,12 +95,11 @@ public:
 
 		//throw runtime_error(to_string(offsets.size()));
 		vector<int> offsetCursos, offsetEspecializaciones;
+
+
 		for (int off : offsets) {
-			// leerInscripcionEn usa off-1 internamente si es 1-based
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
-			//throw runtime_error(to_string(bin.tipoActividad));
-			//system("pause");
-			if (bin.tipoActividad == 0)
+			if (bin.tipoActividad == 1)
 				offsetCursos.push_back(off);
 			else
 				offsetEspecializaciones.push_back(off);
@@ -105,11 +107,14 @@ public:
 
 		// 3) Ordena cada vector por idActividad
 		// mergeSort espera rango [begin, end)
-		mergeSort(offsetCursos, 0, int(offsetCursos.size()));
-		shellSort(offsetEspecializaciones);
+		if (offsetCursos.size() > 1) mergeSort(offsetCursos, 0, int(offsetCursos.size()) - 1);
+		if (offsetEspecializaciones.size() > 1) shellSort(offsetEspecializaciones);
+
+		//throw runtime_error(to_string(offsetCursos.size()));
 
 		// 4) Filtra las listas activas para quedarte sólo con las actividades en esos offsets
-		LinkedList<Curso*> cursosFiltrados = cursos.filtrar<int>(
+		/*
+		LinkedList<Curso*>& cursosFiltrados = cursos.filtrar<int>(
 			offsetCursos,
 			// igualdad: curso.id == bin.idActividad
 			[&](Curso* c, const int& off) {
@@ -121,7 +126,9 @@ public:
 			}
 		);
 
-		LinkedList<Especializacion*> espeFiltradas = listaEspecializaciones.filtrar<int>(
+		
+
+		LinkedList<Especializacion*>& espeFiltradas = listaEspecializaciones.filtrar<int>(
 			offsetEspecializaciones,
 			[&](Especializacion* e, const int& off) {
 				return e->getId() == leerInscripcionEn(off, rutaBin).idActividad;
@@ -130,27 +137,30 @@ public:
 				return e->getId() < leerInscripcionEn(off, rutaBin).idActividad;
 			}
 		);
+		*/
 
 		// 5) Finalmente, recorre otra vez los offsets y crea los Inscripcion*
 		for (int off : offsetCursos) {
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
 			// busca el Curso* correspondiente en cursosFiltrados
-			int pos = cursosFiltrados.buscarPorClave(bin.idActividad, [](Curso* c) {
+			int pos = cursos.buscarPorClave(bin.idActividad, [](Curso* c) {
 				return c->getId();
 				});
-			Curso* act = cursosFiltrados.get(pos);
-			Inscripcion ins(bin, act);
+			if (pos == -1) throw runtime_error("kfldjalkfjldkajfs");
+			Curso* act = cursos.get(pos);
+			Inscripcion ins(bin, act, off);
 			cursosEs.push(ins);
 		}
 
 		for (int off : offsetEspecializaciones) {
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
 			// busca el Curso* correspondiente en cursosFiltrados
-			int pos = espeFiltradas.buscarPorClave(bin.idActividad, [](Especializacion* c) {
+			int pos = listaEspecializaciones.buscarPorClave(bin.idActividad, [](Especializacion* c) {
 				return c->getId();
 				});
-			Especializacion* act = espeFiltradas.get(pos);
-			Inscripcion ins(bin, act);
+			if (pos == -1) throw runtime_error("kfldjalkfjldkajfs");
+			Especializacion* act = listaEspecializaciones.get(pos);
+			Inscripcion ins(bin, act, off);
 			especializacionesEs.push(ins);
 		}
 		//throw runtime_error(to_string(cursosEs.getTamano()));
@@ -210,13 +220,15 @@ public:
 		}
 	}
 
+	Stack<Inscripcion> getInscripcionCursos() { return cursosEs; }
+
 	bool inscribirseACurso(Curso* curso) {
-		if (curso->getTitulo() == "") {
+		if (!curso) {
 			std::cerr << "Error: Curso inválido" << std::endl;
 			return false;
 		}
 
-		// Verificar si ya está inscrito al curso
+
 		for (int i = 0; i < cursosEs.getTamano(); i++) {
 			Inscripcion inscripcionExistente = cursosEs.get(i);
 			if (inscripcionExistente.getIdActividad() == curso->getId()) {

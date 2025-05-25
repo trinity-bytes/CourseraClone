@@ -66,18 +66,9 @@ public:
     Boleta() :
         id(-1), idEstudiante(-1), idActividad(-1), fecha(""),precio(0) { }
 
-    Boleta(int est, int act, double _precio)
+    Boleta(int est, int act, double _precio, int _id)
         : idEstudiante(est), idActividad(act),
-        fecha(generarFechaActual()), precio(_precio) {
-
-        ifstream archivo("Resources/Data/boletas.dat", ios::binary);
-        if (archivo.is_open()) {
-            id = int(archivo.tellg() / sizeof(BoletaBinaria));
-            archivo.close();
-        }
-        else {
-            id = 1;
-        }
+        fecha(generarFechaActual()), precio(_precio), id(_id) {
 
     }
 

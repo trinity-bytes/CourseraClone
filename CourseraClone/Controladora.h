@@ -105,11 +105,16 @@ private:
 		try {
 			InscripcionBinaria inscripcion;
 			while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
-				int idx = inscripcion.idActividad - 1;
-				if (idx >= 0 && idx < static_cast<int>(actividades.size())) {
-					actividades[idx].aumentarAlumno(1);
+				int idx = inscripcion.idActividad;
+				int tipo = inscripcion.tipoActividad;
+				if (tipo == 1) {
+					gestionadorCursos.get()->getCursos().get(idx)->aumentarAlumno(1);
+				}
+				else if (tipo == 2) {
+					gestionadorCursos.get()->getEspecializaciones().get(idx)->aumentarAlumno(1);
 				}
 			}
+			//throw runtime_error(to_string(gestionadorCursos.get()->getCursos().get(2)->getCantidadAlumnos()));
 			
 			if (!archivo.eof()) {
 				throw runtime_error("Error al leer el archivo de inscripciones");

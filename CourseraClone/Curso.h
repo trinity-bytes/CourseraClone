@@ -59,6 +59,7 @@ public:
         categoria(_categoria),
         calificacionPromedio(0.0f),
         totalCalificaciones(0) {
+        clases = LinkedList<Clase>();
     }
 
     // Getters

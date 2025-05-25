@@ -30,6 +30,8 @@ public:
     GestionadorCursos() {
         //cargarCursos();
         //cargarEspecializaciones();
+        cursos = LinkedList<Curso*>();
+        especializaciones = LinkedList<Especializacion*>();
     }
 
 
@@ -70,13 +72,14 @@ public:
             titulo,
             descripcion,
             instructor,
-            cantidadClases
+            0
         );
 
         for (int i = 0; i < cantidadClases; i++) {
             nuevoCurso->anadirClases(titulos[i], descripciones[i]);
             //throw runtime_error(titulos[i]);
         }
+        //throw runtime_error(to_string(nuevoCurso->getCantidadClases()));
 
         cursos.agregarAlFinal(nuevoCurso);
         
@@ -135,7 +138,7 @@ public:
         }
 
         especializaciones.agregarAlFinal(nuevaEspecializacion);
-        guardarEspecializaciones();
+        //guardarEspecializaciones();
         return true;
     }
 

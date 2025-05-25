@@ -28,8 +28,8 @@ private:
     Estudiante& estudiante;
     Empresa& empresa;
 
-    LinkedList<Curso*> cursos;
-    LinkedList<Especializacion*> especialidades;
+    LinkedList<Curso*>& cursos;
+    LinkedList<Especializacion*>& especialidades;
 
     // Coordenadas para dibujar
     COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {34, 15}, {34, 20} };
@@ -165,11 +165,11 @@ public:
         tipoUsuarioActual(0),
         estudiante(Estudiante()),
         empresa(Empresa()),
-        cursos(),
-        especialidades()
+        cursos(LinkedList<Curso*>()),
+        especialidades(LinkedList<Especializacion*>())
         {}
 
-    Login(Estudiante& _estudiante, Empresa& _empresa,  LinkedList<Curso*> _cursos, LinkedList<Especializacion*> _especialidades) : campoActual(0),
+    Login(Estudiante& _estudiante, Empresa& _empresa,  LinkedList<Curso*>& _cursos, LinkedList<Especializacion*>& _especialidades) : campoActual(0),
         campoAnterior(-1),
         primeraRenderizacion(true),
         error(false),
@@ -271,6 +271,8 @@ public:
                                 estudiante.setUsername(email);
                                 estudiante.setContrasena("");
                                 estudiante.cargarInscripciones(cursos, especialidades);
+                                // throw runtime_error(to_string(estudiante.getInscripcionCursos().getTamano()));
+
                                 empresa.reset();
                                 res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
 

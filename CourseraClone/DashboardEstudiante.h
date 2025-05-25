@@ -107,14 +107,14 @@ private:
                 if (inscripcion.tipoActividad == 1) { // Curso
                     // Buscar el curso en el gestionador
                     Curso* curso = gestion.obtenerCurso(inscripcion.idActividad);
-                    if (curso->getTitulo() != "") {
+                    if (curso) {
                         cursosInscritos.emplace_back(curso->getTitulo(), curso->getDescripcion());
                     }
                 }
                 else if (inscripcion.tipoActividad == 2) { // Especialización
                     // Buscar la especialización en el gestionador
                     Especializacion* especializacion = gestion.obtenerEspecializacion(inscripcion.idActividad);
-                    if (especializacion->getTitulo() != "") {
+                    if (especializacion) {
                         especializacionesInscritas.emplace_back(especializacion->getTitulo(), especializacion->getDescripcion());
                     }
                 }

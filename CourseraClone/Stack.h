@@ -30,7 +30,7 @@ public:
 		for (int i = 0; i < index; ++i) {
 			actual = actual->next;
 		}
-		return actual->data; // Aquí está el problema
+		return actual->data;
 	}
 
 	int getTamano() {

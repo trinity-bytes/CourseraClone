@@ -254,7 +254,7 @@ public:
             int tamano = curso->getCantidadClases();
 
             // Si el curso tiene clases, convertir la lista a un vector para facilitar el acceso
-            for (int i = 0; i < tamano; i++) {
+            for (int i = 1; i <= tamano; i++) {
                 Clase clase = curso->getClases().get(i); // Usar get() en lugar de []
                 clases.push_back(clase);
             }
@@ -317,7 +317,7 @@ public:
                     break;
                 }
 
-                if (estudiante.getNombreCompleto() == "") {
+                if (estudiante.getNombreCompleto() != "") {
                     if (estudiante.inscribirseACurso(curso)) { // Usar el método de estudiante
                         // Mostrar mensaje de éxito
                         gotoXY(5, 25);

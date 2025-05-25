@@ -42,8 +42,8 @@ private:
 
     // Datos
     GestionadorCursos& gestionadorCursos;
-    LinkedList<Curso*> cursos;
-    LinkedList<Especializacion*> especialidades;
+    LinkedList<Curso*>& cursos;
+    LinkedList<Especializacion*>& especialidades;
 
     // Coordenadas para la interfaz
     const int COL_TITULO = 50;
@@ -92,6 +92,7 @@ private:
 
         // Dibujar lista de cursos
         int totalCursos = cursos.getTamano();
+       
         int cursosAMostrar = min(cursosPorPagina, totalCursos - indiceInicioCursos);
 
         // Primero limpiamos toda el área de cursos
@@ -99,7 +100,7 @@ private:
 
         for (int i = 0; i < cursosAMostrar; i++) {
             int indice = indiceInicioCursos + i;
-            Curso* curso = cursos.get(indice);
+            Curso* curso = cursos.get(indice + 1);
 
             gotoXY(COL_LISTA_CURSOS, FILA_LISTA_CURSOS + i * 2);
 
@@ -117,6 +118,7 @@ private:
             }
             cout << titulo;
         }
+        
 
         // Indicadores de paginación para cursos
         // Limpiar indicadores anteriores
@@ -142,15 +144,17 @@ private:
     {
         // Convertir LinkedList a vector
         vector<Especializacion*> especialidadesVector;
-        for (int i = 0; i < especialidades.getTamano(); ++i) {
+        for (int i = 1; i <= especialidades.getTamano(); ++i) {
             especialidadesVector.push_back(especialidades.get(i));
         }
 
         // Aplicar Bubble Sort al vector
         //bubbleSort(especialidadesVector);
+        /*
         for (Especializacion* especializacion : especialidadesVector){
             especialidades.agregarAlFinal(especializacion); 
         }
+        */
 
         limpiarAreaEspecialidades();
         limpiarAreaIndicadoresEspecialidades();
@@ -170,7 +174,7 @@ private:
 
         for (int i = 0; i < especialidadesAMostrar; i++) {
             int indice = indiceInicioEspecialidades + i;
-            Especializacion* especializacion = especialidades.get(indice);
+            Especializacion* especializacion = especialidades.get(indice + 1);
 
             gotoXY(COL_LISTA_ESPECIALIDADES, FILA_LISTA_ESPECIALIDADES + i * 2);
 
@@ -302,7 +306,7 @@ private:
             cout << string(ANCHO_ELEMENTO, ' ');
 
             // Redibujar con color normal
-            Curso* curso = cursos.get(indiceInicioCursos + indice);
+            Curso* curso = cursos.get(indiceInicioCursos + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(15, 0); // Color normal
             string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
@@ -325,7 +329,7 @@ private:
             cout << string(ANCHO_ELEMENTO, ' ');
 
             // Redibujar con color normal
-            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice);
+            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(15, 0); // Color normal
             string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
@@ -348,7 +352,7 @@ private:
             cout << string(ANCHO_ELEMENTO, ' ');
 
             // Redibujar con color seleccionado
-            Curso* curso = cursos.get(indiceInicioCursos + indice);
+            Curso* curso = cursos.get(indiceInicioCursos + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(1, 13); // Color seleccionado
             string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
@@ -371,7 +375,7 @@ private:
             cout << string(ANCHO_ELEMENTO, ' ');
 
             // Redibujar con color seleccionado
-            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice);
+            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(1, 13); // Color seleccionado
             string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
@@ -399,7 +403,7 @@ private:
     void renderizarEspecializacionSeleccionada() {
         if (elementoActual < especialidadesPorPagina && indiceInicioEspecialidades + elementoActual < especialidades.getTamano()) {
             int indice = indiceInicioEspecialidades + elementoActual;
-            Especializacion* especializacion = especialidades.get(indice);
+            Especializacion* especializacion = especialidades.get(indice + 1);
             gotoXY(COL_LISTA_ESPECIALIDADES, FILA_LISTA_ESPECIALIDADES + elementoActual * 2);
             SetConsoleColor(1, 13); // Color para selección
             string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
@@ -541,6 +545,7 @@ public:
         especialidades(_gestionadorCursos.getEspecializaciones())
     {
 
+      
         // Inicializar el array de últimas selecciones
         for (int i = 0; i < TOTAL_SECCIONES; i++) {
             ultimoElementoSeleccionadoPorSeccion[i] = 0;
@@ -579,7 +584,7 @@ public:
                     // Seleccionar un curso y mostrar sus detalles
                     int indiceCurso = indiceInicioCursos + elementoActual;
                     if (indiceCurso < cursos.getTamano()) {
-                        resultado.idCursoSeleccionado = cursos.get(indiceCurso)->getId();
+                        resultado.idCursoSeleccionado = cursos.get(indiceCurso + 1)->getId();
                         resultado.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
                         resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
                             AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
@@ -592,7 +597,7 @@ public:
                     // Seleccionar una especialización y mostrar sus detalles
                     int indiceEspecialidad = indiceInicioEspecialidades + elementoActual;
                     if (indiceEspecialidad < especialidades.getTamano()) {
-                        resultado.idCursoSeleccionado = especialidades.get(indiceEspecialidad)->getId();
+                        resultado.idCursoSeleccionado = especialidades.get(indiceEspecialidad + 1)->getId();
                         resultado.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
                         resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
                             AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
