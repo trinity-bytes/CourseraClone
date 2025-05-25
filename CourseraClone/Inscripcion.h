@@ -71,7 +71,7 @@ public:
 	
 
     void guardar() {
-        ofstream archivo("Resources/Data/inscripciones.dat", ios::app);
+        ofstream archivo("Resources/Data/inscripciones.dat", ios:: binary | ios::app);
         int offsetRegistro = 0;
         if (archivo.is_open()) 
         {
@@ -91,14 +91,24 @@ public:
         {
             archivoOrden.seekg(0, ios::end);
             int cantidad = archivoOrden.tellg() / sizeof(InscripcionIndex);
+            InscripcionIndex nuevo(idEstudiante, offsetRegistro);
+
+            if (cantidad == 0) {
+                archivoOrden.seekp(0, ios::beg);
+                archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(InscripcionIndex));
+                archivoOrden.close();
+                return;
+            }
+
             archivoOrden.seekg(0, ios::beg);
             auto busqueda = [&](int pos) {
                 InscripcionIndex temp;
                 archivoOrden.seekg(pos * sizeof(InscripcionIndex), ios::beg);
                 archivoOrden.read(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
 
-                return idEstudiante >= temp.idUsuario;
+                return idEstudiante <= temp.idUsuario;
                 };
+
 
             int pos = busquedaBinaria(0, cantidad - 1, busqueda);
 
@@ -110,7 +120,7 @@ public:
                 archivoOrden.write(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
             }
 
-            InscripcionIndex nuevo(idEstudiante, offsetRegistro);
+            
             archivoOrden.seekp(pos * sizeof(InscripcionIndex), ios::beg);
             archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(InscripcionIndex));
             

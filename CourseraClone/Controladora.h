@@ -162,6 +162,7 @@ public:
 					// El Login ya validó las credenciales, simplemente establecemos el usuario
 					//establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
 					if (estudiante) {
+
 						pantallaActual = make_unique<DashboardEstudiante>(
 							estudiante->getId(),
 							estudiante->getNombreCompleto(),

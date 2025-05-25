@@ -271,6 +271,7 @@ public:
                                 estudiante.setUsername(email);
                                 estudiante.setContrasena("");
                                 estudiante.cargarInscripciones(cursos, especialidades);
+                                estudiante.cargarDatos();
                                 // throw runtime_error(to_string(estudiante.getInscripcionCursos().getTamano()));
 
                                 empresa.reset();

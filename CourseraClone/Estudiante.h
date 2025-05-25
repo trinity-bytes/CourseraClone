@@ -54,6 +54,7 @@ public:
 
 		archivoIndice.seekg(0, ios::end);
 		int cantidad = archivoIndice.tellg() / sizeof(InscripcionIndex);
+
 		if (cantidad <= 0) return {};
 		//throw runtime_error("das");
 		archivoIndice.seekg(0, ios::beg);
@@ -79,6 +80,7 @@ public:
 
 		//throw runtime_error(to_string(this->getId()));
 		//throw runtime_error(to_string(offsets.size()));
+
 		return offsets;
 	}
 
