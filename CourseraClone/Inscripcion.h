@@ -51,10 +51,11 @@ public:
         : idEstudiante(_idEstudiante), actividad(_actividad),
         progreso(0.0), completado(false), pagado(false)
     {
-       ifstream archivo("Resources/Data/inscripciones.dat", ios::binary | ios::ate); 
+        ifstream archivo("Resources/Data/inscripciones.dat", ios::binary | ios::ate); 
         
         streamoff peso = archivo.tellg();
         id = int(peso / sizeof(InscripcionBinaria));
+        archivo.close();
     }
 
     Inscripcion(InscripcionBinaria& bin, Actividad* act, int off)
@@ -70,7 +71,7 @@ public:
 	
 
     void guardar() {
-        ofstream archivo("Resources/Data/inscripciones.dat", ios::app, ios::binary);
+        ofstream archivo("Resources/Data/inscripciones.dat", ios::app);
         int offsetRegistro = 0;
         if (archivo.is_open()) 
         {
@@ -99,21 +100,19 @@ public:
                 return idEstudiante >= temp.idUsuario;
                 };
 
-            if (cantidad != 0) {
-                int pos = busquedaBinaria(0, cantidad - 1, busqueda);
+            int pos = busquedaBinaria(0, cantidad - 1, busqueda);
 
-                for (int i = cantidad - 1; i >= pos; --i) {
-                    InscripcionIndex temp;
-                    archivoOrden.seekg(i * sizeof(InscripcionIndex), ios::beg);
-                    archivoOrden.read(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
-                    archivoOrden.seekp((i + 1) * sizeof(InscripcionIndex), ios::beg);
-                    archivoOrden.write(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
-                }
-
-                InscripcionIndex nuevo(idEstudiante, offsetRegistro);
-                archivoOrden.seekp(pos * sizeof(InscripcionIndex), ios::beg);
-                archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(InscripcionIndex));
+            for (int i = cantidad - 1; i >= pos; --i) {
+                InscripcionIndex temp;
+                archivoOrden.seekg(i * sizeof(InscripcionIndex), ios::beg);
+                archivoOrden.read(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
+                archivoOrden.seekp((i + 1) * sizeof(InscripcionIndex), ios::beg);
+                archivoOrden.write(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
             }
+
+            InscripcionIndex nuevo(idEstudiante, offsetRegistro);
+            archivoOrden.seekp(pos * sizeof(InscripcionIndex), ios::beg);
+            archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(InscripcionIndex));
             
             archivoOrden.close();
         }

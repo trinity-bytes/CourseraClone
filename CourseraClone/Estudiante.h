@@ -55,6 +55,7 @@ public:
 		archivoIndice.seekg(0, ios::end);
 		int cantidad = archivoIndice.tellg() / sizeof(InscripcionIndex);
 		if (cantidad <= 0) return {};
+		//throw runtime_error("das");
 		archivoIndice.seekg(0, ios::beg);
 
 		auto pred = [&](int pos) {
@@ -89,13 +90,14 @@ public:
 		// 1) Lee todos los offsets del índice
 		vector<int> offsets = obtenerOffsetsInscripciones();
 		//throw runtime_error(to_string(offsets.size()));
+		//throw runtime_error(to_string(offsets.size()));
 		if (offsets.empty()) return;
 		
 		string rutaBin = "Resources/Data/inscripciones.dat";
 
 		//throw runtime_error(to_string(offsets.size()));
 		vector<int> offsetCursos, offsetEspecializaciones;
-
+		
 
 		for (int off : offsets) {
 			InscripcionBinaria bin = leerInscripcionEn(off, rutaBin);
@@ -195,7 +197,7 @@ public:
 		archivo.close();
 	}
 
-	const LinkedList<Boleta>& getBoletas() const {
+	LinkedList<Boleta>& getBoletas() {
 		return boletas;
 	}
 

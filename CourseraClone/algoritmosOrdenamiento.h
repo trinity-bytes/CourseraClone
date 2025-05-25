@@ -46,7 +46,7 @@ void merge(vector<T>& arr, int l, int r, int mid) {
 
 template <typename T>
 void mergeSort(vector<T>& arr, int l, int r) {
-	if (r - l == 1) return;
+	if (l >= r) return;
 
 	int mid = l + (r - l) / 2;
 	mergeSort(arr, l, mid);

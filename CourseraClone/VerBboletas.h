@@ -115,10 +115,10 @@ public:
     {
         // Cargar boletas desde el estudiante
         // Problema
-        LinkedList<Boleta> boletasLista = estudiante.getBoletas();
+        LinkedList<Boleta>& boletasLista = estudiante.getBoletas();
 
         // Convertir la lista enlazada a un vector para facilitar el manejo
-        for (int i = 0; i < boletasLista.getTamano(); i++) {
+        for (int i = 1; i <= boletasLista.getTamano(); i++) {
             boletas.push_back(boletasLista.get(i));
         }
         /*
