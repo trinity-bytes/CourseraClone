@@ -193,20 +193,10 @@ private:
         Usuario usuario;
 
         if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
-            estudiante.setNombre(nombre);
-            estudiante.setUsername(email);
-            if (!password.empty()) {
-                estudiante.setContrasena(password);
-            }
-            estudiante.guardar();
+            estudiante.updateInfo(nombre, email, password);
         }
         else if (tipoUsuario == TipoUsuario::EMPRESA) {
-            empresa.setNombre(nombre);
-            empresa.setUsername(email);
-            if (!password.empty()) {
-                empresa.setContrasena(password);
-            }
-            empresa.guardar();
+            empresa.updateInfo(nombre, email, password);
         }
     }
 

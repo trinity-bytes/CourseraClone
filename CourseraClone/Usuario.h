@@ -331,6 +331,147 @@ public:
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
     // Dentro de class Usuario:
 public:
+    bool updateInfo(string& nuevoNombreCompleto, string& nuevoUsername,string& nuevaContrasena) {
+        if (this->id == -1) {
+            cerr << "Error: Usuario ID no válido para actualización." << endl;
+            return false;
+        }
+
+        string dataFilePath = getDataFilePath(this->tipoUsuario);
+        string indexFilePath = getIndexFilePath(this->tipoUsuario);
+
+        fstream indexFileAccess(indexFilePath, ios::binary | ios::in); 
+        if (!indexFileAccess.is_open()) {
+            cerr << "Error: No se pudo abrir el archivo de índice para leer: " << indexFilePath << endl;
+            return false;
+        }
+
+        indexFileAccess.seekg(this->id * sizeof(UsuarioIndex), ios::beg);
+        UsuarioIndex currentIdxRecord;
+        indexFileAccess.read(reinterpret_cast<char*>(&currentIdxRecord), sizeof(currentIdxRecord));
+
+        if (indexFileAccess.fail()) {
+            cerr << "Error: No se pudo leer el registro de índice en la posición: " << this->id << endl;
+            indexFileAccess.close();
+            return false;
+        }
+        int dataRecordOffset = currentIdxRecord.offset;
+        string oldUsernameInIndex = string(currentIdxRecord.nombreDeUsuario, strnlen(currentIdxRecord.nombreDeUsuario, MAX_FIELD_LEN));
+        indexFileAccess.close(); // Close for now, will reopen if username changes significantly
+
+        // --- 2. Read the current User's Binary Data from .dat file ---
+        // This is to get the existing password hash if nuevaContrasena is empty.
+        UsuarioBinario existingBinRecord;
+        ifstream dataFileRead(dataFilePath, ios::binary);
+        if (!dataFileRead.is_open()) {
+            cerr << "Error: No se pudo abrir el archivo de datos para leer datos existentes: " << dataFilePath << endl;
+            return false;
+        }
+        dataFileRead.seekg(dataRecordOffset, ios::beg);
+        dataFileRead.read(reinterpret_cast<char*>(&existingBinRecord), sizeof(existingBinRecord));
+        if (dataFileRead.fail()) {
+            cerr << "Error: No se pudo leer el registro de datos existente para el offset: " << dataRecordOffset << endl;
+            dataFileRead.close();
+            return false;
+        }
+        dataFileRead.close();
+
+        // --- 3. Determine the Password Hash to Save and Update Object's State ---
+        string passwordHashParaGuardar;
+        if (!nuevaContrasena.empty()) {
+            // User provided a new password, so hash it
+            passwordHashParaGuardar = hashContrasena(nuevaContrasena);
+        }
+        else {
+            // User did not provide a new password, so use the existing hash from the file
+            passwordHashParaGuardar = string(existingBinRecord.contrasenaHash, strnlen(existingBinRecord.contrasenaHash, MAX_FIELD_LEN));
+        }
+
+        // Update the current Usuario object's instance data
+        this->nombreCompleto = nuevoNombreCompleto;
+        this->setUsername(nuevoUsername); // Uses setter for normalization
+        this->contrasenaHash = passwordHashParaGuardar; // Update object's hash for consistency
+
+        // --- 4. Prepare the UsuarioBinario struct with all data to be saved ---
+        UsuarioBinario binDataToSave(this->nombreCompleto, this->username, this->contrasenaHash);
+
+        // --- 5. Overwrite the record in the main data file (.dat) ---
+        fstream dataFileWrite(dataFilePath, ios::binary | ios::in | ios::out); // Open for read/write
+        if (!dataFileWrite.is_open()) {
+            cerr << "Error: No se pudo abrir el archivo de datos para actualizar: " << dataFilePath << endl;
+            return false;
+        }
+        dataFileWrite.seekp(dataRecordOffset, ios::beg); // Go to the specific record's offset
+        dataFileWrite.write(reinterpret_cast<const char*>(&binDataToSave), sizeof(binDataToSave));
+        dataFileWrite.close(); // Close data file after writing
+
+        // --- 6. Handle Index File Update if Username (key) Changed ---
+        if (this->username != oldUsernameInIndex) {
+            // Username has changed. The index file needs to be restructured.
+            // Strategy: Read all, remove old, add new, sort, rewrite.
+            ifstream indexFileRead(indexFilePath, ios::binary);
+            if (!indexFileRead.is_open()) {
+                cerr << "Error: No se pudo reabrir el archivo de índice para procesar cambio de username: " << indexFilePath << endl;
+                return false; // Critical error if index can't be read
+            }
+
+            vector<UsuarioIndex> allIndices;
+            UsuarioIndex tempIdx;
+            while (indexFileRead.read(reinterpret_cast<char*>(&tempIdx), sizeof(UsuarioIndex))) {
+                allIndices.push_back(tempIdx);
+            }
+            indexFileRead.close();
+
+            bool removed = false;
+            for (auto it = allIndices.begin(); it != allIndices.end(); ++it) {
+                if (it->offset == dataRecordOffset) { // Match by the unique data offset
+                    allIndices.erase(it);
+                    removed = true;
+                    break;
+                }
+            }
+
+            if (!removed) {
+                // This case implies an inconsistency, as the record we just updated in the .dat file
+                // should have had a corresponding index entry.
+                cerr << "Error crítico: No se encontró el registro de índice antiguo (offset: " << dataRecordOffset
+                    << ") durante la actualización del nombre de usuario. El índice NO se actualizó." << endl;
+                return false; // Prevent leaving index in a more broken state
+            }
+
+            allIndices.push_back(UsuarioIndex(this->username, dataRecordOffset)); // Add new index entry
+
+            sort(allIndices.begin(), allIndices.end(), [](const UsuarioIndex& a, const UsuarioIndex& b) {
+                return strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN) < 0;
+                });
+
+            ofstream indexFileRewrite(indexFilePath, ios::binary | ios::trunc); // Truncate and write
+            if (!indexFileRewrite.is_open()) {
+                cerr << "Error: No se pudo abrir el archivo de índice para reescribir: " << indexFilePath << endl;
+                return false;
+            }
+            for (const auto& idxEntry : allIndices) {
+                indexFileRewrite.write(reinterpret_cast<const char*>(&idxEntry), sizeof(idxEntry));
+            }
+            indexFileRewrite.close();
+
+            bool idUpdated = false;
+            for (size_t i = 0; i < allIndices.size(); ++i) {
+                if (allIndices[i].offset == dataRecordOffset) {
+                    this->id = static_cast<int>(i);
+                    idUpdated = true;
+                    break;
+                }
+            }
+            if (!idUpdated) {
+                cerr << "Advertencia: No se pudo actualizar el ID del objeto Usuario después de la reordenación del índice." << endl;
+            }
+        }
+        // If username didn't change, no index file modification is needed.
+
+        return true; // Update successful
+    }
+
     int buscarIndexUsuario(string _username, TipoUsuario tipoUsuario) {
         // 1) Normalizar a minúsculas
         for (char& c : _username) {
