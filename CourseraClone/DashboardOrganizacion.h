@@ -64,13 +64,29 @@ private:
     vector<ElementoMenu> cursos;
     vector<ElementoMenu> especializaciones;
 
-    void cargarDatos() {
+    void cargarDatos(GestionadorCursos& gestion) {
         // Cargar cursos y especializaciones de la organizaci�n
+        for (int i = 1; i <= gestion.getCursos().getTamano(); i++) {
+            Curso* c = gestion.getCursos().get(i);
+            if (c->getIdEmpresa() == idOrganizacion) {
+                cursos.emplace_back(c->getTitulo(), c->getDescripcion());
+            }
+        }
+        cursosPublicados = cursos.size();
+
+        for (int i = 1; i <= gestion.getEspecializaciones().getTamano(); i++) {
+            Especializacion* e = gestion.getEspecializaciones().get(i);
+            if (e->getIdEmpresa() == idOrganizacion) {
+                especializaciones.emplace_back(e->getTitulo(), e->getDescripcion());
+            }
+        }
+        especialidadesPublicadas = especializaciones.size();
+
         if (cursos.empty()) {
             for (int i = 0; i < 3; i++) {
                 cursos.emplace_back("Curso " + to_string(i + 1), "Descripci�n del curso " + to_string(i + 1));
             }
-        }
+        } 
 
         if (especializaciones.empty()) {
             for (int i = 0; i < 3; i++) {
@@ -241,13 +257,13 @@ private:
     }
 
 public:
-    DashboardOrganizacion(int _idOrganizacion = 1, string _nombreOrganizacion = "Organizaci�n de Prueba")
+    DashboardOrganizacion(int _idOrganizacion = 1, string _nombreOrganizacion = "Organizaci�n de Prueba", GestionadorCursos& gestion = GestionadorCursos())
         : seccionActual(SECCION_HEADER), elementoActual(0),
         seccionAnterior(-1), elementoAnterior(-1),
         primeraRenderizacion(true), idOrganizacion(_idOrganizacion),
         nombreOrganizacion(_nombreOrganizacion) {
 
-        cargarDatos();
+        cargarDatos(gestion);
     }
 
     ResultadoPantalla ejecutar() override {

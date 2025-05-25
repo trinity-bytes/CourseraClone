@@ -1,4 +1,4 @@
-1
+0
 1
 Microsoft Learning
 Introducción a la Programación en C++
@@ -15,7 +15,7 @@ Herencia y polimorfismo
 Conceptos avanzados de POO para crear código más flexible
 Manejo de excepciones y archivos
 Técnicas para manejar errores y trabajar con archivos externos
-2
+0
 1
 Google Academy
 Python para Ciencia de Datos
@@ -73,7 +73,7 @@ Modelo relacional
 Diseño de bases de datos y normalización
 Optimización de consultas
 Indices y técnicas para mejorar el rendimiento
-3
+0
 2
 Microsoft Learning
 Especialización en Desarrollo .NET Full Stack

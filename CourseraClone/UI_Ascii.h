@@ -197,7 +197,7 @@ inline void UI_OrganizationDashboard()
    ║   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█             │                                  ¯¯¯¯¯¯¯¯¯¯¯¯¯  ¯¯¯¯¯¯¯¯¯¯¯¯¯   ║
    ║                                                                                                                ║
    ║      ┌───────────────────────────┬───────────────────────────────────┬──────────────────────────────────┐      ║
-   ║      │ Cursos publicados: 35     │ Especialidades publicadas: 10     │ Estudiantes inscritos: 342       │      ║
+   ║      │ Cursos publicados:        │ Especialidades publicadas:        │ Estudiantes inscritos: 342       │      ║
    ║      └───────────────────────────┴───────────────────────────────────┴──────────────────────────────────┘      ║
    ║                                                                                                                ║
    ║      EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MIS CURSOS                                                ║

@@ -176,7 +176,7 @@ public:
 					break;
 				case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
 					if (empresa) {
-						pantallaActual = make_unique<DashboardOrganizacion>(empresa->getId(), empresa->getNombreCompleto());
+						pantallaActual = make_unique<DashboardOrganizacion>(empresa->getId(), empresa->getNombreCompleto(), *gestionadorCursos.get());
 					}
 					else {
 						// En caso de error, volvemos a la pantalla de login
