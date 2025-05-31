@@ -146,5 +146,14 @@
     <ClInclude Include="VerBboletas.h">
       <Filter>Header Files\Pantallas</Filter>
     </ClInclude>
+    <ClInclude Include="HashTable.h">
+      <Filter>Header Files\Estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="HashEntity.h">
+      <Filter>Header Files\Estructuras</Filter>
+    </ClInclude>
+    <ClInclude Include="BinarySearchTree.h">
+      <Filter>Header Files\Estructuras</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

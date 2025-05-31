@@ -83,6 +83,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>User32.lib</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -119,6 +120,7 @@
     <ClInclude Include="Actividad.h" />
     <ClInclude Include="algoritmosBusqueda.h" />
     <ClInclude Include="algoritmosOrdenamiento.h" />
+    <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="Boleta.h" />
     <ClInclude Include="Clase.h" />
     <ClInclude Include="Controladora.h" />
@@ -132,6 +134,8 @@
     <ClInclude Include="ExplorarCursosYEspecialidades.h" />
     <ClInclude Include="ExtendedFunctions.h" />
     <ClInclude Include="GestionadorCursos.h" />
+    <ClInclude Include="HashEntity.h" />
+    <ClInclude Include="HashTable.h" />
     <ClInclude Include="Inscripcion.h" />
     <ClInclude Include="InscripcionEspecialidad.h" />
     <ClInclude Include="LandingPage.h" />
