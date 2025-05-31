@@ -280,15 +280,23 @@ private:
     }
 
     void cargarDatosLanding(LinkedList<Curso*>& cursosDatos, LinkedList<Especializacion*>& especializacionesDatos, int maximo) {
-        PriorityQueue<Curso*> priorityCursosLandingPage(maximo);
-        PriorityQueue<Especializacion*> priorityEspecializacionesLandingPage(maximo);
+        auto ordenadoCursos = [](Curso* c1, Curso* c2) {
+            return c1->getCantidadAlumnos() < c2->getCantidadAlumnos();
+            };
+        auto ordenadoEspecializaciones = [](Especializacion* e1, Especializacion* e2) {
+            return e1->getCantidadAlumnos() < e2->getCantidadAlumnos();
+            };
+
+        // Transformamos lamba al struct Comparador con decltype
+        PriorityQueue<Curso*, decltype(ordenadoCursos)> priorityCursosLandingPage(maximo, ordenadoCursos);
+        PriorityQueue<Especializacion*, decltype(ordenadoEspecializaciones)> priorityEspecializacionesLandingPage(maximo, ordenadoEspecializaciones);
 
         auto cantidad = [](Actividad* a) {
             return a->getCantidadAlumnos();
             };
         int cantidadTotal;
-        priorityCursosLandingPage.llenarDesde<int>(cursosDatos, cantidad);
-        priorityEspecializacionesLandingPage.llenarDesde<int>(especializacionesDatos, cantidad);
+        priorityCursosLandingPage.llenarDesde(cursosDatos);
+        priorityEspecializacionesLandingPage.llenarDesde(especializacionesDatos);
 
 		vector<int> idsCursos, idsEspecializaciones;
         vector<string> titulosCursos, descripcionesCursos, titulosEspecializaciones, descripcionesEspecializaciones;
@@ -298,6 +306,8 @@ private:
         auto descripcionActividad = [](Actividad* a) { // Retorna el dato de inscripción
             return a->getDescripcion();
             };
+        priorityCursosLandingPage.ordenar();
+        priorityEspecializacionesLandingPage.ordenar();
 
 		auto idActividad = [](Actividad* a) { return a->getId(); };
         idsCursos = priorityCursosLandingPage.extraerDato<int>(idActividad);

@@ -119,6 +119,7 @@
     <ClInclude Include="Actividad.h" />
     <ClInclude Include="algoritmosBusqueda.h" />
     <ClInclude Include="algoritmosOrdenamiento.h" />
+    <ClInclude Include="BinaryHeap.h" />
     <ClInclude Include="Boleta.h" />
     <ClInclude Include="Clase.h" />
     <ClInclude Include="Controladora.h" />

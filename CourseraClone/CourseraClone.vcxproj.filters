@@ -146,5 +146,8 @@
     <ClInclude Include="VerBboletas.h">
       <Filter>Header Files\Pantallas</Filter>
     </ClInclude>
+    <ClInclude Include="BinaryHeap.h">
+      <Filter>Header Files\Estructuras</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

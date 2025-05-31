@@ -1,97 +1,80 @@
 #pragma once
-#include "Nodo.h"
-#include "vector"
+#include "BinaryHeap.h"
+#include "LinkedList.h"
+#include <algorithm>
 
 using namespace std;
 
-template <typename T>
+template <typename T, typename Comparador = comparadorDefecto<T> >
 class PriorityQueue {
 private:
-	Nodo<T>* head;
-	Nodo<T>* tail;
-	int tamano;
-	const int tamanoMaximo;
+	BinaryHeap<T, Comparador> monticulo;
+	int tamano, tamanoMaximo;
 
 public:
-	PriorityQueue(int _tamanoMaximo) : head(nullptr), tail(nullptr), tamano(0), tamanoMaximo(_tamanoMaximo) {}
-	PriorityQueue() : head(nullptr), tail(nullptr), tamano(0), tamanoMaximo(10) {}
+	PriorityQueue(int _tamanoMaximo = 3, Comparador comp = Comparador()) : tamano(0), tamanoMaximo(_tamanoMaximo), monticulo(comp) {}
+
+	void enqueue(T valor) {
+		monticulo.insertar(valor);
+		tamano++;
+	}
+
+	T dequeue() {
+		if (estaVacio()) return T();
+		return monticulo.extraerRaiz();
+	}
+
+	T front() {
+		if (estaVacio()) return T();
+		return monticulo.obtenerRaiz();
+	}
+
 	~PriorityQueue() {
-		while (head) {
-			Nodo<T>* current = head;
-			head = head->next;
-			delete current;
+		while (!monticulo.estaVacio()) {
+			T nuevo = monticulo.extraerRaiz();
 		}
 	}
 
 	void eliminarExceso() {
-		if (tamano > tamanoMaximo) {
-			Nodo<T>* current = head;
-			if (current->next == nullptr) {
-				delete current;
-				head = nullptr;
-			}
-			else {
-				while (current->next->next != nullptr) {
-					current = current->next;
-				}
-				delete current->next;
-				current->next = nullptr;
-				tail = current;
-			}
+		while (tamano > tamanoMaximo) {
+			monticulo.eliminarRaiz();
 			tamano--;
 		}
 	}
 
-	template <typename valor, typename metodoOrden>
-	void enqueue(T nodoAgregar, metodoOrden requerido) {
-		Nodo<T>* nuevoNodo = new Nodo<T>(nodoAgregar);
-		valor val = requerido(nuevoNodo->data);
-
-		if (head == nullptr || requerido(head->data) < val) {
-			nuevoNodo->next = head;
-			head = nuevoNodo;
-		}
-		else {
-			Nodo<T>* current = head;
-			while (current->next != nullptr && requerido(current->next->data) >= val) {
-				current = current->next;
-			}
-			nuevoNodo->next = current->next;
-			current->next = nuevoNodo;
-		}
-		tamano++;
-
-		eliminarExceso();
-	}
-
-	template <typename valor, typename metodoOrden>
-	void llenarDesde(LinkedList<T>& lista, metodoOrden requerido) {
+	void llenarDesde(LinkedList<T>& lista) {
 		Nodo<T>* current = lista.getHead();
 		while (current != nullptr) {
-			enqueue<valor>(current->data, requerido);
+			enqueue(current->data);
 			current = current->next;
 		}
+		tamano = lista.getTamano();
+		eliminarExceso();
 	}
-
+	
 	template <typename valor, typename metodoConseguir>
 	vector<valor> extraerDato(metodoConseguir requerido) {
-		vector<valor> datos;
-		Nodo<T>* current = head;
-		while (current != nullptr) {
-			datos.push_back(requerido(current->data)); 
-			current = current->next;
+		vector<T> clasesBase = monticulo.getElementos();
+		vector<valor> resultado;
+		for (int i = 0; i < monticulo.tamano(); i++) {
+			resultado.push_back(requerido(clasesBase[i]));
 		}
-		return datos;
+
+		return resultado;
 	}
 
-	T dequeue() {
-		if (head == nullptr) return T();
-		T valor = head->data;
-		Nodo<T>* temp = head;
-		head = head->next;
-		delete temp;
-		tamano--;
-		return valor;
+	vector<T> getElementos() {
+		return monticulo.getElementos();
+	}
+
+	void ordenar() {
+		monticulo.ordenar();
+	}
+
+	vector<T> getElementosOrdenados() {
+		vector<T> elementos = monticulo.getElementos();
+		sort(elementos.begin(), elementos.end(), Comparador()); // agregar metodo de sort
+		return elementos;
 	}
 
 	int getTamano() {
