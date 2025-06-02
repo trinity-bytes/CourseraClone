@@ -1,236 +1,231 @@
-# Plan de ImplementaciÛn: CourseraClone - Fase Cliente-Servidor y Nuevas Funcionalidades
+Ôªø# Plan de Implementaci√≥n: CourseraClone - Fase Cliente-Servidor
 
-**DuraciÛn Total Estimada:** 3 Semanas
+## Informaci√≥n General del Proyecto
 
-**Objetivo General:** Evolucionar el sistema CourseraClone para que opere bajo una arquitectura cliente-servidor, donde un ˙nico ejecutable pueda actuar como cliente o servidor. Integrar nuevas estructuras de datos y funcionalidades requeridas, incluyendo gestiÛn avanzada de cursos, especializaciones, inscripciones, sistema de recomendaciones y filtros mejorados.
+**Duraci√≥n Total:** 3 Semanas  
+**Objetivo General:** Evolucionar el sistema CourseraClone hacia una arquitectura cliente-servidor con nuevas estructuras de datos y funcionalidades avanzadas.
 
-**Principios Clave:**
-*   **Un ⁄nico Ejecutable:** Inicio en modo cliente o servidor vÌa argumento.
-*   **Servidor como Cerebro:** El servidor maneja archivos, estructuras de datos complejas y lÛgica de negocio.
-*   **Cliente Ligero:** Solicita operaciones y presenta datos.
-*   **Protocolo de Red Simple y Evolutivo:** Basado en texto, expandido incrementalmente.
-*   **Desarrollo Iterativo:** Funcionalidades y estructuras se integran progresivamente.
+### Principios Clave
+- **Un √önico Ejecutable:** Inicio en modo cliente o servidor mediante argumentos
+- **Servidor como Cerebro:** Maneja archivos, estructuras de datos complejas y l√≥gica de negocio
+- **Cliente Ligero:** Solicita operaciones y presenta datos
+- **Protocolo de Red Simple y Evolutivo:** Basado en texto, expandible incrementalmente
+- **Desarrollo Iterativo:** Funcionalidades se integran progresivamente
 
-**AsignaciÛn General de Responsabilidades (Estructuras de Datos):**
-*   **Santi:** `BinaryHeap`, `PriorityQueue` (mejorado).
-*   **Mauricio:** `BST` (¡rbol Binario de B˙squeda), `HashMap`.
-*   **Jahat:** `AVLTree`, `Graph`.
-
----
-
-## Semana 1: Red MÌnima Indispensable + Estructuras de Datos Base
-
-**Objetivos Principales de la Semana:**
-1.  **Conectividad de Red B·sica:** Cliente se conecta a servidor, PING/PONG funcional.
-2.  **Modo Dual de Inicio:** Programa se inicia como cliente o servidor (`-server`, `-client <ip>`).
-3.  **`Controladora` Consciente del Modo:** `Controladora` sabe en quÈ modo opera.
-4.  **ImplementaciÛn Base de Estructuras de Datos:** Clases template definidas y con pruebas unitarias b·sicas.
-
-**Tareas Detalladas y Responsables:**
-
-### 1. Networking y Arquitectura Base
-    *   **Tarea:** Modificar `main.cpp` para argumentos de inicio (`-server`, `-client <ip> [puerto]`).
-        *   **Responsable:** (Definir, ej: Jahat)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Implementar `NetworkManagerServer.h/.cpp` (Winsock TCP: `iniciarServidor`, `aceptarCliente`, `recibirDatos`, `enviarDatos`).
-        *   **Responsable:** Jahat
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Implementar `NetworkManagerClient.h/.cpp` (Winsock TCP: `conectarAServidor`, `enviarDatos`, `recibirDatos`, `desconectar`).
-        *   **Responsable:** Mauricio
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Definir y implementar protocolo PING/PONG.
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Adaptar `Controladora` (atributos `isServerMode`, `netClient`, `netServerInstance`; constructor modificado).
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Pruebas de conexiÛn b·sica y PING/PONG.
-        *   **Responsable:** Todos
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-
-### 2. ImplementaciÛn Base de Estructuras de Datos
-    *   **Tarea:** Template `BinaryHeap<T>` y `PriorityQueue<T>` (usando `BinaryHeap`).
-        *   **Responsable:** Santi
-        *   **Funcionalidades Clave:** `insertar`, `extraerMax/Min`, `peek`.
-        *   **Pruebas Unitarias:** Casos b·sicos, inserciÛn m˙ltiple, extracciÛn.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Template `BST<T>` (¡rbol Binario de B˙squeda).
-        *   **Responsable:** Mauricio
-        *   **Funcionalidades Clave:** `insertar`, `buscar`, `eliminar` (opcional si es complejo para inicio), recorridos.
-        *   **Pruebas Unitarias:** Casos b·sicos, b˙squeda de existente/inexistente.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Template `HashMap<K, V>`.
-        *   **Responsable:** Mauricio
-        *   **Funcionalidades Clave:** `put/insertar`, `get/buscar`, `remove/eliminar`, manejo de colisiones (ej. encadenamiento).
-        *   **Pruebas Unitarias:** InserciÛn, b˙squeda, actualizaciÛn, eliminaciÛn, manejo de colisiones.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Template `AVLTree<T>`.
-        *   **Responsable:** Jahat
-        *   **Funcionalidades Clave:** `insertar` (con rotaciones para balanceo), `buscar`. `eliminar` (opcional si es complejo para inicio).
-        *   **Pruebas Unitarias:** InserciÛn simple, inserciones que requieran rotaciones (RR, LL, RL, LR), b˙squeda.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Template `Graph<TNodeData>` (ej. Lista de Adyacencia).
-        *   **Responsable:** Jahat
-        *   **Funcionalidades Clave:** `addNodo`, `addArista` (dirigida/no dirigida), `getNodosAdyacentes`.
-        *   **Pruebas Unitarias:** CreaciÛn de nodos, adiciÛn de aristas, verificaciÛn de adyacencia.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-
-### 3. DocumentaciÛn
-    *   **Tarea:** Iniciar documento de protocolo de red (solo PING/PONG).
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** DocumentaciÛn b·sica (comentarios en cÛdigo) para las estructuras de datos.
-        *   **Responsable:** Todos
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-
-**Entregable Clave Semana 1:** Un esqueleto de aplicaciÛn cliente-servidor que puede comunicarse mÌnimamente, y las clases base de todas las estructuras de datos listas para ser integradas.
+### Asignaci√≥n de Responsabilidades por Estructuras de Datos
+- **Santi:** `BinaryHeap`, `PriorityQueue` (mejorado)
+- **Mauricio:** `BST` (√Årbol Binario de B√∫squeda), `HashMap`
+- **Jahat:** `AVLTree`, `Graph`
 
 ---
 
-## Semana 2: Desarrollo Intensivo de Funcionalidades en el Servidor + Protocolo para Exponerlas
+## SEMANA 1: Fundamentos de Red y Estructuras Base
 
-**Objetivos Principales de la Semana:**
-1.  **Servidor Funcional:** El servidor implementa lÛgica de negocio usando las nuevas estructuras y accede a archivos.
-2.  **Cliente Interactivo:** Cliente realiza operaciones b·sicas (Login, Registro, ver listas) vÌa red.
-3.  **Protocolo Expandido:** Para soportar las nuevas funcionalidades.
+### üéØ Objetivos Principales
+1. Establecer conectividad de red b√°sica (PING/PONG funcional)
+2. Implementar modo dual de inicio del programa
+3. Adaptar `Controladora` para ser consciente del modo de operaci√≥n
+4. Crear implementaci√≥n base de todas las estructuras de datos
 
-**Tareas Detalladas y Responsables:**
+### üìã Tareas Detalladas
 
-### 1. Login y Registro (Cliente-Servidor)
-    *   **Tarea (Servidor):** `NetworkManagerServer` maneja comandos `LOGIN`, `REGISTER`. Llama a `Usuario::login_local()`, `Usuario::guardar_local()`.
-        *   **Responsable:** Jahat (Networking), Mauricio (LÛgica `Usuario`)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Cliente):** Pantallas `Login`, `Registro` usan `netClient` para enviar solicitudes y procesar respuestas.
-        *   **Responsable:** Santi (UI), Mauricio (LÛgica `Usuario` cliente)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Protocolo):** Definir mensajes para `LOGIN`, `REGISTER` y sus respuestas (Èxito/fallo, datos de usuario).
-        *   **Responsable:** Todos
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+#### 1. Networking y Arquitectura Base
 
-### 2. GestiÛn de Cursos y Especializaciones (Servidor y Cliente)
-    *   **Tarea (Servidor):** `GestionadorCursos` carga datos de `actividades.txt`.
-        *   **Responsable:** (Definir, ej: Mauricio)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Servidor - Landing Page):** Usar `PriorityQueue` (Santi) para obtener N cursos/especializaciones populares. Comando `GET_LANDING_DATA`.
-        *   **Responsable:** Santi (LÛgica `PriorityQueue`), Jahat (Networking)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Cliente - Landing Page):** Solicita y muestra datos de `GET_LANDING_DATA`.
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Servidor - Acceso R·pido):** Usar `HashMap` (Mauricio) para acceso por ID a `Curso*` y `Especializacion*`.
-        *   **Responsable:** Mauricio
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Servidor - Crear Curso):** Usar `AVLTree` (Jahat) para verificar duplicados por tÌtulo al recibir `CREATE_COURSE`.
-        *   **Responsable:** Jahat (LÛgica `AVLTree` y Networking)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Cliente - Crear Curso):** UI para enviar `CREATE_COURSE`.
-        *   **Responsable:** (Definir, ej: Santi)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Servidor - Explorar):** Comando `GET_COURSES [sort_by_enrollment=desc]` (filtros b·sicos).
-        *   **Responsable:** Mauricio (LÛgica de filtrado), Jahat (Networking)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Cliente - Explorar):** `ExplorarCursosYEspecialidades` solicita y muestra listas.
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+| Tarea | Responsable | Estado | Descripci√≥n |
+|-------|-------------|---------|-------------|
+| Modificar `main.cpp` para argumentos de inicio | Jahat | [ ] | Implementar flags `-server`, `-client <ip> [puerto]` |
+| `NetworkManagerServer.h/.cpp` | Jahat | [ ] | Winsock TCP: `iniciarServidor`, `aceptarCliente`, `recibirDatos`, `enviarDatos` |
+| `NetworkManagerClient.h/.cpp` | Mauricio | [ ] | Winsock TCP: `conectarAServidor`, `enviarDatos`, `recibirDatos`, `desconectar` |
+| Protocolo PING/PONG | Santi | [ ] | Definir e implementar protocolo b√°sico de comunicaci√≥n |
+| Adaptar `Controladora` | Santi | [ ] | Agregar atributos `isServerMode`, `netClient`, `netServerInstance` |
+| Pruebas de conexi√≥n b√°sica | Todos | [ ] | Verificar funcionamiento PING/PONG |
 
-### 3. GestiÛn de Inscripciones (Servidor y Cliente)
-    *   **Tarea (Servidor):** Usar `HashMap` (Mauricio) para cargar y gestionar inscripciones desde `inscripciones.dat`. Comando `GET_MY_INSCRIPTIONS`.
-        *   **Responsable:** Mauricio
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Cliente):** `DashboardEstudiante` solicita sus inscripciones.
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Servidor y Cliente):** LÛgica de `Estudiante::inscribirseACurso/Especializacion` envÌa comando `INSCRIBE` al servidor. Servidor actualiza archivos y estructuras.
-        *   **Responsable:** Mauricio (LÛgica `Estudiante`), Jahat (Networking)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+#### 2. Implementaci√≥n de Estructuras de Datos
 
-### 4. Sistema de Recomendaciones (Base)
-    *   **Tarea (Servidor):** `Graph` (Jahat) se puebla con cursos y sus relaciones con especializaciones. Comando `GET_RECOMMENDATIONS_FOR_SPECIALIZATION`.
-        *   **Responsable:** Jahat
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Cliente):** `MostrarEspecialidad` solicita y muestra recomendaciones.
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+##### Santi - BinaryHeap y PriorityQueue
+- **Funcionalidades:** `insertar`, `extraerMax/Min`, `peek`
+- **Pruebas:** Casos b√°sicos, inserci√≥n m√∫ltiple, extracci√≥n
+- **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
 
-### 5. DocumentaciÛn
-    *   **Tarea:** Actualizar y expandir el documento de protocolo de red con todos los nuevos comandos.
-        *   **Responsable:** Todos
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+##### Mauricio - BST y HashMap
+**BST (√Årbol Binario de B√∫squeda):**
+- **Funcionalidades:** `insertar`, `buscar`, `eliminar` (opcional), recorridos
+- **Pruebas:** Casos b√°sicos, b√∫squeda existente/inexistente
+- **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
 
-**Entregable Clave Semana 2:** Un sistema donde las funcionalidades principales (login, registro, visualizaciÛn de cursos/especializaciones, creaciÛn de cursos, inscripciones b·sicas, recomendaciones b·sicas) operan en el modelo cliente-servidor, con el servidor utilizando las nuevas estructuras de datos.
+**HashMap:**
+- **Funcionalidades:** `put/insertar`, `get/buscar`, `remove/eliminar`, manejo de colisiones
+- **Pruebas:** Inserci√≥n, b√∫squeda, actualizaci√≥n, eliminaci√≥n, colisiones
+- **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+
+##### Jahat - AVLTree y Graph
+**AVLTree:**
+- **Funcionalidades:** `insertar` (con rotaciones), `buscar`, `eliminar` (opcional)
+- **Pruebas:** Inserci√≥n simple, rotaciones (RR, LL, RL, LR), b√∫squeda
+- **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+
+**Graph (Lista de Adyacencia):**
+- **Funcionalidades:** `addNodo`, `addArista`, `getNodosAdyacentes`
+- **Pruebas:** Creaci√≥n de nodos, adici√≥n de aristas, verificaci√≥n de adyacencia
+- **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+
+#### 3. Documentaci√≥n Inicial
+
+| Tarea | Responsable | Estado |
+|-------|-------------|---------|
+| Documento de protocolo de red (PING/PONG) | Santi | [ ] |
+| Comentarios en c√≥digo de estructuras | Todos | [ ] |
+
+### üéÅ Entregable Semana 1
+Esqueleto de aplicaci√≥n cliente-servidor con comunicaci√≥n b√°sica y clases base de estructuras de datos implementadas.
 
 ---
 
-## Semana 3: Funcionalidades Completas, Recomendaciones Avanzadas, UI Cliente Robusta y Pruebas Exhaustivas
+## SEMANA 2: Desarrollo de Funcionalidades Core
 
-**Objetivos Principales de la Semana:**
-1.  **Sistema Completo y Robusto:** Todas las funcionalidades requeridas operan de forma estable.
-2.  **Recomendaciones y Filtros Avanzados:** Implementados y funcionales.
-3.  **Pruebas Integrales:** Sistema probado exhaustivamente.
-4.  **DocumentaciÛn Final.**
+### üéØ Objetivos Principales
+1. Servidor funcional con l√≥gica de negocio usando nuevas estructuras
+2. Cliente interactivo para operaciones b√°sicas (Login, Registro, listas)
+3. Protocolo expandido para soportar nuevas funcionalidades
 
-**Tareas Detalladas y Responsables:**
+### üìã Tareas Detalladas
 
-### 1. Funcionalidades Avanzadas del Servidor
-    *   **Tarea (Servidor - Recomendaciones):** Expandir `Graph` (Jahat) para recomendaciones m·s sofisticadas (cursos comunes entre especializaciones, etc.). Implementar algoritmos de b˙squeda en grafos. Nuevos comandos `GET_ADVANCED_RECOMMENDATIONS`.
-        *   **Responsable:** Jahat
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Servidor - Filtros):** Implementar filtros avanzados (m˙ltiples criterios) para `ExplorarCursosYEspecialidades` (Mauricio).
-        *   **Responsable:** Mauricio
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+#### 1. Sistema de Autenticaci√≥n
 
-### 2. UI Cliente y Flujos Completos
-    *   **Tarea:** Asegurar que todas las pantallas (`MostrarCurso`, `DashboardEstudiante`, `DashboardOrganizacion`, `PerfilEstudiante`, `EditarPerfil`, etc.) interact˙en fluidamente con el servidor para todas sus funcionalidades (incluyendo las avanzadas).
-        *   **Responsable:** Santi (Lidera UI), con apoyo de Mauricio y Jahat para la lÛgica de datos especÌfica.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Manejo adecuado de estados de carga, mensajes de error/Èxito del servidor en toda la UI.
-        *   **Responsable:** Santi
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+##### Login y Registro (Cliente-Servidor)
+| Componente | Responsable | Tarea | Estado |
+|------------|-------------|-------|---------|
+| Servidor | Jahat + Mauricio | `NetworkManagerServer` maneja `LOGIN`, `REGISTER` | [ ] |
+| Cliente | Santi + Mauricio | Pantallas usan `netClient` para solicitudes | [ ] |
+| Protocolo | Todos | Definir mensajes y respuestas de autenticaci√≥n | [ ] |
 
-### 3. Integridad, Validaciones y Manejo de Errores
-    *   **Tarea (Servidor):** Asegurar IDs ˙nicos para todas las entidades. Validar datos de entrada del cliente.
-        *   **Responsable:** Todos (revisar sus mÛdulos)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea (Servidor y Cliente):** Implementar manejo robusto de errores de red y lÛgicos.
-        *   **Responsable:** Todos
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+#### 2. Gesti√≥n de Cursos y Especializaciones
 
-### 4. Pruebas Exhaustivas
-    *   **Tarea:** Pruebas de unidad para toda la lÛgica nueva/modificada.
-        *   **Responsable:** Cada miembro para su cÛdigo.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Pruebas de integraciÛn para cada funcionalidad cliente-servidor.
-        *   **Responsable:** Equipos de 2 (ej. quien hizo el cliente de una feature + quien hizo el servidor).
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Pruebas con m˙ltiples clientes (simulados o reales).
-        *   **Responsable:** Todos
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Pruebas de casos borde y escenarios de error.
-        *   **Responsable:** Todos
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+##### Servidor
+| Funcionalidad | Responsable | Estructura Usada | Estado |
+|---------------|-------------|------------------|---------|
+| Cargar datos de `actividades.txt` | Mauricio | - | [ ] |
+| Landing Page (cursos populares) | Santi + Jahat | `PriorityQueue` | [ ] |
+| Acceso r√°pido por ID | Mauricio | `HashMap` | [ ] |
+| Verificar duplicados en creaci√≥n | Jahat | `AVLTree` | [ ] |
+| Explorar con filtros b√°sicos | Mauricio + Jahat | M√∫ltiples | [ ] |
 
-### 5. DocumentaciÛn Final
-    *   **Tarea:** Finalizar documentaciÛn de estructuras de datos (comentarios Doxygen, etc.).
-        *   **Responsable:** Cada miembro para sus estructuras.
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Completar y pulir el documento de protocolo cliente-servidor.
-        *   **Responsable:** (Definir, ej: Santi o Jahat)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Crear `README.md` con instrucciones de compilaciÛn, ejecuciÛn (cliente/servidor), y descripciÛn general.
-        *   **Responsable:** (Definir, ej: Mauricio)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
-    *   **Tarea:** Breve descripciÛn de la arquitectura del sistema y diagrama de clases actualizado (conceptual).
-        *   **Responsable:** (Definir, ej: Jahat)
-        *   **Estado:** [ ] Pendiente [ ] En Progreso [ ] Completado
+##### Cliente
+| Pantalla | Responsable | Comando Servidor | Estado |
+|----------|-------------|------------------|---------|
+| Landing Page | Santi | `GET_LANDING_DATA` | [ ] |
+| Crear Curso | Santi | `CREATE_COURSE` | [ ] |
+| Explorar | Santi | `GET_COURSES` | [ ] |
 
-**Entregable Clave Semana 3:** Un sistema cliente-servidor robusto, funcional y bien documentado que cumple con todos los requisitos del proyecto.
+#### 3. Sistema de Inscripciones
+
+| Componente | Responsable | Descripci√≥n | Estado |
+|------------|-------------|-------------|---------|
+| Servidor | Mauricio | `HashMap` para gestionar `inscripciones.dat` | [ ] |
+| Cliente Dashboard | Santi | `DashboardEstudiante` solicita inscripciones | [ ] |
+| L√≥gica Inscripci√≥n | Mauricio + Jahat | `Estudiante::inscribirseA*` + comando `INSCRIBE` | [ ] |
+
+#### 4. Sistema de Recomendaciones (Base)
+
+| Componente | Responsable | Descripci√≥n | Estado |
+|------------|-------------|-------------|---------|
+| Servidor | Jahat | `Graph` con cursos y especializaciones | [ ] |
+| Cliente | Santi | `MostrarEspecialidad` muestra recomendaciones | [ ] |
+
+#### 5. Actualizaci√≥n de Documentaci√≥n
+
+| Tarea | Responsable | Estado |
+|-------|-------------|---------|
+| Expandir documento de protocolo | Todos | [ ] |
+
+### üéÅ Entregable Semana 2
+Sistema cliente-servidor con funcionalidades principales operativas: autenticaci√≥n, visualizaci√≥n, creaci√≥n, inscripciones b√°sicas y recomendaciones b√°sicas.
 
 ---
 
-**Consideraciones Adicionales para el Seguimiento:**
-*   **Reuniones Diarias (Stand-ups):** Cortas, para reportar progreso, prÛximos pasos y bloqueos.
-*   **Control de Versiones (Git):** Commits frecuentes y descriptivos. Ramas por funcionalidad o semana. Merges cuidadosos.
-*   **ActualizaciÛn de este Documento:** Al final de cada dÌa o cada dos dÌas, actualizar el estado de las tareas. AÒadir notas o problemas encontrados.
-*   **Flexibilidad:** Estar preparados para reasignar tareas o ajustar prioridades si surgen impedimentos mayores.
+## SEMANA 3: Completar Sistema y Pruebas Exhaustivas
 
-Este formato Markdown deberÌa ser f·cil de mantener y les dar· una visiÛn clara del progreso. °Mucho Èxito!
+### üéØ Objetivos Principales
+1. Sistema completo y robusto con todas las funcionalidades
+2. Recomendaciones y filtros avanzados implementados
+3. Pruebas integrales del sistema completo
+4. Documentaci√≥n final completa
+
+### üìã Tareas Detalladas
+
+#### 1. Funcionalidades Avanzadas del Servidor
+
+| Funcionalidad | Responsable | Descripci√≥n | Estado |
+|---------------|-------------|-------------|---------|
+| Recomendaciones sofisticadas | Jahat | Expandir `Graph` con algoritmos de b√∫squeda | [ ] |
+| Filtros avanzados | Mauricio | M√∫ltiples criterios para exploraci√≥n | [ ] |
+
+#### 2. UI Cliente Completa
+
+| Aspecto | Responsable | Descripci√≥n | Estado |
+|---------|-------------|-------------|---------|
+| Todas las pantallas | Santi (l√≠der) + Mauricio + Jahat | Interacci√≥n fluida con servidor | [ ] |
+| Estados de carga y errores | Santi | Manejo adecuado de respuestas del servidor | [ ] |
+
+#### 3. Integridad y Validaciones
+
+| Aspecto | Responsable | Descripci√≥n | Estado |
+|---------|-------------|-------------|---------|
+| IDs √∫nicos y validaciones | Todos | Revisar integridad en sus m√≥dulos | [ ] |
+| Manejo de errores robusto | Todos | Errores de red y l√≥gicos | [ ] |
+
+#### 4. Pruebas Exhaustivas
+
+| Tipo de Prueba | Responsable | Descripci√≥n | Estado |
+|----------------|-------------|-------------|---------|
+| Pruebas unitarias | Cada miembro | Para su c√≥digo espec√≠fico | [ ] |
+| Pruebas de integraci√≥n | Equipos de 2 | Cliente-servidor por funcionalidad | [ ] |
+| Pruebas con m√∫ltiples clientes | Todos | Simulados o reales | [ ] |
+| Casos borde y errores | Todos | Escenarios extremos | [ ] |
+
+#### 5. Documentaci√≥n Final
+
+| Documento | Responsable | Descripci√≥n | Estado |
+|-----------|-------------|-------------|---------|
+| Estructuras de datos | Cada miembro | Comentarios Doxygen para sus estructuras | [ ] |
+| Protocolo cliente-servidor | Santi o Jahat | Documento completo del protocolo | [ ] |
+| README.md | Mauricio | Instrucciones de compilaci√≥n y ejecuci√≥n | [ ] |
+| Arquitectura del sistema | Jahat | Descripci√≥n y diagrama de clases | [ ] |
+
+### üéÅ Entregable Semana 3
+Sistema cliente-servidor robusto, funcional y bien documentado que cumple todos los requisitos del proyecto.
+
+---
+
+## üìä Metodolog√≠a de Seguimiento
+
+### Reuniones Diarias (Stand-ups)
+- **Formato:** Cortas y enfocadas
+- **Contenido:** Progreso, pr√≥ximos pasos, bloqueos
+- **Duraci√≥n:** 15-20 minutos m√°ximo
+
+### Control de Versiones (Git)
+- **Commits:** Frecuentes y descriptivos
+- **Ramas:** Por funcionalidad o semana
+- **Merges:** Cuidadosos con revisi√≥n de c√≥digo
+
+### Actualizaci√≥n del Plan
+- **Frecuencia:** Cada 1-2 d√≠as
+- **Contenido:** Estado de tareas, notas, problemas encontrados
+- **Responsabilidad:** Compartida entre todos
+
+### Flexibilidad
+- Preparados para reasignar tareas seg√∫n impedimentos
+- Ajustar prioridades seg√∫n necesidades del proyecto
+- Comunicaci√≥n constante para resolver bloqueos
+
+---
+
+## ‚úÖ Leyenda de Estados
+- [ ] **Pendiente:** Tarea no iniciada
+- [ ] **En Progreso:** Tarea en desarrollo
+- [ ] **Completado:** Tarea finalizada y verificada
+
+---
+
+*Documento actualizado para seguimiento del proyecto CourseraClone - Fase Cliente-Servidor*
