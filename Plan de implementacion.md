@@ -35,8 +35,8 @@
 
 | Tarea | Responsable | Estado | Descripción |
 |-------|-------------|---------|-------------|
-| Modificar `main.cpp` para argumentos de inicio | Jahat | [En proceso] | Flags `-server [puerto_servidor]`, `-client <ip> [puerto_servidor]`. Integrar `ConfigManager` |
-| `NetworkManagerServer.h/.cpp` | Jahat | [ ] | Winsock TCP: `iniciarServidor`, `aceptarCliente`, `recibirDatos`, `enviarDatos`. Bucle de escucha básico |
+| Modificar `main.cpp` para argumentos de inicio | Jahat | En proceso | Flags `-server [puerto_servidor]`, `-client <ip> [puerto_servidor]`. Integrar `ConfigManager` |
+| `NetworkManagerServer.h/.cpp` | Jahat | En proceso | Winsock TCP: `iniciarServidor`, `aceptarCliente`, `recibirDatos`, `enviarDatos`. Bucle de escucha básico |
 | `NetworkManagerClient.h/.cpp` | Mauricio | [ ] | Winsock TCP: `conectarAServidor`, `enviarDatos`, `recibirDatos`, `desconectar` |
 | `RequestHandler.h/.cpp` (Esqueleto) | Jahat | [ ] | Clase para parsear futuras peticiones y delegar. Inicialmente solo para PING |
 | Protocolo PING/PONG | Santi | [ ] | Definir e implementar. `RequestHandler` lo procesa |
