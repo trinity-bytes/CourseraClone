@@ -156,4 +156,8 @@
       <Filter>Header Files\Estructuras</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
+    <None Include="..\Plan de implementacion.md" />
+  </ItemGroup>
 </Project>
