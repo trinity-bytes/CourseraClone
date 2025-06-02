@@ -152,6 +152,7 @@
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Registro.h" />
+    <ClInclude Include="RequestHandler.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="UI_Ascii.h" />
     <ClInclude Include="Usuario.h" />

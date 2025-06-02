@@ -1,27 +1,59 @@
+// Define WIN32_LEAN_AND_MEAN to exclude rarely-used stuff from Windows headers
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+// Define NOMINMAX to prevent Windows headers from defining min and max macros
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+// Windows specific headers
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h> // windows.h should be included after winsock2.h if both are needed directly
+
 // Cabeceras propias
 #include "ExtendedFunctions.h"
 #include "Controladora.h"
-// #include "ConfigManager.h" // Se incluirá cuando ConfigManager.h esté disponible
-// #include "Logger.h"         // Se incluirá cuando Logger.h esté disponible
+#include "NetworkManagerServer.h"
+#include "RequestHandler.h" // Asegurarnos de incluir RequestHandler.h para el manejador de peticiones
+// #include "ConfigManager.h" // Se incluirÃ¡ cuando ConfigManager.h estÃ© disponible
+// #include "Logger.h"         // Se incluirÃ¡ cuando Logger.h estÃ© disponible
 
 // Headers de la libreria estandar
 #include <iostream> // Para std::cout, std::cerr
 #include <string>   // Para std::string, std::stoi
-#include <vector>   // No es estrictamente necesario aquí, pero útil para manejo de args más complejo
+#include <vector>   // No es estrictamente necesario aquÃ­, pero Ãºtil para manejo de args mÃ¡s complejo
+#include <thread>   // Para manejo de mÃºltiples clientes
+
+// Link with Ws2_32.lib
+#pragma comment(lib, "Ws2_32.lib")
 
 // maquetacion de funciones
 void SecuenciaInicializacion();
+void ejecutarModoServidor(int puerto);
+void manejarClienteEnHilo(SOCKET clientSocket, RequestHandler& requestHandler);
 // ------------------------
 
-// Modificado para aceptar argumentos de línea de comandos
+// Modificado para aceptar argumentos de lnea de comandos
 int main(int argc, char* argv[])
 {
 	SecuenciaInicializacion();
 
-	// ConfigManager configManager; // Se instanciará y usará cuando esté disponible
-	// Logger logger; // Se usará de forma estática o instanciada según su diseño
+	// Initialize Winsock
+	WSADATA wsaData;
+	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0) {
+		std::cerr << "WSAStartup failed: " << iResult << std::endl;
+		system("pause");
+		return 1;
+	}
 
-	// Valores por defecto (eventualmente se cargarían desde ConfigManager)
+	// ConfigManager configManager; // Se instanciarÃ¡ y usar cuando est disponible
+	// Logger logger; // Se usar de forma esttica o instanciada segn su diseo
+
+	// Valores por defecto (eventualmente se cargaran desde ConfigManager)
 	int defaultServerPort = 12345; // Ejemplo
 	std::string defaultServerIp = "127.0.0.1"; // Ejemplo
 
@@ -30,7 +62,7 @@ int main(int argc, char* argv[])
 	int serverPortToConnectTo = defaultServerPort;
 	int serverListenPort = defaultServerPort;
 
-	// Procesar argumentos de línea de comandos
+	// Procesar argumentos de lnea de comandos
 	if (argc >= 2) {
 		std::string modeArg = argv[1];
 		if (modeArg == "-server") {
@@ -117,17 +149,18 @@ int main(int argc, char* argv[])
 		std::cerr << "Error: No se especifico el modo de operacion." << std::endl;
 		std::cerr << "Uso: " << argv[0] << " -server [puerto_servidor] | -client <ip_servidor> [puerto_servidor]" << std::endl;
 		system("pause");
+		WSACleanup(); // Cleanup Winsock
 		return 1;
 	}
 
 	try
 	{
-		// La instanciación de Controladora se adaptará en una tarea posterior por Santi.
-		// Se le pasarán los parámetros de configuración de red y modo.
-		// Ejemplo de futura instanciación:
+		// La instancin de Controladora se adaptar en una tarea posterior por Santi.
+		// Se le pasarn los parmetros de configuracin de red y modo.
+		// Ejemplo de futura instanciacin:
 		// Controladora app(isServerMode, serverIpToConnectTo, serverPortToConnectTo, serverListenPort);
-		Controladora app; // Por ahora, se mantiene la instanciación original.
-		// Cuando Controladora se actualice, esta línea cambiará para pasarle los parámetros.
+		Controladora app; // Por ahora, se mantiene la instanciacin original.
+		// Cuando Controladora se actualice, esta lnea cambiar para pasarle los parmetros.
 		app.run();
 	}
 	catch (const std::exception& e)
@@ -136,11 +169,80 @@ int main(int argc, char* argv[])
 		std::cerr << "Error en la aplicacion: " << e.what() << std::endl;
 	}
 
+	// Cleanup Winsock
+	WSACleanup();
+
 	system("pause");
-	return 0; // Retornar 0 en caso de finalización exitosa
+	return 0; // Retornar 0 en caso de finalizacin exitosa
 }
 
 void SecuenciaInicializacion()
 {
 	ConfigurarConsola();
+}
+
+// ======================== FUNCIONES DEL SERVIDOR ========================
+
+/**
+ * @brief FunciÃ³n para ejecutar el servidor y manejar mÃºltiples clientes
+ * @param puerto Puerto en el que escucharÃ¡ el servidor
+ */
+void ejecutarModoServidor(int puerto) {
+	NetworkManagerServer servidor;
+	RequestHandler requestHandler;
+
+	std::cout << "[SERVER] Iniciando servidor en puerto " << puerto << "..." << std::endl;
+
+	if (!servidor.iniciarServidor(puerto)) {
+		std::cerr << "[SERVER] Error al iniciar servidor en puerto " << puerto << std::endl;
+		std::cerr << "[SERVER] Verifique que el puerto no estÃ© en uso y que tenga permisos." << std::endl;
+		return;
+	}
+
+	std::cout << "[SERVER] ========================================" << std::endl;
+	std::cout << "[SERVER] Servidor iniciado exitosamente!" << std::endl;
+	std::cout << "[SERVER] Puerto: " << puerto << std::endl;
+	std::cout << "[SERVER] Comandos soportados: PING" << std::endl;
+	std::cout << "[SERVER] Esperando conexiones de clientes..." << std::endl;
+	std::cout << "[SERVER] Presione Ctrl+C para detener el servidor" << std::endl;
+	std::cout << "[SERVER] ========================================" << std::endl;
+
+	// Bucle principal del servidor
+	while (servidor.estaCorriendo()) {
+		// Aceptar cliente (esta es una llamada bloqueante)
+		SOCKET clientSocket = servidor.aceptarCliente();
+
+		if (clientSocket != INVALID_SOCKET) {
+			std::cout << "[SERVER] Â¡Cliente conectado! Creando hilo para manejar la conexiÃ³n..." << std::endl;
+
+			// Crear hilo para manejar cliente (no bloquea para otros clientes)
+			std::thread clienteThread(manejarClienteEnHilo, clientSocket, std::ref(requestHandler));
+			clienteThread.detach(); // Permitir que el hilo se ejecute independientemente
+
+		}
+		else {
+			std::cout << "[SERVER] Error al aceptar cliente o servidor detenido" << std::endl;
+			break;
+		}
+	}
+
+	std::cout << "[SERVER] Deteniendo servidor..." << std::endl;
+	servidor.detenerServidor();
+	std::cout << "[SERVER] Servidor detenido." << std::endl;
+}
+
+/**
+ * @brief FunciÃ³n para manejar un cliente en un hilo separado
+ * @param clientSocket Socket del cliente a manejar
+ * @param requestHandler Referencia al manejador de peticiones
+ */
+void manejarClienteEnHilo(SOCKET clientSocket, RequestHandler& requestHandler) {
+	NetworkManagerServer serverInstance; // Instancia local para usar mÃ©todos de utilidad
+
+	std::cout << "[SERVER] Iniciando manejo de cliente en hilo separado" << std::endl;
+
+	// Usar el mÃ©todo integrado que ya maneja la comunicaciÃ³n completa
+	serverInstance.manejarCliente(clientSocket, requestHandler, true);
+
+	std::cout << "[SERVER] Cliente desconectado, finalizando hilo" << std::endl;
 }

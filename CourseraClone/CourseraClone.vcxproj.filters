@@ -161,6 +161,9 @@
     <ClInclude Include="NetworkManagerServer.h">
       <Filter>Header Files\Server_Side</Filter>
     </ClInclude>
+    <ClInclude Include="RequestHandler.h">
+      <Filter>Header Files\Server_Side</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
