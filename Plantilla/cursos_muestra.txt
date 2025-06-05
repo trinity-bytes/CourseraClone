@@ -1,4 +1,0 @@
-Introduccion a C++->Conceptos basicos de programacion.
-Bases de Datos SQL->Gestiona y consulta datos.
-Algoritmos y Estructuras->Mejora tu logica de programacion.
-Cloud Computing->Fundamentos de la nube.
