@@ -28,9 +28,6 @@
     <Filter Include="Header Files\Estructuras">
       <UniqueIdentifier>{c15c9ef9-2275-4bec-ab19-482ad49cc9af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Server_Side">
-      <UniqueIdentifier>{3f95238f-5db1-459a-ae36-5a7df2ec4d32}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CourseraCloneApp.cpp">
@@ -157,12 +154,6 @@
     </ClInclude>
     <ClInclude Include="BinarySearchTree.h">
       <Filter>Header Files\Estructuras</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkManagerServer.h">
-      <Filter>Header Files\Server_Side</Filter>
-    </ClInclude>
-    <ClInclude Include="RequestHandler.h">
-      <Filter>Header Files\Server_Side</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
