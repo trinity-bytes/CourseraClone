@@ -161,3 +161,5 @@
 ### 🎁 Entregable Final
 
 Sistema CourseraClone completo con todas las funcionalidades requeridas, usando estructuras de datos avanzadas y con interfaz de usuario pulida.
+
+Ojo: Este documento esta en constante evoluvion debido a las iteraciones que hacemos en el proyecto.
