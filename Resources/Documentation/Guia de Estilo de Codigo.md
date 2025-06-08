@@ -391,76 +391,124 @@ public:
 
 ---
 
-## 5. Comentarios
+## 5. Comentarios (Sistema Simplificado)
 
-### Comentarios de Archivo
+Para un proyecto académico, mantenemos un sistema de comentarios simple pero efectivo:
+
+### 5.1 Comentarios de Archivo (Mínimos necesarios)
 
 ```cpp
 // filepath: Headers/Entities/Usuario.h
-// Descripción: Clase base para todos los usuarios del sistema (estudiantes y empresas)
-// Autor: [Nombre del desarrollador]
-// Fecha: [Fecha de creación]
-// Última modificación: [Fecha y descripción del cambio]
+// Descripcion: Clase base para usuarios del sistema (estudiantes y empresas)
 
 #pragma once
 ```
 
-### Comentarios de Clase
+### 5.2 Comentarios de Clase (Una línea descriptiva)
 
 ```cpp
-/**
- * @brief Clase que representa un usuario en el sistema CourseraClone
- *
- * Esta clase sirve como base para Estudiante y Empresa, proporcionando
- * funcionalidades comunes como autenticación, gestión de perfil y
- * persistencia de datos en archivos binarios.
- *
- * @note Utiliza archivos binarios para almacenamiento eficiente
- * @see Estudiante, Empresa
- */
+// Clase que representa un usuario en el sistema
 class Usuario
+{
+    // ...
+};
+
+// Pantalla principal del estudiante
+class DashboardEstudianteScreen : public PantallaBase
+{
+    // ...
+};
+
+// Lista enlazada genérica para cualquier tipo de dato
+template<typename T>
+class LinkedList
 {
     // ...
 };
 ```
 
-### Comentarios de Método
+### 5.3 Comentarios de Método (Solo cuando sea necesario)
 
 ```cpp
-/**
- * @brief Busca un curso por su ID utilizando búsqueda binaria
- *
- * @param id Identificador único del curso a buscar
- * @return Puntero al curso encontrado, nullptr si no existe
- *
- * @complexity O(log n) - Utiliza BST para búsqueda eficiente
- * @throws std::invalid_argument Si el ID es menor o igual a 0
- */
-Curso* buscarCursoPorId(int id);
+class GestionadorCursos
+{
+public:
+    // Busca un curso por ID usando búsqueda binaria
+    Curso* buscarCursoPorId(int id);
+
+    // Métodos simples no necesitan comentario
+    int getId() const { return _id; }
+    void setId(int _nuevoId) { _id = _nuevoId; }
+
+    // Solo comentar algoritmos complejos
+    void ordenarCursosPorPopularidad()
+    {
+        // Implementa algoritmo de ordenamiento quicksort
+        // por calificación promedio descendente
+        quickSort(listaCursos, 0, listaCursos.size() - 1);
+    }
+};
 ```
 
-### Comentarios en Línea
+### 5.4 Comentarios en Línea (Explicar el "por qué", no el "qué")
 
 ```cpp
 void procesarInscripcion(int idEstudiante, int idCurso)
 {
-    // Verificar que el estudiante existe en el sistema
+    // Verificar que el estudiante existe
     if (!existeEstudiante(idEstudiante))
     {
         throw std::runtime_error("Estudiante no encontrado");
     }
 
-    // Validar prerequisitos antes de inscribir
+    // Los prerequisitos son obligatorios para inscribirse
     if (!validarPrerequisitos(idEstudiante, idCurso))
     {
-        return; // Inscripción rechazada por prerequisitos
+        return;
     }
 
-    // TODO: Implementar validación de cupos disponibles
-    // FIXME: Corregir duplicación de inscripciones
     registrarInscripcion(idEstudiante, idCurso);
 }
 ```
+
+### 5.5 Comentarios Especiales para Desarrollo
+
+```cpp
+// TODO: Implementar validación de cupos
+// FIXME: Corregir duplicación de inscripciones
+// HACK: Solución temporal - refactorizar después
+// NOTE: Este método es crítico para rendimiento
+```
+
+### 5.6 Cuándo NO comentar
+
+```cpp
+// ❌ INCORRECTO - Comentarios obvios
+int suma = a + b; // Suma a y b
+
+// ❌ INCORRECTO - Explicar código evidente
+if (edad >= 18) // Si la edad es mayor o igual a 18
+{
+    esAdulto = true; // Establecer esAdulto como verdadero
+}
+
+// ✅ CORRECTO - Sin comentarios innecesarios
+int suma = a + b;
+if (edad >= 18)
+{
+    esAdulto = true;
+}
+```
+
+### 5.7 Reglas Simples para Comentarios
+
+1. **Una línea por clase**: Explica qué hace la clase
+2. **Comenta algoritmos complejos**: Solo si no es obvio qué hace
+3. **Explica el "por qué"**: No describas el código, explica la razón
+4. **Usa TODO/FIXME**: Para marcar trabajo pendiente
+5. **No comentes lo obvio**: El código debe ser auto-explicativo
+
+````
 
 ---
 
@@ -494,7 +542,7 @@ public:
         }
     }
 };
-```
+````
 
 ### Espacios
 
@@ -665,7 +713,9 @@ Antes de hacer commit, verificar:
 - [ ] Los nombres siguen las convenciones establecidas (entidades sin sufijo, pantallas con "Screen")
 - [ ] Las clases están en la carpeta correcta según su responsabilidad
 - [ ] Los sufijos identifican claramente el tipo de clase (Screen, Manager, Utils, Helper)
-- [ ] Hay comentarios explicativos en métodos complejos
+- [ ] Cada clase tiene un comentario de una línea explicando qué hace
+- [ ] Solo los algoritmos complejos tienen comentarios explicativos
+- [ ] No hay comentarios obvios que explican código evidente
 - [ ] Las includes están organizadas correctamente
 - [ ] No hay magic numbers (usar constantes)
 - [ ] Los métodos no son excesivamente largos (< 50 líneas)
