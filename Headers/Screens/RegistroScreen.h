@@ -1,30 +1,32 @@
 #pragma once
-#include "../Utils/Pantalla.h"
-#include "../Entities/Usuario.h"
-#include "../Utils/ExtendedFunctions.h"
+
+// Headers estándar
 #include <string>
 
-class Registro : public PantallaBase {
+// Headers propios
+#include "../Utils/ScreenSystem.h"
+#include "../Entities/Usuario.h"
+#include "../Utils/ExtendedFunctions.h"
+
+class RegistroScreen : public PantallaBase {
 private:
     static const int ELEMENTOS_INPUT = 4;
-    static const int CANT_BOTONES = 3;
-
-    string nombre;
-    string email;
-    string password;
-    string confirmarPassword;
+    static const int CANT_BOTONES = 3;    std::string nombre;
+    std::string email;
+    std::string password;
+    std::string confirmarPassword;
     TipoUsuario tipoUsuario;
     int campoActual;
     int campoAnterior;
     bool error;
-    string mensajeError;
+    std::string mensajeError;
     bool primeraRenderizacion;
     int tipoUsuarioActual = 0; // 0: Estudiante, 1: Organización
 
     // Coordenadas para dibujar
     COORD coordsElementosUserInput[ELEMENTOS_INPUT] = { {11, 15}, {11, 20}, {11, 25}, {63, 25} };
     COORD coordsBotones[CANT_BOTONES] = { {68, 20}, {90, 20}, {53, 29} };
-    const string textosBotones[CANT_BOTONES] = { " Soy un Estudiante ", " Soy una Organizacion ", " Crear Cuenta "};
+    const std::string textosBotones[CANT_BOTONES] = { " Soy un Estudiante ", " Soy una Organizacion ", " Crear Cuenta "};
     const string etiquetas[ELEMENTOS_INPUT] = { " ", " ", " ", " " };
 
     void mostrarCursor(bool mostrar) {
@@ -34,7 +36,7 @@ private:
         SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
     }
 
-    void renderizarCampo(const string& etiqueta, const string& valor, int indice, bool seleccionado) {
+    void renderizarCampo(const std::string& etiqueta, const std::string& valor, int indice, bool seleccionado) {
         gotoXY(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
 
         if (seleccionado) {
@@ -44,17 +46,15 @@ private:
         else {
             SetConsoleColor(15, 0, false, false); 
             mostrarCursor(false);
-        }
-
-        if (indice == 2 || indice == 3) // Contraseña
-            cout << string(valor.length(), '*');
+        }        if (indice == 2 || indice == 3) // Contraseña
+            std::cout << std::string(valor.length(), '*');
         else
-            cout << valor;
+            std::cout << valor;
 
 		SetConsoleColor(15, 0); // Restaurar color normal
     }
 
-    void renderizarBoton(const string& texto, int indice, bool seleccionado) {
+    void renderizarBoton(const std::string& texto, int indice, bool seleccionado) {
         gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
 
         // Resaltar botones de tipo usuario basado en la selección actual o el tipo activo
@@ -73,30 +73,26 @@ private:
             else {
                 SetConsoleColor(15, 5, false, false);
             }
-        }
-
-        //mostrarCursor(false);
-        cout << texto;
+        }        //mostrarCursor(false);
+        std::cout << texto;
         SetConsoleColor(15, 0);
     }
 
     void dibujarInterfazCompleta() {
         system("cls");
-        UI_Signup();
-
-        for (int i = 3; i <= 7; i++) {
+        UI_Signup();        for (int i = 3; i <= 7; i++) {
             gotoXY(3, i);
             SetConsoleColor(1, 13, true);
-            cout << string(114, ' ');
+            std::cout << std::string(114, ' ');
         }
 
         SetConsoleColor(12, 13, true, true);
-        gotoXY(42, 4);    cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
-        gotoXY(42, 5);    cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
-        gotoXY(42, 6);    cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
+        gotoXY(42, 4);    std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+        gotoXY(42, 5);    std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+        gotoXY(42, 6);    std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
 
         SetConsoleColor(12, 13, true, true);
-        gotoXY(71, 7);    cout << "C L O N E";
+        gotoXY(71, 7);    std::cout << "C L O N E";
 
         SetConsoleColor(15, 0);
 
@@ -111,7 +107,7 @@ private:
         if (error) {
             gotoXY(20, 23);
             SetConsoleColor(1, 4);
-            cout << mensajeError;
+            std::cout << mensajeError;
             SetConsoleColor(15, 1);
         }
 

@@ -1,29 +1,5 @@
+// Controlador principal del sistema CourseraClone
 #pragma once
-// Headers propios
-#include "../Utils/Pantalla.h"
-#include "../Entities/Actividad.h"
-#include "GestionadorCursos.h"
-#include "../Entities/Estudiante.h"
-#include "../Entities/Empresa.h"
-#include "../Screens/Login.h"
-#include "../Screens/LandingPage.h"
-#include "../Screens/DashboardEstudiante.h"
-#include "../Screens/DashboardOrganizacion.h"
-#include "../Screens/PerfilEstudiante.h"
-#include "../Screens/PerfilOrganizacion.h"
-#include "../Screens/EditarPerfil.h"
-#include "../Screens/MostrarCurso.h"
-#include "../Screens/MostrarEspecialidad.h"
-#include "../Screens/Registro.h"
-#include "../Screens/ExplorarCursosYEspecialidades.h"
-#include "../Screens/VerBboletas.h"
-#include "../Utils/PantallaResultado.h"
-
-// Forward declarations
-class GestionadorCursos;
-class Usuario;
-class Curso;
-class Especializacion;
 
 // Headers de la libreria estandar
 #include <memory>
@@ -34,307 +10,365 @@ class Especializacion;
 #include <conio.h>
 #include <stdexcept>
 
-class Controladora {
+// Headers propios
+#include "GestionadorCursos.h"
+#include "../Entities/Actividad.h"
+#include "../Entities/Estudiante.h"
+#include "../Entities/Empresa.h"
+#include "../Screens/LoginScreen.h"
+#include "../Screens/LandingPageScreen.h"
+#include "../Screens/DashboardEstudianteScreen.h"
+#include "../Screens/DashboardOrganizacionScreen.h"
+#include "../Screens/PerfilEstudianteScreen.h"
+#include "../Screens/PerfilOrganizacionScreen.h"
+#include "../Screens/EditarPerfilScreen.h"
+#include "../Screens/MostrarCursoScreen.h"
+#include "../Screens/MostrarEspecialidadScreen.h"
+#include "../Screens/RegistroScreen.h"
+#include "../Screens/ExplorarCursosYEspecialidades_Screen.h"
+#include "../Screens/VerBoletasScreen.h"
+#include "../Utils/ScreenSystem.h"
+
+// Forward declarations
+class GestionadorCursos;
+class Usuario;
+class Curso;
+class Especializacion;
+
+using namespace std;
+
+// Constantes del sistema
+const string RUTA_ACTIVIDADES = "Resources/Data/actividades.txt";
+const string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
+const int TIPO_CURSO = 1;
+const int TIPO_ESPECIALIZACION = 2;
+
+// Controlador principal del sistema CourseraClone
+class Controladora 
+{
 private:
-	unique_ptr<GestionadorCursos> gestionadorCursos;
-	vector<Actividad> actividades;
-	Estudiante* estudiante; 
-	Empresa* empresa;
-	bool ejecutando;
+    // Atributos privados
+    unique_ptr<GestionadorCursos> _gestionadorCursos;
+    vector<Actividad> _actividades;
+    Estudiante* _estudiante; 
+    Empresa* _empresa;
+    bool _ejecutando;
 
-	void cargarDatosArchivo() {
-		ifstream archivo(".\\Resources\\Data\\actividades.txt");
-		if (!archivo.is_open()) {
-			throw runtime_error("No se pudo abrir el archivo de actividades"); // Nos salta error al ejecutar
-		}
-
-		string nombreEmpresa, titulo, descripcion, instructor, tituloActividad, descripcionActividad;
-		int cantidad = 0;
-		int tipo, idEmpresa;
-		while (archivo >> idEmpresa) {
-			archivo.ignore();
-			archivo >> tipo;
-			archivo.ignore();
-			getline(archivo, nombreEmpresa);
-			getline(archivo, tituloActividad);
-			getline(archivo, descripcionActividad);
-
-			if (tipo == 1) {
-				getline(archivo, instructor);
-				int cantidadClase = 0; archivo >> cantidadClase;
-				archivo.ignore();
-				//throw runtime_error(tituloActividad);
-				vector<string> titulos(cantidadClase), descripciones(cantidadClase);
-				for (int i = 0; i < cantidadClase; i++) {
-					getline(archivo, titulo);
-					getline(archivo, descripcion);
-					titulos[i] = titulo;
-					descripciones[i] = descripcion;
-				}
-				if (!gestionadorCursos->crearCurso(idEmpresa, tituloActividad, nombreEmpresa, cantidadClase, instructor, descripcionActividad, titulos, descripciones)) {
-					throw runtime_error("Falla carga");
-				}// else throw runtime_error("Logrado");
-
-			} else {
-				int cantidadCursos = 0;
-				archivo >> cantidadCursos;
-				archivo.ignore();
-				vector<int> idsCursos(cantidadCursos);
-				for (int i = 0; i < cantidadCursos; i++) {
-					archivo >> idsCursos[i];
-					archivo.ignore();
-				}
-				if (!gestionadorCursos->crearEspecializacion(idEmpresa, nombreEmpresa, tituloActividad, cantidadCursos, descripcionActividad, idsCursos)) {
-					throw runtime_error("Carga Fallida en especializacion");
-				}
-				// else throw runtime_error(tituloActividad);
-			}
-			
-			cantidad++;
-		}
-		//throw runtime_error(to_string(cantidad));
-		archivo.close();
-	}
-
-	void cargarDatosInscripciones() {
-		ifstream archivo(".\\Resources\\Data\\inscripciones.dat", ios::binary);
-		if (!archivo.is_open()) {
-			throw runtime_error("No se pudo abrir el archivo de inscripciones"); // Nos salta error al ejecutar
-		}
-
-		try {
-			InscripcionBinaria inscripcion;
-			while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
-				int idx = inscripcion.idActividad;
-				int tipo = inscripcion.tipoActividad;
-				if (tipo == 1) {
-					gestionadorCursos.get()->getCursos().get(idx)->aumentarAlumno(1);
-				}
-				else if (tipo == 2) {
-					gestionadorCursos.get()->getEspecializaciones().get(idx)->aumentarAlumno(1);
-				}
-			}
-			//throw runtime_error(to_string(gestionadorCursos.get()->getCursos().get(2)->getCantidadAlumnos()));
-			
-			if (!archivo.eof()) {
-				throw runtime_error("Error al leer el archivo de inscripciones");
-			}
-		}
-		catch (const exception& e) {
-			archivo.close();
-			throw runtime_error(string("Error al procesar inscripciones: ") + e.what());
-		}
-		
-		archivo.close();
-	}
+    // Métodos privados de carga de datos
+    void cargarDatosArchivo();
+    void cargarDatosInscripciones();
+    
+    // Métodos privados de navegación
+    unique_ptr<PantallaBase> crearPantallaLogin();
+    unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
+    unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();
+    unique_ptr<PantallaBase> crearPantallaLandingPage();
 
 public:
-	Controladora() : ejecutando(true) {
-		// Inicializar gestores
-		//gestionadorUsuarios = make_unique<GestionadorUsuarios>()
-		gestionadorCursos = make_unique<GestionadorCursos>();
-		estudiante = new Estudiante( 0,"", "","");
-		empresa = new Empresa(0, "", "", "");
-		
+    // Constructor y destructor
+    Controladora();
+    ~Controladora() = default;
 
-		// Cargar datos iniciales
-		cargarDatosArchivo();
-		cargarDatosInscripciones();
-	}
+    // Método principal de ejecución
+    void run();
 
-	void run() 
-	{
-		unique_ptr<PantallaBase> pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-		while (ejecutando) 
-		{
-			ResultadoPantalla resultado = pantallaActual->ejecutar();
-			// if (resultado.accion == AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE) throw runtime_error(estudiante->getNombreCompleto());
+    // Getters públicos
+    vector<Actividad>& listarActividades() { return _actividades; }
+    GestionadorCursos* getGestionadorCursos() const { return _gestionadorCursos.get(); }
+};
 
-			switch (resultado.accion) 
-			{
-				case AccionPantalla::IR_A_LOGIN:
-					pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-					break;
-				case AccionPantalla::IR_A_REGISTRO:
-					pantallaActual = make_unique<Registro>();
-					break;
-				case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
-					// El Login ya validó las credenciales, simplemente establecemos el usuario
-					//establecerUsuarioActual(resultado.email, resultado.tipoUsuario);
-					if (estudiante) {
+// Constructor
+Controladora::Controladora() : _ejecutando(true) 
+{
+    // Inicializar gestores
+    _gestionadorCursos = make_unique<GestionadorCursos>();
+    _estudiante = new Estudiante(0, "", "", "");
+    _empresa = new Empresa(0, "", "", "");
 
-						pantallaActual = make_unique<DashboardEstudiante>(
-							estudiante->getId(),
-							estudiante->getNombreCompleto(),
-							*gestionadorCursos.get()
-						);
-					}
-					else {
-						// En caso de error, volvemos a la pantalla de login
-						pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-					}
-					break;
-				case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
-					if (empresa) {
-						pantallaActual = make_unique<DashboardOrganizacion>(empresa->getId(), empresa->getNombreCompleto(), *gestionadorCursos.get());
-					}
-					else {
-						// En caso de error, volvemos a la pantalla de login
-						pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-					}
-					break;
-				case AccionPantalla::IR_A_LANDING_PAGE:
-					estudiante->reset();
-					empresa->reset();
-					pantallaActual = make_unique<LandingPage>(gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-					break;
-				case AccionPantalla::SALIR:
-					ejecutando = false;
-					system("cls");
-					cout << "Gracias por usar CourseraClone. Hasta luego!" << endl;
-					break;
-				case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
-				    if (estudiante) {
-				        pantallaActual = make_unique<PerfilEstudiante>(
-				            estudiante->getId(),
-				            estudiante->getNombreCompleto(),
-				            estudiante->getUsername()
-				        );
-				    }
-				    else {
-				        // Si no hay estudiante, redirigir al login
-				        pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-				    }
-				    break;
-				case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
-				    if (empresa) {
-				        pantallaActual = make_unique<PerfilOrganizacion>(
-				            empresa->getId(),
-				            empresa->getNombreCompleto(),
-				            empresa->getUsername()
-				        );
-				    }
-				    else {
-				        // Si no hay empresa, redirigir al login
-				        pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-				    }
-				    break;
-				case AccionPantalla::IR_A_EDITAR_PERFIL:
-				    if (estudiante) {
-				        pantallaActual = make_unique<EditarPerfil>(
-				            estudiante->getId(),
-				            TipoUsuario::ESTUDIANTE,
-				            estudiante->getNombreCompleto(),
-				            estudiante->getUsername(),
-				            *estudiante,
-				            *empresa
-				        );
-				    }
-				    else if (empresa) {
-				        pantallaActual = make_unique<EditarPerfil>(
-				            empresa->getId(),
-				            TipoUsuario::EMPRESA,
-				            empresa->getNombreCompleto(),
-				            empresa->getUsername(),
-				            *estudiante,
-				            *empresa
-				        );
-				    }
-				    else {
-				        // Si no hay usuario, redirigir al login
-				        pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-				    }
-				    break;
-				case AccionPantalla::IR_A_MOSTRAR_CURSO:
-				{
-					int idCurso = resultado.idCursoSeleccionado;
-					Curso* cursoSeleccionado = gestionadorCursos->obtenerCurso(idCurso);
+    // Cargar datos iniciales
+    cargarDatosArchivo();
+    cargarDatosInscripciones();
+}
 
-					pantallaActual = make_unique<MostrarCurso>(
-						idCurso,
-						*gestionadorCursos.get(),
-						*estudiante,
-						cursoSeleccionado,
-						resultado.accionAnterior,
-						resultado.tipoUsuario
-					);
-					break;
-				}
-				case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
-				{
-					Especializacion* especializacion = gestionadorCursos->obtenerEspecializacion(resultado.idCursoSeleccionado);
+// Carga datos de actividades desde archivo de texto
+void Controladora::cargarDatosArchivo() 
+{
+    ifstream archivo(RUTA_ACTIVIDADES);
+    if (!archivo.is_open()) {
+        throw runtime_error("No se pudo abrir el archivo de actividades: " + RUTA_ACTIVIDADES);
+    }
 
-					pantallaActual = make_unique<MostrarEspecialidad>(
-						resultado.idCursoSeleccionado,
-						*gestionadorCursos.get(),
-						especializacion,
-						resultado.accionAnterior,
-						resultado.tipoUsuario,
-						*estudiante
-					);
-					break;
-				}
-				// En el switch de acciones dentro de run()
-				case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
-				{
-					TipoUsuario tipoUsuario = TipoUsuario::NINGUNO;
+    string nombreEmpresa, titulo, descripcion, instructor, tituloActividad, descripcionActividad;
+    int cantidad = 0;
+    int tipo, idEmpresa;
+    
+    while (archivo >> idEmpresa) {
+        archivo.ignore();
+        archivo >> tipo;
+        archivo.ignore();
+        getline(archivo, nombreEmpresa);
+        getline(archivo, tituloActividad);
+        getline(archivo, descripcionActividad);
 
-					if (estudiante != nullptr) {
-						tipoUsuario = TipoUsuario::ESTUDIANTE;
-					}
-					else if (empresa != nullptr) {
-						tipoUsuario = TipoUsuario::EMPRESA;
-					}
-					else if (resultado.tipoUsuario != TipoUsuario::NINGUNO) {
-						tipoUsuario = resultado.tipoUsuario;
-					}
+        if (tipo == TIPO_CURSO) {
+            // Procesar curso
+            getline(archivo, instructor);
+            int cantidadClase = 0; 
+            archivo >> cantidadClase;
+            archivo.ignore();
+            
+            vector<string> titulos(cantidadClase), descripciones(cantidadClase);
+            for (int i = 0; i < cantidadClase; i++) {
+                getline(archivo, titulo);
+                getline(archivo, descripcion);
+                titulos[i] = titulo;
+                descripciones[i] = descripcion;
+            }
+            
+            if (!_gestionadorCursos->crearCurso(idEmpresa, tituloActividad, nombreEmpresa, cantidadClase, instructor, descripcionActividad, titulos, descripciones)) {
+                throw runtime_error("Error al crear curso: " + tituloActividad);
+            }
+        } 
+        else if (tipo == TIPO_ESPECIALIZACION) {
+            // Procesar especialización
+            int cantidadCursos = 0;
+            archivo >> cantidadCursos;
+            archivo.ignore();
+            
+            vector<int> idsCursos(cantidadCursos);
+            for (int i = 0; i < cantidadCursos; i++) {
+                archivo >> idsCursos[i];
+                archivo.ignore();
+            }
+            
+            if (!_gestionadorCursos->crearEspecializacion(idEmpresa, nombreEmpresa, tituloActividad, cantidadCursos, descripcionActividad, idsCursos)) {
+                throw runtime_error("Error al crear especialización: " + tituloActividad);
+            }
+        }
+        
+        cantidad++;
+    }
+    
+    archivo.close();
+}
 
-					pantallaActual = make_unique<ExplorarCursosYEspecialidades>(
-						*gestionadorCursos.get(),
-						tipoUsuario,
-						*estudiante 
-					);
-					break;
-				}
-				/*
-				case AccionPantalla::IR_A_GESTIONAR_INSCRIPCIONES:
-				{
-					// Por ahora podemos redirigir al dashboard, después implementaremos esta función
-					pantallaActual = make_unique<DashboardEstudiante>(
-						estudiante->getId(),
-						estudiante->getNombreCompleto(),
-						gestionadorCursos.get()
-					);
-					break;
-				}
-				*/
-				
-				case AccionPantalla::IR_A_VER_BOLETAS:
-				{
-					// Verificar si hay un estudiante logueado
-					if (estudiante) {
-						// Crear una instancia de la pantalla VerBoletas
-						pantallaActual = make_unique<VerBoletas>(*estudiante);
-					}
-					else {
-						// Si no hay estudiante, redirigir al login
-						pantallaActual = make_unique<Login>(*estudiante, *empresa, gestionadorCursos->getCursos(), gestionadorCursos->getEspecializaciones());
-					}
-					break;
-				}
-				default:
-					break;
-			}
-		}
-	}
+// Carga datos de inscripciones desde archivo binario
+void Controladora::cargarDatosInscripciones() 
+{
+    ifstream archivo(RUTA_INSCRIPCIONES, ios::binary);
+    if (!archivo.is_open()) {
+        throw runtime_error("No se pudo abrir el archivo de inscripciones: " + RUTA_INSCRIPCIONES);
+    }
 
-	// Listados
-	vector<Actividad>& listarActividades() { return actividades; }
+    try {
+        InscripcionBinaria inscripcion;
+        while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
+            int idx = inscripcion.idActividad;
+            int tipo = inscripcion.tipoActividad;
+            
+            if (tipo == TIPO_CURSO) {
+                _gestionadorCursos->getCursos().get(idx)->aumentarAlumno(1);
+            }
+            else if (tipo == TIPO_ESPECIALIZACION) {
+                _gestionadorCursos->getEspecializaciones().get(idx)->aumentarAlumno(1);
+            }
+        }
+        
+        if (!archivo.eof()) {
+            throw runtime_error("Error al leer el archivo de inscripciones");
+        }    }
+    catch (const exception& e) {
+        archivo.close();
+        throw runtime_error("Error al procesar inscripciones: " + string(e.what()));
+    }
+    
+    archivo.close();
+}
 
-	// Getters
-	//Usuario* getUsuarioActual() const { return usuarioActual; }
-	//GestionadorUsuarios* getGestionadorUsuarios() const { return gestionadorUsuarios.get(); }
-	//GestionadorCursos* getGestionadorCursos() const { return gestionadorCursos.get(); }
+// Crea una nueva instancia de la pantalla de login
+unique_ptr<PantallaBase> Controladora::crearPantallaLogin() 
+{
+    return make_unique<LoginScreen>(*_estudiante, *_empresa, _gestionadorCursos->getCursos(), _gestionadorCursos->getEspecializaciones());
+}
+
+// Crea dashboard para estudiante
+unique_ptr<PantallaBase> Controladora::crearPantallaDashboardEstudiante() 
+{
+    if (_estudiante) {
+        return make_unique<DashboardEstudianteScreen>(this, _estudiante->getId(), _estudiante->getNombreCompleto());
+    }
+    return crearPantallaLogin();
+}
+
+// Crea dashboard para organización
+unique_ptr<PantallaBase> Controladora::crearPantallaDashboardOrganizacion() 
+{
+    if (_empresa) {
+        return make_unique<DashboardOrganizacionScreen>(this, _empresa->getId(), _empresa->getNombreCompleto());
+    }
+    return crearPantallaLogin();
+}
+
+// Crea pantalla de landing page
+unique_ptr<PantallaBase> Controladora::crearPantallaLandingPage() 
+{
+    _estudiante->reset();
+    _empresa->reset();
+    return make_unique<LandingPageScreen>(_gestionadorCursos->getCursos(), _gestionadorCursos->getEspecializaciones());
+}
+
+// Método principal de ejecución del sistema
+void Controladora::run() 
+{
+    unique_ptr<PantallaBase> pantallaActual = crearPantallaLandingPage();
+    
+    while (_ejecutando) {
+        ResultadoPantalla resultado = pantallaActual->ejecutar();
+
+        switch (resultado.accion) {
+            case AccionPantalla::IR_A_LOGIN:
+                pantallaActual = crearPantallaLogin();
+                break;
+                
+            case AccionPantalla::IR_A_REGISTRO:
+                pantallaActual = make_unique<RegistroScreen>();
+                break;
+                
+            case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+                pantallaActual = crearPantallaDashboardEstudiante();
+                break;
+                
+            case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
+                pantallaActual = crearPantallaDashboardOrganizacion();
+                break;
+                
+            case AccionPantalla::IR_A_LANDING_PAGE:
+                pantallaActual = crearPantallaLandingPage();
+                break;
+                
+            case AccionPantalla::SALIR:
+                _ejecutando = false;
+                system("cls");
+                cout << "Gracias por usar CourseraClone. Hasta luego!" << endl;
+                break;
+                
+            case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
+                if (_estudiante) {
+                    pantallaActual = make_unique<PerfilEstudianteScreen>(
+                        _estudiante->getId(),
+                        _estudiante->getNombreCompleto(),
+                        _estudiante->getUsername()
+                    );
+                } else {
+                    pantallaActual = crearPantallaLogin();
+                }
+                break;
+                
+            case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
+                if (_empresa) {
+                    pantallaActual = make_unique<PerfilOrganizacionScreen>(
+                        _empresa->getId(),
+                        _empresa->getNombreCompleto(),
+                        _empresa->getUsername()
+                    );
+                } else {
+                    pantallaActual = crearPantallaLogin();
+                }
+                break;
+                
+            case AccionPantalla::IR_A_EDITAR_PERFIL:
+                if (_estudiante) {
+                    pantallaActual = make_unique<EditarPerfilScreen>(
+                        this,
+                        _estudiante->getId(),
+                        TipoUsuario::ESTUDIANTE,
+                        _estudiante->getNombreCompleto(),
+                        _estudiante->getUsername()
+                    );
+                } else if (_empresa) {
+                    pantallaActual = make_unique<EditarPerfilScreen>(
+                        this,
+                        _empresa->getId(),
+                        TipoUsuario::EMPRESA,
+                        _empresa->getNombreCompleto(),
+                        _empresa->getUsername()
+                    );
+                } else {
+                    pantallaActual = crearPantallaLogin();
+                }
+                break;
+                
+            case AccionPantalla::IR_A_MOSTRAR_CURSO:
+            {
+                int idCurso = resultado.idCursoSeleccionado;
+                Curso* cursoSeleccionado = _gestionadorCursos->obtenerCurso(idCurso);
+
+                pantallaActual = make_unique<MostrarCursoScreen>(
+                    idCurso,
+                    *_gestionadorCursos.get(),
+                    *_estudiante,
+                    cursoSeleccionado,
+                    resultado.accionAnterior,
+                    resultado.tipoUsuario
+                );
+                break;
+            }
+            
+            case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
+            {
+                Especializacion* especializacion = _gestionadorCursos->obtenerEspecializacion(resultado.idCursoSeleccionado);
+
+                pantallaActual = make_unique<MostrarEspecialidadScreen>(
+                    resultado.idCursoSeleccionado,
+                    *_gestionadorCursos.get(),
+                    especializacion,
+                    resultado.accionAnterior,
+                    resultado.tipoUsuario,
+                    *_estudiante
+                );
+                break;
+            }
+            
+            case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
+            {
+                TipoUsuario tipoUsuario = TipoUsuario::NINGUNO;
+                int idUsuario = 0;
+                string nombreUsuario = "";
+
+                if (_estudiante != nullptr) {
+                    tipoUsuario = TipoUsuario::ESTUDIANTE;
+                    idUsuario = _estudiante->getId();
+                    nombreUsuario = _estudiante->getNombreCompleto();
+                } else if (_empresa != nullptr) {
+                    tipoUsuario = TipoUsuario::EMPRESA;
+                    idUsuario = _empresa->getId();
+                    nombreUsuario = _empresa->getNombreCompleto();
+                } else if (resultado.tipoUsuario != TipoUsuario::NINGUNO) {
+                    tipoUsuario = resultado.tipoUsuario;
+                }
+
+                pantallaActual = make_unique<ExplorarCursosYEspecialidadesScreen>(
+                    this,
+                    tipoUsuario,
+                    idUsuario,
+                    nombreUsuario
+                );
+                break;
+            }
+            
+            case AccionPantalla::IR_A_VER_BOLETAS:
+                if (_estudiante) {
+                    pantallaActual = make_unique<VerBoletasScreen>(*_estudiante);
+                } else {
+                    pantallaActual = crearPantallaLogin();
+                }
+                break;
+                
+            default:
+                break;
+        }
+    }
+}
 
 	//LinkedList<Curso*> getCursos();
 	//LinkedList<Especializacion*> getEspecializaciones();

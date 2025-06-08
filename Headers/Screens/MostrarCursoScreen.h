@@ -1,33 +1,36 @@
 #pragma once
 
-#include "../Utils/Pantalla.h"
+// Headers estándar
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <sstream>
+
+// Headers propios
+#include "../Utils/ScreenSystem.h"
 #include "../Utils/ExtendedFunctions.h"
 #include "../Utils/UI_Ascii.h"
 #include "../Entities/Curso.h"
 #include "../Entities/Clase.h"
 #include "../Controllers/GestionadorCursos.h"
 #include "../Entities/Estudiante.h"
-#include <vector>
-#include <string>
-#include <algorithm> // Para min
-#include <sstream>   // Para istringstream
 
-class MostrarCurso : public PantallaBase
+// Pantalla que muestra los detalles de un curso específico
+class MostrarCursoScreen : public PantallaBase
 {
 private:
     // Datos del curso
-    int idCurso;
-    Curso* curso;
-    GestionadorCursos& gestionadorCursos; // Añadir
-    Estudiante& estudiante;
-    vector<Clase> clases;
-
-    TipoUsuario tipoUsuario;
+    int _idCurso;
+    Curso* _curso;
+    GestionadorCursos& _gestionadorCursos;
+    Estudiante& _estudiante;
+    std::vector<Clase> _clases;
+    TipoUsuario _tipoUsuario;
 
     // Estado de navegación
-    int claseSeleccionada;
-    bool primeraRenderizacion;
-    AccionPantalla pantallaAnterior;
+    int _claseSeleccionada;
+    bool _primeraRenderizacion;
+    AccionPantalla _pantallaAnterior;
 
     // Constantes para las coordenadas
     const int COL_TITULO_CURSO = 7;
@@ -42,23 +45,21 @@ private:
 
     const int MAX_MODULOS_VISIBLES = 5;
     const int LONGITUD_TEXTO_MODULO = 40;
-	const int LONGITUD_TITULO_CURSO = 30;
-
-    // Método para truncar títulos largos
-    string truncarTitulo(const string& titulo, int maxLongitud) {
+	const int LONGITUD_TITULO_CURSO = 30;    // Método para truncar títulos largos
+    std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
         if (titulo.length() <= maxLongitud) {
             return titulo;
         }
         return titulo.substr(0, maxLongitud - 3) + "...";
     }
 
-    vector<string> dividirTituloEnLineas(const string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
-        vector<string> lineas;
+    std::vector<std::string> dividirTituloEnLineas(const std::string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
+        std::vector<std::string> lineas;
         if (titulo.empty()) {
             return lineas;
         }
 
-        string textoRestante = titulo;
+        std::string textoRestante = titulo;
 
         for (int i = 0; i < maxLineas && !textoRestante.empty(); ++i) {
             if (textoRestante.length() <= maxLongitudPorLinea) {
@@ -91,7 +92,7 @@ private:
 
         // If text still remains and we've reached max lines, add ellipsis to last line
         if (!textoRestante.empty() && lineas.size() == maxLineas) {
-            string& lastLine = lineas.back();
+            std::string& lastLine = lineas.back();
             if (lastLine.length() > 3) {
                 lastLine = lastLine.substr(0, lastLine.length() - 3) + "...";
             }
@@ -101,9 +102,9 @@ private:
     }
 
     // Método para formatear descripción
-    string formatearDescripcion(const string& texto, int anchoMax, int altoMax) {
-        string resultado;
-        string textoRestante = texto;
+    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
+        std::string resultado;
+        std::string textoRestante = texto;
 
         for (int linea = 0; linea < altoMax; ++linea) {
             if (textoRestante.empty()) break;
@@ -143,61 +144,57 @@ private:
     void dibujarInterfazCompleta() {
         gotoXY(50, 3);
         system("cls");
-        UI_VistaCurso();
-
-        // Mostrar título del curso
+        UI_VistaCurso();        // Mostrar título del curso
         gotoXY(COL_TITULO_CURSO, FILA_TITULO_CURSO);
         const int INDENTACION_TITULO = COL_TITULO_CURSO + 10;
-        vector<string> tituloCurso = dividirTituloEnLineas(curso->getTitulo(), LONGITUD_TITULO_CURSO);
-        cout << "Curso de: ";
+        std::vector<std::string> tituloCurso = dividirTituloEnLineas(_curso->getTitulo(), LONGITUD_TITULO_CURSO);
+        std::cout << "Curso de: ";
         if (!tituloCurso.empty()) {
-            cout << tituloCurso[0];
+            std::cout << tituloCurso[0];
 
             // Display the rest of the lines with proper indentation
             for (size_t i = 1; i < tituloCurso.size(); ++i) {
                 gotoXY(INDENTACION_TITULO, FILA_TITULO_CURSO + i);
-                cout << tituloCurso[i];
+                std::cout << tituloCurso[i];
             }
         }
 
         // Mostrar descripción del curso
         gotoXY(COL_DESC_CURSO, FILA_DESC_CURSO);
 
-        cout << "Descripcion del contenido del curso:";
+        std::cout << "Descripcion del contenido del curso:";
         gotoXY(COL_DESC_CURSO, FILA_DESC_CURSO + 2);
 
         // Formatear y mostrar descripción
-        string descripcionFormateada = formatearDescripcion(curso->getDescripcion(), 40, 5);
-        istringstream descStream(descripcionFormateada);
-        string linea;
+        std::string descripcionFormateada = formatearDescripcion(_curso->getDescripcion(), 40, 5);
+        std::istringstream descStream(descripcionFormateada);
+        std::string linea;
         int fila = FILA_DESC_CURSO + 2;
-        while (getline(descStream, linea)) {
+        while (std::getline(descStream, linea)) {
             gotoXY(COL_DESC_CURSO, fila++);
-            cout << linea;
+            std::cout << linea;
         }
 
         // Mostrar clases del curso
-        int numClases = (clases.size() < MAX_MODULOS_VISIBLES) ? clases.size() : MAX_MODULOS_VISIBLES;
+        int numClases = (_clases.size() < MAX_MODULOS_VISIBLES) ? _clases.size() : MAX_MODULOS_VISIBLES;
         for (int i = 0; i < numClases; i++) {
-            dibujarClase(i, i == claseSeleccionada);
+            dibujarClase(i, i == _claseSeleccionada);
         }
 
         // Muestra la opcion de inscripcion solo a estudiantes
-        if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+        if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
             gotoXY(50, 3);
             SetConsoleColor(0, 13);
-            cout << "Presiona 'I' para inscribirte a este curso";
+            std::cout << "Presiona 'I' para inscribirte a este curso";
         }
-        else if (tipoUsuario == TipoUsuario::EMPRESA) {
+        else if (_tipoUsuario == TipoUsuario::EMPRESA) {
             gotoXY(50, 3);
             SetConsoleColor(8, 13); // Color gris para indicar deshabilitado
-            cout << "Solo estudiantes pueden inscribirse a cursos";
+            std::cout << "Solo estudiantes pueden inscribirse a cursos";
         }
         SetConsoleColor(15, 0);
-    }
-
-    void dibujarClase(int indice, bool seleccionada) {
-        if (indice < 0 || indice >= clases.size()) return;
+    }    void dibujarClase(int indice, bool seleccionada) {
+        if (indice < 0 || indice >= _clases.size()) return;
 
         // Posición para el número del módulo
         gotoXY(COL_MODULOS, FILA_MODULOS_BASE + indice * ESPACIO_ENTRE_MODULOS);
@@ -208,75 +205,74 @@ private:
             SetConsoleColor(15, 0); // Color normal
 
         // Mostrar número de clase
-        cout << indice + 1;
+        std::cout << indice + 1;
 
         // Posición para el título de la clase
         gotoXY(COL_MODULOS + 5, FILA_MODULOS_BASE + indice * ESPACIO_ENTRE_MODULOS);
 
         // Truncar y mostrar título
-        string tituloClase = truncarTitulo(clases[indice].getTitulo(), LONGITUD_TEXTO_MODULO);
-        cout << tituloClase;
+        std::string tituloClase = truncarTitulo(_clases[indice].getTitulo(), LONGITUD_TEXTO_MODULO);
+        std::cout << tituloClase;
 
         SetConsoleColor(15, 0);
     }
 
 public:
-    MostrarCurso(int _idCurso, GestionadorCursos& _gestionadorCursos, Estudiante& _estudiante,
-        Curso* _curso, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE,
-        TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE)
-        : idCurso(_idCurso),
-        gestionadorCursos(_gestionadorCursos),
-        estudiante(_estudiante),
-        curso(_curso),
-        claseSeleccionada(0),
-        primeraRenderizacion(true),
-        pantallaAnterior(_pantallaAnterior),
-        tipoUsuario(_tipoUsuario)
+    MostrarCursoScreen(int idCurso, GestionadorCursos& gestionadorCursos, Estudiante& estudiante,
+        Curso* curso, AccionPantalla pantallaAnterior = AccionPantalla::IR_A_LANDING_PAGE,
+        TipoUsuario tipoUsuario = TipoUsuario::ESTUDIANTE)
+        : PantallaBase(),
+        _idCurso(idCurso),
+        _gestionadorCursos(gestionadorCursos),
+        _estudiante(estudiante),
+        _curso(curso),
+        _claseSeleccionada(0),
+        _primeraRenderizacion(true),
+        _pantallaAnterior(pantallaAnterior),
+        _tipoUsuario(tipoUsuario)
     {
         // Si no se proporcionó un curso, intentar cargarlo por ID
         /*
-        if (curso.getTitulo() == "" && gestionadorCursos != nullptr) {
-            curso = gestionadorCursos->obtenerCurso(idCurso);
+        if (_curso.getTitulo() == "" && _gestionadorCursos != nullptr) {
+            _curso = _gestionadorCursos->obtenerCurso(_idCurso);
         }
-        else if (curso == nullptr) {
+        else if (_curso == nullptr) {
             // Si no hay gestionador, crear un curso de ejemplo
-            curso = new Curso(idCurso, 1, "Empresa",
-                "Curso " + to_string(idCurso),
+            _curso = new Curso(_idCurso, 1, "Empresa",
+                "Curso " + std::to_string(_idCurso),
                 "Esta es la descripción detallada del curso. Incluye información sobre lo que aprenderán los estudiantes, los requisitos previos y los resultados esperados al finalizar el curso.",
                 "Instructor", 5);
         }
         */
 
         // Cargar las clases del curso
-        if (curso) {
+        if (_curso) {
             // Intentar obtener las clases del curso
-            const LinkedList<Clase>& clasesLista = curso->getClases();
-            int tamano = curso->getCantidadClases();
+            const LinkedList<Clase>& clasesLista = _curso->getClases();
+            int tamano = _curso->getCantidadClases();
 
             // Si el curso tiene clases, convertir la lista a un vector para facilitar el acceso
             for (int i = 1; i <= tamano; i++) {
-                Clase clase = curso->getClases().get(i); // Usar get() en lugar de []
-                clases.push_back(clase);
+                Clase clase = _curso->getClases().get(i); // Usar get() en lugar de []
+                _clases.push_back(clase);
             }
 
             // Si no hay clases, crear algunas de ejemplo
-            if (clases.empty()) {
+            if (_clases.empty()) {
                 for (int i = 1; i <= 5; i++) {
-                    clases.emplace_back("Clase " + to_string(i) + ": " + curso->getTitulo(),
-                        "Contenido de la clase" + to_string(i));
+                    _clases.emplace_back("Clase " + std::to_string(i) + ": " + _curso->getTitulo(),
+                        "Contenido de la clase" + std::to_string(i));
                 }
             }
         }
     }
 
-    ~MostrarCurso() = default;
-
-    ResultadoPantalla ejecutar() override {
+    ~MostrarCursoScreen() = default;    ResultadoPantalla ejecutar() override {
         ResultadoPantalla res;
 
-        if (primeraRenderizacion) {
+        if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
-            primeraRenderizacion = false;
+            _primeraRenderizacion = false;
         }
 
         while (true) {
@@ -288,18 +284,18 @@ public:
 
                 switch (tecla) {
                 case 72: // Flecha arriba
-                    if (claseSeleccionada > 0) {
-                        dibujarClase(claseSeleccionada, false);
-                        claseSeleccionada--;
-                        dibujarClase(claseSeleccionada, true);
+                    if (_claseSeleccionada > 0) {
+                        dibujarClase(_claseSeleccionada, false);
+                        _claseSeleccionada--;
+                        dibujarClase(_claseSeleccionada, true);
                     }
                     break;
 
                 case 80: // Flecha abajo
-                    if (claseSeleccionada < clases.size() - 1 && claseSeleccionada < MAX_MODULOS_VISIBLES - 1) {
-                        dibujarClase(claseSeleccionada, false);
-                        claseSeleccionada++;
-                        dibujarClase(claseSeleccionada, true);
+                    if (_claseSeleccionada < _clases.size() - 1 && _claseSeleccionada < MAX_MODULOS_VISIBLES - 1) {
+                        dibujarClase(_claseSeleccionada, false);
+                        _claseSeleccionada++;
+                        dibujarClase(_claseSeleccionada, true);
                     }
                     break;
                 }
@@ -307,22 +303,22 @@ public:
             case 'i': // Inscribirse al curso
             case 'I':
 
-                if (tipoUsuario == TipoUsuario::EMPRESA) {
+                if (_tipoUsuario == TipoUsuario::EMPRESA) {
                     gotoXY(5, 25);
                     SetConsoleColor(4, 0); // Rojo sobre negro
-                    cout << "Las organizaciones no pueden inscribirse a cursos.";
+                    std::cout << "Las organizaciones no pueden inscribirse a cursos.";
                     SetConsoleColor(15, 0); // Restaurar color
                     _getch(); // Esperar una tecla
                     dibujarInterfazCompleta();
                     break;
                 }
 
-                if (estudiante.getNombreCompleto() != "") {
-                    if (estudiante.inscribirseACurso(curso)) { // Usar el método de estudiante
+                if (_estudiante.getNombreCompleto() != "") {
+                    if (_estudiante.inscribirseACurso(_curso)) { // Usar el método de estudiante
                         // Mostrar mensaje de éxito
                         gotoXY(5, 25);
                         SetConsoleColor(2, 0); // Verde sobre negro
-                        cout << "Inscripción exitosa!";
+                        std::cout << "Inscripción exitosa!";
                         SetConsoleColor(15, 0); // Restaurar color
                         _getch(); // Esperar una tecla
 
@@ -333,7 +329,7 @@ public:
                         // Mostrar mensaje de error
                         gotoXY(5, 25);
                         SetConsoleColor(4, 0); // Rojo sobre negro
-                        cout << "Error en la inscripción. Es posible que ya estés inscrito.";
+                        std::cout << "Error en la inscripción. Es posible que ya estés inscrito.";
                         SetConsoleColor(15, 0); // Restaurar color
                         _getch(); // Esperar una tecla
 
@@ -345,7 +341,7 @@ public:
                     // El usuario no ha iniciado sesión, mostrar mensaje
                     gotoXY(5, 25);
                     SetConsoleColor(4, 0); // Rojo sobre negro
-                    cout << "Necesitas iniciar sesión para inscribirte.";
+                    std::cout << "Necesitas iniciar sesión para inscribirte.";
                     SetConsoleColor(15, 0); // Restaurar color
                     _getch(); // Esperar una tecla
 
@@ -357,12 +353,12 @@ public:
             case 13: // Enter
                 // Aquí se implementaría la lógica para mostrar el contenido de la clase seleccionada
                 // Por ahora, simplemente volvemos a la pantalla anterior
-                //res.accion = pantallaAnterior;
+                //res.accion = _pantallaAnterior;
                 //return res;
 
             case 27: // ESC
-                res.accion = pantallaAnterior;
-                res.tipoUsuario = tipoUsuario; // Ensure we keep the user type
+                res.accion = _pantallaAnterior;
+                res.tipoUsuario = _tipoUsuario; // Ensure we keep the user type
                 return res;
             }
         }

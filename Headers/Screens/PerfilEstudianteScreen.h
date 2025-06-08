@@ -1,12 +1,16 @@
 #pragma once
 
-#include "../Utils/Pantalla.h"
-#include "../Utils/ExtendedFunctions.h"
-#include "../Utils/UI_Ascii.h"
-#include "../Entities/Estudiante.h"
+// Headers estándar
 #include <string>
 
-class PerfilEstudiante : public PantallaBase
+// Headers de consola
+#include "../Entities/Estudiante.h"
+#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/ScreenSystem.h"
+#include "../Utils/UI_Ascii.h"
+
+// Screen to display student profile information and navigation options
+class PerfilEstudianteScreen : public PantallaBase
 {
 private:
     // Constantes para secciones
@@ -20,14 +24,14 @@ private:
     static const int TOTAL_BOTONES = 3;
 
     // Datos del usuario
-    int idEstudiante;
-    string nombreEstudiante;
-    string emailEstudiante;
+    int _idEstudiante;
+    std::string _nombreEstudiante;
+    std::string _emailEstudiante;
 
     // Estado actual
-    int seccionActual;
-    int botonActual;
-    bool primeraRenderizacion;
+    int _seccionActual;
+    int _botonActual;
+    bool _primeraRenderizacion;
 
     // Coordenadas para botones
     COORD coordsBotones[TOTAL_BOTONES] = {
@@ -38,23 +42,19 @@ private:
 
     void dibujarInterfazCompleta() {
         system("cls");
-        UI_UserProfile();
-
-        // Mostrar datos del perfil
+        UI_UserProfile();        // Mostrar datos del perfil
         SetConsoleColor(15, 0);
         gotoXY(26, 16);
-        cout << idEstudiante;
+        std::cout << _idEstudiante;
 
         gotoXY(34, 20);
-        cout << nombreEstudiante;
+        std::cout << _nombreEstudiante;
 
         gotoXY(30, 24);
-        cout << emailEstudiante;
-        SetConsoleColor(15, 0);
-
-        // Renderizar botones
+        std::cout << _emailEstudiante;
+        SetConsoleColor(15, 0);        // Renderizar botones
         for (int i = 0; i < TOTAL_BOTONES; i++) {
-            renderizarBoton(i, i == botonActual && seccionActual == SECCION_BOTONES);
+            renderizarBoton(i, i == _botonActual && _seccionActual == SECCION_BOTONES);
         }
     }
 
@@ -70,13 +70,13 @@ private:
 
         switch (indice) {
         case BOTON_CERTIFICADOS:
-            cout << "MIS CERTIFICADOS";
+            std::cout << "MIS CERTIFICADOS";
             break;
         case BOTON_BOLETAS:
-            cout << "MIS BOLETAS";
+            std::cout << "MIS BOLETAS";
             break;
         case BOTON_EDITAR:
-            cout << "EDITAR PERFIL";
+            std::cout << "EDITAR PERFIL";
             break;
         }
 
@@ -85,26 +85,27 @@ private:
 
     void actualizarSeleccion() {
         for (int i = 0; i < TOTAL_BOTONES; i++) {
-            renderizarBoton(i, i == botonActual && seccionActual == SECCION_BOTONES);
+            renderizarBoton(i, i == _botonActual && _seccionActual == SECCION_BOTONES);
         }
     }
 
 public:
-    PerfilEstudiante(int _idEstudiante, string _nombreEstudiante, string _emailEstudiante)
-        : idEstudiante(_idEstudiante),
-        nombreEstudiante(_nombreEstudiante),
-        emailEstudiante(_emailEstudiante),
-        seccionActual(SECCION_BOTONES),
-        botonActual(0),
-        primeraRenderizacion(true) {
-    }
+    PerfilEstudianteScreen(int _idEstudiante, std::string _nombreEstudiante, std::string _emailEstudiante)
+        : PantallaBase(),
+        _idEstudiante(_idEstudiante),
+        _nombreEstudiante(_nombreEstudiante),
+        _emailEstudiante(_emailEstudiante),
+        _seccionActual(SECCION_BOTONES),
+        _botonActual(0),
+        _primeraRenderizacion(true) {
+    }    ~PerfilEstudianteScreen() = default;
 
     ResultadoPantalla ejecutar() override {
         ResultadoPantalla res;
 
-        if (primeraRenderizacion) {
+        if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
-            primeraRenderizacion = false;
+            _primeraRenderizacion = false;
         }
 
         while (true) {
@@ -116,14 +117,14 @@ public:
                 tecla = _getch();
                 switch (tecla) {
                 case 75: // Flecha izquierda
-                    if (botonActual > 0) {
-                        botonActual--;
+                    if (_botonActual > 0) {
+                        _botonActual--;
                         actualizarSeleccion();
                     }
                     break;
                 case 77: // Flecha derecha
-                    if (botonActual < TOTAL_BOTONES - 1) {
-                        botonActual++;
+                    if (_botonActual < TOTAL_BOTONES - 1) {
+                        _botonActual++;
                         actualizarSeleccion();
                     }
                     break;
@@ -131,8 +132,8 @@ public:
                 break;
 
             case 13: // Enter
-                if (seccionActual == SECCION_BOTONES) {
-                    switch (botonActual) {
+                if (_seccionActual == SECCION_BOTONES) {
+                    switch (_botonActual) {
                     case BOTON_CERTIFICADOS:
                         // Para una futura implementación
                         break;

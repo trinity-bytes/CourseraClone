@@ -1,29 +1,31 @@
 #pragma once
 
-#include "../Utils/Pantalla.h"
-#include "../Utils/ExtendedFunctions.h"
-#include "../Utils/UI_Ascii.h"
-#include "../Entities/Empresa.h"
+// Headers estándar
 #include <string>
 
-class PerfilOrganizacion : public PantallaBase
+// Headers de consola
+#include "../Entities/Empresa.h"
+#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/ScreenSystem.h"
+#include "../Utils/UI_Ascii.h"
+
+// Screen to display organization profile information
+class PerfilOrganizacionScreen : public PantallaBase
 {
 private:
     // Datos de la organización
-    int idOrganizacion;
-    string nombreOrganizacion;
-    string correoOrganizacion;
+    int _idOrganizacion;
+    std::string _nombreOrganizacion;
+    std::string _correoOrganizacion;
 
     // Estado actual
-    bool primeraRenderizacion;
+    bool _primeraRenderizacion;
 
     // Coordenadas para dibujar
     const int COL_ETIQUETA = 22;
     const int FILA_ID = 15;
     const int FILA_NOMBRE = 19;
-    const int FILA_CORREO = 23;
-
-    void dibujarInterfazCompleta() {
+    const int FILA_CORREO = 23;    void dibujarInterfazCompleta() {
         system("cls");
         // Dibujar marco y título
         UI_OrganizationProfile();
@@ -31,34 +33,37 @@ private:
         // Datos de la organización
         SetConsoleColor(15, 0);
         gotoXY(COL_ETIQUETA, FILA_ID);
-        cout << "ID: " << idOrganizacion;
+        std::cout << "ID: " << _idOrganizacion;
 
         gotoXY(COL_ETIQUETA, FILA_NOMBRE);
-        cout << "ORGANIZACION: " << nombreOrganizacion;
+        std::cout << "ORGANIZACION: " << _nombreOrganizacion;
 
         gotoXY(COL_ETIQUETA, FILA_CORREO);
-        cout << "CORREO: " << correoOrganizacion << "@gmail.edu.com";
+        std::cout << "CORREO: " << _correoOrganizacion << "@gmail.edu.com";
         SetConsoleColor(15, 0);
 
         // Botón de editar perfil
         gotoXY(92, 12);
         SetConsoleColor(15, 0);
-        cout << " EDITAR PERFIL ";
+        std::cout << " EDITAR PERFIL ";
         SetConsoleColor(15, 0);
     }
 
 public:
-    PerfilOrganizacion(int _idOrganizacion, string _nombreOrganizacion, string _correoOrganizacion)
-        : idOrganizacion(_idOrganizacion),
-        nombreOrganizacion(_nombreOrganizacion),
-        correoOrganizacion(_correoOrganizacion),
-        primeraRenderizacion(true) {
+    PerfilOrganizacionScreen(int _idOrganizacion, std::string _nombreOrganizacion, std::string _correoOrganizacion)
+        : PantallaBase(),
+        _idOrganizacion(_idOrganizacion),
+        _nombreOrganizacion(_nombreOrganizacion),
+        _correoOrganizacion(_correoOrganizacion),
+        _primeraRenderizacion(true) {
     }
 
+    ~PerfilOrganizacionScreen() = default;
+
     ResultadoPantalla ejecutar() override {
-        if (primeraRenderizacion) {
+        if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
-            primeraRenderizacion = false;
+            _primeraRenderizacion = false;
         }
 
         ResultadoPantalla res;

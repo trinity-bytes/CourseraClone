@@ -9,7 +9,9 @@ Esta guía establece las convenciones de codificación para el proyecto Coursera
 - **Consistencia**: Todo el código debe seguir las mismas convenciones
 - **Legibilidad**: El código debe ser fácil de leer y entender
 - **Mantenibilidad**: Las convenciones deben facilitar el mantenimiento del código
+- **Arquitectura Header-Only**: Optimización para compilación single-file con múltiples headers
 - **Bilingüismo controlado**: Español para dominio del negocio, inglés para estructuras de datos estándar y terminos especificos de la industria.
+- **Arquitectura Header-Only**: Proyecto diseñado con un solo .cpp principal y todas las implementaciones en headers (.h)
 
 ---
 
@@ -25,16 +27,15 @@ Especializacion.h
 Estudiante.h
 
 // ✅ CORRECTO - Pantallas con sufijo "Screen"
-LoginScreen.h
-RegistroScreen.h
-DashboardEstudianteScreen.h
-MostrarCursoScreen.h
-ExplorarCursosScreen.h
+Login_Screen.h
+Registro_Screen.h
+DashboardEstudiante_Screen.h
+MostrarCurso_Screen.h
+ExplorarCursos_Screen.h
 
 // ✅ CORRECTO - Controladores/Gestores identificables
 GestionadorCursos.h
 Controladora.h
-CourseManager.h
 
 // ✅ CORRECTO - Estructuras de datos en inglés (estándar industria)
 LinkedList.h
@@ -841,6 +842,365 @@ La configuración del proyecto está actualizada para:
 **Versión:** 1.1 (Actualizada con nueva estructura)  
 **Última actualización:** 6 de enero de 2025  
 **Autores:** Santi, Mauricio, Jahat
+
+---
+
+## 6. Arquitectura Header-Only
+
+### 6.1 Principios de Compilación Single-File
+
+**Optimización para main.cpp único:**
+
+```cpp
+// main.cpp - Único archivo .cpp del proyecto
+#include "Headers/Controllers/Controladora.h"
+
+int main() {
+    Controladora app;
+    app.ejecutar();
+    return 0;
+}
+```
+
+### 6.2 Gestión de Includes
+
+**Headers deben ser auto-contenidos:**
+
+```cpp
+// ✅ CORRECTO - Header completo
+#ifndef ENTITIES_CURSO_H
+#define ENTITIES_CURSO_H
+
+#include <string>
+#include <vector>
+#include "Instructor.h"
+
+class Curso {
+    // Implementación completa aquí
+private:
+    std::string titulo;
+    std::vector<Instructor> instructores;
+
+public:
+    Curso(const std::string& titulo) : titulo(titulo) {}
+
+    void agregarInstructor(const Instructor& instructor) {
+        instructores.push_back(instructor);
+    }
+
+    const std::string& getTitulo() const { return titulo; }
+};
+
+#endif // ENTITIES_CURSO_H
+```
+
+**Evitar includes circulares:**
+
+```cpp
+// ✅ CORRECTO - Forward declaration cuando sea posible
+#ifndef ENTITIES_ESTUDIANTE_H
+#define ENTITIES_ESTUDIANTE_H
+
+#include <string>
+#include <vector>
+
+// Forward declaration en lugar de #include "Curso.h"
+class Curso;
+
+class Estudiante {
+private:
+    std::vector<Curso*> cursosInscritos; // Punteros para forward declaration
+
+public:
+    void inscribirseEnCurso(Curso* curso);
+    const std::vector<Curso*>& getCursos() const;
+};
+
+#endif // ENTITIES_ESTUDIANTE_H
+```
+
+### 6.3 Orden de Includes
+
+**Jerarquía estricta para evitar conflictos:**
+
+```cpp
+// 1. Headers estándar de C++
+#include <iostream>
+#include <string>
+#include <vector>
+
+// 2. Headers de terceros (si los hubiera)
+// #include <third_party_lib.h>
+
+// 3. Headers del proyecto - Controllers primero
+#include "Headers/Controllers/Controladora.h"
+
+// 4. Headers del proyecto - por categoría
+#include "Headers/DataStructures/BinaryHeap.h"
+#include "Headers/Entities/Usuario.h"
+#include "Headers/Screens/LoginScreen.h"
+#include "Headers/Utils/Validadores.h"
+```
+
+### 6.4 Protección de Headers
+
+**Guards obligatorios y consistentes:**
+
+```cpp
+// Patrón: CARPETA_ARCHIVO_H
+#ifndef CONTROLLERS_CONTROLADORA_H
+#define CONTROLLERS_CONTROLADORA_H
+
+// Contenido del header...
+
+#endif // CONTROLLERS_CONTROLADORA_H
+```
+
+**Mapping de carpetas a prefijos:**
+
+- `Controllers/` → `CONTROLLERS_`
+- `DataStructures/` → `DATASTRUCTURES_`
+- `Entities/` → `ENTITIES_`
+- `Screens/` → `SCREENS_`
+- `Utils/` → `UTILS_`
+
+### 6.5 Implementación Inline
+
+**Métodos simples inline en header:**
+
+```cpp
+class Usuario {
+private:
+    std::string _nombre;
+    int _edad;
+
+public:
+    // ✅ Inline para getters simples
+    const std::string& getNombre() const { return _nombre; }
+    int getEdad() const { return _edad; }
+
+    // ✅ Inline para setters con validación simple
+    void setEdad(int nuevaEdad) {
+        if (nuevaEdad >= 0) _edad = nuevaEdad;
+    }
+
+    // ✅ Métodos complejos también inline (arquitectura header-only)
+    void actualizarPerfil(const std::string& nuevoNombre, int nuevaEdad) {
+        if (!nuevoNombre.empty() && nuevaEdad >= 0) {
+            _nombre = nuevoNombre;
+            _edad = nuevaEdad;
+            std::cout << "Perfil actualizado exitosamente\n";
+        } else {
+            std::cout << "Error: Datos inválidos\n";
+        }
+    }
+};
+```
+
+### 6.6 Manejo de Templates
+
+**Templates siempre en headers:**
+
+```cpp
+#ifndef DATASTRUCTURES_BINARYHEAP_H
+#define DATASTRUCTURES_BINARYHEAP_H
+
+#include <vector>
+#include <functional>
+
+template<typename T, typename Compare = std::less<T>>
+class BinaryHeap {
+private:
+    std::vector<T> _heap;
+    Compare _comp;
+
+    void heapifyUp(int index) {
+        if (index > 0) {
+            int parent = (index - 1) / 2;
+            if (_comp(_heap[parent], _heap[index])) {
+                std::swap(_heap[parent], _heap[index]);
+                heapifyUp(parent);
+            }
+        }
+    }
+
+public:
+    BinaryHeap(const Compare& c = Compare()) : _comp(c) {}
+
+    void insert(const T& value) {
+        _heap.push_back(value);
+        heapifyUp(_heap.size() - 1);
+    }
+
+    bool empty() const { return _heap.empty(); }
+    size_t size() const { return _heap.size(); }
+};
+
+#endif // DATASTRUCTURES_BINARYHEAP_H
+```
+
+### 6.7 Organización de Código en Headers
+
+**Estructura estándar para cada header:**
+
+```cpp
+#ifndef CARPETA_ARCHIVO_H
+#define CARPETA_ARCHIVO_H
+
+// 1. Includes necesarios
+#include <iostream>
+#include "OtrosHeaders.h"
+
+// 2. Forward declarations
+class ClaseRelacionada;
+
+// 3. Constantes y tipos
+const int MAX_ELEMENTOS = 100;
+using TipoId = unsigned int;
+
+// 4. Clase principal
+class MiClase {
+private:
+    // 4.1 Atributos privados (prefijo _)
+
+public:
+    // 4.2 Constructores y destructor
+
+    // 4.3 Métodos públicos principales
+
+    // 4.4 Getters y setters (inline simples)
+
+    // 4.5 Métodos de utilidad (inline si son simples)
+};
+
+// 5. Implementaciones inline complejas (fuera de la clase)
+inline void MiClase::metodoComplejo() {
+    // Implementación detallada aquí
+}
+
+#endif // CARPETA_ARCHIVO_H
+```
+
+### 6.8 Optimizaciones de Compilación
+
+**Minimizar dependencias innecesarias:**
+
+```cpp
+// ❌ EVITAR - Include innecesario
+#include "Headers/Entities/Curso.h" // Solo para usar Curso*
+
+// ✅ CORRECTO - Forward declaration
+class Curso; // Suficiente para punteros y referencias
+```
+
+**Uso inteligente de const y referencias:**
+
+```cpp
+// ✅ Evita copias innecesarias
+void procesarCursos(const std::vector<Curso>& cursos) {
+    for (const auto& curso : cursos) {
+        // Procesar sin copiar
+    }
+}
+```
+
+### 6.9 Debugging en Arquitectura Header-Only
+
+**Macros de debug condicionales:**
+
+```cpp
+#ifdef DEBUG_MODE
+    #define DEBUG_PRINT(x) std::cout << "[DEBUG] " << x << std::endl
+#else
+    #define DEBUG_PRINT(x)
+#endif
+
+// Uso en headers
+void metodoImportante() {
+    DEBUG_PRINT("Ejecutando método importante");
+    // Lógica del método...
+}
+```
+
+### 6.10 Convenciones de Naming para Headers
+
+**Archivos y guards consistentes:**
+
+```
+Headers/
+├── Controllers/
+│   └── Controladora.h          → CONTROLLERS_CONTROLADORA_H
+├── DataStructures/
+│   ├── BinaryHeap.h           → DATASTRUCTURES_BINARYHEAP_H
+│   └── HashMap.h              → DATASTRUCTURES_HASHMAP_H
+├── Entities/
+│   ├── Usuario.h              → ENTITIES_USUARIO_H
+│   └── Curso.h                → ENTITIES_CURSO_H
+├── Screens/
+│   ├── LoginScreen.h          → SCREENS_LOGINSCREEN_H
+│   └── DashboardScreen.h      → SCREENS_DASHBOARDSCREEN_H
+└── Utils/
+    └── Validadores.h          → UTILS_VALIDADORES_H
+```
+
+### 6.11 Gestión de Estado Global
+
+**Evitar variables globales, usar singletons o pasar referencias:**
+
+```cpp
+// ❌ EVITAR - Variables globales en headers
+extern int globalCounter; // Problemático en header-only
+
+// ✅ CORRECTO - Singleton pattern
+class ConfigManager {
+private:
+    static ConfigManager* _instance;
+    int _configValue;
+
+    ConfigManager() : _configValue(0) {}
+
+public:
+    static ConfigManager& getInstance() {
+        if (!_instance) {
+            _instance = new ConfigManager();
+        }
+        return *_instance;
+    }
+
+    int getConfigValue() const { return _configValue; }
+    void setConfigValue(int value) { _configValue = value; }
+};
+
+// ✅ MEJOR - Pasar referencias explícitamente
+void funcionQueNecesitaConfig(const ConfigManager& config) {
+    int valor = config.getConfigValue();
+    // Usar valor...
+}
+```
+
+### 6.12 Validación de Arquitectura
+
+**Checklist para cada header:**
+
+- [ ] Header guard correcto (`CARPETA_ARCHIVO_H`)
+- [ ] Includes mínimos necesarios
+- [ ] Forward declarations donde sea posible
+- [ ] Implementación completa inline
+- [ ] Atributos privados con prefijo `_`
+- [ ] Métodos const donde corresponda
+- [ ] Sin variables globales
+- [ ] Documentación de métodos complejos
+
+**Herramientas de validación:**
+
+```cpp
+// Verificar que header compila solo
+// Crear archivo test_header.cpp temporal:
+#include "Headers/MiClase.h"
+int main() { return 0; }
+
+// Si compila sin errores, el header es auto-contenido
+```
 
 ---
 

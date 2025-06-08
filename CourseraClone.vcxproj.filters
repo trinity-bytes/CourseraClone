@@ -13,6 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\DataStructures">
+      <UniqueIdentifier>{95e2cf24-383a-42da-bfe3-17f1c0d8fd61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Controller">
+      <UniqueIdentifier>{7ebf0f94-3e0e-4f5b-9050-830d0254df8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{e7a589d0-6be2-45c7-b2c9-d98b20f6a219}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{59598c44-f548-402c-9188-a00780e72c35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Screens">
+      <UniqueIdentifier>{e6e45ad0-60c3-4742-88e4-fa9ed080def8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\CourseraCloneApp.cpp">
@@ -22,133 +37,122 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include="Resources\Documentation\Plan de implementacion.md" />
+    <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Controllers\Controladora.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Controllers\CourseManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Controllers\GestionadorCursos.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Controllers\Controladora.h">
+      <Filter>Header Files\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\BinaryHeap.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\HashEntity.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\HashTable.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\LinkedList.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\Nodo.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\PriorityQueue.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\Queue.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\Stack.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Actividad.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Boleta.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Clase.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Curso.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Empresa.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Especializacion.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Estudiante.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Inscripcion.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Usuario.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Venta.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\DashboardEstudiante.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\DashboardOrganizacion.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\EditarPerfil.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\EditarPerfilScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\ExplorarCursosYEspecialidades.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\ExplorarCursosYEspecialidadesScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\InscripcionEspecialidad.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\LandingPageScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\LandingPage.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\LoginScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\Login.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\MostrarCursoScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\MostrarCurso.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\MostrarEspecialidadScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\MostrarEspecialidad.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\PerfilEstudianteScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\PerfilEstudiante.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\PerfilOrganizacion.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\RegistroScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\Registro.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Screens\VerBboletasScreen.h">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\VerBboletas.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Utils\ScreenSystem.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Utils\ExtendedFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Utils\Pantalla.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Utils\PantallaResultado.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Utils\SystemUtils.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Utils\UI_Ascii.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Utils\Utils.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

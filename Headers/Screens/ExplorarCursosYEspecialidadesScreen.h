@@ -1,20 +1,21 @@
 #pragma once
 
-#include "../Utils/Pantalla.h"
-#include "../Utils/ExtendedFunctions.h"
-#include "../Utils/UI_Ascii.h"
-#include "../Entities/Curso.h"
-#include "../Entities/Especializacion.h"
-#include "../Controllers/GestionadorCursos.h"
+// Headers estándar
 #include <vector>
 #include <string>
 #include <iostream>
 #include <conio.h>
 #include <algorithm>
 
-using namespace std;
+// Headers propios  
+#include "../Utils/ScreenSystem.h"
+#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/UI_Ascii.h"
+#include "../Entities/Curso.h"
+#include "../Entities/Especializacion.h"
+#include "../Controllers/GestionadorCursos.h"
 
-class ExplorarCursosYEspecialidades : public PantallaBase
+class ExplorarCursosYEspecialidadesScreen : public PantallaBase
 {
 private:
     // Secciones de la pantalla
@@ -22,9 +23,7 @@ private:
     static const int SECCION_ESPECIALIDADES = 2; // Lista de especialidades
     static const int TOTAL_SECCIONES = 3;
 
-    int ultimoElementoSeleccionadoPorSeccion[TOTAL_SECCIONES];
-
-    // Estado actual
+    int ultimoElementoSeleccionadoPorSeccion[TOTAL_SECCIONES];    // Estado actual
     int seccionActual;
     int elementoActual;
     int indiceInicioCursos;
@@ -35,15 +34,11 @@ private:
 	int elementoAnterior;
     bool primeraRenderizacion;
     bool necesitaRerenderizarCursos;
-    bool necesitaRerenderizarEspecialidades;
+    bool necesitaRerenderizarEspecialidades;    TipoUsuario tipoUsuario;
+    int idUsuario;
+    std::string nombreUsuario;
 
-    Estudiante& estudiante;
-    TipoUsuario tipoUsuario;
-
-    // Datos
-    GestionadorCursos& gestionadorCursos;
-    LinkedList<Curso*>& cursos;
-    LinkedList<Especializacion*>& especialidades;
+    // Referencias a datos a través de la controladora
 
     // Coordenadas para la interfaz
     const int COL_TITULO = 50;
@@ -65,10 +60,10 @@ private:
         system("cls");
         UI_ExplorarCursosAndEspecialidades();
 
-        // Dibujar título
+    // Dibujar título
         gotoXY(COL_TITULO, FILA_TITULO);
         SetConsoleColor(15, 0);
-        cout << "EXPLORAR CURSOS Y ESPECIALIDADES";
+        std::cout << "EXPLORAR CURSOS Y ESPECIALIDADES";
 
         // Dibujar secciones
         SetConsoleColor(15, 0);
@@ -82,25 +77,19 @@ private:
     void renderizarCursos() 
     {
         limpiarAreaCursos();
-        limpiarAreaIndicadoresCursos();
-
-        // Título de sección cursos
+        limpiarAreaIndicadoresCursos();        // Título de sección cursos
         gotoXY(COL_TITULO_CURSOS, FILA_TITULO_CURSOS);
         SetConsoleColor(14, 0);  // Amarillo sobre negro
-        cout << "CURSOS DISPONIBLES";
-        SetConsoleColor(15, 0);  // Blanco sobre negro
-
-        // Dibujar lista de cursos
-        int totalCursos = cursos.getTamano();
+        std::cout << "CURSOS DISPONIBLES";
+        SetConsoleColor(15, 0);  // Blanco sobre negro        // Dibujar lista de cursos
+        int totalCursos = _controladora->getGestionadorCursos().getCursos().getTamano();
        
-        int cursosAMostrar = min(cursosPorPagina, totalCursos - indiceInicioCursos);
+        int cursosAMostrar = std::min(cursosPorPagina, totalCursos - indiceInicioCursos);
 
         // Primero limpiamos toda el área de cursos
-        limpiarAreaCursos();
-
-        for (int i = 0; i < cursosAMostrar; i++) {
+        limpiarAreaCursos();        for (int i = 0; i < cursosAMostrar; i++) {
             int indice = indiceInicioCursos + i;
-            Curso* curso = cursos.get(indice + 1);
+            Curso* curso = _controladora->getGestionadorCursos().getCursos().get(indice + 1);
 
             gotoXY(COL_LISTA_CURSOS, FILA_LISTA_CURSOS + i * 2);
 
@@ -109,41 +98,36 @@ private:
             }
             else {
                 SetConsoleColor(15, 1); // Color normal
-            }
-
-            // Mostrar ID y título del curso
-            string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
+            }            // Mostrar ID y título del curso
+            std::string titulo = std::to_string(curso->getId()) + ": " + curso->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
         
 
         // Indicadores de paginación para cursos
         // Limpiar indicadores anteriores
-        limpiarAreaIndicadoresCursos();
-
-        if (indiceInicioCursos > 0) {
+        limpiarAreaIndicadoresCursos();        if (indiceInicioCursos > 0) {
             gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS);
             SetConsoleColor(15, 1);
-            cout << "Mas arriba (Flecha ARRIBA)";
+            std::cout << "Mas arriba (Flecha ARRIBA)";
         }
 
         if (indiceInicioCursos + cursosPorPagina < totalCursos) {
             gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS + (cursosAMostrar * 2) - 2);
             SetConsoleColor(15, 0);
-            cout << "Mas abajo (Flecha ABAJO)";
+            std::cout << "Mas abajo (Flecha ABAJO)";
         }
 
         SetConsoleColor(15, 0); // Restaurar color normal
         necesitaRerenderizarCursos = false;
-    }
-
-    void renderizarEspecialidades() 
+    }    void renderizarEspecialidades() 
     {
         // Convertir LinkedList a vector
-        vector<Especializacion*> especialidadesVector;
+        std::vector<Especializacion*> especialidadesVector;
+        auto& especialidades = _controladora->getGestionadorCursos().getEspecializaciones();
         for (int i = 1; i <= especialidades.getTamano(); ++i) {
             especialidadesVector.push_back(especialidades.get(i));
         }
@@ -157,17 +141,13 @@ private:
         */
 
         limpiarAreaEspecialidades();
-        limpiarAreaIndicadoresEspecialidades();
-
-        // Título de sección especialidades
+        limpiarAreaIndicadoresEspecialidades();        // Título de sección especialidades
         gotoXY(COL_TITULO_ESPECIALIDADES, FILA_TITULO_ESPECIALIDADES);
         SetConsoleColor(14, 0);  // Amarillo sobre negro
-        cout << "ESPECIALIZACIONES DISPONIBLES";
-        SetConsoleColor(15, 0);  // Blanco sobre negro
-
-        // Dibujar lista de especialidades
+        std::cout << "ESPECIALIZACIONES DISPONIBLES";
+        SetConsoleColor(15, 0);  // Blanco sobre negro        // Dibujar lista de especialidades
         int totalEspecialidades = especialidades.getTamano();
-        int especialidadesAMostrar = min(especialidadesPorPagina, totalEspecialidades - indiceInicioEspecialidades);
+        int especialidadesAMostrar = std::min(especialidadesPorPagina, totalEspecialidades - indiceInicioEspecialidades);
 
         // Primero limpiamos toda el área de especialidades
         limpiarAreaEspecialidades();
@@ -183,69 +163,58 @@ private:
             }
             else {
                 SetConsoleColor(15, 1); // Color normal
-            }
-
-            // Mostrar ID y título de la especialización
-            string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
+            }            // Mostrar ID y título de la especialización
+            std::string titulo = std::to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
 
         // Indicadores de paginación para especialidades
         // Limpiar indicadores anteriores
-        limpiarAreaIndicadoresEspecialidades();
-
-        if (indiceInicioEspecialidades > 0) {
+        limpiarAreaIndicadoresEspecialidades();        if (indiceInicioEspecialidades > 0) {
             gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES);
             SetConsoleColor(15, 0);
-            cout << "Mas arriba (Flecha ARRIBA)";
+            std::cout << "Mas arriba (Flecha ARRIBA)";
         }
 
         if (indiceInicioEspecialidades + especialidadesPorPagina < totalEspecialidades) {
             gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES + (especialidadesAMostrar * 2) - 2);
             SetConsoleColor(15, 0);
-            cout << "Mas abajo (Flecha ABAJO)";
+            std::cout << "Mas abajo (Flecha ABAJO)";
         }
 
         SetConsoleColor(15, 0); // Restaurar color normal
         necesitaRerenderizarEspecialidades = false;
     }
 
-    // Métodos para limpieza de áreas
-    void limpiarAreaCursos() {
+    // Métodos para limpieza de áreas    void limpiarAreaCursos() {
         // Limpiar toda el área donde se muestran los cursos
         for (int i = 0; i < cursosPorPagina; i++) {
             gotoXY(COL_LISTA_CURSOS, FILA_LISTA_CURSOS + i * 2);
-            cout << string(ANCHO_ELEMENTO + 20, ' '); // El +20 es para asegurar limpieza completa
+            std::cout << std::string(ANCHO_ELEMENTO + 20, ' '); // El +20 es para asegurar limpieza completa
         }
-    }
-
-    void limpiarAreaIndicadoresCursos() {
+    }    void limpiarAreaIndicadoresCursos() {
         // Limpiar área de indicadores de paginación para cursos
         gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS);
-        cout << string(26, ' '); // Espacio para "▲ Más arriba"
+        std::cout << std::string(26, ' '); // Espacio para "▲ Más arriba"
 
         gotoXY(COL_LISTA_CURSOS + ANCHO_ELEMENTO + 5, FILA_LISTA_CURSOS + (cursosPorPagina * 2) - 2);
-        cout << string(26, ' '); // Espacio para "▼ Más abajo"
-    }
-
-    void limpiarAreaEspecialidades() {
+        std::cout << std::string(26, ' '); // Espacio para "▼ Más abajo"
+    }    void limpiarAreaEspecialidades() {
         // Limpiar toda el área donde se muestran las especialidades
         for (int i = 0; i < especialidadesPorPagina; i++) {
             gotoXY(COL_LISTA_ESPECIALIDADES, FILA_LISTA_ESPECIALIDADES + i * 2);
-            cout << string(ANCHO_ELEMENTO + 20, ' '); // El +20 es para asegurar limpieza completa
+            std::cout << std::string(ANCHO_ELEMENTO + 20, ' '); // El +20 es para asegurar limpieza completa
         }
-    }
-
-    void limpiarAreaIndicadoresEspecialidades() {
+    }    void limpiarAreaIndicadoresEspecialidades() {
         // Limpiar área de indicadores de paginación para especialidades
         gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES);
-        cout << string(26, ' '); // Espacio para "▲ Más arriba"
+        std::cout << std::string(26, ' '); // Espacio para "▲ Más arriba"
 
         gotoXY(COL_LISTA_ESPECIALIDADES + ANCHO_ELEMENTO + 5, FILA_LISTA_ESPECIALIDADES + (especialidadesPorPagina * 2) - 2);
-        cout << string(26, ' '); // Espacio para "▼ Más abajo"
+        std::cout << std::string(26, ' '); // Espacio para "▼ Más abajo"
     }
 
     void actualizarInterfaz() {
@@ -292,125 +261,99 @@ private:
         // Actualizar registros de selección
         elementoAnterior = elementoActual;
         seccionAnterior = seccionActual;
-    }
-
-    void limpiarYRedibujarElementoCurso(int indice) {
+    }    void limpiarYRedibujarElementoCurso(int indice) {
         if (indice >= 0 && indice < cursosPorPagina &&
-            indiceInicioCursos + indice < cursos.getTamano()) {
+            indiceInicioCursos + indice < _controladora->getGestionadorCursos().getCursos().getTamano()) {
 
             int x = COL_LISTA_CURSOS;
-            int y = FILA_LISTA_CURSOS + indice * 2;
-
-            // Limpiar la línea completa
+            int y = FILA_LISTA_CURSOS + indice * 2;            // Limpiar la línea completa
             gotoXY(x, y);
-            cout << string(ANCHO_ELEMENTO, ' ');
+            std::cout << std::string(ANCHO_ELEMENTO, ' ');
 
             // Redibujar con color normal
-            Curso* curso = cursos.get(indiceInicioCursos + indice + 1);
+            Curso* curso = _controladora->getGestionadorCursos().getCursos().get(indiceInicioCursos + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(15, 0); // Color normal
-            string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
+            std::string titulo = std::to_string(curso->getId()) + ": " + curso->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
-    }
-
-    void limpiarYRedibujarElementoEspecializacion(int indice) {
+    }    void limpiarYRedibujarElementoEspecializacion(int indice) {
         if (indice >= 0 && indice < especialidadesPorPagina &&
-            indiceInicioEspecialidades + indice < especialidades.getTamano()) {
+            indiceInicioEspecialidades + indice < _controladora->getGestionadorCursos().getEspecializaciones().getTamano()) {
 
             int x = COL_LISTA_ESPECIALIDADES;
-            int y = FILA_LISTA_ESPECIALIDADES + indice * 2;
-
-            // Limpiar la línea completa
+            int y = FILA_LISTA_ESPECIALIDADES + indice * 2;            // Limpiar la línea completa
             gotoXY(x, y);
-            cout << string(ANCHO_ELEMENTO, ' ');
-
-            // Redibujar con color normal
-            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice + 1);
+            std::cout << std::string(ANCHO_ELEMENTO, ' ');            // Redibujar con color normal
+            Especializacion* especializacion = _controladora->getGestionadorCursos().getEspecializaciones().get(indiceInicioEspecialidades + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(15, 0); // Color normal
-            string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
+            std::string titulo = std::to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
-    }
-
-    void dibujarElementoCursoSeleccionado(int indice) {
+    }    void dibujarElementoCursoSeleccionado(int indice) {
         if (indice >= 0 && indice < cursosPorPagina &&
-            indiceInicioCursos + indice < cursos.getTamano()) {
+            indiceInicioCursos + indice < _controladora->getGestionadorCursos().getCursos().getTamano()) {
 
             int x = COL_LISTA_CURSOS;
-            int y = FILA_LISTA_CURSOS + indice * 2;
-
-            // Limpiar la línea completa primero
+            int y = FILA_LISTA_CURSOS + indice * 2;            // Limpiar la línea completa primero
             gotoXY(x, y);
-            cout << string(ANCHO_ELEMENTO, ' ');
+            std::cout << std::string(ANCHO_ELEMENTO, ' ');
 
             // Redibujar con color seleccionado
-            Curso* curso = cursos.get(indiceInicioCursos + indice + 1);
+            Curso* curso = _controladora->getGestionadorCursos().getCursos().get(indiceInicioCursos + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(1, 13); // Color seleccionado
-            string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
+            std::string titulo = std::to_string(curso->getId()) + ": " + curso->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
-    }
-
-    void dibujarElementoEspecializacionSeleccionado(int indice) {
+    }    void dibujarElementoEspecializacionSeleccionado(int indice) {
         if (indice >= 0 && indice < especialidadesPorPagina &&
-            indiceInicioEspecialidades + indice < especialidades.getTamano()) {
+            indiceInicioEspecialidades + indice < _controladora->getGestionadorCursos().getEspecializaciones().getTamano()) {
 
             int x = COL_LISTA_ESPECIALIDADES;
-            int y = FILA_LISTA_ESPECIALIDADES + indice * 2;
-
-            // Limpiar la línea completa primero
+            int y = FILA_LISTA_ESPECIALIDADES + indice * 2;            // Limpiar la línea completa primero
             gotoXY(x, y);
-            cout << string(ANCHO_ELEMENTO, ' ');
-
-            // Redibujar con color seleccionado
-            Especializacion* especializacion = especialidades.get(indiceInicioEspecialidades + indice + 1);
+            std::cout << std::string(ANCHO_ELEMENTO, ' ');            // Redibujar con color seleccionado
+            Especializacion* especializacion = _controladora->getGestionadorCursos().getEspecializaciones().get(indiceInicioEspecialidades + indice + 1);
             gotoXY(x, y);
             SetConsoleColor(1, 13); // Color seleccionado
-            string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
+            std::string titulo = std::to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
-    }
-
-    void renderizarCursoSeleccionado() {
-        if (elementoActual < cursosPorPagina && indiceInicioCursos + elementoActual < cursos.getTamano()) {
+    }    void renderizarCursoSeleccionado() {
+        if (elementoActual < cursosPorPagina && indiceInicioCursos + elementoActual < _controladora->getGestionadorCursos().getCursos().getTamano()) {
             int indice = indiceInicioCursos + elementoActual;
-            Curso* curso = cursos.get(indice);
-            gotoXY(COL_LISTA_CURSOS, FILA_LISTA_CURSOS + elementoActual * 2);
+            Curso* curso = _controladora->getGestionadorCursos().getCursos().get(indice);gotoXY(COL_LISTA_CURSOS, FILA_LISTA_CURSOS + elementoActual * 2);
             SetConsoleColor(1, 13); // Color para selección
-            string titulo = to_string(curso->getId()) + ": " + curso->getTitulo();
+            std::string titulo = std::to_string(curso->getId()) + ": " + curso->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
-    }
-
-    void renderizarEspecializacionSeleccionada() {
-        if (elementoActual < especialidadesPorPagina && indiceInicioEspecialidades + elementoActual < especialidades.getTamano()) {
+    }    void renderizarEspecializacionSeleccionada() {
+        if (elementoActual < especialidadesPorPagina && indiceInicioEspecialidades + elementoActual < _controladora->getGestionadorCursos().getEspecializaciones().getTamano()) {
             int indice = indiceInicioEspecialidades + elementoActual;
-            Especializacion* especializacion = especialidades.get(indice + 1);
-            gotoXY(COL_LISTA_ESPECIALIDADES, FILA_LISTA_ESPECIALIDADES + elementoActual * 2);
+            Especializacion* especializacion = _controladora->getGestionadorCursos().getEspecializaciones().get(indice + 1);gotoXY(COL_LISTA_ESPECIALIDADES, FILA_LISTA_ESPECIALIDADES + elementoActual * 2);
             SetConsoleColor(1, 13); // Color para selección
-            string titulo = to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
+            std::string titulo = std::to_string(especializacion->getId()) + ": " + especializacion->getTitulo();
             if (titulo.length() > ANCHO_ELEMENTO) {
                 titulo = titulo.substr(0, ANCHO_ELEMENTO - 3) + "...";
             }
-            cout << titulo;
+            std::cout << titulo;
         }
     }
 
@@ -419,17 +362,14 @@ private:
         int seccionPrevia = seccionActual;
         int elementoPrevio = elementoActual;
         int indiceInicioCursosPrevio = indiceInicioCursos;
-        int indiceInicioEspecialidadesPrevio = indiceInicioEspecialidades;
-
-
-        switch (seccionActual) {
+        int indiceInicioEspecialidadesPrevio = indiceInicioEspecialidades;        switch (seccionActual) {
 
         case SECCION_CURSOS:
-            maxElementos = min(cursosPorPagina, cursos.getTamano() - indiceInicioCursos);
+            maxElementos = std::min(cursosPorPagina, _controladora->getGestionadorCursos().getCursos().getTamano() - indiceInicioCursos);
             break;
 
         case SECCION_ESPECIALIDADES:
-            maxElementos = min(especialidadesPorPagina, especialidades.getTamano() - indiceInicioEspecialidades);
+            maxElementos = std::min(especialidadesPorPagina, _controladora->getGestionadorCursos().getEspecializaciones().getTamano() - indiceInicioEspecialidades);
             break;
         }
 
@@ -447,25 +387,23 @@ private:
                 // Mover página hacia arriba en especialidades
                 indiceInicioEspecialidades--;
                 renderizarEspecialidades(); // Ahora limpia correctamente
-            }
-            else if (seccionActual == SECCION_ESPECIALIDADES) {
+            }            else if (seccionActual == SECCION_ESPECIALIDADES) {
                 // Cambiar de sección especialidades a cursos
                 seccionActual = SECCION_CURSOS;
                 // Seleccionar el último elemento de la lista de cursos
-                elementoActual = min(cursosPorPagina, cursos.getTamano() - indiceInicioCursos) - 1;
+                elementoActual = std::min(cursosPorPagina, _controladora->getGestionadorCursos().getCursos().getTamano() - indiceInicioCursos) - 1;
             }
             break;
 
         case 80: // Flecha abajo
             if (elementoActual < maxElementos - 1) {
                 elementoActual++;
-            }
-            else if (seccionActual == SECCION_CURSOS && indiceInicioCursos + cursosPorPagina < cursos.getTamano()) {
+            }            else if (seccionActual == SECCION_CURSOS && indiceInicioCursos + cursosPorPagina < _controladora->getGestionadorCursos().getCursos().getTamano()) {
                 // Mover página hacia abajo en cursos
                 indiceInicioCursos++;
                 renderizarCursos(); // Ahora limpia correctamente
             }
-            else if (seccionActual == SECCION_ESPECIALIDADES && indiceInicioEspecialidades + especialidadesPorPagina < especialidades.getTamano()) {
+            else if (seccionActual == SECCION_ESPECIALIDADES && indiceInicioEspecialidades + especialidadesPorPagina < _controladora->getGestionadorCursos().getEspecializaciones().getTamano()) {
                 // Mover página hacia abajo en especialidades
                 indiceInicioEspecialidades++;
                 renderizarEspecialidades(); // Ahora limpia correctamente
@@ -474,29 +412,25 @@ private:
                 seccionActual++;
                 elementoActual = 0;
             }
-            break;
-
-        case 33: // Page Up
+            break;        case 33: // Page Up
             if (seccionActual == SECCION_CURSOS) {
-                indiceInicioCursos = max(0, indiceInicioCursos - cursosPorPagina);
+                indiceInicioCursos = std::max(0, indiceInicioCursos - cursosPorPagina);
                 elementoActual = 0;
                 renderizarCursos(); // Ahora limpia correctamente
             }
             else if (seccionActual == SECCION_ESPECIALIDADES) {
-                indiceInicioEspecialidades = max(0, indiceInicioEspecialidades - especialidadesPorPagina);
+                indiceInicioEspecialidades = std::max(0, indiceInicioEspecialidades - especialidadesPorPagina);
                 elementoActual = 0;
                 renderizarEspecialidades(); // Ahora limpia correctamente
             }
-            break;
-
-        case 34: // Page Down
+            break;        case 34: // Page Down
             if (seccionActual == SECCION_CURSOS) {
-                indiceInicioCursos = min(cursos.getTamano() - 1, indiceInicioCursos + cursosPorPagina);
+                indiceInicioCursos = std::min(_controladora->getGestionadorCursos().getCursos().getTamano() - 1, indiceInicioCursos + cursosPorPagina);
                 elementoActual = 0;
                 renderizarCursos(); // Ahora limpia correctamente
             }
             else if (seccionActual == SECCION_ESPECIALIDADES) {
-                indiceInicioEspecialidades = min(especialidades.getTamano() - 1, indiceInicioEspecialidades + especialidadesPorPagina);
+                indiceInicioEspecialidades = std::min(_controladora->getGestionadorCursos().getEspecializaciones().getTamano() - 1, indiceInicioEspecialidades + especialidadesPorPagina);
                 elementoActual = 0;
                 renderizarEspecialidades(); // Ahora limpia correctamente
             }
@@ -524,12 +458,14 @@ private:
     }
 
 public:
-    ExplorarCursosYEspecialidades(GestionadorCursos& _gestionadorCursos,
-        TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE,
-        Estudiante& _estudiante = Estudiante())
-        : gestionadorCursos(_gestionadorCursos),
+    ExplorarCursosYEspecialidadesScreen(Controladora* _controladora,
+        TipoUsuario _tipoUsuario,
+        int _idUsuario = 0,
+        const std::string& _nombreUsuario = "")
+        : PantallaBase(_controladora),
         tipoUsuario(_tipoUsuario),
-        estudiante(_estudiante), 
+        idUsuario(_idUsuario),
+        nombreUsuario(_nombreUsuario),
         seccionActual(SECCION_CURSOS),
         elementoActual(0),
         indiceInicioCursos(0),
@@ -540,25 +476,18 @@ public:
         seccionAnterior(-1),
         elementoAnterior(-1),
         necesitaRerenderizarCursos(false),
-        necesitaRerenderizarEspecialidades(false),
-        cursos(_gestionadorCursos.getCursos()),
-        especialidades(_gestionadorCursos.getEspecializaciones())
+        necesitaRerenderizarEspecialidades(false)
     {
 
       
         // Inicializar el array de últimas selecciones
         for (int i = 0; i < TOTAL_SECCIONES; i++) {
             ultimoElementoSeleccionadoPorSeccion[i] = 0;
-        }
+        }    }
 
-    }
-
-    ~ExplorarCursosYEspecialidades() {
+    ~ExplorarCursosYEspecialidadesScreen() {
         // No necesitamos liberar memoria aquí ya que no somos dueños de los objetos
-    }
-
-    ResultadoPantalla ejecutar() override {
-        ResultadoPantalla resultado;
+    }    ResultadoPantalla ejecutar() override {
         int tecla;
 
         if (primeraRenderizacion) {
@@ -583,39 +512,39 @@ public:
                 if (seccionActual == SECCION_CURSOS) {
                     // Seleccionar un curso y mostrar sus detalles
                     int indiceCurso = indiceInicioCursos + elementoActual;
+                    auto& cursos = _controladora->getGestionadorCursos().getCursos();
                     if (indiceCurso < cursos.getTamano()) {
+                        auto resultado = crearResultado(AccionPantalla::IR_A_MOSTRAR_CURSO, tipoUsuario);
                         resultado.idCursoSeleccionado = cursos.get(indiceCurso + 1)->getId();
-                        resultado.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
                         resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
                             AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
                             AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
-                        resultado.tipoUsuario = tipoUsuario;
                         return resultado;
                     }
                 }
                 else if (seccionActual == SECCION_ESPECIALIDADES) {
                     // Seleccionar una especialización y mostrar sus detalles
                     int indiceEspecialidad = indiceInicioEspecialidades + elementoActual;
+                    auto& especialidades = _controladora->getGestionadorCursos().getEspecializaciones();
                     if (indiceEspecialidad < especialidades.getTamano()) {
+                        auto resultado = crearResultado(AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION, tipoUsuario);
                         resultado.idCursoSeleccionado = especialidades.get(indiceEspecialidad + 1)->getId();
-                        resultado.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
                         resultado.accionAnterior = tipoUsuario == TipoUsuario::ESTUDIANTE ?
                             AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
                             AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
-                        resultado.tipoUsuario = tipoUsuario;
                         return resultado;
                     }
                 }
             }
             // Si es tecla Escape
             else if (tecla == 27) {
-                resultado.accion = tipoUsuario == TipoUsuario::ESTUDIANTE ?
+                AccionPantalla accionDestino = tipoUsuario == TipoUsuario::ESTUDIANTE ?
                     AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE :
                     AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
-                return resultado;
+                return crearResultado(accionDestino, tipoUsuario);
             }
         }
 
-        return resultado;
+        return crearResultado(AccionPantalla::SALIR, tipoUsuario);
     }
 };

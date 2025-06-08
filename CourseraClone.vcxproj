@@ -70,7 +70,8 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />  </ImportGroup>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -133,11 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\Controladora.h" />
-    <ClInclude Include="Headers\Controllers\CourseManager.h" />
     <ClInclude Include="Headers\Controllers\GestionadorCursos.h" />
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.h" />
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.h" />
@@ -160,24 +161,21 @@
     <ClInclude Include="Headers\Entities\Inscripcion.h" />
     <ClInclude Include="Headers\Entities\Usuario.h" />
     <ClInclude Include="Headers\Entities\Venta.h" />
-    <ClInclude Include="Headers\Screens\DashboardEstudiante.h" />
-    <ClInclude Include="Headers\Screens\DashboardOrganizacion.h" />
-    <ClInclude Include="Headers\Screens\EditarPerfil.h" />
-    <ClInclude Include="Headers\Screens\ExplorarCursosYEspecialidades.h" />
-    <ClInclude Include="Headers\Screens\InscripcionEspecialidad.h" />
-    <ClInclude Include="Headers\Screens\LandingPage.h" />
-    <ClInclude Include="Headers\Screens\Login.h" />
-    <ClInclude Include="Headers\Screens\MostrarCurso.h" />
-    <ClInclude Include="Headers\Screens\MostrarEspecialidad.h" />
-    <ClInclude Include="Headers\Screens\PerfilEstudiante.h" />
-    <ClInclude Include="Headers\Screens\PerfilOrganizacion.h" />
-    <ClInclude Include="Headers\Screens\Registro.h" />
-    <ClInclude Include="Headers\Screens\VerBboletas.h" />
-    <ClInclude Include="Headers\Utils\ExtendedFunctions.h" />
-    <ClInclude Include="Headers\Utils\Pantalla.h" />
-    <ClInclude Include="Headers\Utils\PantallaResultado.h" />
+    <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h" />
+    <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.h" />
+    <ClInclude Include="Headers\Screens\EditarPerfilScreen.h" />
+    <ClInclude Include="Headers\Screens\ExplorarCursosYEspecialidadesScreen.h" />
+    <ClInclude Include="Headers\Screens\LandingPageScreen.h" />
+    <ClInclude Include="Headers\Screens\LoginScreen.h" />
+    <ClInclude Include="Headers\Screens\MostrarCursoScreen.h" />
+    <ClInclude Include="Headers\Screens\MostrarEspecialidadScreen.h" />
+    <ClInclude Include="Headers\Screens\PerfilEstudianteScreen.h" />
+    <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.h" />
+    <ClInclude Include="Headers\Screens\RegistroScreen.h" />
+    <ClInclude Include="Headers\Screens\VerBboletasScreen.h" />
+    <ClInclude Include="Headers\Utils\ScreenSystem.h" />
+    <ClInclude Include="Headers\Utils\SystemUtils.h" />
     <ClInclude Include="Headers\Utils\UI_Ascii.h" />
-    <ClInclude Include="Headers\Utils\Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

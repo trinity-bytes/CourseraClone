@@ -1,31 +1,35 @@
 ﻿#pragma once
 
-#include "../Utils/Pantalla.h"
-#include "../Utils/ExtendedFunctions.h"
-#include "../Utils/UI_Ascii.h"
-#include "../Entities/Especializacion.h"
-#include "../Controllers/GestionadorCursos.h"
-#include "../Entities/Curso.h"
-#include <vector>
-#include <string>
+// Headers estándar
 #include <algorithm>
 #include <sstream>
+#include <string>
+#include <vector>
 
-class MostrarEspecialidad : public PantallaBase
+// Headers de consola
+#include "../Controllers/GestionadorCursos.h"
+#include "../Entities/Curso.h"
+#include "../Entities/Especializacion.h"
+#include "../Utils/SystemUtils.h"
+#include "../Utils/ScreenSystem.h"
+#include "../Utils/UI_Ascii.h"
+
+// Screen to display a specialization with its details and associated courses
+class MostrarEspecialidadScreen : public PantallaBase
 {
 private:
     // Datos de la especialidad
-    int idEspecializacion;
-    Especializacion* especializacion;
-	GestionadorCursos& gestionadorCursos;
+    int _idEspecializacion;
+    Especializacion* _especializacion;
+	GestionadorCursos& _gestionadorCursos;
 
-    TipoUsuario tipoUsuario;
-    Estudiante& estudiante;
+    TipoUsuario _tipoUsuario;
+    Estudiante& _estudiante;
 
-    vector<Curso*> cursos;
+    std::vector<Curso*> _cursos;
 
-    bool primeraRenderizacion;
-    AccionPantalla pantallaAnterior;
+    bool _primeraRenderizacion;
+    AccionPantalla _pantallaAnterior;
 
     // Constantes para las coordenadas
     const int COL_TITULO_ESPECIALIZACION = 7;
@@ -47,23 +51,21 @@ private:
     const int LONGITUD_DESCRIPCION_ESPECIALIDAD = 30;
     const int LONGITUD_TITULO_CURSO_CELDA = 35;
     const int LONGITUD_DESCRIPCION_CURSO_CELDA = 34;
-    const int LONGITUD_TITULO_ESPECIALIZACION = 40;
-
-    // Método para truncar títulos largos
-    string truncarTitulo(const string& titulo, int maxLongitud) {
+    const int LONGITUD_TITULO_ESPECIALIZACION = 40;    // Método para truncar títulos largos
+    std::string truncarTitulo(const std::string& titulo, int maxLongitud) {
         if (titulo.length() <= maxLongitud) {
             return titulo;
         }
         return titulo.substr(0, maxLongitud - 3) + "...";
     }
 
-    vector<string> dividirTituloEnLineas(const string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
-        vector<string> lineas;
+    std::vector<std::string> dividirTituloEnLineas(const std::string& titulo, int maxLongitudPorLinea, int maxLineas = 3) {
+        std::vector<std::string> lineas;
         if (titulo.empty()) {
             return lineas;
         }
 
-        string textoRestante = titulo;
+        std::string textoRestante = titulo;
 
         for (int i = 0; i < maxLineas && !textoRestante.empty(); ++i) {
             if (textoRestante.length() <= maxLongitudPorLinea) {
@@ -92,11 +94,9 @@ private:
                 textoRestante = textoRestante.substr(posCorte);
                 textoRestante.erase(0, textoRestante.find_first_not_of(" "));
             }
-        }
-
-        // If text still remains and we've reached max lines, add ellipsis to last line
+        }        // If text still remains and we've reached max lines, add ellipsis to last line
         if (!textoRestante.empty() && lineas.size() == maxLineas) {
-            string& lastLine = lineas.back();
+            std::string& lastLine = lineas.back();
             if (lastLine.length() > 3) {
                 lastLine = lastLine.substr(0, lastLine.length() - 3) + "...";
             }
@@ -106,9 +106,9 @@ private:
     }
 
     // Método para formatear descripción
-    string formatearDescripcion(const string& texto, int anchoMax, int altoMax) {
-        string resultado;
-        string textoRestante = texto;
+    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax) {
+        std::string resultado;
+        std::string textoRestante = texto;
 
         for (int linea = 0; linea < altoMax; ++linea) {
             if (textoRestante.empty()) break;
@@ -143,8 +143,8 @@ private:
         }
 
         return resultado;
-    }
-
+    }    
+    
     void dibujarInterfazCompleta() {
         system("cls");
         UI_VistaEspecialidad();
@@ -152,23 +152,23 @@ private:
         // Mostrar título de la especialización
         gotoXY(COL_TITULO_ESPECIALIZACION, FILA_TITULO_ESPECIALIZACION);
         
-        cout << especializacion->getTitulo();
+        std::cout << _especializacion->getTitulo();
 
 
         // Mostrar descripción de la especialización
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION);
         
-        cout << "Descripcion:";
+        std::cout << "Descripcion:";
         gotoXY(COL_DESC_ESPECIALIZACION, FILA_DESC_ESPECIALIZACION + 2);
 
         // Formatear y mostrar descripción
-        string descripcionFormateada = formatearDescripcion(especializacion->getDescripcion(), LONGITUD_DESCRIPCION_ESPECIALIDAD, 12);
-        istringstream descStream(descripcionFormateada);
-        string linea;
+        std::string descripcionFormateada = formatearDescripcion(_especializacion->getDescripcion(), LONGITUD_DESCRIPCION_ESPECIALIDAD, 12);
+        std::istringstream descStream(descripcionFormateada);
+        std::string linea;
         int fila = FILA_DESC_ESPECIALIZACION + 2;
-        while (getline(descStream, linea)) {
+        while (std::getline(descStream, linea)) {
             gotoXY(COL_DESC_ESPECIALIZACION, fila++);
-            cout << linea;
+            std::cout << linea;
         }
         SetConsoleColor(15, 0);
 
@@ -176,22 +176,22 @@ private:
         for (int i = 0; i < FILAS_CUADRICULA; i++) {
             for (int j = 0; j < COLUMNAS_CUADRICULA; j++) {
                 int indice = i * COLUMNAS_CUADRICULA + j;
-                if (indice < cursos.size()) {
-                    dibujarCursoCelda(i, j, cursos[indice]);
+                if (indice < _cursos.size()) {
+                    dibujarCursoCelda(i, j, _cursos[indice]);
                 }
             }
         }
 
         // Mostrar opción de inscripción según el tipo de usuario
-        if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+        if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
             gotoXY(50, 3);
             SetConsoleColor(0, 15);
-            cout << "Presiona 'I' para inscribirte a esta especializacion";
+            std::cout << "Presiona 'I' para inscribirte a esta especializacion";
         }
-        else if (tipoUsuario == TipoUsuario::EMPRESA) {
+        else if (_tipoUsuario == TipoUsuario::EMPRESA) {
             gotoXY(50, 3);
             SetConsoleColor(8, 13); // Color gris para indicar deshabilitado
-            cout << "Solo estudiantes pueden inscribirse a especializaciones";
+            std::cout << "Solo estudiantes pueden inscribirse a especializaciones";
         }
         SetConsoleColor(15, 0);
     }
@@ -200,42 +200,41 @@ private:
         int x = COL_INICIO_CUADRICULA + columna * (ANCHO_CELDA + ESPACIO_ENTRE_CELDAS);
         int y = FILA_INICIO_CUADRICULA + fila * (ALTO_CELDA + ESPACIO_ENTRE_CELDAS);
 
-        SetConsoleColor(15, 0); // Color normal
-
-        // Dibujar título del curso
+        SetConsoleColor(15, 0); // Color normal        // Dibujar título del curso
         gotoXY(x + 2, y + 1);
-        string tituloCurso = truncarTitulo(curso->getTitulo(), LONGITUD_TITULO_CURSO_CELDA);
-        cout << tituloCurso;
+        std::string tituloCurso = truncarTitulo(curso->getTitulo(), LONGITUD_TITULO_CURSO_CELDA);
+        std::cout << tituloCurso;
 
         // Dibujar descripción del curso
-        string descripcionCurso = formatearDescripcion(curso->getDescripcion(), LONGITUD_DESCRIPCION_CURSO_CELDA, 3);
-        istringstream descStream(descripcionCurso);
-        string linea;
+        std::string descripcionCurso = formatearDescripcion(curso->getDescripcion(), LONGITUD_DESCRIPCION_CURSO_CELDA, 3);
+        std::istringstream descStream(descripcionCurso);
+        std::string linea;
         int lineaY = y + 3;
-        while (getline(descStream, linea)) {
+        while (std::getline(descStream, linea)) {
             gotoXY(x + 2, lineaY++);
-            cout << linea;
+            std::cout << linea;
         }
 
         // Dibujar instructor
         gotoXY(x + 2, y + ALTO_CELDA - 2);
-        cout << "Instructor: " << curso->getInstructor();
+        std::cout << "Instructor: " << curso->getInstructor();
 
         SetConsoleColor(15, 0); // Restaurar color normal
     }
 
 public:
-    MostrarEspecialidad(int _idEspecializacion, GestionadorCursos& _gestionadorCursos,
+    MostrarEspecialidadScreen(int _idEspecializacion, GestionadorCursos& _gestionadorCursos,
         Especializacion* _especializacion, AccionPantalla _pantallaAnterior,
         TipoUsuario _tipoUsuario = TipoUsuario::ESTUDIANTE,
         Estudiante& _estudiante = Estudiante())
-        : idEspecializacion(_idEspecializacion),
-        gestionadorCursos(_gestionadorCursos),
-        especializacion(_especializacion),
-        primeraRenderizacion(true),
-        pantallaAnterior(_pantallaAnterior),
-        tipoUsuario(_tipoUsuario),
-        estudiante(_estudiante)
+        : PantallaBase(),
+        _idEspecializacion(_idEspecializacion),
+        _gestionadorCursos(_gestionadorCursos),
+        _especializacion(_especializacion),
+        _primeraRenderizacion(true),
+        _pantallaAnterior(_pantallaAnterior),
+        _tipoUsuario(_tipoUsuario),
+        _estudiante(_estudiante)
     {
         /*
         // Si no se proporcionó una especialización, intentar cargarla por ID
@@ -250,10 +249,8 @@ public:
                 "Especialización " + to_string(idEspecializacion),
                 0, "Esta especialización no pudo ser cargada correctamente.");
         }
-        */
-
-        // Intentar cargar los cursos de la especialización
-        vector<int> idsCursosEsp = especializacion->getIdsCursosVector();
+        */        // Intentar cargar los cursos de la especialización
+        std::vector<int> idsCursosEsp = _especializacion->getIdsCursosVector();
 
         // Verificar si tenemos IDs de cursos asociados
         bool tieneCursosAsociados = !idsCursosEsp.empty();
@@ -261,8 +258,8 @@ public:
         // Primero, intentar cargar cursos desde el gestionador si hay IDs asociados
         if (tieneCursosAsociados) {
             for (int idCurso : idsCursosEsp) {
-                Curso* curso = gestionadorCursos.obtenerCurso(idCurso);
-                cursos.push_back(curso);
+                Curso* curso = _gestionadorCursos.obtenerCurso(idCurso);
+                _cursos.push_back(curso);
             }
         }
 
@@ -294,56 +291,53 @@ public:
             }
         }
         */
-    }
-
-    ~MostrarEspecialidad() {}
+    }    ~MostrarEspecialidadScreen() = default;
 
     ResultadoPantalla ejecutar() override {
         ResultadoPantalla res;
 
-        if (primeraRenderizacion) {
+        if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
-            primeraRenderizacion = false;
+            _primeraRenderizacion = false;
         }
 
         while (true) {
             int tecla = _getch();
 
             switch (tecla) {
-            
-            case 'i': // Inscribirse a la especialización
+              case 'i': // Inscribirse a la especialización
             case 'I':
-                if (tipoUsuario == TipoUsuario::EMPRESA) {
+                if (_tipoUsuario == TipoUsuario::EMPRESA) {
                     gotoXY(5, 25);
                     SetConsoleColor(4, 0);
-                    cout << "Las organizaciones no pueden inscribirse a especializaciones.";
+                    std::cout << "Las organizaciones no pueden inscribirse a especializaciones.";
                     SetConsoleColor(15, 0);
                     _getch();
                     dibujarInterfazCompleta();
                     break;
                 }
 
-                if (estudiante.getNombreCompleto() == "") {
+                if (_estudiante.getNombreCompleto() == "") {
                     // El usuario no ha iniciado sesión, mostrar mensaje
                     gotoXY(5, 25);
                     SetConsoleColor(4, 0);
-                    cout << "Necesitas iniciar sesion para inscribirte.";
+                    std::cout << "Necesitas iniciar sesion para inscribirte.";
                     SetConsoleColor(15, 0);
                     _getch();
 
                     // Redirigir a la pantalla de login
                     res.accion = AccionPantalla::IR_A_LOGIN;
                     res.accionAnterior = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
-                    res.idCursoSeleccionado = idEspecializacion;
+                    res.idCursoSeleccionado = _idEspecializacion;
                     res.tipoUsuario = TipoUsuario::ESTUDIANTE; // Important to set the user type
                     return res;
                 }
 
-                if (estudiante.inscribirseAEspecializacion(especializacion)) {
+                if (_estudiante.inscribirseAEspecializacion(_especializacion)) {
                     // Mostrar mensaje de éxito
                     gotoXY(5, 25);
                     SetConsoleColor(2, 0);
-                    cout << "¡Inscripcion exitosa a la especializacion!";
+                    std::cout << "¡Inscripcion exitosa a la especializacion!";
                     SetConsoleColor(15, 0);
                     _getch();
                     dibujarInterfazCompleta();
@@ -352,7 +346,7 @@ public:
                     // Mostrar mensaje de error
                     gotoXY(5, 25);
                     SetConsoleColor(4, 0);
-                    cout << "Error en la inscripcion. Es posible que ya estes inscrito.";
+                    std::cout << "Error en la inscripcion. Es posible que ya estes inscrito.";
                     SetConsoleColor(15, 0);
                     _getch();
                     dibujarInterfazCompleta();
@@ -360,8 +354,8 @@ public:
                 break;
 
             case 27: // ESC - volver a la pantalla anterior
-                res.accion = pantallaAnterior;
-                res.tipoUsuario = tipoUsuario; // Ensure user type persists
+                res.accion = _pantallaAnterior;
+                res.tipoUsuario = _tipoUsuario; // Ensure user type persists
                 return res;
             }
         }

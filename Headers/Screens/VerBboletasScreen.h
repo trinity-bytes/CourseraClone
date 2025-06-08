@@ -1,25 +1,29 @@
 ﻿#pragma once
 
-#include "../Utils/Pantalla.h"
-#include "../Utils/ExtendedFunctions.h"
-#include "../Utils/UI_Ascii.h"
-#include "../Entities/Estudiante.h"
-#include "../Entities/Boleta.h"
-#include <vector>
-#include <string>
-#include <sstream>
+// Headers estándar
 #include <iomanip>
+#include <sstream>
+#include <string>
+#include <vector>
 
-class VerBoletas : public PantallaBase
+// Headers de consola
+#include "../Entities/Boleta.h"
+#include "../Entities/Estudiante.h"
+#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/ScreenSystem.h"
+#include "../Utils/UI_Ascii.h"
+
+// Screen to display student payment receipts/invoices
+class VerBoletasScreen : public PantallaBase
 {
 private:
-    Estudiante& estudiante;
-    vector<Boleta> boletas;
-    int boletaSeleccionada;
-    int indiceInicio;
-    int boletasPorPagina;
-    bool primeraRenderizacion;
-    AccionPantalla pantallaAnterior;
+    Estudiante& _estudiante;
+    std::vector<Boleta> _boletas;
+    int _boletaSeleccionada;
+    int _indiceInicio;
+    int _boletasPorPagina;
+    bool _primeraRenderizacion;
+    AccionPantalla _pantallaAnterior;
 
     // Constantes para la interfaz
     const int COL_TITULO = 50;
@@ -30,9 +34,7 @@ private:
     const int COL_LISTA_BOLETAS = 10;
     const int FILA_LISTA_BOLETAS = 8;
     const int ESPACIO_ENTRE_BOLETAS = 2;
-    const int ANCHO_BOLETA = 100;
-
-    void dibujarInterfazCompleta() {
+    const int ANCHO_BOLETA = 100;    void dibujarInterfazCompleta() {
         system("cls");
         // Supongamos que tenemos una función UI para esta pantalla
         // UI_VerBoletas();
@@ -40,41 +42,39 @@ private:
         // Dibujar título
         gotoXY(COL_TITULO, FILA_TITULO);
         SetConsoleColor(15, 1);
-        cout << "MIS COMPROBANTES DE PAGO";
+        std::cout << "MIS COMPROBANTES DE PAGO";
 
         // Dibujar botón volver
         gotoXY(COL_VOLVER, FILA_VOLVER);
         SetConsoleColor(15, 1);
-        cout << " VOLVER ";
+        std::cout << " VOLVER ";
 
         // Mostrar las boletas
         dibujarBoletas();
-    }
-
-    void dibujarBoletas() {
+    }    void dibujarBoletas() {
         // Limpiar área de boletas
-        for (int i = 0; i < boletasPorPagina * ESPACIO_ENTRE_BOLETAS; i++) {
+        for (int i = 0; i < _boletasPorPagina * ESPACIO_ENTRE_BOLETAS; i++) {
             gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS + i);
-            cout << string(ANCHO_BOLETA, ' ');
+            std::cout << std::string(ANCHO_BOLETA, ' ');
         }
 
-        if (boletas.empty()) {
+        if (_boletas.empty()) {
             gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS);
             SetConsoleColor(15, 1);
-            cout << "No tienes comprobantes de pago.";
+            std::cout << "No tienes comprobantes de pago.";
             return;
         }
 
-        int boletasAMostrar = min(boletasPorPagina, static_cast<int>(boletas.size()) - indiceInicio);
+        int boletasAMostrar = std::min(_boletasPorPagina, static_cast<int>(_boletas.size()) - _indiceInicio);
 
         for (int i = 0; i < boletasAMostrar; i++) {
-            int indice = indiceInicio + i;
-            Boleta boleta = boletas[indice];
+            int indice = _indiceInicio + i;
+            Boleta boleta = _boletas[indice];
 
             int y = FILA_LISTA_BOLETAS + i * ESPACIO_ENTRE_BOLETAS;
 
             // Destacar la boleta seleccionada
-            if (i == boletaSeleccionada) {
+            if (i == _boletaSeleccionada) {
                 SetConsoleColor(1, 13); // Color para selección
             }
             else {
@@ -83,57 +83,58 @@ private:
 
             // Mostrar información de la boleta
             gotoXY(COL_LISTA_BOLETAS, y);
-            cout << "ID: " << boleta.getId()
+            std::cout << "ID: " << boleta.getId()
                 << " | Fecha: " << boleta.getFecha()
-                << " | Precio: $" << fixed << setprecision(2) << boleta.getPrecio();
+                << " | Precio: $" << std::fixed << std::setprecision(2) << boleta.getPrecio();
         }
 
         // Indicadores de paginación
-        if (indiceInicio > 0) {
+        if (_indiceInicio > 0) {
             gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS - 2);
             SetConsoleColor(15, 1);
-            cout << "Más arriba (Flecha ARRIBA)";
+            std::cout << "Más arriba (Flecha ARRIBA)";
         }
 
-        if (indiceInicio + boletasPorPagina < boletas.size()) {
+        if (_indiceInicio + _boletasPorPagina < _boletas.size()) {
             gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS + boletasAMostrar * ESPACIO_ENTRE_BOLETAS + 1);
             SetConsoleColor(15, 1);
-            cout << "Más abajo (Flecha ABAJO)";
+            std::cout << "Más abajo (Flecha ABAJO)";
         }
 
         SetConsoleColor(15, 1); // Restaurar color normal
     }
 
 public:
-    VerBoletas(Estudiante& _estudiante, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE)
-        : estudiante(_estudiante),
-        boletaSeleccionada(0),
-        indiceInicio(0),
-        boletasPorPagina(10),
-        primeraRenderizacion(true),
-        pantallaAnterior(_pantallaAnterior)
+    VerBoletasScreen(Estudiante& _estudiante, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE)
+        : PantallaBase(),
+        _estudiante(_estudiante),
+        _boletaSeleccionada(0),
+        _indiceInicio(0),
+        _boletasPorPagina(10),
+        _primeraRenderizacion(true),
+        _pantallaAnterior(_pantallaAnterior)
     {
         // Cargar boletas desde el estudiante
         // Problema
-        LinkedList<Boleta>& boletasLista = estudiante.getBoletas();
+        LinkedList<Boleta>& boletasLista = _estudiante.getBoletas();
 
         // Convertir la lista enlazada a un vector para facilitar el manejo
         for (int i = 1; i <= boletasLista.getTamano(); i++) {
-            boletas.push_back(boletasLista.get(i));
+            _boletas.push_back(boletasLista.get(i));
         }
         /*
         if (estudiante != NULL) {
             
         }
         */
-    }
+    }    ~VerBoletasScreen() = default;
 
     ResultadoPantalla ejecutar() override {
         ResultadoPantalla resultado;
 
-        if (primeraRenderizacion) {
+        if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
-            primeraRenderizacion = false;
+            _primeraRenderizacion = false;
         }
 
         while (true) {
@@ -145,23 +146,23 @@ public:
 
                 switch (tecla) {
                 case 72: // Flecha arriba
-                    if (boletaSeleccionada > 0) {
-                        boletaSeleccionada--;
+                    if (_boletaSeleccionada > 0) {
+                        _boletaSeleccionada--;
                         dibujarBoletas();
                     }
-                    else if (indiceInicio > 0) {
-                        indiceInicio--;
+                    else if (_indiceInicio > 0) {
+                        _indiceInicio--;
                         dibujarBoletas();
                     }
                     break;
 
                 case 80: // Flecha abajo
-                    if (boletaSeleccionada < min(boletasPorPagina - 1, static_cast<int>(boletas.size()) - indiceInicio - 1)) {
-                        boletaSeleccionada++;
+                    if (_boletaSeleccionada < std::min(_boletasPorPagina - 1, static_cast<int>(_boletas.size()) - _indiceInicio - 1)) {
+                        _boletaSeleccionada++;
                         dibujarBoletas();
                     }
-                    else if (indiceInicio + boletasPorPagina < boletas.size()) {
-                        indiceInicio++;
+                    else if (_indiceInicio + _boletasPorPagina < _boletas.size()) {
+                        _indiceInicio++;
                         dibujarBoletas();
                     }
                     break;
@@ -169,10 +170,10 @@ public:
                 break;
 
             case 13: // Enter - Ver detalles de la boleta
-                if (!boletas.empty() && indiceInicio + boletaSeleccionada < boletas.size()) {
+                if (!_boletas.empty() && _indiceInicio + _boletaSeleccionada < _boletas.size()) {
                     // Implementar lógica para mostrar detalles (podría ser una nueva pantalla)
                     // Por ahora simplemente volvemos
-                    resultado.accion = pantallaAnterior;
+                    resultado.accion = _pantallaAnterior;
                     return resultado;
                 }
                 break;
