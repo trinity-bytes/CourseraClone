@@ -15,7 +15,7 @@ Esta guía establece las convenciones de codificación para el proyecto Coursera
 
 ### Principios Adicionales de Codificación Limpia
 
-Además de los principios fundamentales, se recomienda seguir estas pautas para mejorar la calidad del código, especialmente útiles para estudiantes en desarrollo:
+Además de los principios fundamentales, se recomienda seguir estas pautas para mejorar la calidad del código:
 
 - **Claridad sobre Concisión Extrema**: Si bien el código conciso es bueno, la legibilidad es primordial. Los nombres de variables, funciones y clases deben ser descriptivos y autoexplicativos.
 - **Responsabilidad Única (Simplificado)**:
