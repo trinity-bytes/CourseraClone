@@ -308,7 +308,7 @@ InscripcionEspecialidad.hpp → InscripcionEspecialidadScreen.hpp
 // Headers/Screens/ - Actualizar a sufijo "Screen"
 DashboardEstudiante.hpp           → DashboardEstudianteScreen.hpp
 DashboardOrganizacion.hpp         → DashboardOrganizacionScreen.hpp
-ExplorarCursosYEspecialidades.hpp → ExplorarCursosScreen.hpp (simplificar también)
+ExplorarCursosYEspecialidades.hpp → ExplorarContenidoScreen.hpp (simplificar también)
 LandingPage.hpp                   → LandingPageScreen.hpp
 ```
 
