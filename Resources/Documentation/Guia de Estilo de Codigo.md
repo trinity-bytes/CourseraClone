@@ -90,7 +90,9 @@ ExtendedFunctions.hpp  // Nombre actual - mantener
 // ✅ CORRECTO - Coincide con el archivo .hpp
 CourseraCloneApp.cpp
 
-// ✅ CORRECTO - Implementaciones con sufijos descriptivos
+// ✅ CORRECTO - Implementaciones con sufijos 
+// Por ahora no son necesarios, son una mejora a futuro
+descriptivos
 LoginScreen.cpp
 GestionadorCursos.cpp
 FileUtils.cpp
