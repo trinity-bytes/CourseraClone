@@ -5,7 +5,7 @@
 
 // Headers de consola
 #include "../Entities/Estudiante.h"
-#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/SystemUtils.h"
 #include "../Utils/ScreenSystem.h"
 #include "../Utils/UI_Ascii.h"
 
@@ -43,7 +43,7 @@ private:
     void dibujarInterfazCompleta() {
         system("cls");
         UI_UserProfile();        // Mostrar datos del perfil
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
         gotoXY(26, 16);
         std::cout << _idEstudiante;
 
@@ -52,7 +52,7 @@ private:
 
         gotoXY(30, 24);
         std::cout << _emailEstudiante;
-        SetConsoleColor(15, 0);        // Renderizar botones
+        setConsoleColor(15, 0);        // Renderizar botones
         for (int i = 0; i < TOTAL_BOTONES; i++) {
             renderizarBoton(i, i == _botonActual && _seccionActual == SECCION_BOTONES);
         }
@@ -62,10 +62,10 @@ private:
         gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
 
         if (seleccionado) {
-            SetConsoleColor(1, 13); // Color para selección
+            setConsoleColor(1, 13); // Color para selección
         }
         else {
-            SetConsoleColor(15, 0); // Color normal
+            setConsoleColor(15, 0); // Color normal
         }
 
         switch (indice) {
@@ -80,7 +80,7 @@ private:
             break;
         }
 
-        SetConsoleColor(15, 0); // Restaurar color
+        setConsoleColor(15, 0); // Restaurar color
     }
 
     void actualizarSeleccion() {

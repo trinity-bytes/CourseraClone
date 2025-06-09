@@ -16,10 +16,6 @@ int main()
 
 	try
 	{
-		std::cout << "==================================" << std::endl;
-		std::cout << "   Bienvenido a CourseraClone" << std::endl;
-		std::cout << "==================================" << std::endl;
-		
 		Controladora app;
 		app.run();
 	}
@@ -34,5 +30,5 @@ int main()
 
 void SecuenciaInicializacion()
 {
-	ConfigurarConsola();
+	configurarConsola();
 }

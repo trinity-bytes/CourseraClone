@@ -1,69 +1,46 @@
 #pragma once
 
-//====================================================================
-// INCLUDES SYSTEM
-//====================================================================
+// Librerias estándar
 #include <string>
 
-//====================================================================
-// INCLUDES PROJECT
-//====================================================================
-#include "../Systems/ScreenSystem.h"
+// Librerías propias
+#include "../Utils/ScreenSystem.h"
 #include "../Entities/Estudiante.h"
 #include "../Entities/Empresa.h"
 #include "../DataStructures/LinkedList.h"
 #include "../Entities/Curso.h"
 #include "../Entities/Especializacion.h"
 
-//====================================================================
-// FORWARD DECLARATIONS
-//====================================================================
+// forward declarations
 class Usuario;
 
-//====================================================================
-// CLASS DECLARATION
-//====================================================================
-
-/**
- * @brief Pantalla de inicio de sesión del sistema
- * 
- * Esta clase maneja la autenticación de usuarios (estudiantes y organizaciones),
- * proporcionando una interfaz interactiva para el ingreso de credenciales
- * y la selección del tipo de usuario.
- */
-class LoginScreen : public PantallaBase {
-
-//====================================================================
-// PRIVATE CONSTANTS
-//====================================================================
+class LoginScreen : public PantallaBase 
+{
+// Atributos privados
 private:
-    static const int ELEMENTOS_INPUT = 2;     ///< Número de campos de entrada
-    static const int CANT_BOTONES = 3;        ///< Número de botones en la interfaz
+    static const int ELEMENTOS_INPUT = 2;     /// Número de campos de entrada
+    static const int CANT_BOTONES = 3;        /// Número de botones en la interfaz
 
-//====================================================================
-// PRIVATE MEMBERS
-//====================================================================
-private:
     // Datos de entrada del usuario
-    std::string _email;                       ///< Email ingresado por el usuario
-    std::string _password;                    ///< Contraseña ingresada
-    TipoUsuario _tipoUsuario;                 ///< Tipo de usuario seleccionado
+    std::string _email;                       /// Email ingresado por el usuario
+    std::string _password;                    /// Contraseña ingresada
+    TipoUsuario _tipoUsuario;                 /// Tipo de usuario seleccionado
     
     // Estado de la interfaz
-    int _campoActual;                         ///< Campo actualmente seleccionado
-    int _campoAnterior;                       ///< Campo anteriormente seleccionado
-    bool _primeraRenderizacion;               ///< Bandera para primera renderización
-    int _tipoUsuarioActual;                   ///< 0: Estudiante, 1: Organización
+    int _campoActual;                         /// Campo actualmente seleccionado
+    int _campoAnterior;                       /// Campo anteriormente seleccionado
+    bool _primeraRenderizacion;               /// Bandera para primera renderización
+    int _tipoUsuarioActual;                   /// 0: Estudiante, 1: Organización
     
     // Manejo de errores
-    bool _error;                              ///< Bandera de error
-    std::string _mensajeError;                ///< Mensaje de error a mostrar
+    bool _error;                              /// Bandera de error
+    std::string _mensajeError;                /// Mensaje de error a mostrar
     
     // Referencias a entidades
-    Estudiante& _estudiante;                  ///< Referencia al estudiante
-    Empresa& _empresa;                        ///< Referencia a la empresa
-    LinkedList<Curso*>& _cursos;              ///< Lista de cursos disponibles
-    LinkedList<Especializacion*>& _especialidades; ///< Lista de especializaciones
+    Estudiante& _estudiante;                  /// Referencia al estudiante
+    Empresa& _empresa;                        /// Referencia a la empresa
+    LinkedList<Curso*>& _cursos;              /// Lista de cursos disponibles
+    LinkedList<Especializacion*>& _especialidades; /// Lista de especializaciones
     
     // Configuración de interfaz
     COORD _coordsElementosUserInput[ELEMENTOS_INPUT] = { {34, 15}, {34, 20} };
@@ -71,9 +48,7 @@ private:
     const std::string _elementosUserinput[ELEMENTOS_INPUT] = { " ", " " };
     const std::string _textosBotones[CANT_BOTONES] = { " Estudiante ", " Organizacion ", " Iniciar Sesión " };
 
-//====================================================================
-// PRIVATE METHODS - CONFIGURATION
-//====================================================================
+// Metodos privados para manejar la interfaz y la lógica de login
 private:
     /**
      * @brief Configura la visibilidad del cursor
@@ -86,10 +61,6 @@ private:
      */
     void _limpiarEstado();
 
-//====================================================================
-// PRIVATE METHODS - RENDERING
-//====================================================================
-private:
     /**
      * @brief Renderiza un campo de entrada de texto
      * @param valor Valor actual del campo
@@ -126,10 +97,6 @@ private:
      */
     void _actualizarSeleccion();
 
-//====================================================================
-// PRIVATE METHODS - INPUT HANDLING
-//====================================================================
-private:
     /**
      * @brief Maneja la entrada de caracteres en los campos
      * @param tecla Tecla presionada
@@ -147,10 +114,6 @@ private:
      */
     void _manejarRetroceso();
 
-//====================================================================
-// PRIVATE METHODS - USER AUTHENTICATION
-//====================================================================
-private:
     /**
      * @brief Valida los campos de entrada
      * @return True si los campos son válidos, false en caso contrario
@@ -181,10 +144,6 @@ private:
      */
     void _configurarSesionEmpresa(int index);
 
-//====================================================================
-// PRIVATE METHODS - ERROR HANDLING
-//====================================================================
-private:
     /**
      * @brief Muestra un mensaje de error en la interfaz
      * @param mensaje Mensaje de error a mostrar
@@ -196,9 +155,7 @@ private:
      */
     void _limpiarError();
 
-//====================================================================
-// PUBLIC CONSTRUCTORS
-//====================================================================
+// Metodos públicos
 public:
     /**
      * @brief Constructor por defecto
@@ -217,34 +174,20 @@ public:
                 LinkedList<Curso*>& cursos, 
                 LinkedList<Especializacion*>& especialidades);
 
-//====================================================================
-// PUBLIC DESTRUCTOR
-//====================================================================
-public:
     /**
      * @brief Destructor virtual
      */
     virtual ~LoginScreen() = default;
 
-//====================================================================
-// PUBLIC INTERFACE METHODS
-//====================================================================
-public:
     /**
      * @brief Ejecuta la pantalla de login
      * @return Resultado de la ejecución con la acción a realizar
      */
     ResultadoPantalla ejecutar() override;
     
-    /**
-     * @brief Limpia el estado de la pantalla para una nueva sesión
-     */
+    // Limpia el estado de la pantalla para una nueva sesión
     void clearState();
 
-//====================================================================
-// PUBLIC GETTERS
-//====================================================================
-public:
     /**
      * @brief Obtiene el email ingresado
      * @return Email del usuario
@@ -270,14 +213,8 @@ public:
     const std::string& getMensajeError() const { return _mensajeError; }
 };
 
-//====================================================================
-// COMPATIBILITY ALIAS
-//====================================================================
+// Alias para LoginScreen (COMPATIBILIDAD)
 using Login = LoginScreen;
-
-//====================================================================
-// IMPLEMENTATION DETAILS
-//====================================================================
 
 inline LoginScreen::LoginScreen() 
     : _campoActual(0)
@@ -342,14 +279,14 @@ inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, 
     gotoXY(_coordsElementosUserInput[indice].X, _coordsElementosUserInput[indice].Y);
     
     if (seleccionado) {
-        SetConsoleColor(15, 4, true, true);
+        setConsoleColor(15, 4, true, true);
         _configurarCursor(true);
     } else {
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
         _configurarCursor(false);
     }
     
-    SetConsoleColor(15, 1);
+    setConsoleColor(15, 1);
     std::cout << valor;
 }
 
@@ -358,41 +295,41 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
     
     if (indice == 0 || indice == 1) {
         if (seleccionado || (indice == 0 && _tipoUsuarioActual == 0) || (indice == 1 && _tipoUsuarioActual == 1)) {
-            SetConsoleColor(1, 4, true, true);
+            setConsoleColor(1, 4, true, true);
         } else {
-            SetConsoleColor(7, 0);
+            setConsoleColor(7, 0);
         }
     } else {
         if (seleccionado) {
-            SetConsoleColor(1, 5, true, true);
+            setConsoleColor(1, 5, true, true);
         } else {
-            SetConsoleColor(5, 1, false, true);
+            setConsoleColor(5, 1, false, true);
         }
     }
     
     _configurarCursor(false);
     std::cout << texto;
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
 }
 
 inline void LoginScreen::_dibujarHeader() {
-    SetConsoleColor(12, 13, true, true);
+    setConsoleColor(12, 13, true, true);
     gotoXY(42, 4);    std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
     gotoXY(42, 5);    std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
     gotoXY(42, 6);    std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
     
-    SetConsoleColor(12, 13, true, true);
+    setConsoleColor(12, 13, true, true);
     gotoXY(71, 7);    std::cout << "C L O N E";
 }
 
 inline void LoginScreen::_dibujarMensajeBienvenida() {
-    SetConsoleColor(8, 0, true);
+    setConsoleColor(8, 0, true);
     gotoXY(44, 9);
     std::cout << "- QUE BUENO TENERTE DE VUELTA! -";
 }
 
 inline void LoginScreen::_dibujarInterfazCompleta() {
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
     system("cls");
     
     UI_Login();
@@ -400,14 +337,14 @@ inline void LoginScreen::_dibujarInterfazCompleta() {
     // Dibuja el fondo del header
     for (int i = 3; i <= 7; i++) {
         gotoXY(3, i);
-        SetConsoleColor(1, 13, true);
+        setConsoleColor(1, 13, true);
         std::cout << std::string(114, ' ');
     }
     
     _dibujarHeader();
     _dibujarMensajeBienvenida();
     
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
     
     // Renderizar campos de entrada
     for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
@@ -423,9 +360,9 @@ inline void LoginScreen::_dibujarInterfazCompleta() {
     // Mostrar mensaje de error si existe
     if (_error) {
         gotoXY(ANCHO_CONSOLA / 2 - _mensajeError.length() / 2, 11);
-        SetConsoleColor(1, 3);
+        setConsoleColor(1, 3);
         std::cout << _mensajeError;
-        SetConsoleColor(15, 1);
+        setConsoleColor(15, 1);
     }
     
     gotoXY(34, 15);

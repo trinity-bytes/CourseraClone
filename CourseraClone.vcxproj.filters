@@ -118,7 +118,7 @@
     <ClInclude Include="Headers\Screens\EditarPerfilScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\ExplorarCursosYEspecialidadesScreen.h">
+    <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Screens\LandingPageScreen.h">
@@ -142,7 +142,7 @@
     <ClInclude Include="Headers\Screens\RegistroScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\VerBboletasScreen.h">
+    <ClInclude Include="Headers\Screens\VerBoletasScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Utils\ScreenSystem.h">

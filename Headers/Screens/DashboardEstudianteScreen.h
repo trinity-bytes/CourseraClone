@@ -6,9 +6,9 @@
 // Headers de librería estándar
 #include <vector>
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
+#include <fstream>    // Para std::ifstream
+#include <sstream>    // Para std::stringstream
+#include <algorithm>  // Para std::min
 
 // Headers propios
 #include "../Utils/ScreenSystem.h"
@@ -18,6 +18,9 @@
 #include "../Entities/Curso.h"
 #include "../Entities/Especializacion.h"
 #include "../Controllers/GestionadorCursos.h"
+
+// forward declarations
+class Controladora; // Declaración adelantada de Controladora
 
 // Pantalla principal del dashboard del estudiante
 class DashboardEstudianteScreen : public PantallaBase
@@ -153,7 +156,7 @@ void DashboardEstudianteScreen::cargarInscripciones(GestionadorCursos& _gestion)
 
 void DashboardEstudianteScreen::dibujarInterfazCompleta()
 {
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
     system("cls");
     UI_StudentDashboard();
     renderizarHeader();
@@ -165,21 +168,21 @@ void DashboardEstudianteScreen::dibujarInterfazCompleta()
 void DashboardEstudianteScreen::renderizarHeader()
 {    // Mostrar nombre del estudiante
     gotoXY(52, 3);
-    SetConsoleColor(15, 1);
+    setConsoleColor(15, 1);
     std::cout << _nombreEstudiante;
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
 
     // Renderizar botones del header
     for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
         gotoXY(_coordsElementosHeader[i].X, _coordsElementosHeader[i].Y);
         if (_seccionActual == SECCION_HEADER && _elementoActual == i) {
-            SetConsoleColor(1, 13);
+            setConsoleColor(1, 13);
         }
         else {
-            SetConsoleColor(15, 0);        }
+            setConsoleColor(15, 0);        }
         std::cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
     }
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
 }
 
 void DashboardEstudianteScreen::renderizarMenuSuperior()
@@ -187,13 +190,13 @@ void DashboardEstudianteScreen::renderizarMenuSuperior()
     for (int i = 0; i < MAX_ELEMENTOS_MENU; ++i) {
         gotoXY(_coordsElementosMenu[i].X, _coordsElementosMenu[i].Y);
         if (_seccionActual == SECCION_MENU_SUPERIOR && _elementoActual == i) {
-            SetConsoleColor(1, 13);
+            setConsoleColor(1, 13);
         }
         else {
-            SetConsoleColor(15, 0);        }
+            setConsoleColor(15, 0);        }
         std::cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS INSCRIPCIONES ");
     }
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
 }
 
 void DashboardEstudianteScreen::renderizarCursos()
@@ -203,10 +206,10 @@ void DashboardEstudianteScreen::renderizarCursos()
     for (int i = 0; i < numCursos; ++i) {
         gotoXY(_coordsTituloCursos[i].X, _coordsTituloCursos[i].Y);
         if (_seccionActual == SECCION_CURSOS && _elementoActual == i) {
-            SetConsoleColor(1, 13);
+            setConsoleColor(1, 13);
         }
         else {
-            SetConsoleColor(15, 0);
+            setConsoleColor(15, 0);
         }
         std::cout << _cursosInscritos[i].titulo;
     }
@@ -214,12 +217,12 @@ void DashboardEstudianteScreen::renderizarCursos()
     // Botón "Ver todos"
     gotoXY(_coordsTituloCursos[3].X, _coordsTituloCursos[3].Y);
     if (_seccionActual == SECCION_CURSOS && _elementoActual == 3) {
-        SetConsoleColor(1, 13);
+        setConsoleColor(1, 13);
     }    else {
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
     std::cout << " Ver todos ";
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
 }
 
 void DashboardEstudianteScreen::renderizarEspecializaciones()
@@ -229,10 +232,10 @@ void DashboardEstudianteScreen::renderizarEspecializaciones()
     for (int i = 0; i < numEspecializaciones; ++i) {
         gotoXY(_coordsTituloEspecializaciones[i].X, _coordsTituloEspecializaciones[i].Y);
         if (_seccionActual == SECCION_ESPECIALIZACIONES && _elementoActual == i) {
-            SetConsoleColor(1, 13);
+            setConsoleColor(1, 13);
         }
         else {
-            SetConsoleColor(15, 13);
+            setConsoleColor(15, 13);
         }
         std::cout << _especializacionesInscritas[i].titulo;
     }
@@ -240,12 +243,12 @@ void DashboardEstudianteScreen::renderizarEspecializaciones()
     // Botón "Ver todas"
     gotoXY(_coordsTituloEspecializaciones[3].X, _coordsTituloEspecializaciones[3].Y);
     if (_seccionActual == SECCION_ESPECIALIZACIONES && _elementoActual == 3) {
-        SetConsoleColor(1, 13);
+        setConsoleColor(1, 13);
     }    else {
-        SetConsoleColor(15, 13);
+        setConsoleColor(15, 13);
     }
     std::cout << " Ver todas ";
-    SetConsoleColor(15, 0);
+    setConsoleColor(15, 0);
 }
 
 void DashboardEstudianteScreen::actualizarSeleccion()

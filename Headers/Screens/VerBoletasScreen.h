@@ -9,7 +9,7 @@
 // Headers de consola
 #include "../Entities/Boleta.h"
 #include "../Entities/Estudiante.h"
-#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/SystemUtils.h"
 #include "../Utils/ScreenSystem.h"
 #include "../Utils/UI_Ascii.h"
 
@@ -41,12 +41,12 @@ private:
 
         // Dibujar título
         gotoXY(COL_TITULO, FILA_TITULO);
-        SetConsoleColor(15, 1);
+        setConsoleColor(15, 1);
         std::cout << "MIS COMPROBANTES DE PAGO";
 
         // Dibujar botón volver
         gotoXY(COL_VOLVER, FILA_VOLVER);
-        SetConsoleColor(15, 1);
+        setConsoleColor(15, 1);
         std::cout << " VOLVER ";
 
         // Mostrar las boletas
@@ -60,7 +60,7 @@ private:
 
         if (_boletas.empty()) {
             gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS);
-            SetConsoleColor(15, 1);
+            setConsoleColor(15, 1);
             std::cout << "No tienes comprobantes de pago.";
             return;
         }
@@ -75,10 +75,10 @@ private:
 
             // Destacar la boleta seleccionada
             if (i == _boletaSeleccionada) {
-                SetConsoleColor(1, 13); // Color para selección
+                setConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 1); // Color normal
+                setConsoleColor(15, 1); // Color normal
             }
 
             // Mostrar información de la boleta
@@ -91,17 +91,17 @@ private:
         // Indicadores de paginación
         if (_indiceInicio > 0) {
             gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS - 2);
-            SetConsoleColor(15, 1);
+            setConsoleColor(15, 1);
             std::cout << "Más arriba (Flecha ARRIBA)";
         }
 
         if (_indiceInicio + _boletasPorPagina < _boletas.size()) {
             gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS + boletasAMostrar * ESPACIO_ENTRE_BOLETAS + 1);
-            SetConsoleColor(15, 1);
+            setConsoleColor(15, 1);
             std::cout << "Más abajo (Flecha ABAJO)";
         }
 
-        SetConsoleColor(15, 1); // Restaurar color normal
+        setConsoleColor(15, 1); // Restaurar color normal
     }
 
 public:
@@ -127,7 +127,9 @@ public:
             
         }
         */
-    }    ~VerBoletasScreen() = default;
+    }    
+    
+    ~VerBoletasScreen() = default;
 
     ResultadoPantalla ejecutar() override {
         ResultadoPantalla resultado;

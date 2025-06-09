@@ -5,7 +5,7 @@
 
 // Headers de consola
 #include "../Entities/Empresa.h"
-#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/SystemUtils.h"
 #include "../Utils/ScreenSystem.h"
 #include "../Utils/UI_Ascii.h"
 
@@ -31,7 +31,7 @@ private:
         UI_OrganizationProfile();
 
         // Datos de la organización
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
         gotoXY(COL_ETIQUETA, FILA_ID);
         std::cout << "ID: " << _idOrganizacion;
 
@@ -40,13 +40,13 @@ private:
 
         gotoXY(COL_ETIQUETA, FILA_CORREO);
         std::cout << "CORREO: " << _correoOrganizacion << "@gmail.edu.com";
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
 
         // Botón de editar perfil
         gotoXY(92, 12);
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
         std::cout << " EDITAR PERFIL ";
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
 public:

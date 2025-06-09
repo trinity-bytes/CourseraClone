@@ -16,7 +16,7 @@
 
 // Dimensiones de la consola
 constexpr int ANCHO_CONSOLA = 120;
-constexpr int ALTO_CONSOLA = 33;
+constexpr int ALTO_CONSOLA = 35;
 
 // Constantes de archivos y datos
 constexpr int MAX_ESTUDIANTES_POR_CURSO = 100;
@@ -140,7 +140,7 @@ inline void configurarPaletaColores() {
     setPaletteColor(ColorIndex::FONDO_GENERAL,      Palette::GRIS_MUY_CLARO);
     setPaletteColor(ColorIndex::TEXTO_PRINCIPAL,    Palette::NEGRO);
     setPaletteColor(ColorIndex::EXITO,              Palette::VERDE_EXITO);
-    setPaletteColor(ColorIndex::ERROR,              Palette::ROJO_ERROR);
+    setPaletteColor(ColorIndex::ERROR_COLOR,              Palette::ROJO_ERROR);
     setPaletteColor(ColorIndex::BOTON_PRIMARIO,     Palette::AZUL_PRIMARIO);
     setPaletteColor(ColorIndex::BOTON_SECUNDARIO,   Palette::ROSA_SECUNDARIO);
     setPaletteColor(ColorIndex::BORDES,             Palette::GRIS_SUAVE);
@@ -176,33 +176,6 @@ inline void ocultarCursor() {
     GetConsoleCursorInfo(hConsole, &cursorInfo);
     cursorInfo.bVisible = FALSE; // Ocultar el cursor
     SetConsoleCursorInfo(hConsole, &cursorInfo);
-}
-
-/// @brief Configuración completa de la consola
-inline void configurarConsola() {
-    // Configurar codificación UTF-8
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-    // Configurar apariencia
-    ocultarCursor();
-    configurarFuente();
-    configurarPaletaColores();
-    
-    // Establecer tamaño de ventana
-    // La clase System::Console es parte de .NET/CLI, no C++ estándar.
-    // Para C++ nativo y WinAPI, se debe usar la siguiente aproximación:
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD bufferSize = { (SHORT)ANCHO_CONSOLA, (SHORT)ALTO_CONSOLA };
-    SetConsoleScreenBufferSize(hConsole, bufferSize);
-
-    SMALL_RECT windowSize = { 0, 0, (SHORT)(ANCHO_CONSOLA - 1), (SHORT)(ALTO_CONSOLA - 1) };
-    SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
-
-    // Configurar color inicial (texto principal sobre fondo general)
-    setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::FONDO_GENERAL);
-    
-    // Título de la aplicación
-    SetConsoleTitle(L"Coursera Clone | Alpha 2.1");
 }
 
 //=============================================================================
@@ -303,7 +276,7 @@ inline int esperarCualquierTecla() {
 
 /// @brief Muestra un mensaje de error con formato
 inline void mostrarError(const std::string& mensaje, bool nuevaLinea = true) {
-    setTextColor(ColorIndex::ERROR, true);
+    setTextColor(ColorIndex::ERROR_COLOR, true);
     std::cout << "[ERROR] " << mensaje;
     if (nuevaLinea) std::cout << std::endl;
     resetColor();
@@ -387,16 +360,41 @@ namespace Colors {
     constexpr int NORMAL = ColorIndex::TEXTO_PRINCIPAL;
     constexpr int FONDO = ColorIndex::FONDO_GENERAL;
     constexpr int SELECCION = ColorIndex::BOTON_PRIMARIO;
-    constexpr int ERRORES = ColorIndex::ERROR;
+    constexpr int ERRORES = ColorIndex::ERROR_COLOR;
     constexpr int TEXTO_SECUNDARIO = ColorIndex::TEXTO_SECUNDARIO;
     constexpr int EXITO = ColorIndex::EXITO;
     constexpr int ADVERTENCIA = ColorIndex::ACENTO;
     constexpr int LINK = ColorIndex::ENLACES;
 }
 
-// Aliases para funciones de ConsoleUtils.h
-inline void setColor(int color) { setTextColor(color); }
-inline void CambiarFuenteConsola(const std::wstring& fuente, COORD tamanio) {
-    configurarFuente(fuente, tamanio.Y);
+// ------
+/// @brief Configuración completa de la consola
+inline void configurarConsola() {
+    // Configurar codificación UTF-8
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+    // Configurar locale para español
+    setlocale(LC_ALL, "es_ES.UTF-8");
+
+    // Configurar apariencia
+    ocultarCursor();
+    configurarFuente();
+    configurarPaletaColores();
+
+    // Establecer tamaño de ventana
+    // La clase System::Console es parte de .NET/CLI, no C++ estándar.
+    // Para C++ nativo y WinAPI, se debe usar la siguiente aproximación:
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD bufferSize = { (SHORT)ANCHO_CONSOLA, (SHORT)ALTO_CONSOLA };
+    SetConsoleScreenBufferSize(hConsole, bufferSize);
+
+    SMALL_RECT windowSize = { 0, 0, (SHORT)(ANCHO_CONSOLA - 1), (SHORT)(ALTO_CONSOLA - 1) };
+    SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
+
+    // Configurar color inicial (texto principal sobre fondo general)
+    setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::FONDO_GENERAL);
+
+    // Título de la aplicación
+    SetConsoleTitle(L"Coursera Clone | Alpha 2.1");
 }
-inline void ConfigurarConsola() { configurarConsola(); }

@@ -3,24 +3,18 @@
 
 #pragma once
 
-//=============================================================================
-// INCLUDES DEL SISTEMA
-//=============================================================================
+// Librerías estándar
 #include <vector>
 #include <string>
 #include <sstream>
 #include <conio.h>
 
-//=============================================================================
-// INCLUDES DEL PROYECTO
-//=============================================================================
+// Librerias propias
 #include "../Utils/ScreenSystem.h"
 #include "../DataStructures/PriorityQueue.h"
 #include "../Controllers/GestionadorCursos.h"
 
-//=============================================================================
-// DECLARACIONES ANTICIPADAS
-//=============================================================================
+// forward declarations
 class Controladora;
 class Curso;
 class Especializacion;
@@ -467,7 +461,8 @@ private:
         // Dividir en líneas
         vector<string> lineas = dividirEnLineas(descFormateada);
 
-        // Mostrar cada línea        for (size_t i = 0; i < lineas.size(); ++i) {
+        // Mostrar cada línea        
+        for (size_t i = 0; i < lineas.size(); ++i) {
             gotoXY(coord.X, coord.Y + i);
             std::cout << std::string(MAX_ANCHO_CARACTERES_CUADRO, ' ');  // Limpiar línea
             gotoXY(coord.X, coord.Y + i);
@@ -762,7 +757,7 @@ public:
     //=========================================================================
 
     /// @brief Renderiza la pantalla
-    void renderizar() override
+    void renderizar()
     {
         if (_primeraRenderizacion) {
             system("cls");

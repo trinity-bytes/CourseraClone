@@ -70,9 +70,9 @@ private:
 
         if (error) {
             gotoXY(coordsCampos[CAMPO_GUARDAR].X - 200, coordsCampos[CAMPO_GUARDAR].Y + 40);
-            SetConsoleColor(1, 4);
+            setConsoleColor(1, 4);
             std::cout << mensajeError;
-            SetConsoleColor(15, 0);
+            setConsoleColor(15, 0);
         }
     }    void renderizarCampo(int campo, const std::string& valor, bool seleccionado) {
         gotoXY(coordsCampos[campo].X, coordsCampos[campo].Y);
@@ -84,28 +84,28 @@ private:
         }
 
         if (seleccionado) {
-            SetConsoleColor(1, 13);
+            setConsoleColor(1, 13);
             mostrarCursor(true);
         }
         else {
-            SetConsoleColor(15, 0);
+            setConsoleColor(15, 0);
             mostrarCursor(false);
         }
 
         std::cout << valor;
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
     void renderizarBotonGuardar(bool seleccionado) {
         gotoXY(coordsCampos[CAMPO_GUARDAR].X, coordsCampos[CAMPO_GUARDAR].Y);
 
         if (seleccionado) {
-            SetConsoleColor(1, 13);
+            setConsoleColor(1, 13);
         }
         else {
-            SetConsoleColor(15, 0);
+            setConsoleColor(15, 0);
         }        std::cout << "GUARDAR CAMBIOS";
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
     void actualizarSeleccion() {

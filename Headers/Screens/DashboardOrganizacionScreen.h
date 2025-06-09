@@ -12,7 +12,7 @@
 #include "../Entities/Curso.h"
 #include "../Entities/Especializacion.h"
 #include "../Entities/Inscripcion.h"
-#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/SystemUtils.h"
 #include "../Utils/ScreenSystem.h"
 #include "../Utils/UI_Ascii.h"
 
@@ -92,7 +92,7 @@ private:
 
     void dibujarInterfazCompleta() 
     {
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
         system("cls");
         UI_OrganizationDashboard();
         renderizarHeader();
@@ -106,23 +106,23 @@ private:
     
     void renderizarHeader() {        // Mostrar nombre de la organización
         gotoXY(53, 3);
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
         std::cout << nombreOrganizacion;        // Botones del header
         for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
             gotoXY(coordsElementosHeader[i].X, coordsElementosHeader[i].Y);
             if (seccionActual == SECCION_HEADER && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                setConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 0); // Color normal
+                setConsoleColor(15, 0); // Color normal
             }
             std::cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
         }
 
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }    void renderizarEstadisticas() {
         gotoXY(coordsEstadisticas[0].X, coordsEstadisticas[0].Y);
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
         std::cout << "Cursos publicados: " << cursosPublicados;
 
         gotoXY(coordsEstadisticas[1].X, coordsEstadisticas[1].Y);
@@ -134,25 +134,25 @@ private:
         for (int i = 0; i < MAX_ELEMENTOS_MENU; ++i) {
             gotoXY(coordsElementosMenu[i].X, coordsElementosMenu[i].Y);
             if (seccionActual == SECCION_MENU_SUPERIOR && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                setConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 0); // Color normal
+                setConsoleColor(15, 0); // Color normal
             }
             std::cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS CURSOS ");
         }
 
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }    void renderizarCursos() {
         // Renderizar 3 cursos
         int numCursos = (int)cursos.size() < 3 ? (int)cursos.size() : 3;
         for (int i = 0; i < numCursos; ++i) {
             gotoXY(coordsTituloCursos[i].X, coordsTituloCursos[i].Y);
             if (seccionActual == SECCION_CURSOS && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                setConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 0); // Color normal
+                setConsoleColor(15, 0); // Color normal
             }
             std::cout << cursos[i].titulo;
         }
@@ -160,24 +160,24 @@ private:
         // Botón "Ver todos"
         gotoXY(coordsTituloCursos[3].X, coordsTituloCursos[3].Y);
         if (seccionActual == SECCION_CURSOS && elementoActual == 3) {
-            SetConsoleColor(1, 13); // Color para selección
+            setConsoleColor(1, 13); // Color para selección
         }
         else {
-            SetConsoleColor(15, 0); // Color normal
+            setConsoleColor(15, 0); // Color normal
         }
         std::cout << " Ver todos ";
 
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }    void renderizarEspecializaciones() {
         // Renderizar 3 especializaciones
         int numEspecializaciones = (int)especializaciones.size() < 3 ? (int)especializaciones.size() : 3;
         for (int i = 0; i < numEspecializaciones; ++i) {
             gotoXY(coordsTituloEspecializaciones[i].X, coordsTituloEspecializaciones[i].Y);
             if (seccionActual == SECCION_ESPECIALIZACIONES && elementoActual == i) {
-                SetConsoleColor(1, 13); // Color para selección
+                setConsoleColor(1, 13); // Color para selección
             }
             else {
-                SetConsoleColor(15, 0); // Color normal
+                setConsoleColor(15, 0); // Color normal
             }
             std::cout << especializaciones[i].titulo;
         }
@@ -185,14 +185,14 @@ private:
         // Botón "Ver todas"
         gotoXY(coordsTituloEspecializaciones[3].X, coordsTituloEspecializaciones[3].Y);
         if (seccionActual == SECCION_ESPECIALIZACIONES && elementoActual == 3) {
-            SetConsoleColor(1, 13); // Color para selección
+            setConsoleColor(1, 13); // Color para selección
         }
         else {
-            SetConsoleColor(15, 0); // Color normal
+            setConsoleColor(15, 0); // Color normal
         }
         std::cout << " Ver todas ";
 
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
     void actualizarSeleccion() {
@@ -306,7 +306,7 @@ public:
                 else if (seccionActual == SECCION_MENU_SUPERIOR) {
                     if (elementoActual == 0) {
                         // Explorar cursos y especialidades
-                        return crearResultado(AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES, TipoUsuario::EMPRESA);
+                        return crearResultado(AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES);
                     }
                     // Aca se pueden agregar mas acciones
                 }

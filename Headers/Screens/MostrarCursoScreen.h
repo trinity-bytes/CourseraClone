@@ -8,7 +8,7 @@
 
 // Headers propios
 #include "../Utils/ScreenSystem.h"
-#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/SystemUtils.h"
 #include "../Utils/UI_Ascii.h"
 #include "../Entities/Curso.h"
 #include "../Entities/Clase.h"
@@ -184,15 +184,15 @@ private:
         // Muestra la opcion de inscripcion solo a estudiantes
         if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
             gotoXY(50, 3);
-            SetConsoleColor(0, 13);
+            setConsoleColor(0, 13);
             std::cout << "Presiona 'I' para inscribirte a este curso";
         }
         else if (_tipoUsuario == TipoUsuario::EMPRESA) {
             gotoXY(50, 3);
-            SetConsoleColor(8, 13); // Color gris para indicar deshabilitado
+            setConsoleColor(8, 13); // Color gris para indicar deshabilitado
             std::cout << "Solo estudiantes pueden inscribirse a cursos";
         }
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }    void dibujarClase(int indice, bool seleccionada) {
         if (indice < 0 || indice >= _clases.size()) return;
 
@@ -200,9 +200,9 @@ private:
         gotoXY(COL_MODULOS, FILA_MODULOS_BASE + indice * ESPACIO_ENTRE_MODULOS);
 
         if (seleccionada)
-            SetConsoleColor(1, 13); // Color para selección
+            setConsoleColor(1, 13); // Color para selección
         else
-            SetConsoleColor(15, 0); // Color normal
+            setConsoleColor(15, 0); // Color normal
 
         // Mostrar número de clase
         std::cout << indice + 1;
@@ -214,7 +214,7 @@ private:
         std::string tituloClase = truncarTitulo(_clases[indice].getTitulo(), LONGITUD_TEXTO_MODULO);
         std::cout << tituloClase;
 
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
 public:
@@ -305,9 +305,9 @@ public:
 
                 if (_tipoUsuario == TipoUsuario::EMPRESA) {
                     gotoXY(5, 25);
-                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    setConsoleColor(4, 0); // Rojo sobre negro
                     std::cout << "Las organizaciones no pueden inscribirse a cursos.";
-                    SetConsoleColor(15, 0); // Restaurar color
+                    setConsoleColor(15, 0); // Restaurar color
                     _getch(); // Esperar una tecla
                     dibujarInterfazCompleta();
                     break;
@@ -317,9 +317,9 @@ public:
                     if (_estudiante.inscribirseACurso(_curso)) { // Usar el método de estudiante
                         // Mostrar mensaje de éxito
                         gotoXY(5, 25);
-                        SetConsoleColor(2, 0); // Verde sobre negro
+                        setConsoleColor(2, 0); // Verde sobre negro
                         std::cout << "Inscripción exitosa!";
-                        SetConsoleColor(15, 0); // Restaurar color
+                        setConsoleColor(15, 0); // Restaurar color
                         _getch(); // Esperar una tecla
 
                         // Refrescar la pantalla
@@ -328,9 +328,9 @@ public:
                     else {
                         // Mostrar mensaje de error
                         gotoXY(5, 25);
-                        SetConsoleColor(4, 0); // Rojo sobre negro
+                        setConsoleColor(4, 0); // Rojo sobre negro
                         std::cout << "Error en la inscripción. Es posible que ya estés inscrito.";
-                        SetConsoleColor(15, 0); // Restaurar color
+                        setConsoleColor(15, 0); // Restaurar color
                         _getch(); // Esperar una tecla
 
                         // Refrescar la pantalla
@@ -340,9 +340,9 @@ public:
                 else {
                     // El usuario no ha iniciado sesión, mostrar mensaje
                     gotoXY(5, 25);
-                    SetConsoleColor(4, 0); // Rojo sobre negro
+                    setConsoleColor(4, 0); // Rojo sobre negro
                     std::cout << "Necesitas iniciar sesión para inscribirte.";
-                    SetConsoleColor(15, 0); // Restaurar color
+                    setConsoleColor(15, 0); // Restaurar color
                     _getch(); // Esperar una tecla
 
                     // Redirigir a la pantalla de login

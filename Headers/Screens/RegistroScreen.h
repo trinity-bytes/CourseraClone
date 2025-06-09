@@ -6,7 +6,7 @@
 // Headers propios
 #include "../Utils/ScreenSystem.h"
 #include "../Entities/Usuario.h"
-#include "../Utils/ExtendedFunctions.h"
+#include "../Utils/SystemUtils.h"
 
 class RegistroScreen : public PantallaBase {
 private:
@@ -40,18 +40,18 @@ private:
         gotoXY(coordsElementosUserInput[indice].X, coordsElementosUserInput[indice].Y);
 
         if (seleccionado) {
-            SetConsoleColor(15, 4, true, true); 
+            setConsoleColor(15, 4, true, true);
             mostrarCursor(true);
         }
         else {
-            SetConsoleColor(15, 0, false, false); 
+            setConsoleColor(15, 0, false, false);
             mostrarCursor(false);
         }        if (indice == 2 || indice == 3) // Contraseña
             std::cout << std::string(valor.length(), '*');
         else
             std::cout << valor;
 
-		SetConsoleColor(15, 0); // Restaurar color normal
+        setConsoleColor(15, 0); // Restaurar color normal
     }
 
     void renderizarBoton(const std::string& texto, int indice, bool seleccionado) {
@@ -60,41 +60,41 @@ private:
         // Resaltar botones de tipo usuario basado en la selección actual o el tipo activo
         if (indice == 0 || indice == 1) {
             if (seleccionado || (indice == 0 && tipoUsuarioActual == 0) || (indice == 1 && tipoUsuarioActual == 1)) {
-                SetConsoleColor(15, 4, true, true);
+                setConsoleColor(15, 4, true, true);
             }
             else {
-                SetConsoleColor(15, 13, false, true);
+                setConsoleColor(15, 13, false, true);
             }
         }
         else {
             if (seleccionado) {
-                SetConsoleColor(15, 5, true, true);
+                setConsoleColor(15, 5, true, true);
             }
             else {
-                SetConsoleColor(15, 5, false, false);
+                setConsoleColor(15, 5, false, false);
             }
         }        //mostrarCursor(false);
         std::cout << texto;
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
     void dibujarInterfazCompleta() {
         system("cls");
         UI_Signup();        for (int i = 3; i <= 7; i++) {
             gotoXY(3, i);
-            SetConsoleColor(1, 13, true);
+            setConsoleColor(1, 13, true);
             std::cout << std::string(114, ' ');
         }
 
-        SetConsoleColor(12, 13, true, true);
+        setConsoleColor(12, 13, true, true);
         gotoXY(42, 4);    std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
         gotoXY(42, 5);    std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
         gotoXY(42, 6);    std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
 
-        SetConsoleColor(12, 13, true, true);
+        setConsoleColor(12, 13, true, true);
         gotoXY(71, 7);    std::cout << "C L O N E";
 
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
 
         for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
             string valor = (i == 2) ? string(password.length(), '*') : (i == 3) ? string(confirmarPassword.length(), '*') : (i == 0) ? nombre : email;
@@ -106,12 +106,12 @@ private:
         }
         if (error) {
             gotoXY(20, 23);
-            SetConsoleColor(1, 4);
+            setConsoleColor(1, 4);
             std::cout << mensajeError;
-            SetConsoleColor(15, 1);
+            setConsoleColor(15, 1);
         }
 
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
     void actualizarSeleccion() {
@@ -128,7 +128,7 @@ private:
         }
 
         campoAnterior = campoActual;
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
     bool validarCampos() {
@@ -166,7 +166,7 @@ private:
     }
 
 public:
-    Registro() : campoActual(0), campoAnterior(-1), error(false), primeraRenderizacion(true), tipoUsuario(TipoUsuario::ESTUDIANTE) {}
+    RegistroScreen() : campoActual(0), campoAnterior(-1), error(false), primeraRenderizacion(true), tipoUsuario(TipoUsuario::ESTUDIANTE) {}
 
     ResultadoPantalla ejecutar() override 
     {

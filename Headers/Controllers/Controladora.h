@@ -25,7 +25,7 @@
 #include "../Screens/MostrarCursoScreen.h"
 #include "../Screens/MostrarEspecialidadScreen.h"
 #include "../Screens/RegistroScreen.h"
-#include "../Screens/ExplorarCursosYEspecialidades_Screen.h"
+#include "../Screens/ExplorarContenidoScreen.h"
 #include "../Screens/VerBoletasScreen.h"
 #include "../Utils/ScreenSystem.h"
 
@@ -369,7 +369,3 @@ void Controladora::run()
         }
     }
 }
-
-	//LinkedList<Curso*> getCursos();
-	//LinkedList<Especializacion*> getEspecializaciones();
-};
