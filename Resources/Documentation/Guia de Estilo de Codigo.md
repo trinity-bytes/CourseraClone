@@ -62,11 +62,11 @@ Especializacion.hpp
 Estudiante.hpp
 
 // ✅ CORRECTO - Pantallas con sufijo "Screen"
-Login_Screen.hpp
-Registro_Screen.hpp
-DashboardEstudiante_Screen.hpp
-MostrarCurso_Screen.hpp
-ExplorarCursos_Screen.hpp
+LoginScreen.hpp
+RegistroScreen.hpp
+DashboardEstudianteScreen.hpp
+MostrarCursoScreen.hpp
+ExplorarCursosScreen.hpp
 
 // ✅ CORRECTO - Controladores/Gestores identificables
 GestionadorCursos.hpp
