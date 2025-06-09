@@ -20,7 +20,7 @@ Además de los principios fundamentales, se recomienda seguir estas pautas para 
 - **Claridad sobre Concisión Extrema**: Si bien el código conciso es bueno, la legibilidad es primordial. Los nombres de variables, funciones y clases deben ser descriptivos y autoexplicativos.
 - **Responsabilidad Única (Simplificado)**:
   - Cada función o método debe realizar una sola tarea específica y hacerla bien.
-  - Cada clase debe tener una responsabilidad principal bien definida. Evita clases "todopoderosas".
+  - Cada clase debe tener una responsabilidad principal bien definida. Debemos evitar clases "todopoderosas".
 - **`const` Correctness**:
   - Declara variables como `const` si su valor no cambiará después de la inicialización.
   - Marca los métodos de clase como `const` si no modifican el estado del objeto. Esto ayuda a prevenir errores y puede ser aprovechado por el compilador.
