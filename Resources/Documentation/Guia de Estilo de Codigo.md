@@ -15,12 +15,12 @@ Esta guía establece las convenciones de codificación para el proyecto Coursera
 
 ### Principios Adicionales de Codificación Limpia
 
-Además de los principios fundamentales, se recomienda seguir estas pautas para mejorar la calidad del código, especialmente útiles para estudiantes en desarrollo:
+Además de los principios fundamentales, se recomienda seguir estas pautas para mejorar la calidad del código:
 
 - **Claridad sobre Concisión Extrema**: Si bien el código conciso es bueno, la legibilidad es primordial. Los nombres de variables, funciones y clases deben ser descriptivos y autoexplicativos.
 - **Responsabilidad Única (Simplificado)**:
   - Cada función o método debe realizar una sola tarea específica y hacerla bien.
-  - Cada clase debe tener una responsabilidad principal bien definida. Evita clases "todopoderosas".
+  - Cada clase debe tener una responsabilidad principal bien definida. Debemos evitar clases "todopoderosas".
 - **`const` Correctness**:
   - Declara variables como `const` si su valor no cambiará después de la inicialización.
   - Marca los métodos de clase como `const` si no modifican el estado del objeto. Esto ayuda a prevenir errores y puede ser aprovechado por el compilador.
@@ -62,11 +62,11 @@ Especializacion.hpp
 Estudiante.hpp
 
 // ✅ CORRECTO - Pantallas con sufijo "Screen"
-Login_Screen.hpp
-Registro_Screen.hpp
-DashboardEstudiante_Screen.hpp
-MostrarCurso_Screen.hpp
-ExplorarCursos_Screen.hpp
+LoginScreen.hpp
+RegistroScreen.hpp
+DashboardEstudianteScreen.hpp
+MostrarCursoScreen.hpp
+ExplorarContenidoScreen.hpp
 
 // ✅ CORRECTO - Controladores/Gestores identificables
 GestionadorCursos.hpp
@@ -90,7 +90,9 @@ ExtendedFunctions.hpp  // Nombre actual - mantener
 // ✅ CORRECTO - Coincide con el archivo .hpp
 CourseraCloneApp.cpp
 
-// ✅ CORRECTO - Implementaciones con sufijos descriptivos
+// ✅ CORRECTO - Implementaciones con sufijos 
+// Por ahora no son necesarios, son una mejora a futuro
+descriptivos
 LoginScreen.cpp
 GestionadorCursos.cpp
 FileUtils.cpp
@@ -306,7 +308,7 @@ InscripcionEspecialidad.hpp → InscripcionEspecialidadScreen.hpp
 // Headers/Screens/ - Actualizar a sufijo "Screen"
 DashboardEstudiante.hpp           → DashboardEstudianteScreen.hpp
 DashboardOrganizacion.hpp         → DashboardOrganizacionScreen.hpp
-ExplorarCursosYEspecialidades.hpp → ExplorarCursosScreen.hpp (simplificar también)
+ExplorarCursosYEspecialidades.hpp → ExplorarContenidoScreen.hpp (simplificar también)
 LandingPage.hpp                   → LandingPageScreen.hpp
 ```
 
@@ -662,7 +664,7 @@ Antes de hacer commit, verificar:
 
 ## 12. Estructura de Carpetas del Proyecto
 
-### Nueva Organización Implementada (Enero 2025)
+### Nueva Organización Implementada (Mayo 2025)
 
 El proyecto ha sido reorganizado de una estructura plana a una estructura jerárquica modular:
 
