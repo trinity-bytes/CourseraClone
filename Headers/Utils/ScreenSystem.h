@@ -64,7 +64,8 @@ enum class Pantalla {
 };
 
 /// @brief Estructura que encapsula el resultado de la ejecución de una pantalla
-struct ResultadoPantalla {
+struct ResultadoPantalla 
+{
     // Compatibilidad total con código existente
     AccionPantalla accion = AccionPantalla::NINGUNA;
     string email;
@@ -84,6 +85,9 @@ struct ResultadoPantalla {
     
     explicit ResultadoPantalla(AccionPantalla _accion) 
         : accion(_accion) {}
+
+    explicit ResultadoPantalla(AccionPantalla _accion, TipoUsuario _tipo)
+	: accion(_accion), tipoUsuario(_tipo) {}
     
     ResultadoPantalla(AccionPantalla _accion, const string& _email, 
                      const string& _password, TipoUsuario _tipo)
@@ -136,6 +140,10 @@ protected:
     // Helpers para crear resultados
     ResultadoPantalla crearResultado(AccionPantalla accion) const {
         return ResultadoPantalla(accion);
+    }
+
+    ResultadoPantalla crearResultado(AccionPantalla accion, TipoUsuario user) const {
+        return ResultadoPantalla(accion, user);
     }
     
     ResultadoPantalla crearResultadoLogin(AccionPantalla accion, const string& email, 

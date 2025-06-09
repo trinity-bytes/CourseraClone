@@ -347,7 +347,7 @@ void Controladora::run()
                     tipoUsuario = resultado.tipoUsuario;
                 }
 
-                pantallaActual = make_unique<ExplorarCursosYEspecialidadesScreen>(
+                pantallaActual = make_unique<ExplorarContenidoScreen>(
                     this,
                     tipoUsuario,
                     idUsuario,

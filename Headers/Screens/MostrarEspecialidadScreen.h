@@ -170,7 +170,7 @@ private:
             gotoXY(COL_DESC_ESPECIALIZACION, fila++);
             std::cout << linea;
         }
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
 
         // Mostrar los cursos en la cuadrícula
         for (int i = 0; i < FILAS_CUADRICULA; i++) {
@@ -185,22 +185,22 @@ private:
         // Mostrar opción de inscripción según el tipo de usuario
         if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
             gotoXY(50, 3);
-            SetConsoleColor(0, 15);
+            setConsoleColor(0, 15);
             std::cout << "Presiona 'I' para inscribirte a esta especializacion";
         }
         else if (_tipoUsuario == TipoUsuario::EMPRESA) {
             gotoXY(50, 3);
-            SetConsoleColor(8, 13); // Color gris para indicar deshabilitado
+            setConsoleColor(8, 13); // Color gris para indicar deshabilitado
             std::cout << "Solo estudiantes pueden inscribirse a especializaciones";
         }
-        SetConsoleColor(15, 0);
+        setConsoleColor(15, 0);
     }
 
     void dibujarCursoCelda(int fila, int columna, Curso* curso) {
         int x = COL_INICIO_CUADRICULA + columna * (ANCHO_CELDA + ESPACIO_ENTRE_CELDAS);
         int y = FILA_INICIO_CUADRICULA + fila * (ALTO_CELDA + ESPACIO_ENTRE_CELDAS);
 
-        SetConsoleColor(15, 0); // Color normal        // Dibujar título del curso
+        setConsoleColor(15, 0); // Color normal        // Dibujar título del curso
         gotoXY(x + 2, y + 1);
         std::string tituloCurso = truncarTitulo(curso->getTitulo(), LONGITUD_TITULO_CURSO_CELDA);
         std::cout << tituloCurso;
@@ -219,7 +219,7 @@ private:
         gotoXY(x + 2, y + ALTO_CELDA - 2);
         std::cout << "Instructor: " << curso->getInstructor();
 
-        SetConsoleColor(15, 0); // Restaurar color normal
+        setConsoleColor(15, 0); // Restaurar color normal
     }
 
 public:
@@ -309,9 +309,9 @@ public:
             case 'I':
                 if (_tipoUsuario == TipoUsuario::EMPRESA) {
                     gotoXY(5, 25);
-                    SetConsoleColor(4, 0);
+                    setConsoleColor(4, 0);
                     std::cout << "Las organizaciones no pueden inscribirse a especializaciones.";
-                    SetConsoleColor(15, 0);
+                    setConsoleColor(15, 0);
                     _getch();
                     dibujarInterfazCompleta();
                     break;
@@ -320,9 +320,9 @@ public:
                 if (_estudiante.getNombreCompleto() == "") {
                     // El usuario no ha iniciado sesión, mostrar mensaje
                     gotoXY(5, 25);
-                    SetConsoleColor(4, 0);
+                    setConsoleColor(4, 0);
                     std::cout << "Necesitas iniciar sesion para inscribirte.";
-                    SetConsoleColor(15, 0);
+                    setConsoleColor(15, 0);
                     _getch();
 
                     // Redirigir a la pantalla de login
@@ -336,18 +336,18 @@ public:
                 if (_estudiante.inscribirseAEspecializacion(_especializacion)) {
                     // Mostrar mensaje de éxito
                     gotoXY(5, 25);
-                    SetConsoleColor(2, 0);
+                    setConsoleColor(2, 0);
                     std::cout << "¡Inscripcion exitosa a la especializacion!";
-                    SetConsoleColor(15, 0);
+                    setConsoleColor(15, 0);
                     _getch();
                     dibujarInterfazCompleta();
                 }
                 else {
                     // Mostrar mensaje de error
                     gotoXY(5, 25);
-                    SetConsoleColor(4, 0);
+                    setConsoleColor(4, 0);
                     std::cout << "Error en la inscripcion. Es posible que ya estes inscrito.";
-                    SetConsoleColor(15, 0);
+                    setConsoleColor(15, 0);
                     _getch();
                     dibujarInterfazCompleta();
                 }

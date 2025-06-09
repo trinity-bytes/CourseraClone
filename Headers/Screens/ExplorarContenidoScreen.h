@@ -8,7 +8,7 @@
 // 1. Includes del sistema
 #include <iostream>
 #include <string>
-#include <vector>
+#include <vector>    // Para manejar listas de cursos y especializaciones
 #include <algorithm> // Para std::min y std::max
 #include <conio.h>   // Para _getch()
 
@@ -23,13 +23,14 @@
 // 3. Forward declarations
 class Controladora;
 
-// 4. Constantes y tipos (reemplazan "magic numbers")
-enum KeyCode {
+// 4. Constantes y tipos
+enum KeyCode 
+{
     KEY_ENTER = 13,
     KEY_ESCAPE = 27,
     KEY_UP = 72,
     KEY_DOWN = 80,
-    KEY_PAGE_UP = 33, // El código original usaba 33 y 34 para PageUp/Down
+    KEY_PAGE_UP = 33,
     KEY_PAGE_DOWN = 34,
     KEY_EXTEND = 224,
     KEY_NULL = 0
@@ -37,7 +38,8 @@ enum KeyCode {
 
 // Clase para explorar el contenido del sistema.
 // Simplificada de ExplorarCursosYEspecialidadesScreen a ExplorarCursosScreen.
-class ExplorarCursosScreen : public PantallaBase {
+class ExplorarContenidoScreen : public PantallaBase 
+{
 private:
     // --- Atributos de Configuración y Constantes ---
 
@@ -106,7 +108,7 @@ private:
         // Dibujar lista de items
         int totalItems = items.getTamano();
         int& indiceInicio = _indicesInicio[seccionId];
-        int itemsAMostrar = std::min(itemsPorPagina, totalItems - indiceInicio);
+        int itemsAMostrar = (std::min)(itemsPorPagina, totalItems - indiceInicio);
 
         for (int i = 0; i < itemsAMostrar; i++) {
             int indiceAbsoluto = indiceInicio + i;
@@ -157,8 +159,8 @@ private:
     void actualizarInterfaz() {
         if (_necesitaRedibujarTodo) {
             dibujarInterfazEstatica();
-            renderizarSeccion(_controladora->getGestionadorCursos().getCursos(), SECCION_CURSOS, "CURSOS DISPONIBLES", _uiCoords.cursosTituloCol, _uiCoords.cursosTituloFila, _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, _itemsPorPaginaCursos);
-            renderizarSeccion(_controladora->getGestionadorCursos().getEspecializaciones(), SECCION_ESPECIALIDADES, "ESPECIALIZACIONES DISPONIBLES", _uiCoords.espTituloCol, _uiCoords.espTituloFila, _uiCoords.espListaCol, _uiCoords.espListaFila, _itemsPorPaginaEspecialidades);
+            renderizarSeccion<Curso>(_controladora->getGestionadorCursos()->getCursos(), SECCION_CURSOS, "CURSOS DISPONIBLES", _uiCoords.cursosTituloCol, _uiCoords.cursosTituloFila, _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, _itemsPorPaginaCursos);
+            renderizarSeccion<Especializacion>(_controladora->getGestionadorCursos()->getEspecializaciones(), SECCION_ESPECIALIDADES, "ESPECIALIZACIONES DISPONIBLES", _uiCoords.espTituloCol, _uiCoords.espTituloFila, _uiCoords.espListaCol, _uiCoords.espListaFila, _itemsPorPaginaEspecialidades);
             _necesitaRedibujarTodo = false;
             return;
         }
@@ -166,18 +168,18 @@ private:
         // Optimización: Solo redibuja los elementos que cambiaron
         if (_seccionAnterior != -1 && (_seccionActual != _seccionAnterior || _elementoActual != _elementoAnterior)) {
             if (_seccionAnterior == SECCION_CURSOS) {
-                actualizarElemento<Curso>(_elementoAnterior, SECCION_CURSOS, _controladora->getGestionadorCursos().getCursos(), _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, false);
+                actualizarElemento<Curso>(_elementoAnterior, SECCION_CURSOS, _controladora->getGestionadorCursos()->getCursos(), _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, false);
             }
             else {
-                actualizarElemento<Especializacion>(_elementoAnterior, SECCION_ESPECIALIDADES, _controladora->getGestionadorCursos().getEspecializaciones(), _uiCoords.espListaCol, _uiCoords.espListaFila, false);
+                actualizarElemento<Especializacion>(_elementoAnterior, SECCION_ESPECIALIDADES, _controladora->getGestionadorCursos()->getEspecializaciones(), _uiCoords.espListaCol, _uiCoords.espListaFila, false);
             }
         }
 
         if (_seccionActual == SECCION_CURSOS) {
-            actualizarElemento<Curso>(_elementoActual, SECCION_CURSOS, _controladora->getGestionadorCursos().getCursos(), _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, true);
+            actualizarElemento<Curso>(_elementoActual, SECCION_CURSOS, _controladora->getGestionadorCursos()->getCursos(), _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, true);
         }
         else {
-            actualizarElemento<Especializacion>(_elementoActual, SECCION_ESPECIALIDADES, _controladora->getGestionadorCursos().getEspecializaciones(), _uiCoords.espListaCol, _uiCoords.espListaFila, true);
+            actualizarElemento<Especializacion>(_elementoActual, SECCION_ESPECIALIDADES, _controladora->getGestionadorCursos()->getEspecializaciones(), _uiCoords.espListaCol, _uiCoords.espListaFila, true);
         }
     }
 
@@ -189,16 +191,18 @@ private:
         _elementoAnterior = _elementoActual;
         int* indiceInicio = &_indicesInicio[_seccionActual];
         int totalItems, itemsPorPagina;
+        
+        GestionadorCursos* gestionador = _controladora->getGestionadorCursos();
 
         if (_seccionActual == SECCION_CURSOS) {
-            totalItems = _controladora->getGestionadorCursos().getCursos().getTamano();
+            totalItems = gestionador->getCursos().getTamano();
             itemsPorPagina = _itemsPorPaginaCursos;
         }
         else {
-            totalItems = _controladora->getGestionadorCursos().getEspecializaciones().getTamano();
+            totalItems = gestionador->getEspecializaciones().getTamano();
             itemsPorPagina = _itemsPorPaginaEspecialidades;
         }
-        int itemsEnPantalla = std::min(itemsPorPagina, totalItems - *indiceInicio);
+        int itemsEnPantalla = (std::min)(itemsPorPagina, totalItems - *indiceInicio);
 
         switch (tecla) {
         case KEY_UP:
@@ -209,8 +213,8 @@ private:
             }
             else if (_seccionActual == SECCION_ESPECIALIDADES) { // Cambiar a sección de cursos
                 _seccionActual = SECCION_CURSOS;
-                int totalCursos = _controladora->getGestionadorCursos().getCursos().getTamano();
-                _elementoActual = std::min(_itemsPorPaginaCursos, totalCursos - _indicesInicio[SECCION_CURSOS]) - 1;
+                int totalCursos = gestionador->getCursos().getTamano();
+                _elementoActual = (std::min)(_itemsPorPaginaCursos, totalCursos - _indicesInicio[SECCION_CURSOS]) - 1;
                 _necesitaRedibujarTodo = true;
             }
             break;
@@ -227,17 +231,14 @@ private:
                 _necesitaRedibujarTodo = true;
             }
             break;
-
-            // NOTE: PageUp/PageDown no estaban en el código original, pero se incluyen por completitud
-            // case KEY_PAGE_UP: ...
-            // case KEY_PAGE_DOWN: ...
         }
     }
 
     ResultadoPantalla procesarSeleccion() {
+        GestionadorCursos* gestionador = _controladora->getGestionadorCursos();
         if (_seccionActual == SECCION_CURSOS) {
             int indiceAbsoluto = _indicesInicio[SECCION_CURSOS] + _elementoActual;
-            auto& cursos = _controladora->getGestionadorCursos().getCursos();
+            auto& cursos = gestionador->getCursos();
             if (indiceAbsoluto < cursos.getTamano()) {
                 auto resultado = crearResultado(AccionPantalla::IR_A_MOSTRAR_CURSO, _tipoUsuario);
                 resultado.idCursoSeleccionado = cursos.get(indiceAbsoluto + 1)->getId();
@@ -246,20 +247,22 @@ private:
         }
         else { // SECCION_ESPECIALIDADES
             int indiceAbsoluto = _indicesInicio[SECCION_ESPECIALIDADES] + _elementoActual;
-            auto& especializaciones = _controladora->getGestionadorCursos().getEspecializaciones();
-            if (indiceAbsoluto < especializaciones.getTamano()) {
+            auto& especializaciones = gestionador->getEspecializaciones();
+
+            if (indiceAbsoluto < especializaciones.getTamano()) 
+            {
                 auto resultado = crearResultado(AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION, _tipoUsuario);
-                resultado.idCursoSeleccionado = especializaciones.get(indiceAbsoluto + 1)->getId();
+                resultado.idEspecializacionSeleccionada = especializaciones.get(indiceAbsoluto + 1)->getId();
                 return resultado;
             }
         }
-        return crearResultado(AccionPantalla::NINGUNA, _tipoUsuario); // No se seleccionó nada válido
+        return crearResultado(AccionPantalla::NINGUNA, _tipoUsuario); 
     }
 
 
 public:
     // Constructor corregido para evitar shadowing de parámetros
-    ExplorarCursosScreen(Controladora* controladora, TipoUsuario tipoUsuario, int idUsuario, const std::string& nombreUsuario)
+    ExplorarContenidoScreen(Controladora* controladora, TipoUsuario tipoUsuario, int idUsuario, const std::string& nombreUsuario)
         : PantallaBase(controladora),
         _controladora(controladora),
         _tipoUsuario(tipoUsuario),

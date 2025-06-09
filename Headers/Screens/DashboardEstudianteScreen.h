@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>    // Para std::ifstream
 #include <sstream>    // Para std::stringstream
+#include <windows.h>  // Para COORD y funciones de consola y que std::min funcione bien
 #include <algorithm>  // Para std::min
 
 // Headers propios
@@ -202,7 +203,8 @@ void DashboardEstudianteScreen::renderizarMenuSuperior()
 void DashboardEstudianteScreen::renderizarCursos()
 {
     // Renderizar hasta 3 cursos inscritos
-    int numCursos = std::min(3, static_cast<int>(_cursosInscritos.size()));
+    int numCursos = (std::min)(3, static_cast<int>(_cursosInscritos.size()));
+
     for (int i = 0; i < numCursos; ++i) {
         gotoXY(_coordsTituloCursos[i].X, _coordsTituloCursos[i].Y);
         if (_seccionActual == SECCION_CURSOS && _elementoActual == i) {
@@ -228,8 +230,10 @@ void DashboardEstudianteScreen::renderizarCursos()
 void DashboardEstudianteScreen::renderizarEspecializaciones()
 {
     // Renderizar hasta 3 especializaciones inscritas
-    int numEspecializaciones = std::min(3, static_cast<int>(_especializacionesInscritas.size()));
-    for (int i = 0; i < numEspecializaciones; ++i) {
+    int numEspecializaciones = (std::min)(3, static_cast<int>(_especializacionesInscritas.size()));
+
+    for (int i = 0; i < numEspecializaciones; ++i) 
+    {
         gotoXY(_coordsTituloEspecializaciones[i].X, _coordsTituloEspecializaciones[i].Y);
         if (_seccionActual == SECCION_ESPECIALIZACIONES && _elementoActual == i) {
             setConsoleColor(1, 13);

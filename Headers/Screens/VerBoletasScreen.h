@@ -65,7 +65,7 @@ private:
             return;
         }
 
-        int boletasAMostrar = std::min(_boletasPorPagina, static_cast<int>(_boletas.size()) - _indiceInicio);
+        int boletasAMostrar = (std::min)(_boletasPorPagina, static_cast<int>(_boletas.size()) - _indiceInicio);
 
         for (int i = 0; i < boletasAMostrar; i++) {
             int indice = _indiceInicio + i;
@@ -159,7 +159,7 @@ public:
                     break;
 
                 case 80: // Flecha abajo
-                    if (_boletaSeleccionada < std::min(_boletasPorPagina - 1, static_cast<int>(_boletas.size()) - _indiceInicio - 1)) {
+                    if (_boletaSeleccionada < (std::min)(_boletasPorPagina - 1, static_cast<int>(_boletas.size()) - _indiceInicio - 1)) {
                         _boletaSeleccionada++;
                         dibujarBoletas();
                     }
