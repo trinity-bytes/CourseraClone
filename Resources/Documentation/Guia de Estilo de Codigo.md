@@ -664,7 +664,7 @@ Antes de hacer commit, verificar:
 
 ## 12. Estructura de Carpetas del Proyecto
 
-### Nueva Organización Implementada (Enero 2025)
+### Nueva Organización Implementada (Mayo 2025)
 
 El proyecto ha sido reorganizado de una estructura plana a una estructura jerárquica modular:
 
