@@ -66,7 +66,7 @@ LoginScreen.hpp
 RegistroScreen.hpp
 DashboardEstudianteScreen.hpp
 MostrarCursoScreen.hpp
-ExplorarCursosScreen.hpp
+ExplorarContenidoScreen.hpp
 
 // ✅ CORRECTO - Controladores/Gestores identificables
 GestionadorCursos.hpp
