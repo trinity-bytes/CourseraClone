@@ -2,7 +2,7 @@
 #include <string>
 #include <ctime>
 #include <fstream>
-#include "../DataStructures/algoritmosBusqueda.h"
+#include "../DataStructures/algoritmosBusqueda.hpp"
 using namespace std;
 
 struct BoletaBinaria {

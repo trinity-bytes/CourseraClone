@@ -90,7 +90,7 @@ ExtendedFunctions.hpp  // Nombre actual - mantener
 // ✅ CORRECTO - Coincide con el archivo .hpp
 CourseraCloneApp.cpp
 
-// ✅ CORRECTO - Implementaciones con sufijos 
+// ✅ CORRECTO - Implementaciones con sufijos
 // Por ahora no son necesarios, son una mejora a futuro
 descriptivos
 LoginScreen.cpp
@@ -439,7 +439,7 @@ Para un proyecto académico, mantenemos un sistema de comentarios simple pero ef
 // filepath: Headers/Entities/Usuario.hpp
 // Descripcion: Clase base para usuarios del sistema (estudiantes y empresas)
 
-#pragma once // Considerar reemplazar con guardianes de cabecera estándar (ver Sección 13.4)
+// Guards
 ```
 
 ### 5.2 Comentarios de Clase (Una línea descriptiva)
@@ -603,8 +603,9 @@ void metodoSinParametros();
 ```cpp
 // 1. Comentario de archivo
 // filepath: Headers/Entities/Curso.hpp
+// Descripcion:
 
-// 2. Guards o #pragma once
+// 2. Guards
 // Se recomienda usar guardianes de cabecera estándar. Ver Sección 13.4 para la convención.
 #ifndef COURSERACLONE_ENTITIES_CURSO_HPP // Ejemplo de guardián
 #define COURSERACLONE_ENTITIES_CURSO_HPP

@@ -117,14 +117,14 @@
 
 **✅ PROBLEMA RESUELTO:** Los archivos duplicados han sido consolidados exitosamente.
 
-| Tarea                         | Responsable | Descripción                                    | Estado   | Criticidad     |
-| ----------------------------- | ----------- | ---------------------------------------------- | -------- | -------------- |
-| Migrar Login/Registro         | Santi       | Consolidar `Login.h` → `LoginScreen.h`         | [✅]     | 🔴 ALTA        |
-| Migrar Dashboards             | Mauricio    | Consolidar dashboards con sufijo "Screen"      | [✅]     | 🔴 ALTA        |
-| Migrar Pantallas Restantes    | Jahat       | Aplicar convenciones a todas las pantallas     | [✅]     | 🟡 MEDIA       |
-| Limpiar archivos obsoletos    | Equipo      | Eliminar versiones sin sufijo "Screen"         | [✅]     | 🟡 MEDIA       |
-| **Actualizar Controladora.h** | **Equipo**  | **Corregir includes en controlador principal** | **[✅]** | **🔴 CRÍTICA** |
-| Testing post-consolidación    | Equipo      | Verificar que la aplicación compile y funcione | [⏳]     | 🔴 ALTA        |
+| Tarea                         | Responsable | Descripción                                    | Estado | Criticidad     |
+| ----------------------------- | ----------- | ---------------------------------------------- | ------ | -------------- |
+| Migrar Login/Registro         | Santi       | Consolidar `Login.h` → `LoginScreen.h`         | [✅]   | 🔴 ALTA        |
+| Migrar Dashboards             | Mauricio    | Consolidar dashboards con sufijo "Screen"      | [✅]   | 🔴 ALTA        |
+| Migrar Pantallas Restantes    | Jahat       | Aplicar convenciones a todas las pantallas     | [✅]   | 🟡 MEDIA       |
+| Limpiar archivos obsoletos    | Equipo      | Eliminar versiones sin sufijo "Screen"         | [✅]   | 🟡 MEDIA       |
+| **Actualizar Controladora.h** | **Equipo**  | **Corregir includes en controlador principal** | [✅]   | **🔴 CRÍTICA** |
+| Testing post-consolidación    | Equipo      | Verificar que la aplicación compile y funcione | [⏳]   | 🔴 ALTA        |
 
 **✅ Consolidación Completada:**
 
@@ -213,7 +213,6 @@
 | Sistema de Reseñas             | Santi       | Calificación y comentarios de cursos            | [ ]    |
 | Reportes y Estadísticas        | Jahat       | Dashboards con métricas detalladas              | [ ]    |
 | Gestión de Archivos Multimedia | Equipo      | Manejo de recursos de cursos                    | [ ]    |
-| Sistema de Notificaciones      | Mauricio    | Alertas y recordatorios                         | [ ]    |
 | Backup y Recuperación          | Santi       | Sistema de respaldo de datos                    | [ ]    |
 | Exportar/Importar Datos        | Jahat       | Intercambio de datos con otros sistemas         | [ ]    |
 

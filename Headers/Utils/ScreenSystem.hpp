@@ -6,7 +6,7 @@
 #include <memory>
 
 // Headers propios
-#include "../Entities/Usuario.h"
+#include "../Entities/Usuario.hpp"
 #include "SystemUtils.h"
 #include "UI_Ascii.h"
 
@@ -17,12 +17,9 @@ using std::unique_ptr;
 // Declaración anticipada de la clase Controladora
 class Controladora;
 
-//=============================================================================
-// SISTEMA UNIFICADO DE PANTALLAS - COURSERA CLONE
-//=============================================================================
-
 /// @brief Acciones de navegación disponibles en el sistema
-enum class AccionPantalla {
+enum class AccionPantalla 
+{
     NINGUNA,
     IR_A_LOGIN,
     IR_A_REGISTRO,

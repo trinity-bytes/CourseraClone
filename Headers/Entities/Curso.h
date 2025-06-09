@@ -4,7 +4,7 @@
 #include "Actividad.h"
 #include "Clase.h"
 #include "../DataStructures/LinkedList.h"
-#include "../DataStructures/algoritmosBusqueda.h"
+#include "../DataStructures/algoritmosBusqueda.hpp"
 
 // headers de la libreria estandar
 #include "iostream"    // Para manejo de entrada/salida

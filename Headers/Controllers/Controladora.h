@@ -15,19 +15,19 @@
 #include "../Entities/Actividad.h"
 #include "../Entities/Estudiante.h"
 #include "../Entities/Empresa.h"
-#include "../Screens/LoginScreen.h"
-#include "../Screens/LandingPageScreen.h"
-#include "../Screens/DashboardEstudianteScreen.h"
-#include "../Screens/DashboardOrganizacionScreen.h"
-#include "../Screens/PerfilEstudianteScreen.h"
-#include "../Screens/PerfilOrganizacionScreen.h"
-#include "../Screens/EditarPerfilScreen.h"
-#include "../Screens/MostrarCursoScreen.h"
-#include "../Screens/MostrarEspecialidadScreen.h"
-#include "../Screens/RegistroScreen.h"
-#include "../Screens/ExplorarContenidoScreen.h"
-#include "../Screens/VerBoletasScreen.h"
-#include "../Utils/ScreenSystem.h"
+#include "../Screens/LandingPageScreen.hpp"
+//#include "../Screens/LoginScreen.h"
+//#include "../Screens/DashboardEstudianteScreen.h"
+//#include "../Screens/DashboardOrganizacionScreen.h"
+//#include "../Screens/PerfilEstudianteScreen.h"
+//#include "../Screens/PerfilOrganizacionScreen.h"
+//#include "../Screens/EditarPerfilScreen.h"
+//#include "../Screens/MostrarCursoScreen.h"
+//#include "../Screens/MostrarEspecialidadScreen.h"
+//#include "../Screens/RegistroScreen.h"
+//#include "../Screens/ExplorarContenidoScreen.h"
+//#include "../Screens/VerBoletasScreen.h"
+#include "../Utils/ScreenSystem.hpp"
 
 // Forward declarations
 class GestionadorCursos;
@@ -185,29 +185,29 @@ void Controladora::cargarDatosInscripciones()
     archivo.close();
 }
 
-// Crea una nueva instancia de la pantalla de login
-unique_ptr<PantallaBase> Controladora::crearPantallaLogin() 
-{
-    return make_unique<LoginScreen>(*_estudiante, *_empresa, _gestionadorCursos->getCursos(), _gestionadorCursos->getEspecializaciones());
-}
+//// Crea una nueva instancia de la pantalla de login
+//unique_ptr<PantallaBase> Controladora::crearPantallaLogin() 
+//{
+//    return make_unique<LoginScreen>(*_estudiante, *_empresa, _gestionadorCursos->getCursos(), _gestionadorCursos->getEspecializaciones());
+//}
 
 // Crea dashboard para estudiante
-unique_ptr<PantallaBase> Controladora::crearPantallaDashboardEstudiante() 
-{
-    if (_estudiante) {
-        return make_unique<DashboardEstudianteScreen>(this, _estudiante->getId(), _estudiante->getNombreCompleto());
-    }
-    return crearPantallaLogin();
-}
+//unique_ptr<PantallaBase> Controladora::crearPantallaDashboardEstudiante() 
+//{
+//    if (_estudiante) {
+//        return make_unique<DashboardEstudianteScreen>(this, _estudiante->getId(), _estudiante->getNombreCompleto());
+//    }
+//    return crearPantallaLogin();
+//}
 
 // Crea dashboard para organización
-unique_ptr<PantallaBase> Controladora::crearPantallaDashboardOrganizacion() 
-{
-    if (_empresa) {
-        return make_unique<DashboardOrganizacionScreen>(this, _empresa->getId(), _empresa->getNombreCompleto());
-    }
-    return crearPantallaLogin();
-}
+//unique_ptr<PantallaBase> Controladora::crearPantallaDashboardOrganizacion() 
+//{
+//    if (_empresa) {
+//        return make_unique<DashboardOrganizacionScreen>(this, _empresa->getId(), _empresa->getNombreCompleto());
+//    }
+//    return crearPantallaLogin();
+//}
 
 // Crea pantalla de landing page
 unique_ptr<PantallaBase> Controladora::crearPantallaLandingPage() 
@@ -226,7 +226,7 @@ void Controladora::run()
         ResultadoPantalla resultado = pantallaActual->ejecutar();
 
         switch (resultado.accion) {
-            case AccionPantalla::IR_A_LOGIN:
+            /*case AccionPantalla::IR_A_LOGIN:
                 pantallaActual = crearPantallaLogin();
                 break;
                 
@@ -240,7 +240,7 @@ void Controladora::run()
                 
             case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
                 pantallaActual = crearPantallaDashboardOrganizacion();
-                break;
+                break;*/
                 
             case AccionPantalla::IR_A_LANDING_PAGE:
                 pantallaActual = crearPantallaLandingPage();
@@ -252,7 +252,7 @@ void Controladora::run()
                 cout << "Gracias por usar CourseraClone. Hasta luego!" << endl;
                 break;
                 
-            case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
+            /*case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
                 if (_estudiante) {
                     pantallaActual = make_unique<PerfilEstudianteScreen>(
                         _estudiante->getId(),
@@ -362,8 +362,8 @@ void Controladora::run()
                 } else {
                     pantallaActual = crearPantallaLogin();
                 }
-                break;
-                
+                break;*/   
+
             default:
                 break;
         }

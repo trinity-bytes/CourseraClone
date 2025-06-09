@@ -1,4 +1,4 @@
-// filepath: Headers/Screens/ExplorarCursosScreen.h
+// filepath: Headers/Screens/ExplorarContenidoScreen.h
 // Descripcion: Pantalla que permite a los usuarios explorar, navegar y seleccionar
 //              cursos y especializaciones disponibles en el sistema.
 
@@ -37,7 +37,6 @@ enum KeyCode
 };
 
 // Clase para explorar el contenido del sistema.
-// Simplificada de ExplorarCursosYEspecialidadesScreen a ExplorarCursosScreen.
 class ExplorarContenidoScreen : public PantallaBase 
 {
 private:
@@ -50,11 +49,11 @@ private:
 
     // Coordenadas para la UI
     struct Coords {
-        const int tituloCol = 50, tituloFila = 3;
-        const int cursosTituloCol = 7, cursosTituloFila = 7;
-        const int cursosListaCol = 7, cursosListaFila = 9;
-        const int espTituloCol = 7, espTituloFila = 20;
-        const int espListaCol = 7, espListaFila = 22;
+        const int tituloCol = 50,       tituloFila = 3;
+        const int cursosTituloCol = 7,  cursosTituloFila = 7;
+        const int cursosListaCol = 7,   cursosListaFila = 9;
+        const int espTituloCol = 7,     espTituloFila = 20;
+        const int espListaCol = 7,      espListaFila = 22;
         const int anchoElemento = 60;
     } _uiCoords;
 

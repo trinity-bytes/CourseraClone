@@ -1,5 +1,5 @@
 #pragma once
-#include "Usuario.h"
+#include "Usuario.hpp"
 #include "../DataStructures/LinkedList.h"
 #include "../DataStructures/Stack.h"
 #include "../DataStructures/Queue.h"

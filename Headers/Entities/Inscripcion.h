@@ -2,7 +2,7 @@
 
 // headers propios
 #include "Actividad.h"
-#include "../DataStructures/algoritmosBusqueda.h"
+#include "../DataStructures/algoritmosBusqueda.hpp"
 #include "Venta.h"
 
 // headers de la libreria estandar

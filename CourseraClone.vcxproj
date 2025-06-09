@@ -141,7 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\Controladora.h" />
     <ClInclude Include="Headers\Controllers\GestionadorCursos.h" />
-    <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.h" />
+    <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.h" />
     <ClInclude Include="Headers\DataStructures\BinaryHeap.h" />
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.h" />
@@ -160,13 +160,13 @@
     <ClInclude Include="Headers\Entities\Especializacion.h" />
     <ClInclude Include="Headers\Entities\Estudiante.h" />
     <ClInclude Include="Headers\Entities\Inscripcion.h" />
-    <ClInclude Include="Headers\Entities\Usuario.h" />
+    <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.h" />
     <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h" />
     <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.h" />
     <ClInclude Include="Headers\Screens\EditarPerfilScreen.h" />
     <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.h" />
-    <ClInclude Include="Headers\Screens\LandingPageScreen.h" />
+    <ClInclude Include="Headers\Screens\LandingPageScreen.hpp" />
     <ClInclude Include="Headers\Screens\LoginScreen.h" />
     <ClInclude Include="Headers\Screens\MostrarCursoScreen.h" />
     <ClInclude Include="Headers\Screens\MostrarEspecialidadScreen.h" />
@@ -174,7 +174,7 @@
     <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.h" />
     <ClInclude Include="Headers\Screens\RegistroScreen.h" />
     <ClInclude Include="Headers\Screens\VerBoletasScreen.h" />
-    <ClInclude Include="Headers\Utils\ScreenSystem.h" />
+    <ClInclude Include="Headers\Utils\ScreenSystem.hpp" />
     <ClInclude Include="Headers\Utils\SystemUtils.h" />
     <ClInclude Include="Headers\Utils\UI_Ascii.h" />
   </ItemGroup>

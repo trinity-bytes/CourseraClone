@@ -1,11 +1,15 @@
 // Descripcion: Clase que representa una empresa en el sistema
 
 #pragma once
-#include "Usuario.h"
-#include "Curso.h"
-#include "Especializacion.h"
+
+// Librerías estándar
 #include <unordered_set>
 #include <stdexcept>
+
+// Librerias del proyecto
+#include "Usuario.hpp"
+#include "Curso.h"
+#include "Especializacion.h"
 
 // Clase que representa una empresa usuaria del sistema
 class Empresa : public Usuario
@@ -25,8 +29,6 @@ public:
     Empresa();
     Empresa(int _id, const string& _nombreCompleto, const string& _nickname, const string& _contrasena);
 
-    // Destructor por defecto es suficiente
-
     // Métodos de gestión de datos
     void cargarDatos();
     void reset();
@@ -44,7 +46,7 @@ public:
     const LinkedList<Especializacion>& getEspecializaciones() const { return _especializaciones; }
 
     // Métodos de gestión de cursos en especializaciones
-    bool anadirCursoAEspecializacion(int _idEspecializacion, const Curso& _curso);
+    bool anadirCursoAEspecializacion(int _idEspecializacion, Curso& _curso);
     bool eliminarCursoDeEspecializacion(int _idEspecializacion, int _idCurso);
 
     // Métodos de consulta
@@ -180,7 +182,7 @@ inline void Empresa::mostrarProfesores() const
     }
 }
 
-inline bool Empresa::anadirCursoAEspecializacion(int _idEspecializacion, const Curso& _curso)
+inline bool Empresa::anadirCursoAEspecializacion(int _idEspecializacion, Curso& _curso)
 {
     if (!validarCurso(_curso))
     {

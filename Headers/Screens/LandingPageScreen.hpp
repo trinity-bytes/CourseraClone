@@ -1,7 +1,8 @@
-// filepath: Headers/Screens/LandingPageScreen.h
-// Pantalla principal del sistema - landing page con navegación por secciones
+// filepath: Headers/Screens/LandingPageScreen.hpp
+// Descripcion: Pantalla principal del sistema - landing page con navegación por secciones
 
-#pragma once
+#ifndef COURSERACLONE_SCREENS_LANDINGPAGESCREEN_HPP
+#define COURSERACLONE_SCREENS_LANDINGPAGESCREEN_HPP
 
 // Librerías estándar
 #include <vector>
@@ -10,7 +11,7 @@
 #include <conio.h>
 
 // Librerias propias
-#include "../Utils/ScreenSystem.h"
+#include "../Utils/ScreenSystem.hpp"
 #include "../DataStructures/PriorityQueue.h"
 #include "../Controllers/GestionadorCursos.h"
 
@@ -20,19 +21,12 @@ class Curso;
 class Especializacion;
 template<typename T> class LinkedList;
 
-//=============================================================================
-// DEFINICIÓN DE LA CLASE PRINCIPAL
-//=============================================================================
-
-/// @brief Pantalla principal del sistema con navegación por secciones
-/// @details Implementa la landing page con navegación entre cabecera, especialidades y cursos
+/// Pantalla principal del sistema con navegación por secciones
+/// Implementa la landing page con navegación entre cabecera, especialidades y cursos
 class LandingPageScreen : public PantallaBase
 {
 private:
-    //=========================================================================
     // CONSTANTES DE CONFIGURACIÓN
-    //=========================================================================
-    
     /// @brief Identificadores de secciones navegables
     static const int SECCION_CABECERA = 0;
     static const int SECCION_ESPECIALIDADES = 1;
@@ -48,10 +42,7 @@ private:
     static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
     static const int MAX_ALTO_CARACTERES_CUADRO = 4;
 
-    //=========================================================================
     // DATOS ESTÁTICOS DE LA INTERFAZ
-    //=========================================================================
-    
     /// @brief Elementos del menú principal de la cabecera
     const vector<string> ELEMENTOS_CABECERA = {
         " Iniciar Sesion ",
@@ -71,10 +62,7 @@ private:
         {"Curso React JS", "Web UI development"}
     };
 
-    //=========================================================================
     // COORDENADAS DE POSICIONAMIENTO
-    //=========================================================================
-    
     /// @brief Posiciones fijas para elementos de la cabecera
     const COORD _coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { 
         {67, 3}, {84, 3} 
@@ -100,10 +88,7 @@ private:
         {11, 27}, {45, 27}, {79, 27} 
     };
 
-    //=========================================================================
     // ESTADO DE NAVEGACIÓN
-    //=========================================================================
-    
     /// @brief Estado actual de la navegación
     int _seccionActual;
     int _elementoActual;
@@ -118,10 +103,7 @@ private:
     vector<ElementoMenu> _especialidades;
     vector<ElementoMenu> _cursos;
 
-    //=========================================================================
     // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
-    //=========================================================================
-
     /// @brief Carga los datos de cursos y especialidades más populares
     /// @param cursosDatos Lista de cursos disponibles
     /// @param especializacionesDatos Lista de especializaciones disponibles
@@ -228,10 +210,7 @@ private:
         }
     }
 
-    //=========================================================================
     // MÉTODOS PRIVADOS - INTERFAZ DE USUARIO
-    //=========================================================================
-
     /// @brief Dibuja la interfaz completa de la landing page
     void dibujarInterfazCompleta()
     {
@@ -298,10 +277,7 @@ private:
         }
     }
 
-    //=========================================================================
     // MÉTODOS PRIVADOS - ACTUALIZACIÓN DE SELECCIÓN
-    //=========================================================================
-
     /// @brief Actualiza la selección visual de elementos en la pantalla
     void actualizarSeleccion()
     {
@@ -357,10 +333,7 @@ private:
         }
     }
 
-    //=========================================================================
     // MÉTODOS PRIVADOS - ACTUALIZACIÓN DE ELEMENTOS ESPECÍFICOS
-    //=========================================================================
-
     /// @brief Actualiza la visualización de un elemento de la cabecera
     /// @param indice Índice del elemento a actualizar
     /// @param seleccionado Estado de selección del elemento
@@ -483,10 +456,7 @@ private:
         }
     }
 
-    //=========================================================================
     // MÉTODOS PRIVADOS - UTILIDADES DE FORMATO
-    //=========================================================================
-
     /// @brief Trunca títulos que excedan el máximo de caracteres
     /// @param titulo Título original
     /// @param maxLongitud Longitud máxima permitida
@@ -575,10 +545,7 @@ private:
         return lineas;
     }
 
-    //=========================================================================
     // MÉTODOS PRIVADOS - NAVEGACIÓN Y CONTROL
-    //=========================================================================
-
     /// @brief Obtiene el número máximo de elementos en una sección
     /// @param seccion Sección a consultar
     /// @return Número máximo de elementos
@@ -621,10 +588,7 @@ private:
         return Pantalla::NONE;
     }
 
-    //=========================================================================
     // MÉTODOS PRIVADOS - MANEJO DE ENTRADA
-    //=========================================================================
-
     /// @brief Maneja la navegación vertical (arriba/abajo)
     /// @param direccion Dirección del movimiento (-1 = arriba, 1 = abajo)
     void manejarNavegacionVertical(int direccion)
@@ -724,17 +688,13 @@ private:
     }
 
 public:
-    //=========================================================================
-    // CONSTRUCTORES
-    //=========================================================================
-
     /// @brief Constructor por defecto
     LandingPageScreen() : PantallaBase(),
         _seccionActual(0), _elementoActual(0),
         _seccionAnterior(-1), _elementoAnterior(-1),
         _primeraRenderizacion(true), _presionEnter(false)
     {
-        // Inicializar con datos por defecto
+        // Inicializamos con datos por defecto
         _especialidades = _especialidadesDefecto;
         _cursos = _cursosDefecto;
     }
@@ -752,19 +712,18 @@ public:
         cargarDatos(cursosDatos, especializacionesDatos, 3);
     }
 
-    //=========================================================================
     // MÉTODOS PÚBLICOS - INTERFAZ PRINCIPAL
-    //=========================================================================
-
     /// @brief Renderiza la pantalla
     void renderizar()
     {
-        if (_primeraRenderizacion) {
+        if (_primeraRenderizacion) 
+        {
             system("cls");
             UI_LandingPage();
             dibujarInterfazCompleta();
             _primeraRenderizacion = false;
-        } else {
+        } else 
+        {
             actualizarSeleccion();
         }
     }
@@ -775,9 +734,11 @@ public:
     {
         _presionEnter = false;
 
-        if (tecla == 224) {  // Tecla extendida
+        if (tecla == 224) // Tecla extendida
+        {  
             tecla = _getch();
-            switch (tecla) {
+            switch (tecla) 
+            {
             case 72:  // Flecha arriba
                 manejarNavegacionVertical(-1);
                 break;
@@ -791,7 +752,8 @@ public:
                 manejarNavegacionHorizontal(1);
                 break;
             }
-        } else if (tecla == 13) {  // Enter
+        } else if (tecla == 13) // Enter
+        {  
             _presionEnter = true;
         }
     }
@@ -804,13 +766,14 @@ public:
         renderizar();
 
         int tecla;
-        while (resultado.accion == AccionPantalla::NINGUNA) {
+        while (resultado.accion == AccionPantalla::NINGUNA) 
+        {
             tecla = _getch();
             manejarInput(tecla);
             renderizar();
-
-            // Procesar acciones
-            if (_presionEnter) {
+            
+            if (_presionEnter) // Procesar acciones
+            {
                 procesarSeleccion(resultado);
             }
 
@@ -823,9 +786,4 @@ public:
     }
 };
 
-//=============================================================================
-// ALIAS DE COMPATIBILIDAD
-//=============================================================================
-
-/// @brief Alias para mantener compatibilidad con código existente
-using LandingPage = LandingPageScreen;
+#endif // COURSERACLONE_SCREENS_LANDINGPAGESCREEN_HPP

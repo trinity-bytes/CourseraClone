@@ -46,9 +46,6 @@
     <ClInclude Include="Headers\Controllers\Controladora.h">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
@@ -103,7 +100,7 @@
     <ClInclude Include="Headers\Entities\Inscripcion.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Usuario.h">
+    <ClInclude Include="Headers\Entities\Usuario.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Venta.h">
@@ -121,7 +118,7 @@
     <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\LandingPageScreen.h">
+    <ClInclude Include="Headers\Screens\LandingPageScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Screens\LoginScreen.h">
@@ -145,7 +142,7 @@
     <ClInclude Include="Headers\Screens\VerBoletasScreen.h">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Utils\ScreenSystem.h">
+    <ClInclude Include="Headers\Utils\ScreenSystem.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Utils\SystemUtils.h">
@@ -153,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Utils\UI_Ascii.h">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

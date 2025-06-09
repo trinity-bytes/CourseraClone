@@ -45,6 +45,23 @@ public:
 
 	// Métodos de gestión de cursos
 	void anadirCurso(Curso& _curso) {
+		// Verificar si el ID ya está en la lista para evitar duplicados en idsCursos
+		// y para mantener la coherencia con anadirCursoPorId
+		bool idYaExiste = false;
+		for (int id : idsCursos) {
+			if (id == _curso.getId()) {
+				idYaExiste = true;
+				break;
+			}
+		}
+		if (!idYaExiste) {
+			idsCursos.push_back(_curso.getId());
+		}
+
+		// Considerar si también se debe evitar duplicados en la lista de Cursos.
+		// Por ahora, se mantiene el comportamiento original de agregar al final.
+		// Si se quisiera evitar duplicados en la lista `cursos` también,
+		// se necesitaría una forma de buscar un curso por ID en la LinkedList.
 		cursos.agregarAlFinal(_curso);
 	}
 
@@ -189,6 +206,9 @@ public:
 		}
 		// Añadir el ID a la lista
 		idsCursos.push_back(idCurso);
+		// Aquí podría haber una lógica para añadir el objeto Curso correspondiente
+		// a la lista `cursos` si se tiene acceso a un gestor de cursos.
+		// Por ahora, solo se maneja el ID.
 	}
 
 	// Método para eliminar un ID de curso de la especialización

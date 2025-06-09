@@ -1,30 +1,33 @@
-#pragma once
+// filepath: Headers/Entities/Curso.hpp
+// Descripcion: Clase que representa un curso en el sistema, 
+//              incluyendo sus detalles y métodos para manipularlos.
 
-// Headers propios
-#include "../DataStructures/algoritmosBusqueda.h"
+#ifndef COURSERACLONE_ENTITIES_USUARIO_HPP
+#define COURSERACLONE_ENTITIES_USUARIO_HPP
 
 // Headers de la libreria estandar
-#include "iostream"
-#include "fstream"
-#include "string"
-#include "vector"     // Podría ser útil para manejar indices temporalmente en memoria
-#include "cstring"    // Para strncpy, strncmp, memset
-#include "limits"     // Para numeric_limits
-#include "algorithm"  // Para sort si manejamos indices en memoria (opcional)
+#include <iostream>  // Para std::cerr y std::endl
+#include <fstream>   // Para manejo de archivos
+#include <string>    // Para manejo de cadenas
+#include <vector>    // Para manejo de vectores
+#include <cstring>   // Para manejo de cadenas C-style
+#include <limits>    // Para std::numeric_limits
+#include <algorithm> // Para std::sort y std::min
 
-using namespace std;
+// Headers propios
+#include "../DataStructures/algoritmosBusqueda.hpp" // Para busquedaBinaria
 
-/// --- Constantes y Enums para mejorar legibilidad y mantenibilidad ---
+/// ---  CONSTANTES Y ENUMS  ---
 // Maxima longitud para los campos de caracteres en structs binarios
 const int MAX_FIELD_LEN = 50;
 
 // Rutas de archivos
-const string DATA_DIR = "Resources/Data/";
-const string INDEX_DIR = DATA_DIR + "indices/";
-const string EMPRESA_DATA_FILE = DATA_DIR + "usuarios_empresa.dat";
-const string ESTUDIANTE_DATA_FILE = DATA_DIR + "usuarios_estudiante.dat";
-const string EMPRESA_INDEX_FILE = INDEX_DIR + "usuarios_empresa.dat";
-const string ESTUDIANTE_INDEX_FILE = INDEX_DIR + "usuarios_estudiante.dat";
+const std::string DATA_DIR = "Resources/Data/";
+const std::string INDEX_DIR = DATA_DIR + "indices/";
+const std::string EMPRESA_DATA_FILE = DATA_DIR + "usuarios_empresa.dat";
+const std::string ESTUDIANTE_DATA_FILE = DATA_DIR + "usuarios_estudiante.dat";
+const std::string EMPRESA_INDEX_FILE = INDEX_DIR + "usuarios_empresa.dat";       // Debería ser diferente al de datos?
+const std::string ESTUDIANTE_INDEX_FILE = INDEX_DIR + "usuarios_estudiante.dat"; // Debería ser diferente al de datos?
 
 // Tipos de usuario (usamos enum para claridad)
 enum class TipoUsuario
@@ -40,7 +43,7 @@ enum class LoginStatus
     SUCCESS = 0,
     USER_NOT_FOUND = 1,
     WRONG_PASSWORD = 2,
-    FILE_ERROR = 3 // Agregado para errores de archivo
+    FILE_ERROR = 3
 };
 
 /// --- Structs para la representación en archivos binarios ---
@@ -49,9 +52,9 @@ struct UsuarioBinario
 {
     char nombreCompleto[MAX_FIELD_LEN];
     char nombreDeUsuario[MAX_FIELD_LEN];
-    char contrasenaHash[MAX_FIELD_LEN]; // Guardamos un HASH de la contraseña
+    char contrasenaHash[MAX_FIELD_LEN];
 
-    // Constructor por defecto: Inicializa todo a cero
+    // Constructor por defecto
     UsuarioBinario() 
     {
         memset(nombreCompleto, 0, sizeof(nombreCompleto));
@@ -62,9 +65,9 @@ struct UsuarioBinario
     // Constructor parametrizado (usado para crear el struct antes de guardar)
     // Este constructor se debe llamar con el HASH de la contraseña y no en texto plano OwO
     UsuarioBinario(
-        const string& nombreCompletoStr, 
-        const string& nombreUsuarioStr, 
-        const string& contrasenaHashStr) 
+        const std::string& nombreCompletoStr, 
+        const std::string& nombreUsuarioStr, 
+        const std::string& contrasenaHashStr) 
     {
         // Copia segura de cadenas, asegurando null termination
         strncpy(nombreCompleto, nombreCompletoStr.c_str(), MAX_FIELD_LEN - 1);
@@ -91,7 +94,7 @@ struct UsuarioIndex
     }
 
     // Constructor parametrizado (usado para crear el struct antes de guardar en índice)
-    UsuarioIndex(const string& nombreUsuarioStr, int _offset) : offset(_offset) 
+    UsuarioIndex(const std::string& nombreUsuarioStr, int _offset) : offset(_offset) 
     {
         // Copia segura de cadena, asegurando null termination
         strncpy(nombreDeUsuario, nombreUsuarioStr.c_str(), MAX_FIELD_LEN - 1);
@@ -104,65 +107,82 @@ struct UsuarioIndex
         return strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN);
     }
 
-    static int compare(const string& a, const UsuarioIndex& b) {
+    static int compare(const std::string& a, const UsuarioIndex& b) {
         return strncmp(a.c_str(), b.nombreDeUsuario, MAX_FIELD_LEN);
     }
 };
 
 
 /// --- Clase Usuario ---
-class Usuario {
-protected: // Miembros protegidos no tienen mucho sentido si no hay herencia planeada y usada
-    int id; 
-    TipoUsuario tipoUsuario;
-    string nombreCompleto, username;
-    string contrasenaHash; 
+class Usuario 
+{
+protected: 
+    int _id;
+    TipoUsuario _tipoUsuario;
+    std::string _nombreCompleto, _username;
+    std::string _contrasenaHash;
 
 public:
     // Constructor por default UwU
-    Usuario() : id(0), tipoUsuario(TipoUsuario::ESTUDIANTE) {}
+    Usuario() : _id(0), _tipoUsuario(TipoUsuario::ESTUDIANTE) {}
 
     // Constructor principal 
     Usuario(
-        int _id, 
-        TipoUsuario _tipoUsuario, 
-        const string& _nombreCompleto, 
-        const string& _username, 
-        const string& _contrasenaHash) : id(_id), 
-        tipoUsuario(_tipoUsuario), 
-        nombreCompleto(_nombreCompleto), 
-        username(_username), 
-        contrasenaHash(_contrasenaHash)
+        int id, // Parámetro _id renombrado a id para evitar colisión con miembro _id
+        TipoUsuario tipoUsuario, // Parámetro _tipoUsuario renombrado a tipoUsuario
+        const std::string& nombreCompleto, // Parámetro _nombreCompleto renombrado a nombreCompleto
+        const std::string& username, // Parámetro _username renombrado a username
+        const std::string& contrasenaHash) : // Parámetro _contrasenaHash renombrado a contrasenaHash
+        _id(id), // MODIFICADO
+        _tipoUsuario(tipoUsuario), // MODIFICADO
+        _nombreCompleto(nombreCompleto), // MODIFICADO
+        _username(username), // MODIFICADO
+        _contrasenaHash(contrasenaHash) // MODIFICADO
     { }
 
     void reset() {
-        id = -1;
-        tipoUsuario = TipoUsuario::NINGUNO;
-        nombreCompleto = "";
-        username = "";
-        contrasenaHash = "";
+        _id = -1; // MODIFICADO
+        _tipoUsuario = TipoUsuario::NINGUNO; // MODIFICADO
+        _nombreCompleto = ""; // MODIFICADO
+        _username = ""; // MODIFICADO
+        _contrasenaHash = ""; // MODIFICADO
     }
 
     void establecerDatosBase(Usuario otroUsuario) {
-        tipoUsuario = otroUsuario.getTipoUsuario();
-        nombreCompleto = otroUsuario.getNombreCompleto();
-        username = otroUsuario.getUsername();
-        contrasenaHash = otroUsuario.getContrasenaHash();
+        _tipoUsuario = otroUsuario.getTipoUsuario(); // MODIFICADO
+        _nombreCompleto = otroUsuario.getNombreCompleto(); // MODIFICADO
+        _username = otroUsuario.getUsername(); // MODIFICADO
+        _contrasenaHash = otroUsuario.getContrasenaHash(); // MODIFICADO
     }
 
-    static string hashContrasena(const string& contrasena) 
+    static std::string hashContrasena(const std::string& contrasena) // MODIFICADO: string a std::string
     {
-        string mockHash = "atalapastrukaGohGohGoh"; // Hash inicial con la palabra de seguridad xd
-        mockHash += contrasena.substr(0, min((int)contrasena.length(), MAX_FIELD_LEN - (int)mockHash.length() - 1));
+        std::string mockHash = "atalapastrukaGohGohGoh"; // Hash inicial con la palabra de seguridad xd // MODIFICADO: string a std::string
+        mockHash += contrasena.substr(0, std::min((int)contrasena.length(), MAX_FIELD_LEN - (int)mockHash.length() - 1)); // MODIFICADO: min a std::min
         return mockHash;
     }
+    
+    // Getters (Añadidos para acceder a los miembros protegidos renombrados)
+    int getId() const { return _id; }
+    TipoUsuario getTipoUsuario() const { return _tipoUsuario; }
+    std::string getNombreCompleto() const { return _nombreCompleto; }
+    std::string getUsername() const { return _username; }
+    std::string getContrasenaHash() const { return _contrasenaHash; }
+    
+    // Setters (Añadidos por si son necesarios)
+    void setId(int id) { _id = id; }
+    void setTipoUsuario(TipoUsuario tipo) { _tipoUsuario = tipo; }
+    void setNombreCompleto(const std::string& nombre) { _nombreCompleto = nombre; }
+    void setUsername(const std::string& username) { _username = username; }
+    void setContrasenaHash(const std::string& hash) { _contrasenaHash = hash; }
+
 
 private:
     // Convierte objeto Usuario a struct UsuarioBinario
     UsuarioBinario toUsuarioBinario() const 
     {
-        // Esto funciona si this->contrasenaHash ya contiene el hash
-        return UsuarioBinario(nombreCompleto, username, contrasenaHash);
+        // Esto funciona si this->_contrasenaHash ya contiene el hash
+        return UsuarioBinario(_nombreCompleto, _username, _contrasenaHash); // MODIFICADO
     }
 
     // Convierte struct UsuarioBinario a objeto Usuario
@@ -170,9 +190,9 @@ private:
     static Usuario fromUsuarioBinario(const UsuarioBinario& binario, int id, TipoUsuario tipo) 
     {
         // Funciona la lectura del archivo nos da un struct válido.
-        string nomCompleto(binario.nombreCompleto, strnlen(binario.nombreCompleto, MAX_FIELD_LEN));
-        string user(binario.nombreDeUsuario, strnlen(binario.nombreDeUsuario, MAX_FIELD_LEN));
-        string hash(binario.contrasenaHash, strnlen(binario.contrasenaHash, MAX_FIELD_LEN));
+        std::string nomCompleto(binario.nombreCompleto, strnlen(binario.nombreCompleto, MAX_FIELD_LEN)); // MODIFICADO: string a std::string
+        std::string user(binario.nombreDeUsuario, strnlen(binario.nombreDeUsuario, MAX_FIELD_LEN)); // MODIFICADO: string a std::string
+        std::string hash(binario.contrasenaHash, strnlen(binario.contrasenaHash, MAX_FIELD_LEN)); // MODIFICADO: string a std::string
 
         return Usuario(id, tipo, nomCompleto, user, hash);
     }
@@ -180,23 +200,23 @@ private:
     // Convierte objeto Usuario a struct UsuarioIndex
     UsuarioIndex toUsuarioIndex(int offset) const 
     {
-        return UsuarioIndex(username, offset);
+        return UsuarioIndex(_username, offset); // MODIFICADO
     }
 
     // Convierte struct UsuarioIndex a string de nombre de usuario
-    static string getUsernameFromIndex(const UsuarioIndex& index) 
+    static std::string getUsernameFromIndex(const UsuarioIndex& index) // MODIFICADO: string a std::string
     {
         // posible basura si el char[] no esta bien terminado.
-        return string(index.nombreDeUsuario, strnlen(index.nombreDeUsuario, MAX_FIELD_LEN));
+        return std::string(index.nombreDeUsuario, strnlen(index.nombreDeUsuario, MAX_FIELD_LEN)); // MODIFICADO: string a std::string
     }
 
     // Helper para obtener la ruta del archivo de datos según el tipo de usuario
-    static string getDataFilePath(TipoUsuario tipo) 
+    static std::string getDataFilePath(TipoUsuario tipo) // MODIFICADO: string a std::string
     {
         return (tipo == TipoUsuario::EMPRESA) ? EMPRESA_DATA_FILE : ESTUDIANTE_DATA_FILE;
     }
 
-    static string getIndexFilePath(TipoUsuario tipo) 
+    static std::string getIndexFilePath(TipoUsuario tipo) // MODIFICADO: string a std::string
     {
         return (tipo == TipoUsuario::EMPRESA) ? EMPRESA_INDEX_FILE : ESTUDIANTE_INDEX_FILE;
     }
@@ -206,55 +226,55 @@ public:
     {
         // NOTA: Este método guarda la *instancia actual* del usuario.
         // Se asume que el ID y tipo ya están establecidos y que la contraseña
-        // ya fue hasheada y guardada en contrasenaHash.
+        // ya fue hasheada y guardada en _contrasenaHash.
 
         // 1. Guardar en el archivo de datos principal (.dat)
-        string dataFilePath = getDataFilePath(tipoUsuario);
-        ofstream dataFile(dataFilePath, ios::binary | ios::app); // Abre para agregar al final
+        std::string dataFilePath = getDataFilePath(_tipoUsuario); // MODIFICADO
+        std::ofstream dataFile(dataFilePath, std::ios::binary | std::ios::app); // Abre para agregar al final // MODIFICADO
         int offsetRegistro = 0; // Offset donde se escribirá este registro
 
         if (!dataFile.is_open()) {
-            cerr << "Error al abrir archivo de datos: " << dataFilePath << endl;
+            std::cerr << "Error al abrir archivo de datos: " << dataFilePath << std::endl; // MODIFICADO
             // Deberíamos manejar este error, quizás lanzando una excepción o retornando false
             return;
         }
 
         // Obtener el offset actual antes de escribir
-        dataFile.seekp(0, ios::end);
+        dataFile.seekp(0, std::ios::end); // MODIFICADO
         offsetRegistro = dataFile.tellp();
 
-        // Crear la struct binaria para guardar (asumiendo que this->contrasenaHash ya tiene el hash)
+        // Crear la struct binaria para guardar (asumiendo que this->_contrasenaHash ya tiene el hash)
         UsuarioBinario nuevoBinario = toUsuarioBinario();
         dataFile.write(reinterpret_cast<const char*>(&nuevoBinario), sizeof(nuevoBinario));
         dataFile.close(); // El destructor del stream también cerrará el archivo
 
 
         // 2. Guardar e insertar en el archivo de índice (.dat) (mantenido ordenado)
-        string indexFilePath = getIndexFilePath(tipoUsuario);
-        fstream indexFile(indexFilePath, ios::binary | ios::in | ios::out); // Abrir para leer y escribir
+        std::string indexFilePath = getIndexFilePath(_tipoUsuario); // MODIFICADO
+        std::fstream indexFile(indexFilePath, std::ios::binary | std::ios::in | std::ios::out); // Abrir para leer y escribir // MODIFICADO
 
         // Si el archivo no existe o falla la apertura inicial en in|out, intentamos crearlo
         if (!indexFile.is_open()) {
             // Intentar abrir en modo out para crearlo
-            ofstream createIndexFile(indexFilePath, ios::binary | ios::out);
+            std::ofstream createIndexFile(indexFilePath, std::ios::binary | std::ios::out); // MODIFICADO
             if (!createIndexFile.is_open()) {
-                cerr << "Error al crear archivo de indice: " << indexFilePath << endl;
+                std::cerr << "Error al crear archivo de indice: " << indexFilePath << std::endl; // MODIFICADO
                 return;
             }
             createIndexFile.close(); // Cerrar después de crear
 
             // Ahora intentar abrir de nuevo en modo in|out
-            indexFile.open(indexFilePath, ios::binary | ios::in | ios::out);
+            indexFile.open(indexFilePath, std::ios::binary | std::ios::in | std::ios::out); // MODIFICADO
             if (!indexFile.is_open()) {
-                cerr << "Error al reabrir archivo de indice despues de crear: " << indexFilePath << endl;
+                std::cerr << "Error al reabrir archivo de indice despues de crear: " << indexFilePath << std::endl; // MODIFICADO
                 return;
             }
         }
 
         // Calcular la cantidad actual de registros en el índice
-        indexFile.seekg(0, ios::end);
+        indexFile.seekg(0, std::ios::end); // MODIFICADO
         int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
-        indexFile.seekg(0, ios::beg); // Volver al principio
+        indexFile.seekg(0, std::ios::beg); // Volver al principio // MODIFICADO
 
         // Crear la entrada del índice para el nuevo usuario
         UsuarioIndex nuevoIndex = toUsuarioIndex(offsetRegistro);
@@ -271,7 +291,7 @@ public:
                 return true; // Inserta al principio si la lista está vacía
             }
             UsuarioIndex temp;
-            indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
+            indexFile.seekg(pos * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
             indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
             indexFile.clear(); // Limpiar flags de error/eof después de leer
 
@@ -309,18 +329,18 @@ public:
         for (int i = cantidad - 1; i >= posInsercion; --i) {
             UsuarioIndex temp;
             // Leer el elemento actual
-            indexFile.seekg(i * sizeof(UsuarioIndex), ios::beg);
+            indexFile.seekg(i * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
             indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
             indexFile.clear(); // Limpiar flags después de leer
 
             // Escribir el elemento en la siguiente posición (corriendo uno a la derecha)
-            indexFile.seekp((i + 1) * sizeof(UsuarioIndex), ios::beg);
+            indexFile.seekp((i + 1) * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
             indexFile.write(reinterpret_cast<const char*>(&temp), sizeof(UsuarioIndex));
             indexFile.clear(); // Limpiar flags después de escribir
         }
 
         // Escribir el nuevo índice en la posición de inserción encontrada
-        indexFile.seekp(posInsercion * sizeof(UsuarioIndex), ios::beg);
+        indexFile.seekp(posInsercion * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
         indexFile.write(reinterpret_cast<const char*>(&nuevoIndex), sizeof(nuevoIndex));
         indexFile.clear(); // Limpiar flags después de escribir
 
@@ -332,13 +352,13 @@ public:
     // Dentro de class Usuario:
 public:
     bool updateInfo(string& nuevoNombreCompleto, string& nuevoUsername,string& nuevaContrasena) {
-        if (this->id == -1) {
+        if (this->_id == -1) {
             cerr << "Error: Usuario ID no válido para actualización." << endl;
             return false;
         }
 
-        string dataFilePath = getDataFilePath(this->tipoUsuario);
-        string indexFilePath = getIndexFilePath(this->tipoUsuario);
+        string dataFilePath = getDataFilePath(this->_tipoUsuario);
+        string indexFilePath = getIndexFilePath(this->_tipoUsuario);
 
         fstream indexFileAccess(indexFilePath, ios::binary | ios::in); 
         if (!indexFileAccess.is_open()) {
@@ -346,12 +366,12 @@ public:
             return false;
         }
 
-        indexFileAccess.seekg(this->id * sizeof(UsuarioIndex), ios::beg);
+        indexFileAccess.seekg(this->_id * sizeof(UsuarioIndex), ios::beg);
         UsuarioIndex currentIdxRecord;
         indexFileAccess.read(reinterpret_cast<char*>(&currentIdxRecord), sizeof(currentIdxRecord));
 
         if (indexFileAccess.fail()) {
-            cerr << "Error: No se pudo leer el registro de índice en la posición: " << this->id << endl;
+            cerr << "Error: No se pudo leer el registro de índice en la posición: " << this->_id << endl;
             indexFileAccess.close();
             return false;
         }
@@ -388,12 +408,12 @@ public:
         }
 
         // Update the current Usuario object's instance data
-        this->nombreCompleto = nuevoNombreCompleto;
+        this->_nombreCompleto = nuevoNombreCompleto;
         this->setUsername(nuevoUsername); // Uses setter for normalization
-        this->contrasenaHash = passwordHashParaGuardar; // Update object's hash for consistency
+        this->_contrasenaHash = passwordHashParaGuardar; // Update object's hash for consistency
 
         // --- 4. Prepare the UsuarioBinario struct with all data to be saved ---
-        UsuarioBinario binDataToSave(this->nombreCompleto, this->username, this->contrasenaHash);
+        UsuarioBinario binDataToSave(this->_nombreCompleto, this->_username, this->_contrasenaHash);
 
         // --- 5. Overwrite the record in the main data file (.dat) ---
         fstream dataFileWrite(dataFilePath, ios::binary | ios::in | ios::out); // Open for read/write
@@ -406,7 +426,7 @@ public:
         dataFileWrite.close(); // Close data file after writing
 
         // --- 6. Handle Index File Update if Username (key) Changed ---
-        if (this->username != oldUsernameInIndex) {
+        if (this->_username != oldUsernameInIndex) {
             // Username has changed. The index file needs to be restructured.
             // Strategy: Read all, remove old, add new, sort, rewrite.
             ifstream indexFileRead(indexFilePath, ios::binary);
@@ -439,7 +459,7 @@ public:
                 return false; // Prevent leaving index in a more broken state
             }
 
-            allIndices.push_back(UsuarioIndex(this->username, dataRecordOffset)); // Add new index entry
+            allIndices.push_back(UsuarioIndex(this->_username, dataRecordOffset)); // Add new index entry
 
             sort(allIndices.begin(), allIndices.end(), [](const UsuarioIndex& a, const UsuarioIndex& b) {
                 return strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN) < 0;
@@ -458,7 +478,7 @@ public:
             bool idUpdated = false;
             for (size_t i = 0; i < allIndices.size(); ++i) {
                 if (allIndices[i].offset == dataRecordOffset) {
-                    this->id = static_cast<int>(i);
+                    this->_id = static_cast<int>(i);
                     idUpdated = true;
                     break;
                 }
@@ -517,6 +537,7 @@ public:
     {
         if (pos == -1) return LoginStatus::USER_NOT_FOUND;
 
+		// Abrir el archivo de índice y leer el registro en la posición `pos`
         const string indexPath = getIndexFilePath(tipoUsuario);
         ifstream indexFile(indexPath, ios::in | ios::binary);
         if (!indexFile.is_open()) {
@@ -527,7 +548,7 @@ public:
         indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
         indexFile.close();
 
-        // 3) Abrir el archivo de datos y saltar al offset
+        // Abrir el archivo de datos y saltar al offset
         const string dataPath = getDataFilePath(tipoUsuario);
         ifstream dataFile(dataPath, ios::in | ios::binary);
         if (!dataFile.is_open()) {
@@ -539,7 +560,7 @@ public:
         dataFile.read(reinterpret_cast<char*>(&binRec), sizeof(binRec));
         dataFile.close();
 
-        // 4) Comparar hashes
+        // Comparar hashes
         string inputHash = hashContrasena(passInput);
         if (strncmp(binRec.contrasenaHash,
             inputHash.c_str(),
@@ -553,23 +574,23 @@ public:
     }
 
     // --- Getters ---
-    int getId() const { return id; } // Agregado const
-    string getNombreCompleto() const { return nombreCompleto; } // Agregado const
-    TipoUsuario getTipoUsuario() const { return tipoUsuario; } // Agregado const
-    string getUsername() const { return username; } // Agregado const
-    string getContrasenaHash() const { return contrasenaHash; }
-	// string getContrasenaHash() const { return contrasenaHash; } // No deberiamos exponer el hash OwO, no es necesario
+    int getId() const { return _id; } // Agregado const
+    string getNombreCompleto() const { return _nombreCompleto; } // Agregado const
+    TipoUsuario getTipoUsuario() const { return _tipoUsuario; } // Agregado const
+    string getUsername() const { return _username; } // Agregado const
 
     // Setter para el ID si es necesario establecerlo después de la creación
-    void setId(int newId) { id = newId; }
-    void setNombre(string _nombreCompleto) { nombreCompleto = _nombreCompleto; }
+    void setId(int newId) { _id = newId; }
+    void setNombre(string _nombreCompleto) { _nombreCompleto = _nombreCompleto; }
     void setUsername(string _username) {
         for (char& c : _username) {
             if (c >= 'A' && c <= 'Z') c = c + 32;
         }
-        username = _username;
+        _username = _username;
     }
-    void setContrasena(string _contrasena) { contrasenaHash = hashContrasena(_contrasena); }
-    void setTipoUsuario(TipoUsuario _tipoUsuario) { tipoUsuario = _tipoUsuario; }
+    void setContrasena(string _contrasena) { _contrasenaHash = hashContrasena(_contrasena); }
+    void setTipoUsuario(TipoUsuario _tipoUsuario) { _tipoUsuario = _tipoUsuario; }
 
 };
+
+#endif // COURSERACLONE_ENTITIES_USUARIO_HPP
