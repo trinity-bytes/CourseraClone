@@ -11,6 +11,9 @@
 #include <vector>    // Para uso de vector
 #include <stdexcept> // Para std::runtime_error
 
+// Headers propios
+#include "../Entities/Inscripcion.h" // Para InscripcionBinaria
+
 // Datos crudos de un curso leídos del archivo
 struct RawCursoData 
 {
@@ -40,15 +43,6 @@ struct RawActividadesData
 {
     std::vector<RawCursoData> cursos;
     std::vector<RawEspecializacionData> especializaciones;
-};
-
-// Estructura para inscripciones binarias
-struct InscripcionBinaria 
-{
-    int idEstudiante;
-    int idActividad;
-    int tipoActividad;
-    // Agregamos otros campos segun la necesidad
 };
 
 // @brief Clase FileManager

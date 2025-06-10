@@ -69,8 +69,8 @@ MostrarCursoScreen.hpp
 ExplorarContenidoScreen.hpp
 
 // ✅ CORRECTO - Controladores/Gestores identificables
-GestionadorCursos.hpp
-Controladora.hpp
+CourseManager.hpp
+MainController.hpp
 
 // ✅ CORRECTO - Estructuras de datos en inglés (estándar industria)
 LinkedList.hpp
@@ -89,13 +89,6 @@ ExtendedFunctions.hpp  // Nombre actual - mantener
 ```cpp
 // ✅ CORRECTO - Coincide con el archivo .hpp
 CourseraCloneApp.cpp
-
-// ✅ CORRECTO - Implementaciones con sufijos
-// Por ahora no son necesarios, son una mejora a futuro
-descriptivos
-LoginScreen.cpp
-GestionadorCursos.cpp
-FileUtils.cpp
 ```
 
 ---

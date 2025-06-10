@@ -1,7 +1,7 @@
 #pragma once
 #include "Actividad.h"
 #include "Curso.h"
-#include "../Controllers/GestionadorCursos.h"
+#include "../Controllers/CourseManager.hpp"
 #include <vector>
 #include "../DataStructures/LinkedList.h"
 #include <string>

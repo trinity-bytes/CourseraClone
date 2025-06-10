@@ -30,10 +30,9 @@
 //#include "../Screens/RegistroScreen.h"
 //#include "../Screens/ExplorarContenidoScreen.h"
 //#include "../Screens/VerBoletasScreen.h"
-//#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/ScreenSystem.hpp"
 
 // Forward declarations
-//class GestionadorCursos;
 //class Usuario;
 //class Curso;
 //class Especializacion;
