@@ -11,8 +11,10 @@
 #include <vector>    // Para uso de vector
 #include <stdexcept> // Para std::runtime_error
 
-// Estructura para los datos crudos de un curso leídos del archivo
-struct RawCursoData {
+// Datos crudos de un curso leídos del archivo
+struct RawCursoData 
+{
+	// Datos generales del curso
     int idEmpresa;
     std::string nombreEmpresa;
     std::string tituloActividad;
@@ -23,7 +25,7 @@ struct RawCursoData {
     std::vector<std::string> descripcionesClases;
 };
 
-// Estructura para los datos crudos de una especialización leídos del archivo
+// Datos crudos de una especialización leídos del archivo
 struct RawEspecializacionData {
     int idEmpresa;
     std::string nombreEmpresa;
@@ -34,7 +36,8 @@ struct RawEspecializacionData {
 };
 
 // Estructura para agrupar los datos crudos de todas las actividades
-struct RawActividadesData {
+struct RawActividadesData 
+{
     std::vector<RawCursoData> cursos;
     std::vector<RawEspecializacionData> especializaciones;
 };
@@ -152,9 +155,6 @@ inline std::vector<InscripcionBinaria> FileManager::leerDatosInscripciones()
             listaInscripciones.push_back(inscripcion);
         }
 
-        // La condición original `!archivo.eof()` después del bucle puede ser problemática.
-        // Un bucle `while(archivo.read(...))` termina correctamente en EOF (eofbit se activa Y failbit también).
-        // Se debe verificar `badbit` para errores de IO serios, o `failbit` sin `eofbit` para otros errores.
         if (archivo.bad()) {
             throw std::runtime_error("Error crítico de IO al leer el archivo de inscripciones.");
         }
@@ -169,9 +169,6 @@ inline std::vector<InscripcionBinaria> FileManager::leerDatosInscripciones()
         archivo.close();
         throw std::runtime_error("Excepción de IO al procesar inscripciones: " + std::string(e.what()));
     }
-    // No es necesario `catch (const std::exception& e)` aquí si solo relanzamos,
-    // a menos que queramos un mensaje específico o cerrar el archivo.
-    // El `archivo.close()` se maneja mejor con RAII (ifstream lo hace en su destructor).
 
     if (archivo.is_open()) { // Asegurarse de cerrar si no hubo excepción que ya lo hizo.
         archivo.close();
