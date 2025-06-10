@@ -139,7 +139,7 @@
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
+    <ClInclude Include="Headers\Persistence\FilesManager.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\CourseManager.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp" />
@@ -163,6 +163,7 @@
     <ClInclude Include="Headers\Entities\Inscripcion.h" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.h" />
+    <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp" />
     <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h" />
     <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.h" />
     <ClInclude Include="Headers\Screens\EditarPerfilScreen.h" />

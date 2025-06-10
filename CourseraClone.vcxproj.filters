@@ -28,6 +28,9 @@
     <Filter Include="Header Files\Screens">
       <UniqueIdentifier>{e6e45ad0-60c3-4742-88e4-fa9ed080def8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Persistence">
+      <UniqueIdentifier>{b1b8deba-26bb-4e19-9af0-e36dc6d469fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\CourseraCloneApp.cpp">
@@ -151,11 +154,14 @@
     <ClInclude Include="Headers\Utils\UI_Ascii.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Persistence\FilesManager.hpp">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Controllers\FilesManager.hpp">
-      <Filter>Header Files\Controller</Filter>
+    <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp">
+      <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

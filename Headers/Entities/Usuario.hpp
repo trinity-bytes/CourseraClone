@@ -16,101 +16,8 @@
 
 // Headers propios
 #include "../DataStructures/algoritmosBusqueda.hpp" // Para busquedaBinaria
-
-/// ---  CONSTANTES Y ENUMS  ---
-// Maxima longitud para los campos de caracteres en structs binarios
-const int MAX_FIELD_LEN = 50;
-
-// Rutas de archivos
-const std::string DATA_DIR = "Resources/Data/";
-const std::string INDEX_DIR = DATA_DIR + "indices/";
-const std::string EMPRESA_DATA_FILE = DATA_DIR + "usuarios_empresa.dat";
-const std::string ESTUDIANTE_DATA_FILE = DATA_DIR + "usuarios_estudiante.dat";
-const std::string EMPRESA_INDEX_FILE = INDEX_DIR + "usuarios_empresa.dat";       // Debería ser diferente al de datos?
-const std::string ESTUDIANTE_INDEX_FILE = INDEX_DIR + "usuarios_estudiante.dat"; // Debería ser diferente al de datos?
-
-// Tipos de usuario
-enum class TipoUsuario
-{
-    NINGUNO = 0,
-    ESTUDIANTE = 1,
-    EMPRESA = 2
-};
-
-// Estados posibles del login
-enum class LoginStatus 
-{
-    SUCCESS = 0,
-    USER_NOT_FOUND = 1,
-    WRONG_PASSWORD = 2,
-    FILE_ERROR = 3
-};
-
-/// --- Structs para la representación en archivos binarios ---
-// Struct para datos de usuario en el archivo principal (.dat)
-struct UsuarioBinario 
-{
-    char nombreCompleto[MAX_FIELD_LEN];
-    char nombreDeUsuario[MAX_FIELD_LEN];
-    char contrasenaHash[MAX_FIELD_LEN];
-
-    // Constructor por defecto
-    UsuarioBinario() 
-    {
-        memset(nombreCompleto, 0, sizeof(nombreCompleto));
-        memset(nombreDeUsuario, 0, sizeof(nombreDeUsuario));
-        memset(contrasenaHash, 0, sizeof(contrasenaHash));
-    }
-
-    // Constructor parametrizado (usado para crear el struct antes de guardar)
-    // Este constructor se debe llamar con el HASH de la contraseña y no en texto plano OwO
-    UsuarioBinario(
-        const std::string& nombreCompletoStr, 
-        const std::string& nombreUsuarioStr, 
-        const std::string& contrasenaHashStr) 
-    {
-        // Copia segura de cadenas, asegurando null termination
-        strncpy(nombreCompleto, nombreCompletoStr.c_str(), MAX_FIELD_LEN - 1);
-        nombreCompleto[MAX_FIELD_LEN - 1] = '\0';
-
-        strncpy(nombreDeUsuario, nombreUsuarioStr.c_str(), MAX_FIELD_LEN - 1);
-        nombreDeUsuario[MAX_FIELD_LEN - 1] = '\0';
-
-        strncpy(contrasenaHash, contrasenaHashStr.c_str(), MAX_FIELD_LEN - 1);
-        contrasenaHash[MAX_FIELD_LEN - 1] = '\0';
-    }
-};
-
-// Struct para entradas del archivo índice (.dat)
-struct UsuarioIndex 
-{
-    char nombreDeUsuario[MAX_FIELD_LEN];
-    int offset; // Offset en bytes en el archivo de datos principal
-
-    // Constructor por defecto
-    UsuarioIndex() : offset(0) 
-    {
-        memset(nombreDeUsuario, 0, sizeof(nombreDeUsuario)); // Inicializa nombre a cero
-    }
-
-    // Constructor parametrizado (usado para crear el struct antes de guardar en índice)
-    UsuarioIndex(const std::string& nombreUsuarioStr, int _offset) : offset(_offset) 
-    {
-        // Copia segura de cadena, asegurando null termination
-        strncpy(nombreDeUsuario, nombreUsuarioStr.c_str(), MAX_FIELD_LEN - 1);
-        nombreDeUsuario[MAX_FIELD_LEN - 1] = '\0';
-    }
-
-    // Función de comparación estática para usar con busquedaBinaria
-    // Compara por nombre de usuario
-    static int compare(const UsuarioIndex& a, const UsuarioIndex& b) {
-        return strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN);
-    }
-
-    static int compare(const std::string& a, const UsuarioIndex& b) {
-        return strncmp(a.c_str(), b.nombreDeUsuario, MAX_FIELD_LEN);
-    }
-};
+#include "../Persistence/UsuarioTypes.hpp" // UsuarioBinario, UsuarioIndex, TipoUsuario, LoginStatus
+#include "../Persistence/FilesManager.hpp"
 
 /// --- Clase Usuario ---
 // @brief Clase que representa un usuario en el sistema, con métodos para autenticación 
@@ -231,124 +138,92 @@ public:
         // ya fue hasheada y guardada en _contrasenaHash.
 
         // 1. Guardar en el archivo de datos principal (.dat)
-        std::string dataFilePath = getDataFilePath(_tipoUsuario); // MODIFICADO
-        std::ofstream dataFile(dataFilePath, std::ios::binary | std::ios::app); // Abre para agregar al final // MODIFICADO
-        int offsetRegistro = 0; // Offset donde se escribirá este registro
+        std::string dataFilePath = getDataFilePath(_tipoUsuario);
+        std::ofstream dataFile(dataFilePath, std::ios::binary | std::ios::app);
+        long offsetRegistro = 0; // Usar long por si tellp() devuelve un tipo más grande
 
         if (!dataFile.is_open()) {
-            std::cerr << "Error al abrir archivo de datos: " << dataFilePath << std::endl; // MODIFICADO
-            // Deberíamos manejar este error, quizás lanzando una excepción o retornando false
+            std::cerr << "Error al abrir archivo de datos: " << dataFilePath << std::endl;
             return;
         }
 
         // Obtener el offset actual antes de escribir
-        dataFile.seekp(0, std::ios::end); // MODIFICADO
+        dataFile.seekp(0, std::ios::end);
         offsetRegistro = dataFile.tellp();
 
-        // Crear la struct binaria para guardar (asumiendo que this->_contrasenaHash ya tiene el hash)
         UsuarioBinario nuevoBinario = toUsuarioBinario();
         dataFile.write(reinterpret_cast<const char*>(&nuevoBinario), sizeof(nuevoBinario));
-        dataFile.close(); // El destructor del stream también cerrará el archivo
+        
+        if (!dataFile.good()) {
+            std::cerr << "Error al escribir en el archivo de datos: " << dataFilePath << std::endl;
+            dataFile.close();
+            return; 
+        }
+        dataFile.close();
 
 
-        // 2. Guardar e insertar en el archivo de índice (.dat) (mantenido ordenado)
-        std::string indexFilePath = getIndexFilePath(_tipoUsuario); // MODIFICADO
-        std::fstream indexFile(indexFilePath, std::ios::binary | std::ios::in | std::ios::out); // Abrir para leer y escribir // MODIFICADO
+        // 2. Actualizar el archivo de índice (.dat) (mantenido ordenado)
+        std::string indexFilePath = getIndexFilePath(_tipoUsuario);
+        std::vector<UsuarioIndex> allIndices;
+        UsuarioIndex tempIdx;
 
-        // Si el archivo no existe o falla la apertura inicial en in|out, intentamos crearlo
-        if (!indexFile.is_open()) {
-            // Intentar abrir en modo out para crearlo
-            std::ofstream createIndexFile(indexFilePath, std::ios::binary | std::ios::out); // MODIFICADO
-            if (!createIndexFile.is_open()) {
-                std::cerr << "Error al crear archivo de indice: " << indexFilePath << std::endl; // MODIFICADO
-                return;
+        // Intentar leer todos los índices existentes
+        std::ifstream indexFileRead(indexFilePath, std::ios::binary);
+        if (indexFileRead.is_open()) {
+            while (indexFileRead.read(reinterpret_cast<char*>(&tempIdx), sizeof(UsuarioIndex))) {
+                allIndices.push_back(tempIdx);
             }
-            createIndexFile.close(); // Cerrar después de crear
+            indexFileRead.close();
+        }
+        // Si el archivo no existía o estaba vacío, allIndices estará vacío, lo cual es correcto.
 
-            // Ahora intentar abrir de nuevo en modo in|out
-            indexFile.open(indexFilePath, std::ios::binary | std::ios::in | std::ios::out); // MODIFICADO
-            if (!indexFile.is_open()) {
-                std::cerr << "Error al reabrir archivo de indice despues de crear: " << indexFilePath << std::endl; // MODIFICADO
-                return;
+        // Crear la nueva entrada de índice
+        UsuarioIndex nuevoIndex = toUsuarioIndex(static_cast<int>(offsetRegistro));
+
+        // Agregar la nueva entrada al vector
+        allIndices.push_back(nuevoIndex);
+
+        // Ordenar el vector de índices por nombreDeUsuario
+        std::sort(allIndices.begin(), allIndices.end(), [](const UsuarioIndex& a, const UsuarioIndex& b) {
+            return strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN) < 0;
+        });
+
+        // Reescribir el archivo de índice completo con los índices ordenados
+        std::ofstream indexFileWrite(indexFilePath, std::ios::binary | std::ios::trunc);
+        if (!indexFileWrite.is_open()) {
+            std::cerr << "Error al abrir/crear archivo de indice para escritura: " << indexFilePath << std::endl;
+            // Considerar la consistencia de datos: el registro de datos se guardó, pero el índice falló.
+            return;
+        }
+
+        for (const auto& idxEntry : allIndices) {
+            indexFileWrite.write(reinterpret_cast<const char*>(&idxEntry), sizeof(idxEntry));
+        }
+        
+        if (!indexFileWrite.good()) {
+            std::cerr << "Error al escribir en el archivo de indice: " << indexFilePath << std::endl;
+            indexFileWrite.close();
+            // El índice podría estar corrupto o incompleto.
+            return;
+        }
+        indexFileWrite.close();
+
+        // Actualizar el _id del objeto Usuario para que refleje su posición en el índice
+        bool idUpdated = false;
+        for (size_t i = 0; i < allIndices.size(); ++i) {
+            if (allIndices[i].offset == offsetRegistro && 
+                strncmp(allIndices[i].nombreDeUsuario, nuevoIndex.nombreDeUsuario, MAX_FIELD_LEN) == 0) {
+                this->_id = static_cast<int>(i); // Asigna la posición en el índice como ID
+                idUpdated = true;
+                break;
             }
         }
-
-        // Calcular la cantidad actual de registros en el índice
-        indexFile.seekg(0, std::ios::end); // MODIFICADO
-        int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
-        indexFile.seekg(0, std::ios::beg); // Volver al principio // MODIFICADO
-
-        // Crear la entrada del índice para el nuevo usuario
-        UsuarioIndex nuevoIndex = toUsuarioIndex(offsetRegistro);
-
-        // Lambda para la búsqueda binaria de la posición de inserción
-        // Queremos encontrar la primera posición `p` tal que el nombre de usuario del
-        // nuevo índice sea menor o igual al nombre de usuario en la posición `p`.
-        // Esto nos da el punto de inserción correcto para mantener el orden ascendente.
-        // Esta lambda se pasa a la función busquedaBinaria (asumimos que esta función
-        // encuentra el primer índice donde la lambda devuelve true en el rango [inicio, fin]).
-        // La lambda recibe la posición `p` a verificar.
-        auto predicadoInsercion = [&](int pos) {
-            if (pos < 0 || pos >= cantidad) { // Fuera de rango si la lista está vacía
-                return true; // Inserta al principio si la lista está vacía
-            }
-            UsuarioIndex temp;
-            indexFile.seekg(pos * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
-            indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags de error/eof después de leer
-
-            // Comparar el nombre del nuevo usuario con el de la posición actual
-            // strncmp(a, b, n) regresa <0 si a < b, 0 si a == b, >0 si a > b
-            // Queremos el primer pos donde nuevoIndex.username <= temp.username
-            // Es decir, donde strncmp(nuevoIndex.username, temp.username, ...) <= 0 es true.
-            return strncmp(nuevoIndex.nombreDeUsuario, temp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
-            };
-
-        // Usar busquedaBinaria para encontrar la posición de inserción
-        // Asumimos que busquedaBinaria(inicio, fin, predicado) encuentra el
-        // primer índice `i` en el rango [inicio, fin] donde predicado(i) es true.
-        // Si la lista está vacía, cantidad es 0, cantidad-1 es -1.
-        // La búsqueda debe manejar el rango vacío [0, -1].
-        int posInsercion = 0; // Posición por defecto si el archivo está vacío
-        if (cantidad > 0) {
-            // Rango [0, cantidad - 1]. busquedaBinaria debe manejar este rango.
-            // Si nuestro busquedaBinaria no maneja inicio > fin, necesitamos ajustarlo.
-            // Un busqueda binaria para lower_bound (punto de insercion) tipico seria:
-            // low = inicio, high = fin + 1. while(low < high) mid = low + (high-low)/2.
-            // if (predicado(mid)) high = mid; else low = mid + 1. return low.
-            // Asumiendo busquedaBinaria(inicio, fin, predicado) implementa lower_bound-like:
-            posInsercion = busquedaBinaria(0, cantidad - 1, predicadoInsercion);
-            // Si busquedaBinaria retorna cantidad, significa que el nuevo elemento es mayor
-            // que todos los existentes y debe ir al final. El loop de shift lo manejará.
+        if (!idUpdated) {
+            std::cerr << "Advertencia: No se pudo actualizar el ID del objeto Usuario después de guardar y reordenar el índice." << std::endl;
         }
-        else {
-            posInsercion = 0; // Primer elemento en archivo vacío
-        }
-
-
-        // Mover elementos para hacer espacio en el archivo de índice
-        // Desde el final hacia la posición de inserción
-        for (int i = cantidad - 1; i >= posInsercion; --i) {
-            UsuarioIndex temp;
-            // Leer el elemento actual
-            indexFile.seekg(i * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
-            indexFile.read(reinterpret_cast<char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags después de leer
-
-            // Escribir el elemento en la siguiente posición (corriendo uno a la derecha)
-            indexFile.seekp((i + 1) * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
-            indexFile.write(reinterpret_cast<const char*>(&temp), sizeof(UsuarioIndex));
-            indexFile.clear(); // Limpiar flags después de escribir
-        }
-
-        // Escribir el nuevo índice en la posición de inserción encontrada
-        indexFile.seekp(posInsercion * sizeof(UsuarioIndex), std::ios::beg); // MODIFICADO
-        indexFile.write(reinterpret_cast<const char*>(&nuevoIndex), sizeof(nuevoIndex));
-        indexFile.clear(); // Limpiar flags después de escribir
-
-        // El destructor de fstream cerrará el archivo
-    }    /// --- Método estático para manejar el login ---
+    }    
     
+    /// --- Método estático para manejar el login ---
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
     static LoginStatus login(
         Usuario& usuarioLogueado, 
@@ -434,8 +309,11 @@ public:
         return -1;
     }
 
-	bool actualizarUsuario() 
-    {
+	bool actualizarUsuario(
+        const std::string& _nuevoNombre,
+		const std::string& _nuevoUsername,
+        const std::string& _nuevaContrasena
+    ) {
 		if (this->_id == -1) // Verificamos si el ID es válido
         {
             cerr << "Error: Usuario ID no válido para actualización." << endl;
@@ -483,9 +361,9 @@ public:
 
         // --- 3. Determine the Password Hash to Save and Update Object's State ---
         string passwordHashParaGuardar;
-        if (!nuevaContrasena.empty()) {
+        if (!_nuevaContrasena.empty()) {
             // User provided a new password, so hash it
-            passwordHashParaGuardar = hashContrasena(nuevaContrasena);
+            passwordHashParaGuardar = hashContrasena(_nuevaContrasena);
         }
         else {
             // User did not provide a new password, so use the existing hash from the file
@@ -493,8 +371,8 @@ public:
         }
 
         // Update the current Usuario object's instance data
-        this->_nombreCompleto = nuevoNombreCompleto;
-        this->setUsername(nuevoUsername); // Uses setter for normalization
+        this->_nombreCompleto = _nuevoNombre;
+        this->setUsername(_nuevoUsername); // Uses setter for normalization
         this->_contrasenaHash = passwordHashParaGuardar; // Update object's hash for consistency
 
         // --- 4. Prepare the UsuarioBinario struct with all data to be saved ---
