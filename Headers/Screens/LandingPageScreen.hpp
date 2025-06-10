@@ -13,7 +13,7 @@
 // Librerias propias
 #include "../Utils/ScreenSystem.hpp"
 #include "../DataStructures/PriorityQueue.h"
-#include "../Controllers/GestionadorCursos.h"
+#include "../Controllers/CourseManager.hpp"
 
 // forward declarations
 class Controladora;

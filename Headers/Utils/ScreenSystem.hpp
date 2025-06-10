@@ -155,15 +155,14 @@ protected:
     }
 };
 
-//=============================================================================
 // UTILIDADES DEL SISTEMA DE PANTALLAS
-//=============================================================================
-
 namespace ScreenUtils {
     
-    /// @brief Convierte AccionPantalla a string para debugging
-    inline string accionToString(AccionPantalla accion) {
-        switch (accion) {
+    /// @brief Convierte AccionPantalla a string para usarlo en el debugging
+    inline string accionToString(AccionPantalla accion) 
+    {
+        switch (accion) 
+        {
             case AccionPantalla::IR_A_LANDING_PAGE: return "IR_A_LANDING_PAGE";
             case AccionPantalla::IR_A_LOGIN: return "IR_A_LOGIN";
             case AccionPantalla::IR_A_REGISTRO: return "IR_A_REGISTRO";
@@ -175,8 +174,10 @@ namespace ScreenUtils {
     }
     
     /// @brief Convierte Pantalla a string para debugging
-    inline string pantallaToString(Pantalla pantalla) {
-        switch (pantalla) {
+    inline string pantallaToString(Pantalla pantalla) 
+    {
+        switch (pantalla) 
+        {
             case Pantalla::LANDING_PAGE: return "LANDING_PAGE";
             case Pantalla::LOGIN: return "LOGIN";
             case Pantalla::REGISTRO: return "REGISTRO";
@@ -187,8 +188,10 @@ namespace ScreenUtils {
     }
     
     /// @brief Mapea AccionPantalla a Pantalla
-    inline Pantalla accionAPantalla(AccionPantalla accion) {
-        switch (accion) {
+    inline Pantalla accionAPantalla(AccionPantalla accion) 
+    {
+        switch (accion) 
+        {
             case AccionPantalla::IR_A_LANDING_PAGE: return Pantalla::LANDING_PAGE;
             case AccionPantalla::IR_A_LOGIN: return Pantalla::LOGIN;
             case AccionPantalla::IR_A_REGISTRO: return Pantalla::REGISTRO;
@@ -207,7 +210,8 @@ namespace ScreenUtils {
     }
     
     /// @brief Verifica si una acción es para organizaciones
-    inline bool esAccionOrganizacion(AccionPantalla accion) {
+    inline bool esAccionOrganizacion(AccionPantalla accion) 
+    {
         return accion == AccionPantalla::IR_A_DASHBOARD_ORGANIZACION ||
                accion == AccionPantalla::IR_A_PERFIL_ORGANIZACION;
     }

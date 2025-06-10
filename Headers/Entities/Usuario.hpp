@@ -158,7 +158,7 @@ public:
     static std::string hashContrasena(const std::string& contrasena) // MODIFICADO: string a std::string
     {
         std::string mockHash = "atalapastrukaGohGohGoh"; // Hash inicial con la palabra de seguridad xd // MODIFICADO: string a std::string
-        mockHash += contrasena.substr(0, std::min((int)contrasena.length(), MAX_FIELD_LEN - (int)mockHash.length() - 1)); // MODIFICADO: min a std::min
+        mockHash += contrasena.substr(0, (std::min)((int)contrasena.length(), MAX_FIELD_LEN - (int)mockHash.length() - 1)); // MODIFICADO: min a std::min
         return mockHash;
     }
     

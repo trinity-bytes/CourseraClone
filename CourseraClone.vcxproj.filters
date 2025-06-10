@@ -40,10 +40,10 @@
     <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Controllers\GestionadorCursos.h">
+    <ClInclude Include="Headers\Controllers\CourseManager.hpp">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Controllers\Controladora.h">
+    <ClInclude Include="Headers\Controllers\MainController.hpp">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.h">
@@ -153,6 +153,9 @@
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Controllers\FilesManager.hpp">
+      <Filter>Header Files\Controller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

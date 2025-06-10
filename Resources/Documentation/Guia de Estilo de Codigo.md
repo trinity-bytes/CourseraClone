@@ -603,7 +603,7 @@ void metodoSinParametros();
 ```cpp
 // 1. Comentario de archivo
 // filepath: Headers/Entities/Curso.hpp
-// Descripcion:
+// description:
 
 // 2. Guards
 // Se recomienda usar guardianes de cabecera estándar. Ver Sección 13.4 para la convención.

@@ -1,19 +1,40 @@
-#pragma once
+// filepath: Headers/Controllers/CourseManager.hpp
+// description: Clase para gestionar cursos y especializaciones de CourseraClone.
+
+#ifndef COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP
+#define COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP
+
+// Headers estandar
+#include <fstream>   // Para manejo de archivos
+#include <string>    // Para manejo de cadenas
+#include <vector>    // Para manejo de vectores
+#include <map>       // Para el mapa de progreso y calificaciones
+#include <stdexcept> // Para std::runtime_error
+
+// Headers propios
 #include "../Entities/Curso.h"
 #include "../DataStructures/LinkedList.h"
 #include "../Entities/Especializacion.h"
 #include "../Entities/Inscripcion.h"
-#include <fstream>
-#include <string>
-#include <vector>
-#include <map> // Para el mapa de progreso y calificaciones
+#include "FilesManager.hpp" // Incluir para RawActividadesData e InscripcionBinaria
 
-class GestionadorCursos {
+// Usar std::vector y std::string explícitamente para evitar 'using namespace std;'
+using std::vector;
+using std::string;
+using std::map;
+using std::pair;
+using std::make_pair;
+using std::ofstream;
+using std::ios;
+using std::endl; // Añadido para su uso en agregarCalificacionCurso
+
+// @brief Clase CourseManager para gestionar cursos y especializaciones en CourseraClone.
+// @details Permite crear, buscar, inscribir estudiantes, actualizar progreso y calificaciones, y listar cursos y especializaciones.
+class CourseManager 
+{
 private:
     LinkedList<Curso*> cursos;
     LinkedList<Especializacion*> especializaciones;
-
-    vector<int> idsCursos; // Ya no referencia
 
     const string RUTA_CURSOS = "Resources/Data/cursos.txt";
     const string RUTA_ESPECIALIZACIONES = "Resources/Data/especializaciones.txt";
@@ -27,33 +48,13 @@ private:
     map<int, map<int, pair<int, string>>> calificacionesCursos;
 
 public:
-    GestionadorCursos() {
-        //cargarCursos();
-        //cargarEspecializaciones();
+    CourseManager() 
+    {
         cursos = LinkedList<Curso*>();
         especializaciones = LinkedList<Especializacion*>();
     }
 
-
-    GestionadorCursos(vector<int>& _idsCursos) : idsCursos(_idsCursos)
-    {
-        //cargarCursos();
-        //cargarEspecializaciones();
-    }
-
-    ~GestionadorCursos() {
-        // Liberar memoria
-        /*
-        for (auto curso : cursos) {
-            delete curso;
-        }
-        
-   
-        for (auto especializacion : especializaciones) {
-            delete especializacion;
-        }
-        */
-    }
+    ~CourseManager() {}
 
     bool crearCurso(
         int idEmpresa,
@@ -64,7 +65,7 @@ public:
         const string& descripcion,
         vector<string> titulos,
         vector<string> descripciones
-    ) 
+    )
     {
         Curso* nuevoCurso = new Curso(cursos.getTamano() + 1, // ID autoincremental
             idEmpresa,
@@ -82,17 +83,17 @@ public:
         //throw runtime_error(to_string(nuevoCurso->getCantidadClases()));
 
         cursos.agregarAlFinal(nuevoCurso);
-        
+
         // guardarCursos();
         return true;
     }
 
     /*
     bool crearEspecializacion(
-        int idEmpresa, 
+        int idEmpresa,
         const string& nombreEmpresa,
-        const string& titulo, 
-        int cantidadCursos, 
+        const string& titulo,
+        int cantidadCursos,
         const string& descripcion,
         vector<int>& idsCursos)
     {
@@ -172,10 +173,10 @@ public:
         int pos = cursos.buscarPorClave(id, busquedaId);
         return cursos.get(pos);
     }
-    
+
     Especializacion* obtenerEspecializacion(int id) {
         auto busquedaId = [](Especializacion* e) {
-            return e->getId(); 
+            return e->getId();
             };
 
         int pos = especializaciones.buscarPorClave(id, busquedaId);
@@ -232,7 +233,7 @@ public:
         if (progreso < 0 || progreso > 100) return false;
 
         progresoEstudiantes[idEstudiante][idCurso] = progreso;
-        
+
         // Guardar progreso
         ofstream archivo(RUTA_PROGRESO, ios::binary | ios::app);
         if (!archivo.is_open()) return false;
@@ -260,7 +261,7 @@ public:
         if (calificacion < 1 || calificacion > 5) return false;
 
         calificacionesCursos[idCurso][idEstudiante] = make_pair(calificacion, comentario);
-        
+
         // Guardar calificación
         ofstream archivo(RUTA_CALIFICACIONES, ios::app);
         if (!archivo.is_open()) return false;
@@ -335,4 +336,6 @@ private:
             especializacion->guardar();
         }
     }
-}; 
+};
+
+#endif // !COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP

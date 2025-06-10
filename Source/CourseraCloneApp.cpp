@@ -1,30 +1,33 @@
-// Cabeceras propias
-#include "../Headers/Utils/SystemUtils.h"
-#include "../Headers/Controllers/Controladora.h"
+// filepath: Source/CourseraCloneApp.cpp
+// description: Aplicación monolítica de consola para CourseraCloneApp
 
 // Headers de la libreria estandar
 #include <iostream> // Para std::cout, std::cerr
 
-// maquetacion de funciones
+// Cabeceras propias
+#include "../Headers/Utils/SystemUtils.h"
+#include "../Headers/Controllers/MainController.hpp"
+
+// maquetación de funciones
 void SecuenciaInicializacion();
 // ------------------------
 
-// Aplicación monolítica - modo consola simple
 int main()
 {
 	SecuenciaInicializacion();
 
 	try
 	{
-		Controladora app;
+		MainController app;
 		app.run();
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "Error en la aplicacion: " << e.what() << std::endl;
+		std::cerr << "ERROR en la aplicacion: " << e.what() << std::endl;
+		system("pause");
+		return 1;
 	}
 
-	system("pause");
 	return 0;
 }
 

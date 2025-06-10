@@ -1,20 +1,23 @@
-// Controlador principal del sistema CourseraClone
-#pragma once
+// filepath: Headers/Controllers/Controladora.hpp
+// description: Heder de la clase Controladora que maneja la lógica del sistema CourseraClone
 
-// Headers de la libreria estandar
-#include <memory>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <conio.h>
-#include <stdexcept>
+#ifndef COURSERACLONE_CONTROLLER_CONTROLADORA_HPP
+#define COURSERACLONE_CONTROLLER_CONTROLADORA_HPP
+
+// Headers estandar
+#include <iostream>  // Para uso de std::cout y std::endl
+#include <memory>    // Para uso de unique_ptr
+#include <vector>    // Para uso de vector
+#include <string>    // Para uso de std::string
+#include <fstream>   // Para manejo de archivos
+#include <conio.h>   // Para uso de _getch()
+#include <stdexcept> // Para manejo de excepciones
 
 // Headers propios
-#include "GestionadorCursos.h"
-#include "../Entities/Actividad.h"
-#include "../Entities/Estudiante.h"
-#include "../Entities/Empresa.h"
+#include "CourseManager.hpp"
+//#include "../Entities/Actividad.h"
+//#include "../Entities/Estudiante.h"
+//#include "../Entities/Empresa.h"
 #include "../Screens/LandingPageScreen.hpp"
 //#include "../Screens/LoginScreen.h"
 //#include "../Screens/DashboardEstudianteScreen.h"
@@ -27,162 +30,51 @@
 //#include "../Screens/RegistroScreen.h"
 //#include "../Screens/ExplorarContenidoScreen.h"
 //#include "../Screens/VerBoletasScreen.h"
-#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/ScreenSystem.hpp"
 
 // Forward declarations
-class GestionadorCursos;
-class Usuario;
-class Curso;
-class Especializacion;
-
-using namespace std;
-
-// Constantes del sistema
-const string RUTA_ACTIVIDADES = "Resources/Data/actividades.txt";
-const string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
-const int TIPO_CURSO = 1;
-const int TIPO_ESPECIALIZACION = 2;
+//class GestionadorCursos;
+//class Usuario;
+//class Curso;
+//class Especializacion;
 
 // Controlador principal del sistema CourseraClone
-class Controladora 
+class MainController
 {
 private:
     // Atributos privados
-    unique_ptr<GestionadorCursos> _gestionadorCursos;
-    vector<Actividad> _actividades;
-    Estudiante* _estudiante; 
-    Empresa* _empresa;
+    unique_ptr<CourseManager> _courseManager;
+    //std::vector<Actividad> _actividades;
+    //Estudiante* _estudiante; 
+    //Empresa* _empresa;
     bool _ejecutando;
-
-    // Métodos privados de carga de datos
-    void cargarDatosArchivo();
-    void cargarDatosInscripciones();
     
     // Métodos privados de navegación
-    unique_ptr<PantallaBase> crearPantallaLogin();
-    unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
-    unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();
+    //unique_ptr<PantallaBase> crearPantallaLogin();
+    //unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
+    //unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();
     unique_ptr<PantallaBase> crearPantallaLandingPage();
 
 public:
     // Constructor y destructor
-    Controladora();
-    ~Controladora() = default;
+    MainController();
+    ~MainController() = default;
 
     // Método principal de ejecución
     void run();
 
     // Getters públicos
-    vector<Actividad>& listarActividades() { return _actividades; }
-    GestionadorCursos* getGestionadorCursos() const { return _gestionadorCursos.get(); }
+    //vector<Actividad>& listarActividades() { return _actividades; }
+    //GestionadorCursos* getGestionadorCursos() const { return _gestionadorCursos.get(); }
 };
 
 // Constructor
-Controladora::Controladora() : _ejecutando(true) 
+MainController::MainController() : _ejecutando(true)
 {
     // Inicializar gestores
-    _gestionadorCursos = make_unique<GestionadorCursos>();
-    _estudiante = new Estudiante(0, "", "", "");
-    _empresa = new Empresa(0, "", "", "");
-
-    // Cargar datos iniciales
-    cargarDatosArchivo();
-    cargarDatosInscripciones();
-}
-
-// Carga datos de actividades desde archivo de texto
-void Controladora::cargarDatosArchivo() 
-{
-    ifstream archivo(RUTA_ACTIVIDADES);
-    if (!archivo.is_open()) {
-        throw runtime_error("No se pudo abrir el archivo de actividades: " + RUTA_ACTIVIDADES);
-    }
-
-    string nombreEmpresa, titulo, descripcion, instructor, tituloActividad, descripcionActividad;
-    int cantidad = 0;
-    int tipo, idEmpresa;
-    
-    while (archivo >> idEmpresa) {
-        archivo.ignore();
-        archivo >> tipo;
-        archivo.ignore();
-        getline(archivo, nombreEmpresa);
-        getline(archivo, tituloActividad);
-        getline(archivo, descripcionActividad);
-
-        if (tipo == TIPO_CURSO) {
-            // Procesar curso
-            getline(archivo, instructor);
-            int cantidadClase = 0; 
-            archivo >> cantidadClase;
-            archivo.ignore();
-            
-            vector<string> titulos(cantidadClase), descripciones(cantidadClase);
-            for (int i = 0; i < cantidadClase; i++) {
-                getline(archivo, titulo);
-                getline(archivo, descripcion);
-                titulos[i] = titulo;
-                descripciones[i] = descripcion;
-            }
-            
-            if (!_gestionadorCursos->crearCurso(idEmpresa, tituloActividad, nombreEmpresa, cantidadClase, instructor, descripcionActividad, titulos, descripciones)) {
-                throw runtime_error("Error al crear curso: " + tituloActividad);
-            }
-        } 
-        else if (tipo == TIPO_ESPECIALIZACION) {
-            // Procesar especialización
-            int cantidadCursos = 0;
-            archivo >> cantidadCursos;
-            archivo.ignore();
-            
-            vector<int> idsCursos(cantidadCursos);
-            for (int i = 0; i < cantidadCursos; i++) {
-                archivo >> idsCursos[i];
-                archivo.ignore();
-            }
-            
-            if (!_gestionadorCursos->crearEspecializacion(idEmpresa, nombreEmpresa, tituloActividad, cantidadCursos, descripcionActividad, idsCursos)) {
-                throw runtime_error("Error al crear especialización: " + tituloActividad);
-            }
-        }
-        
-        cantidad++;
-    }
-    
-    archivo.close();
-}
-
-// Carga datos de inscripciones desde archivo binario
-void Controladora::cargarDatosInscripciones() 
-{
-    ifstream archivo(RUTA_INSCRIPCIONES, ios::binary);
-    if (!archivo.is_open()) {
-        throw runtime_error("No se pudo abrir el archivo de inscripciones: " + RUTA_INSCRIPCIONES);
-    }
-
-    try {
-        InscripcionBinaria inscripcion;
-        while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
-            int idx = inscripcion.idActividad;
-            int tipo = inscripcion.tipoActividad;
-            
-            if (tipo == TIPO_CURSO) {
-                _gestionadorCursos->getCursos().get(idx)->aumentarAlumno(1);
-            }
-            else if (tipo == TIPO_ESPECIALIZACION) {
-                _gestionadorCursos->getEspecializaciones().get(idx)->aumentarAlumno(1);
-            }
-        }
-        
-        if (!archivo.eof()) {
-            throw runtime_error("Error al leer el archivo de inscripciones");
-        }    }
-    catch (const exception& e) {
-        archivo.close();
-        throw runtime_error("Error al procesar inscripciones: " + string(e.what()));
-    }
-    
-    archivo.close();
+    _courseManager = make_unique<CourseManager>();
+    //_estudiante = new Estudiante(0, "", "", "");
+    //_empresa = new Empresa(0, "", "", "");
 }
 
 //// Crea una nueva instancia de la pantalla de login
@@ -210,15 +102,15 @@ void Controladora::cargarDatosInscripciones()
 //}
 
 // Crea pantalla de landing page
-unique_ptr<PantallaBase> Controladora::crearPantallaLandingPage() 
+unique_ptr<PantallaBase> MainController::crearPantallaLandingPage()
 {
-    _estudiante->reset();
-    _empresa->reset();
-    return make_unique<LandingPageScreen>(_gestionadorCursos->getCursos(), _gestionadorCursos->getEspecializaciones());
+    //_estudiante->reset();
+    //_empresa->reset();
+    return make_unique<LandingPageScreen>(_courseManager->getCursos(), _courseManager->getEspecializaciones());
 }
 
 // Método principal de ejecución del sistema
-void Controladora::run() 
+void MainController::run()
 {
     unique_ptr<PantallaBase> pantallaActual = crearPantallaLandingPage();
     
@@ -369,3 +261,5 @@ void Controladora::run()
         }
     }
 }
+
+#endif // COURSERACLONE_CONTROLLER_CONTROLADORA_HPP
