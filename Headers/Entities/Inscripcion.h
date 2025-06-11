@@ -2,38 +2,14 @@
 
 // headers propios
 #include "Actividad.h"
-#include "../DataStructures/algoritmosBusqueda.hpp"
+#include "../Persistence/InscripcionTypes.hpp"
+#include "../Persistence/FilesManager.hpp"
 #include "Venta.h"
 
 // headers de la libreria estandar
-#include "fstream"
-#include "iostream"
+#include <iostream>
 
 using namespace std;
-
-struct InscripcionIndex 
-{
-    int idUsuario;
-    int offset;
-
-    InscripcionIndex(int _idUsuario, int _offset) : idUsuario(_idUsuario), offset(_offset) {}
-    InscripcionIndex() : idUsuario(0), offset(0) {}
-};
-
-struct InscripcionBinaria 
-{
-    int idEstudiante;
-    int idActividad;
-    int tipoActividad;
-    double progreso;
-    bool completado;
-    bool pagado;
-
-    InscripcionBinaria(int _idUsuario, int _idActividad, int _tipoActividad, double _progreso, bool _completado, bool _pagado)
-        : idEstudiante(_idUsuario), idActividad(_idActividad), tipoActividad(_tipoActividad), progreso(_progreso), completado(_completado), pagado(_pagado) {
-    }
-    InscripcionBinaria() : idEstudiante(0), idActividad(0), tipoActividad(0), progreso(0.0), completado(false), pagado(false) {};
-};
 
 class Inscripcion {
 private:
@@ -51,11 +27,10 @@ public:
         : idEstudiante(_idEstudiante), actividad(_actividad),
         progreso(0.0), completado(false), pagado(false)
     {
-        ifstream archivo("Resources/Data/inscripciones.dat", ios::binary | ios::ate); 
-        
+        // Obtener nuevo ID basado en tamaño actual del archivo
+        std::ifstream archivo(RUTA_INSCRIPCIONES, ios::binary | ios::ate);
         streamoff peso = archivo.tellg();
         id = int(peso / sizeof(InscripcionBinaria));
-        archivo.close();
     }
 
     Inscripcion(InscripcionBinaria& bin, Actividad* act, int off)
@@ -68,77 +43,17 @@ public:
     {
     }
 
-	
-
     void guardar() {
-        ofstream archivo("Resources/Data/inscripciones.dat", ios:: binary | ios::app);
+        InscripcionBinaria nuevo(idEstudiante, actividad->getId(), actividad->getTipo(), progreso, completado, pagado);
         int offsetRegistro = 0;
-        if (archivo.is_open()) 
-        {
-            InscripcionBinaria nuevo(idEstudiante, actividad->getId(), 
-                actividad->getTipo(), progreso, completado, pagado);
-
-            archivo.seekp(0, ios::end);
-            offsetRegistro = int((archivo.tellp() / sizeof(InscripcionBinaria)));
-
-            archivo.write(reinterpret_cast<char*>(&nuevo), sizeof(nuevo));
-            archivo.close();
-        }
-        
-        fstream archivoOrden("Resources/Data/indices/inscripciones.dat", ios::binary | ios::in | ios::out);
-
-        if (archivoOrden.is_open()) 
-        {
-            archivoOrden.seekg(0, ios::end);
-            int cantidad = archivoOrden.tellg() / sizeof(InscripcionIndex);
-            InscripcionIndex nuevo(idEstudiante, offsetRegistro);
-
-            if (cantidad == 0) {
-                archivoOrden.seekp(0, ios::beg);
-                archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(InscripcionIndex));
-                archivoOrden.close();
-                return;
-            }
-
-            archivoOrden.seekg(0, ios::beg);
-            auto busqueda = [&](int pos) {
-                InscripcionIndex temp;
-                archivoOrden.seekg(pos * sizeof(InscripcionIndex), ios::beg);
-                archivoOrden.read(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
-
-                return idEstudiante <= temp.idUsuario;
-                };
-
-
-            int pos = busquedaBinaria(0, cantidad - 1, busqueda);
-
-            for (int i = cantidad - 1; i >= pos; --i) {
-                InscripcionIndex temp;
-                archivoOrden.seekg(i * sizeof(InscripcionIndex), ios::beg);
-                archivoOrden.read(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
-                archivoOrden.seekp((i + 1) * sizeof(InscripcionIndex), ios::beg);
-                archivoOrden.write(reinterpret_cast<char*>(&temp), sizeof(InscripcionIndex));
-            }
-
-            
-            archivoOrden.seekp(pos * sizeof(InscripcionIndex), ios::beg);
-            archivoOrden.write(reinterpret_cast<char*>(&nuevo), sizeof(InscripcionIndex));
-            
-            archivoOrden.close();
+        if (FileManager::guardarInscripcionBinaria(nuevo, offsetRegistro)) {
+            // opcional: actualizar índices si es necesario
+            id = offsetRegistro;
         }
     }
 
-	int getIdEstudiante() {
-		return idEstudiante;
-	}
-
-    // Funcion critica
     void actualizaPagoEnDisco(int posicion, bool estado) {
-        fstream archivo("Resources/Data/inscripciones.dat", ios::binary | ios::in | ios::out);
-        if (!archivo) throw runtime_error("Error en el archivo");
-        archivo.seekp(posicion * sizeof(InscripcionBinaria) + offsetof(InscripcionBinaria, pagado),
-            ios::beg);
-        archivo.write(reinterpret_cast<char*>(&estado), sizeof(estado));
+        FileManager::actualizarPagoInscripcion(posicion, estado);
     }
 
     bool estaPagada() const { return pagado; }
@@ -146,22 +61,21 @@ public:
     void marcarComoPagada(LinkedList<Boleta>& boletas) { 
         if (!estaPagada()) {
             pagado = true;
-            //actualizaPagoEnDisco(id, pagado);
+            FileManager::actualizarPagoInscripcion(id, pagado);
             Venta prueba;
             prueba.pagarInscripcion(id, getIdActividad(), 20.5, boletas, idEstudiante);
         }
     }
-	int getIdActividad() {
-		return actividad->getId();
-	}
-	int getId() {
-		return id;
-	}
+
+    int getIdActividad() const { return actividad->getId(); }
+    int getId() const { return id; }
+    int getIdEstudiante() const { return idEstudiante; }
+
     void mostrar() {
-		cout << "ID Estudiante: " << idEstudiante << endl;
-		cout << "ID Actividad: " << actividad->getId() << endl;
-		cout << "Progreso: " << progreso << endl;
-		cout << "Completado: " << (completado ? "S�" : "No") << endl;
-		cout << "Pagado: " << (pagado ? "S�" : "No") << endl;
+        cout << "ID Estudiante: " << idEstudiante << endl;
+        cout << "ID Actividad: " << actividad->getId() << endl;
+        cout << "Progreso: " << progreso << endl;
+        cout << "Completado: " << (completado ? "Si" : "No") << endl;
+        cout << "Pagado: " << (pagado ? "Si" : "No") << endl;
     }
 };

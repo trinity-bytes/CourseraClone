@@ -163,6 +163,7 @@
     <ClInclude Include="Headers\Entities\Inscripcion.h" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.h" />
+    <ClInclude Include="Headers\Persistence\InscripcionTypes.hpp" />
     <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp" />
     <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h" />
     <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.h" />

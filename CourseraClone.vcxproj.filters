@@ -163,5 +163,8 @@
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Persistence\InscripcionTypes.hpp">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,7 +12,16 @@
 #include <stdexcept> // Para std::runtime_error
 
 // Headers propios
-#include "../Entities/Inscripcion.h" // Para InscripcionBinaria
+#include "UsuarioTypes.hpp" 
+#include "InscripcionTypes.hpp"
+
+// Rutas de archivos
+const std::string RUTA_ACTIVIDADES = "Resources/Data/actividades.txt";
+const std::string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
+
+// Puntero al CourseManager
+const int TIPO_CURSO = 1;
+const int TIPO_ESPECIALIZACION = 2;
 
 // Datos crudos de un curso leídos del archivo
 struct RawCursoData 
@@ -45,29 +54,57 @@ struct RawActividadesData
     std::vector<RawEspecializacionData> especializaciones;
 };
 
-// @brief Clase FileManager
-// @details Esta clase se encarga de gestionar la carga de datos desde archivos de texto y binarios
-class FileManager
+namespace FileManager
 {
-private:
-	// Rutas de archivos
-    const std::string RUTA_ACTIVIDADES = "Resources/Data/actividades.txt";
-    const std::string RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
+    inline bool guardarUsuarioBinario(
+        const UsuarioBinario& bin,
+        TipoUsuario tipo,
+        long& offset
+    ) {
+        auto path = getDataFilePath(tipo);
+        std::ofstream os(path, std::ios::binary | std::ios::app);
+        if (!os) return false;
+        os.seekp(0, std::ios::end);
+        offset = os.tellp();
+        os.write(reinterpret_cast<const char*>(&bin), sizeof(bin));
+        return os.good();
+    }
 
-	// Puntero al CourseManager
-    const int TIPO_CURSO = 1;
-    const int TIPO_ESPECIALIZACION = 2;
+    inline std::vector<UsuarioIndex> cargarIndicesUsuario(TipoUsuario tipo) 
+    {
+        std::vector<UsuarioIndex> v;
+        std::ifstream is(getIndexFilePath(tipo), std::ios::binary);
+        UsuarioIndex tmp;
+        while (is.read(reinterpret_cast<char*>(&tmp), sizeof(tmp)))
+            v.push_back(tmp);
+        return v;
+    }
 
-public:
-	FileManager();
-	~FileManager();
+    inline bool guardarInscripcionBinaria(
+        const InscripcionBinaria& bin,
+        int& offsetRegistro
+    ) {
+        std::ofstream os(RUTA_INSCRIPCIONES, std::ios::binary | std::ios::app);
+        if (!os.is_open()) return false;
+        os.seekp(0, std::ios::end);
+        offsetRegistro = static_cast<int>(os.tellp() / sizeof(InscripcionBinaria));
+        os.write(reinterpret_cast<const char*>(&bin), sizeof(bin));
+        return os.good();
+    }
 
-	RawActividadesData leerDatosActividades();
+    inline bool actualizarPagoInscripcion(int posicion, bool estado) {
+        std::fstream os(RUTA_INSCRIPCIONES, std::ios::binary | std::ios::in | std::ios::out);
+        if (!os.is_open()) return false;
+        os.seekp(posicion * sizeof(InscripcionBinaria) + offsetof(InscripcionBinaria, pagado), ios::beg);
+        os.write(reinterpret_cast<const char*>(&estado), sizeof(estado));
+        return os.good();
+    }
+
+    // Lee datos de actividades (cursos y especializaciones) desde archivo de texto
+    RawActividadesData leerDatosActividades();
+    // Lee datos de inscripciones desde archivo binario
     std::vector<InscripcionBinaria> leerDatosInscripciones();
-};
-
-FileManager::FileManager() {}
-FileManager::~FileManager() {}
+}
 
 // Lee datos de actividades (cursos y especializaciones) desde archivo de texto
 inline RawActividadesData FileManager::leerDatosActividades()
