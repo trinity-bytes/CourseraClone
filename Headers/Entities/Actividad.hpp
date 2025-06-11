@@ -4,6 +4,7 @@
 #ifndef COURSERACLONE_ENTITIES_ACTIVIDAD_HPP
 #define COURSERACLONE_ENTITIES_ACTIVIDAD_HPP
 
+// Includes del sistema
 #include <string>
 
 // Clase base que representa una actividad educativa
@@ -25,26 +26,24 @@ public:
         _titulo(""),
         _descripcion(""),
         _cantidadAlumnos(0),
-        _tipo(0) {
-    }
+        _tipo(0) {}
 
     Actividad(
-        int _id,
-        int _idEmpresa,
-        const std::string& _nombreEmpresa,
-        const std::string& _titulo,
-        int _cantidadAlumnos,
-        int _tipo,
-        const std::string& _descripcion
+        int id,
+        int idEmpresa,
+        const std::string& nombreEmpresa,
+        const std::string& titulo,
+        int cantidadAlumnos,
+        int tipo,
+        const std::string& descripcion
     ) :
-        _id(_id),
-        _idEmpresa(_idEmpresa),
-        _nombreEmpresa(_nombreEmpresa),
-        _titulo(_titulo),
-        _cantidadAlumnos(_cantidadAlumnos),
-        _tipo(_tipo),
-        _descripcion(_descripcion) {
-    }
+        _id(id),
+        _idEmpresa(idEmpresa),
+        _nombreEmpresa(nombreEmpresa),
+        _titulo(titulo),
+        _cantidadAlumnos(cantidadAlumnos),
+        _tipo(tipo),
+        _descripcion(descripcion) {}
 
     virtual ~Actividad() = default;
 

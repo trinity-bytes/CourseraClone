@@ -17,7 +17,8 @@
 #include "../DataStructures/LinkedList.hpp"
 
 // Clase que representa una especialización compuesta por varios cursos
-class Especializacion : public Actividad {
+class Especializacion : public Actividad 
+{
 private:
     std::vector<int> _idsCursos;
     LinkedList<Curso> _cursos;
@@ -40,13 +41,13 @@ public:
         const std::string& categoria = "", 
         int duracionEstimada = 0
     ) : Actividad(
-        _id, 
-        _idEmpresa, 
-        _nombreEmpresa, 
-        _titulo, 
-        _cantidadAlumnos, 
+        id, 
+        idEmpresa, 
+        nombreEmpresa, 
+        titulo, 
+        cantidadAlumnos, 
         2, 
-        _descripcion
+        descripcion
     ) {
         this->_categoria = categoria;
         this->_calificacionPromedio = 0.0;
@@ -55,7 +56,7 @@ public:
     }
 
     // Métodos de gestión de cursos
-    void anadirCurso(Curso& _curso) 
+    void agregarCurso(Curso& _curso) 
     {
         bool idYaExiste = false;
         for (int id : _idsCursos) 

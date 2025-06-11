@@ -12,8 +12,8 @@
 
 // Librerias propias
 #include "../Utils/ScreenSystem.hpp"
-#include "../DataStructures/PriorityQueue.hpp"
-#include "../Controllers/CourseManager.hpp"
+//#include "../DataStructures/PriorityQueue.hpp"
+//#include "../Controllers/CourseManager.hpp"
 
 // forward declarations
 class Controladora;
@@ -104,6 +104,8 @@ private:
     /// @param cursosDatos Lista de cursos disponibles
     /// @param especializacionesDatos Lista de especializaciones disponibles
     /// @param maximo Número máximo de elementos a cargar
+    
+    /*
     void cargarDatosLanding(LinkedList<Curso*>& cursosDatos, 
                            LinkedList<Especializacion*>& especializacionesDatos, 
                            int maximo)
@@ -157,7 +159,7 @@ private:
             _especialidades[i].titulo = titulosEspecializaciones[i];
             _especialidades[i].descripcion = descripcionesEspecializaciones[i];
         }
-    }
+    } */
 
     /// @brief Carga todos los datos necesarios para la landing page
     /// @param cursosDatos Lista de cursos disponibles
@@ -171,7 +173,7 @@ private:
         _especialidades.clear();
         
         // Cargar datos reales
-        cargarDatosLanding(cursosDatos, especializacionesDatos, maximo);
+        //cargarDatosLanding(cursosDatos, especializacionesDatos, maximo);
         
         // Completar con datos por defecto si es necesario
         completarConDatosDefecto(maximo);

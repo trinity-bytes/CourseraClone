@@ -10,7 +10,7 @@
 #include <memory>
 
 // Headers propios
-#include "../Entities/Usuario.hpp"
+#include "../Persistence/UsuarioTypes.hpp"
 #include "SystemUtils.hpp"
 #include "UI_Ascii.hpp"
 

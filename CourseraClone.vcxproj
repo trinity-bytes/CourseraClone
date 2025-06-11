@@ -178,6 +178,7 @@
     <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.hpp" />
     <ClInclude Include="Headers\Screens\RegistroScreen.hpp" />
     <ClInclude Include="Headers\Screens\VerBoletasScreen.hpp" />
+    <ClInclude Include="Headers\Utils\DataPaths.hpp" />
     <ClInclude Include="Headers\Utils\ScreenSystem.hpp" />
     <ClInclude Include="Headers\Utils\SystemUtils.hpp" />
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp" />
