@@ -1,8 +1,7 @@
-// filepath: Headers/Controllers/CourseManager.hpp
-// description: Clase renovada para gestionar cursos y especializaciones usando la nueva arquitectura por dominios.
+// description: Clase para gestionar todo el contenido del sistema (cursos y especializaciones) usando la nueva arquitectura por dominios.
 
-#ifndef COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP
-#define COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP
+#ifndef COURSERACLONE_CONTROLLERS_CONTENTMANAGER_HPP
+#define COURSERACLONE_CONTROLLERS_CONTENTMANAGER_HPP
 
 // Headers estándar
 #include <memory>    // Para std::unique_ptr
@@ -28,25 +27,29 @@ enum class ActividadTipo : int {
     ESPECIALIZACION = 2
 };
 
-enum class CourseOperationResult {
+enum class ContentOperationResult {
     SUCCESS,
-    COURSE_NOT_FOUND,
+    CONTENT_NOT_FOUND,
+	COURSE_NOT_FOUND,
+	SPECIALIZATION_NOT_FOUND,
     STUDENT_ALREADY_ENROLLED,
     INVALID_DATA,
     FILE_ERROR,
+    SPECIALIZATION_INCOMPLETE,
+    COURSE_DEPENDENCY_ERROR,
     UNKNOWN_ERROR
 };
 
-class CourseManager {
+class ContentManager {
 private:
     // La única instancia de la clase
-    static std::unique_ptr<CourseManager> _instance;
+    static std::unique_ptr<ContentManager> _instance;
 
     // El mutex para asegurar la inicialización segura en entornos multi-hilo
     static std::once_flag _onceFlag;
 
     // Constructor privado para evitar instanciación externa
-    CourseManager();
+    ContentManager();
 
     // Estructuras de datos principales
     LinkedList<std::unique_ptr<Curso>> _cursos;
@@ -72,15 +75,15 @@ private:
 
 public:
     // Eliminar constructor de copia y operador de asignación para asegurar una única instancia
-    CourseManager(const CourseManager&) = delete;
-    CourseManager& operator=(const CourseManager&) = delete;
+    ContentManager(const ContentManager&) = delete;
+    ContentManager& operator=(const ContentManager&) = delete;
 
     // Método estático para obtener la única instancia de la clase
-    static CourseManager& getInstance();
+    static ContentManager& getInstance();
 
     // El destructor puede ser público si unique_ptr lo maneja, o privado si la gestión es más estricta.
     // En este caso, unique_ptr se encargará de la liberación.
-    ~CourseManager() = default;
+    ~ContentManager() = default;
 
     // ========== INICIALIZACIÓN Y CARGA DE DATOS ==========
 
@@ -88,15 +91,13 @@ public:
      * @brief Inicializa el manager cargando datos desde archivos
      * @return true si la inicialización fue exitosa
      */
-    bool inicializarSistema();
-
-    /**
+    bool inicializarSistema();    /**
      * @brief Carga datos desde estructuras raw del FileManager
      * @param dataActividades Datos de cursos y especializaciones
      * @param dataInscripciones Vector de inscripciones binarias
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult cargarDesdeDatos(
+    ContentOperationResult cargarDesdeDatos(
         const RawActividadesData& dataActividades,
         const std::vector<InscripcionBinaria>& dataInscripciones
     );
@@ -111,11 +112,10 @@ public:
      * @param instructor Nombre del instructor
      * @param descripcion Descripción del curso
      * @param titulosClases Vector con títulos de las clases
-     * @param descripcionesClases Vector con descripciones de las clases
-     * @param categoria Categoría del curso (opcional)
-     * @return CourseOperationResult resultado de la operación
+     * @param descripcionesClases Vector con descripciones de las clases     * @param categoria Categoría del curso (opcional)
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult crearCurso(
+    ContentOperationResult crearCurso(
         int idEmpresa,
         const std::string& titulo,
         const std::string& nombreEmpresa,
@@ -130,16 +130,16 @@ public:
      * @brief Actualiza un curso existente
      * @param idCurso ID del curso a actualizar
      * @param nuevosDatos Nuevos datos del curso
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult actualizarCurso(int idCurso, const RawCursoData& nuevosDatos);
+    ContentOperationResult actualizarCurso(int idCurso, const RawCursoData& nuevosDatos);
 
     /**
      * @brief Elimina un curso del sistema
      * @param idCurso ID del curso a eliminar
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult eliminarCurso(int idCurso);
+    ContentOperationResult eliminarCurso(int idCurso);
 
     // ========== GESTIÓN DE ESPECIALIZACIONES ==========
 
@@ -149,11 +149,10 @@ public:
      * @param nombreEmpresa Nombre de la empresa
      * @param titulo Título de la especialización
      * @param descripcion Descripción
-     * @param idsCursos Vector con IDs de cursos incluidos
-     * @param categoria Categoría (opcional)
-     * @return CourseOperationResult resultado de la operación
+     * @param idsCursos Vector con IDs de cursos incluidos     * @param categoria Categoría (opcional)
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult crearEspecializacion(
+    ContentOperationResult crearEspecializacion(
         int idEmpresa,
         const std::string& nombreEmpresa,
         const std::string& titulo,
@@ -166,54 +165,52 @@ public:
      * @brief Actualiza una especialización existente
      * @param idEspecializacion ID de la especialización
      * @param nuevosDatos Nuevos datos
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult actualizarEspecializacion(int idEspecializacion, const RawEspecializacionData& nuevosDatos);
+    ContentOperationResult actualizarEspecializacion(int idEspecializacion, const RawEspecializacionData& nuevosDatos);
 
     /**
      * @brief Elimina una especialización
      * @param idEspecializacion ID de la especialización
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult eliminarEspecializacion(int idEspecializacion);
+    ContentOperationResult eliminarEspecializacion(int idEspecializacion);
 
-    // ========== GESTIÓN DE INSCRIPCIONES ==========
-
+    // ========== GESTIÓN DE INSCRIPCIONES ==========    
     /**
      * @brief Inscribe un estudiante a un curso
      * @param idEstudiante ID del estudiante
      * @param idCurso ID del curso
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult inscribirEstudianteACurso(int idEstudiante, int idCurso);
+    ContentOperationResult inscribirEstudianteACurso(int idEstudiante, int idCurso);
 
     /**
      * @brief Inscribe un estudiante a una especialización
      * @param idEstudiante ID del estudiante
      * @param idEspecializacion ID de la especialización
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion);
+    ContentOperationResult inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion);
 
     /**
      * @brief Desinscribe un estudiante de una actividad
      * @param idEstudiante ID del estudiante
      * @param idActividad ID de la actividad
      * @param tipoActividad Tipo de actividad
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult desinscribirEstudiante(int idEstudiante, int idActividad, ActividadTipo tipoActividad);
+    ContentOperationResult desinscribirEstudiante(int idEstudiante, int idActividad, ActividadTipo tipoActividad);
 
-    // ========== GESTIÓN DE PROGRESO Y CALIFICACIONES ==========
-
+    // ========== GESTIÓN DE PROGRESO Y CALIFICACIONES ==========    
     /**
      * @brief Actualiza el progreso de un estudiante en una actividad
      * @param idEstudiante ID del estudiante
      * @param idActividad ID de la actividad
      * @param nuevoProgreso Nuevo progreso (0.0 - 100.0)
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult actualizarProgreso(int idEstudiante, int idActividad, double nuevoProgreso);
+    ContentOperationResult actualizarProgreso(int idEstudiante, int idActividad, double nuevoProgreso);
 
     /**
      * @brief Agrega una calificación a una actividad
@@ -221,9 +218,9 @@ public:
      * @param idEstudiante ID del estudiante que califica
      * @param calificacion Calificación (1-5)
      * @param comentario Comentario opcional
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult agregarCalificacion(int idActividad, int idEstudiante, int calificacion, const std::string& comentario = "");
+    ContentOperationResult agregarCalificacion(int idActividad, int idEstudiante, int calificacion, const std::string& comentario = "");
 
     // ========== BÚSQUEDAS Y CONSULTAS ==========
 
@@ -291,19 +288,18 @@ public:
      */
     std::vector<Especializacion*> obtenerEspecializacionesMasPopulares(int limite = 10) const;
 
-    // ========== PERSISTENCIA ==========
-
+    // ========== PERSISTENCIA ==========    
     /**
      * @brief Guarda todos los cambios en archivos
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult guardarTodosCambios();
+    ContentOperationResult guardarTodosCambios();
 
     /**
      * @brief Recarga los datos desde archivos
-     * @return CourseOperationResult resultado de la operación
+     * @return ContentOperationResult resultado de la operación
      */
-    CourseOperationResult recargarDatos();
+    ContentOperationResult recargarDatos();
 
     // ========== GETTERS ==========
 
@@ -323,53 +319,54 @@ public:
 // lo que permite su definición directamente en el header sin violar la One Definition Rule (ODR).
 
 // Definición de la instancia única
-inline std::unique_ptr<CourseManager> CourseManager::_instance = nullptr;
+inline std::unique_ptr<ContentManager> ContentManager::_instance = nullptr;
 
 // Definición de la flag para std::call_once
-inline std::once_flag CourseManager::_onceFlag;
+inline std::once_flag ContentManager::_onceFlag;
 
 // ========== IMPLEMENTACIONES INLINE ==========
 
-inline CourseManager::CourseManager()
+inline ContentManager::ContentManager()
     : _nextCursoId(1), _nextEspecializacionId(1) {
-    logOperation("Constructor", "CourseManager inicializado (Singleton)");
+    logOperation("Constructor", "ContentManager inicializado (Singleton)");
 }
 
-inline CourseManager& CourseManager::getInstance() {
+inline ContentManager& ContentManager::getInstance() {
     // std::call_once asegura que la inicialización se realice una sola vez, incluso en entornos multi-hilo
     std::call_once(_onceFlag, []() {
-        _instance.reset(new CourseManager());
+        _instance.reset(new ContentManager());
         });
     return *_instance;
 }
 
-inline void CourseManager::logOperation(const std::string& operation, const std::string& details) {
-    std::cout << "[CourseManager INFO] " << operation;
+inline void ContentManager::logOperation(const std::string& operation, const std::string& details) {
+    std::cout << "[ContentManager INFO] " << operation;
     if (!details.empty()) {
         std::cout << ": " << details;
     }
     std::cout << std::endl;
 }
 
-inline void CourseManager::logError(const std::string& operation, const std::string& error) {
-    std::cerr << "[CourseManager ERROR] " << operation << ": " << error << std::endl;
+inline void ContentManager::logError(const std::string& operation, const std::string& error) {
+    std::cerr << "[ContentManager ERROR] " << operation << ": " << error << std::endl;
 }
 
-inline bool CourseManager::inicializarSistema() {
+inline bool ContentManager::inicializarSistema() {
     try {
         // Inicializar sistema de archivos
-        if (!FileManager::inicializarSistemaArchivos()) {
+        FilesManager& fileManager = FilesManager::getInstance();
+        if (!fileManager.inicializarSistemaArchivos()) {
             logError("Inicialización", "No se pudo inicializar el sistema de archivos");
             return false;
         }
 
         // Cargar datos existentes
-        auto actividades = FileManager::leerDatosActividades();
-        auto inscripciones = FileManager::leerDatosInscripciones();
+        auto actividades = fileManager.leerDatosActividades();
+        auto inscripciones = fileManager.leerDatosInscripciones();
 
         auto resultado = cargarDesdeDatos(actividades, inscripciones);
 
-        if (resultado == CourseOperationResult::SUCCESS) {
+        if (resultado == ContentOperationResult::SUCCESS) {
             logOperation("Inicialización completa",
                 "Cargados " + std::to_string(_cursos.getTamano()) + " cursos y " +
                 std::to_string(_especializaciones.getTamano()) + " especializaciones");
@@ -385,7 +382,7 @@ inline bool CourseManager::inicializarSistema() {
     }
 }
 
-inline CourseOperationResult CourseManager::cargarDesdeDatos(
+inline ContentOperationResult ContentManager::cargarDesdeDatos(
     const RawActividadesData& dataActividades,
     const std::vector<InscripcionBinaria>& dataInscripciones
 ) {
@@ -460,16 +457,16 @@ inline CourseOperationResult CourseManager::cargarDesdeDatos(
             "Cargados " + std::to_string(_cursos.getTamano()) + " cursos y " +
             std::to_string(_especializaciones.getTamano()) + " especializaciones");
 
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
 
     }
     catch (const std::exception& e) {
         logError("Carga de datos", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline void CourseManager::actualizarCaches() {
+inline void ContentManager::actualizarCaches() {
     _cacheIdCursos.clear();
     _cacheIdEspecializaciones.clear();
 
@@ -484,24 +481,24 @@ inline void CourseManager::actualizarCaches() {
     }
 }
 
-inline void CourseManager::limpiarCaches() {
+inline void ContentManager::limpiarCaches() {
     _cacheIdCursos.clear();
     _cacheIdEspecializaciones.clear();
     _progresoEstudiantes.clear();
     _calificacionesActividades.clear();
 }
 
-inline Curso* CourseManager::obtenerCurso(int id) const {
+inline Curso* ContentManager::obtenerCurso(int id) const {
     auto it = _cacheIdCursos.find(id);
     return (it != _cacheIdCursos.end()) ? it->second : nullptr;
 }
 
-inline Especializacion* CourseManager::obtenerEspecializacion(int id) const {
+inline Especializacion* ContentManager::obtenerEspecializacion(int id) const {
     auto it = _cacheIdEspecializaciones.find(id);
     return (it != _cacheIdEspecializaciones.end()) ? it->second : nullptr;
 }
 
-inline CourseOperationResult CourseManager::crearCurso(
+inline ContentOperationResult ContentManager::crearCurso(
     int idEmpresa,
     const std::string& titulo,
     const std::string& nombreEmpresa,
@@ -543,10 +540,10 @@ inline CourseOperationResult CourseManager::crearCurso(
         cursoData.titulosClases = titulosClases;
         cursoData.descripcionesClases = descripcionesClases;
 
-        auto resultado = FileManager::guardarCurso(cursoData);
+        auto resultado = FilesManager::getInstance().guardarCurso(cursoData);
         if (resultado != FileOperationResult::SUCCESS) {
             logError("Crear curso", "Error al guardar en archivo");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         // Agregar a la estructura de datos y cache
@@ -556,22 +553,22 @@ inline CourseOperationResult CourseManager::crearCurso(
         _cacheIdCursos[cursoId] = ptrCurso;
 
         logOperation("Crear curso", "Curso '" + titulo + "' creado con ID " + std::to_string(cursoId));
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
 
     }
     catch (const std::exception& e) {
         logError("Crear curso", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline CourseOperationResult CourseManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
+inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
     try {
         // Verificar que el curso existe
         Curso* curso = obtenerCurso(idCurso);
         if (!curso) {
             logError("Inscribir estudiante", "Curso no encontrado: " + std::to_string(idCurso));
-            return CourseOperationResult::COURSE_NOT_FOUND;
+            return ContentOperationResult::COURSE_NOT_FOUND;
         }
 
         // Crear inscripción binaria
@@ -586,10 +583,10 @@ inline CourseOperationResult CourseManager::inscribirEstudianteACurso(int idEstu
 
         // Guardar en archivo
         int offsetRegistro;
-        auto resultado = FileManager::guardarInscripcionBinaria(inscripcion, offsetRegistro);
+        auto resultado = FilesManager::getInstance().guardarInscripcionBinaria(inscripcion, offsetRegistro);
         if (resultado != FileOperationResult::SUCCESS) {
             logError("Inscribir estudiante", "Error al guardar inscripción");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         // Actualizar contador de alumnos
@@ -601,16 +598,16 @@ inline CourseOperationResult CourseManager::inscribirEstudianteACurso(int idEstu
         logOperation("Inscribir estudiante",
             "Estudiante " + std::to_string(idEstudiante) + " inscrito en curso " + std::to_string(idCurso));
 
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
 
     }
     catch (const std::exception& e) {
         logError("Inscribir estudiante", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline std::map<std::string, int> CourseManager::obtenerEstadisticasGenerales() const {
+inline std::map<std::string, int> ContentManager::obtenerEstadisticasGenerales() const {
     std::map<std::string, int> estadisticas;
 
     estadisticas["total_cursos"] = _cursos.getTamano();
@@ -633,7 +630,7 @@ inline std::map<std::string, int> CourseManager::obtenerEstadisticasGenerales() 
     return estadisticas;
 }
 
-inline double CourseManager::obtenerProgreso(int idEstudiante, int idActividad) const {
+inline double ContentManager::obtenerProgreso(int idEstudiante, int idActividad) const {
     auto itEstudiante = _progresoEstudiantes.find(idEstudiante);
     if (itEstudiante != _progresoEstudiantes.end()) {
         auto itActividad = itEstudiante->second.find(idActividad);
@@ -646,12 +643,12 @@ inline double CourseManager::obtenerProgreso(int idEstudiante, int idActividad) 
 
 // Implementación de las nuevas funciones de persistencia y operaciones de búsqueda
 
-inline CourseOperationResult CourseManager::actualizarCurso(int idCurso, const RawCursoData& nuevosDatos) {
+inline ContentOperationResult ContentManager::actualizarCurso(int idCurso, const RawCursoData& nuevosDatos) {
     try {
         Curso* curso = obtenerCurso(idCurso);
         if (!curso) {
             logError("Actualizar curso", "Curso no encontrado: " + std::to_string(idCurso));
-            return CourseOperationResult::COURSE_NOT_FOUND;
+            return ContentOperationResult::COURSE_NOT_FOUND;
         }
 
         // Actualizar los datos del curso en memoria
@@ -680,21 +677,21 @@ inline CourseOperationResult CourseManager::actualizarCurso(int idCurso, const R
         // Si las clases son parte integral, necesitarías modificar RawCursoData para incluirlas adecuadamente,
         // o manejar la actualización de clases por separado.
 
-        if (FileManager::actualizarCurso(dataToSave) != FileOperationResult::SUCCESS) {
+        if (FilesManager::getInstance().actualizarCurso(dataToSave) != FileOperationResult::SUCCESS) {
             logError("Actualizar curso", "Error al guardar en archivo");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         logOperation("Actualizar curso", "Curso con ID " + std::to_string(idCurso) + " actualizado.");
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Actualizar curso", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline CourseOperationResult CourseManager::eliminarCurso(int idCurso) {
+inline ContentOperationResult ContentManager::eliminarCurso(int idCurso) {
     try {
         auto it = _cursos.buscar([idCurso](const std::unique_ptr<Curso>& curso) {
             return curso->getId() == idCurso;
@@ -702,13 +699,13 @@ inline CourseOperationResult CourseManager::eliminarCurso(int idCurso) {
 
         if (!it.esValido()) { // LinkedList::buscar devuelve un iterador no válido si no lo encuentra
             logError("Eliminar curso", "Curso no encontrado: " + std::to_string(idCurso));
-            return CourseOperationResult::COURSE_NOT_FOUND;
+            return ContentOperationResult::COURSE_NOT_FOUND;
         }
 
         // Eliminar del archivo de persistencia
-        if (FileManager::eliminarCurso(idCurso) != FileOperationResult::SUCCESS) {
+        if (FilesManager::getInstance().eliminarCurso(idCurso) != FileOperationResult::SUCCESS) {
             logError("Eliminar curso", "Error al eliminar de archivo");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         // Eliminar de la lista en memoria
@@ -734,15 +731,15 @@ inline CourseOperationResult CourseManager::eliminarCurso(int idCurso) {
 
 
         logOperation("Eliminar curso", "Curso con ID " + std::to_string(idCurso) + " eliminado.");
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Eliminar curso", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline CourseOperationResult CourseManager::crearEspecializacion(
+inline ContentOperationResult ContentManager::crearEspecializacion(
     int idEmpresa,
     const std::string& nombreEmpresa,
     const std::string& titulo,
@@ -767,7 +764,7 @@ inline CourseOperationResult CourseManager::crearEspecializacion(
         for (int idCurso : idsCursos) {
             if (!obtenerCurso(idCurso)) {
                 logError("Crear especialización", "Curso con ID " + std::to_string(idCurso) + " no encontrado para la especialización.");
-                return CourseOperationResult::INVALID_DATA; // No podemos crear una especialización con cursos inexistentes
+                return ContentOperationResult::INVALID_DATA; // No podemos crear una especialización con cursos inexistentes
             }
             nuevaEspecializacion->anadirCursoPorId(idCurso);
         }
@@ -780,9 +777,9 @@ inline CourseOperationResult CourseManager::crearEspecializacion(
         espData.descripcionActividad = descripcion;
         espData.idsCursosInternos = idsCursos;
 
-        if (FileManager::guardarEspecializacion(espData) != FileOperationResult::SUCCESS) {
+        if (FilesManager::getInstance().guardarEspecializacion(espData) != FileOperationResult::SUCCESS) {
             logError("Crear especialización", "Error al guardar en archivo");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         int especializacionId = nuevaEspecializacion->getId();
@@ -791,20 +788,20 @@ inline CourseOperationResult CourseManager::crearEspecializacion(
         _cacheIdEspecializaciones[especializacionId] = ptrEspecializacion;
 
         logOperation("Crear especialización", "Especialización '" + titulo + "' creada con ID " + std::to_string(especializacionId));
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Crear especialización", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline CourseOperationResult CourseManager::actualizarEspecializacion(int idEspecializacion, const RawEspecializacionData& nuevosDatos) {
+inline ContentOperationResult ContentManager::actualizarEspecializacion(int idEspecializacion, const RawEspecializacionData& nuevosDatos) {
     try {
         Especializacion* especializacion = obtenerEspecializacion(idEspecializacion);
         if (!especializacion) {
             logError("Actualizar especialización", "Especialización no encontrada: " + std::to_string(idEspecializacion));
-            return CourseOperationResult::COURSE_NOT_FOUND;
+            return ContentOperationResult::COURSE_NOT_FOUND;
         }
 
         // Actualizar los datos de la especialización en memoria
@@ -817,7 +814,7 @@ inline CourseOperationResult CourseManager::actualizarEspecializacion(int idEspe
         for (int idCurso : nuevosDatos.idsCursosInternos) {
             if (!obtenerCurso(idCurso)) {
                 logError("Actualizar especialización", "Curso con ID " + std::to_string(idCurso) + " no encontrado para la especialización.");
-                return CourseOperationResult::INVALID_DATA;
+                return ContentOperationResult::INVALID_DATA;
             }
             especializacion->anadirCursoPorId(idCurso);
         }
@@ -832,21 +829,21 @@ inline CourseOperationResult CourseManager::actualizarEspecializacion(int idEspe
         dataToSave.descripcionActividad = especializacion->getDescripcion();
         dataToSave.idsCursosInternos = especializacion->getIdsCursos(); // Asegúrate de que Especializacion tenga este getter
 
-        if (FileManager::actualizarEspecializacion(dataToSave) != FileOperationResult::SUCCESS) {
+        if (FilesManager::getInstance().actualizarEspecializacion(dataToSave) != FileOperationResult::SUCCESS) {
             logError("Actualizar especialización", "Error al guardar en archivo");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         logOperation("Actualizar especialización", "Especialización con ID " + std::to_string(idEspecializacion) + " actualizada.");
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Actualizar especialización", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline CourseOperationResult CourseManager::eliminarEspecializacion(int idEspecializacion) {
+inline ContentOperationResult ContentManager::eliminarEspecializacion(int idEspecializacion) {
     try {
         auto it = _especializaciones.buscar([idEspecializacion](const std::unique_ptr<Especializacion>& especializacion) {
             return especializacion->getId() == idEspecializacion;
@@ -854,13 +851,13 @@ inline CourseOperationResult CourseManager::eliminarEspecializacion(int idEspeci
 
         if (!it.esValido()) {
             logError("Eliminar especialización", "Especialización no encontrada: " + std::to_string(idEspecializacion));
-            return CourseOperationResult::COURSE_NOT_FOUND;
+            return ContentOperationResult::COURSE_NOT_FOUND;
         }
 
         // Eliminar del archivo de persistencia
-        if (FileManager::eliminarEspecializacion(idEspecializacion) != FileOperationResult::SUCCESS) {
+        if (FilesManager::getInstance().eliminarEspecializacion(idEspecializacion) != FileOperationResult::SUCCESS) {
             logError("Eliminar especialización", "Error al eliminar de archivo");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         // Eliminar de la lista en memoria
@@ -881,20 +878,20 @@ inline CourseOperationResult CourseManager::eliminarEspecializacion(int idEspeci
         }
 
         logOperation("Eliminar especialización", "Especialización con ID " + std::to_string(idEspecializacion) + " eliminada.");
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Eliminar especialización", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline CourseOperationResult CourseManager::inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion) {
+inline ContentOperationResult ContentManager::inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion) {
     try {
         Especializacion* especializacion = obtenerEspecializacion(idEspecializacion);
         if (!especializacion) {
             logError("Inscribir estudiante", "Especialización no encontrada: " + std::to_string(idEspecializacion));
-            return CourseOperationResult::COURSE_NOT_FOUND;
+            return ContentOperationResult::COURSE_NOT_FOUND;
         }
 
         // Crear inscripción binaria
@@ -909,10 +906,10 @@ inline CourseOperationResult CourseManager::inscribirEstudianteAEspecializacion(
 
         // Guardar en archivo
         int offsetRegistro;
-        auto resultado = FileManager::guardarInscripcionBinaria(inscripcion, offsetRegistro);
+        auto resultado = FilesManager::getInstance().guardarInscripcionBinaria(inscripcion, offsetRegistro);
         if (resultado != FileOperationResult::SUCCESS) {
             logError("Inscribir estudiante", "Error al guardar inscripción");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         // Actualizar contador de alumnos
@@ -924,15 +921,15 @@ inline CourseOperationResult CourseManager::inscribirEstudianteAEspecializacion(
         logOperation("Inscribir estudiante",
             "Estudiante " + std::to_string(idEstudiante) + " inscrito en especialización " + std::to_string(idEspecializacion));
 
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Inscribir estudiante", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
-inline CourseOperationResult CourseManager::desinscribirEstudiante(int idEstudiante, int idActividad, ActividadTipo tipoActividad) {
+inline ContentOperationResult ContentManager::desinscribirEstudiante(int idEstudiante, int idActividad, ActividadTipo tipoActividad) {
     try {
         // Asumimos que FileManager tiene una función para eliminar inscripciones por ID.
         // Si no la tiene, se debería implementar una que pueda buscar y eliminar.
@@ -966,19 +963,19 @@ inline CourseOperationResult CourseManager::desinscribirEstudiante(int idEstudia
         logOperation("Desinscribir estudiante",
             "Estudiante " + std::to_string(idEstudiante) + " desinscrito de actividad " + std::to_string(idActividad));
 
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Desinscribir estudiante", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
 
-inline CourseOperationResult CourseManager::actualizarProgreso(int idEstudiante, int idActividad, double nuevoProgreso) {
+inline ContentOperationResult ContentManager::actualizarProgreso(int idEstudiante, int idActividad, double nuevoProgreso) {
     if (nuevoProgreso < 0.0 || nuevoProgreso > 100.0) {
         logError("Actualizar progreso", "Progreso inválido: " + std::to_string(nuevoProgreso));
-        return CourseOperationResult::INVALID_DATA;
+        return ContentOperationResult::INVALID_DATA;
     }
 
     auto itEstudiante = _progresoEstudiantes.find(idEstudiante);
@@ -995,18 +992,18 @@ inline CourseOperationResult CourseManager::actualizarProgreso(int idEstudiante,
             logOperation("Actualizar progreso",
                 "Progreso de estudiante " + std::to_string(idEstudiante) + " en actividad " +
                 std::to_string(idActividad) + " a " + std::to_string(nuevoProgreso) + "%");
-            return CourseOperationResult::SUCCESS;
+            return ContentOperationResult::SUCCESS;
         }
     }
 
     logError("Actualizar progreso", "Inscripción no encontrada para actualizar progreso.");
-    return CourseOperationResult::COURSE_NOT_FOUND; // O un código más específico si la inscripción no existe
+    return ContentOperationResult::COURSE_NOT_FOUND; // O un código más específico si la inscripción no existe
 }
 
-inline CourseOperationResult CourseManager::agregarCalificacion(int idActividad, int idEstudiante, int calificacion, const std::string& comentario) {
+inline ContentOperationResult ContentManager::agregarCalificacion(int idActividad, int idEstudiante, int calificacion, const std::string& comentario) {
     if (calificacion < 1 || calificacion > 5) {
         logError("Agregar calificación", "Calificación inválida: " + std::to_string(calificacion));
-        return CourseOperationResult::INVALID_DATA;
+        return ContentOperationResult::INVALID_DATA;
     }
 
     // Aquí almacenaríamos la calificación. La estructura _calificacionesActividades
@@ -1021,11 +1018,11 @@ inline CourseOperationResult CourseManager::agregarCalificacion(int idActividad,
         "Calificación de " + std::to_string(calificacion) + " agregada por estudiante " +
         std::to_string(idEstudiante) + " a actividad " + std::to_string(idActividad));
 
-    return CourseOperationResult::SUCCESS;
+    return ContentOperationResult::SUCCESS;
 }
 
 
-inline std::vector<Curso*> CourseManager::buscarCursosPorCategoria(const std::string& categoria) const {
+inline std::vector<Curso*> ContentManager::buscarCursosPorCategoria(const std::string& categoria) const {
     std::vector<Curso*> resultados;
     for (auto it = _cursos.begin(); it != _cursos.end(); ++it) {
         if ((*it)->getCategoria() == categoria) {
@@ -1035,7 +1032,7 @@ inline std::vector<Curso*> CourseManager::buscarCursosPorCategoria(const std::st
     return resultados;
 }
 
-inline std::vector<Especializacion*> CourseManager::buscarEspecializacionesPorCategoria(const std::string& categoria) const {
+inline std::vector<Especializacion*> ContentManager::buscarEspecializacionesPorCategoria(const std::string& categoria) const {
     std::vector<Especializacion*> resultados;
     for (auto it = _especializaciones.begin(); it != _especializaciones.end(); ++it) {
         if ((*it)->getCategoria() == categoria) {
@@ -1045,7 +1042,7 @@ inline std::vector<Especializacion*> CourseManager::buscarEspecializacionesPorCa
     return resultados;
 }
 
-inline std::pair<std::vector<Curso*>, std::vector<Especializacion*>> CourseManager::obtenerActividadesPorEmpresa(int idEmpresa) const {
+inline std::pair<std::vector<Curso*>, std::vector<Especializacion*>> ContentManager::obtenerActividadesPorEmpresa(int idEmpresa) const {
     std::vector<Curso*> cursosEmpresa;
     std::vector<Especializacion*> especializacionesEmpresa;
 
@@ -1063,16 +1060,16 @@ inline std::pair<std::vector<Curso*>, std::vector<Especializacion*>> CourseManag
     return { cursosEmpresa, especializacionesEmpresa };
 }
 
-inline std::vector<InscripcionBinaria> CourseManager::obtenerInscripcionesEstudiante(int idEstudiante) const {
+inline std::vector<InscripcionBinaria> ContentManager::obtenerInscripcionesEstudiante(int idEstudiante) const {
     std::vector<InscripcionBinaria> inscripciones;
     // Esto requiere leer las inscripciones de FileManager, ya que _progresoEstudiantes
     // solo guarda progreso, no la estructura completa de InscripcionBinaria.
     // O si se carga InscripcionBinaria en otra estructura de datos en memoria.
 
-    // Asumiendo que FileManager::leerDatosInscripciones() devuelve todas las inscripciones,
+    // Asumiendo que FilesManager::getInstance().leerDatosInscripciones() devuelve todas las inscripciones,
     // se tendría que filtrar aquí, o FileManager podría ofrecer una búsqueda específica.
 
-    auto allInscripciones = FileManager::leerDatosInscripciones();
+    auto allInscripciones = FilesManager::getInstance().leerDatosInscripciones();
     for (const auto& insc : allInscripciones) {
         if (insc.idEstudiante == idEstudiante) {
             inscripciones.push_back(insc);
@@ -1081,7 +1078,7 @@ inline std::vector<InscripcionBinaria> CourseManager::obtenerInscripcionesEstudi
     return inscripciones;
 }
 
-inline std::vector<Curso*> CourseManager::obtenerCursosMasPopulares(int limite) const {
+inline std::vector<Curso*> ContentManager::obtenerCursosMasPopulares(int limite) const {
     // Para determinar popularidad, se podría usar el número de alumnos inscritos.
     std::vector<Curso*> todosLosCursos;
     for (auto it = _cursos.begin(); it != _cursos.end(); ++it) {
@@ -1098,7 +1095,7 @@ inline std::vector<Curso*> CourseManager::obtenerCursosMasPopulares(int limite) 
     return todosLosCursos;
 }
 
-inline std::vector<Especializacion*> CourseManager::obtenerEspecializacionesMasPopulares(int limite) const {
+inline std::vector<Especializacion*> ContentManager::obtenerEspecializacionesMasPopulares(int limite) const {
     // Para determinar popularidad, se podría usar el número de alumnos inscritos.
     std::vector<Especializacion*> todasLasEspecializaciones;
     for (auto it = _especializaciones.begin(); it != _especializaciones.end(); ++it) {
@@ -1115,7 +1112,7 @@ inline std::vector<Especializacion*> CourseManager::obtenerEspecializacionesMasP
     return todasLasEspecializaciones;
 }
 
-inline CourseOperationResult CourseManager::guardarTodosCambios() {
+inline ContentOperationResult ContentManager::guardarTodosCambios() {
     try {
         // 1. Recolectar todos los RawCursoData
         std::vector<RawCursoData> cursosRaw;
@@ -1156,9 +1153,9 @@ inline CourseOperationResult CourseManager::guardarTodosCambios() {
         allActividades.cursos = cursosRaw;
         allActividades.especializaciones = especializacionesRaw;
 
-        if (FileManager::guardarDatosActividades(allActividades) != FileOperationResult::SUCCESS) {
+        if (FilesManager::getInstance().guardarDatosActividades(allActividades) != FileOperationResult::SUCCESS) {
             logError("Guardar cambios", "Error al guardar actividades.");
-            return CourseOperationResult::FILE_ERROR;
+            return ContentOperationResult::FILE_ERROR;
         }
 
         // 4. Recolectar todas las InscripcionBinaria desde _progresoEstudiantes
@@ -1180,22 +1177,22 @@ inline CourseOperationResult CourseManager::guardarTodosCambios() {
         // Deberías ajustar esto a cómo las inscripciones se manejan en tu sistema.
         // Aquí un placeholder:
         // auto currentInscripciones = obtenerTodasLasInscripcionesInternamente();
-        // if (FileManager::guardarDatosInscripciones(currentInscripciones) != FileOperationResult::SUCCESS) {
+        // if (FilesManager::getInstance().guardarDatosInscripciones(currentInscripciones) != FileOperationResult::SUCCESS) {
         //     logError("Guardar cambios", "Error al guardar inscripciones.");
-        //     return CourseOperationResult::FILE_ERROR;
+        //     return ContentOperationResult::FILE_ERROR;
         // }
 
         logOperation("Guardar cambios", "Todos los datos guardados exitosamente.");
-        return CourseOperationResult::SUCCESS;
+        return ContentOperationResult::SUCCESS;
     }
     catch (const std::exception& e) {
         logError("Guardar cambios", e.what());
-        return CourseOperationResult::UNKNOWN_ERROR;
+        return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
 
-inline CourseOperationResult CourseManager::recargarDatos() {
+inline ContentOperationResult ContentManager::recargarDatos() {
     logOperation("Recargar datos", "Iniciando recarga de datos del sistema.");
     limpiarCaches(); // Limpiar cachés y estructuras de datos actuales
 
@@ -1207,7 +1204,7 @@ inline CourseOperationResult CourseManager::recargarDatos() {
     _nextCursoId = 1;
     _nextEspecializacionId = 1;
 
-    return inicializarSistema() ? CourseOperationResult::SUCCESS : CourseOperationResult::UNKNOWN_ERROR;
+    return inicializarSistema() ? ContentOperationResult::SUCCESS : ContentOperationResult::UNKNOWN_ERROR;
 }
 
 #endif // COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP

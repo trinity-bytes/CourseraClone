@@ -13,7 +13,7 @@
 
 #include "Actividad.hpp"
 #include "Curso.hpp"
-#include "../Controllers/CourseManager.hpp"
+#include "../Controllers/ContentManager.hpp"
 #include "../DataStructures/LinkedList.hpp"
 
 // Clase que representa una especialización compuesta por varios cursos

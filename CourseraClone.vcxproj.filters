@@ -16,9 +16,6 @@
     <Filter Include="Header Files\DataStructures">
       <UniqueIdentifier>{95e2cf24-383a-42da-bfe3-17f1c0d8fd61}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Controller">
-      <UniqueIdentifier>{7ebf0f94-3e0e-4f5b-9050-830d0254df8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Entities">
       <UniqueIdentifier>{e7a589d0-6be2-45c7-b2c9-d98b20f6a219}</UniqueIdentifier>
     </Filter>
@@ -30,6 +27,9 @@
     </Filter>
     <Filter Include="Header Files\Persistence">
       <UniqueIdentifier>{b1b8deba-26bb-4e19-9af0-e36dc6d469fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Controller">
+      <UniqueIdentifier>{7ebf0f94-3e0e-4f5b-9050-830d0254df8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,7 +43,7 @@
     <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Controllers\CourseManager.hpp">
+    <ClInclude Include="Headers\Controllers\ContentManager.hpp">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Controllers\MainController.hpp">
@@ -154,9 +154,6 @@
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Controllers\FilesManager.hpp">
-      <Filter>Header Files\Persistence</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
@@ -171,6 +168,12 @@
     </ClInclude>
     <ClInclude Include="Headers\Utils\DataPaths.hpp">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Controllers\FilesManager.hpp">
+      <Filter>Header Files\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Persistence\ActividadTypes.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

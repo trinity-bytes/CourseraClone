@@ -17,43 +17,12 @@
 // Headers propios
 #include "..//Persistence/UsuarioTypes.hpp" 
 #include "../Persistence/InscripcionTypes.hpp"
+#include "../Persistence/ActividadTypes.hpp"
 #include "../Utils/DataPaths.hpp"
 
-// Constantes de tipos
-const int TIPO_CURSO = 1;
-const int TIPO_ESPECIALIZACION = 2;
-
-// Datos crudos de un curso leídos del archivo
-struct RawCursoData {
-    // Datos generales del curso
-    int idEmpresa;
-    std::string nombreEmpresa;
-    std::string tituloActividad;
-    std::string descripcionActividad;
-    std::string instructor;
-    int cantidadClases;
-    std::vector<std::string> titulosClases;
-    std::vector<std::string> descripcionesClases;
-};
-
-// Datos crudos de una especialización leídos del archivo
-struct RawEspecializacionData {
-    int idEmpresa;
-    std::string nombreEmpresa;
-    std::string tituloActividad;
-    std::string descripcionActividad;
-    int cantidadCursosEnEspecializacion;
-    std::vector<int> idsCursosInternos;
-};
-
-// Estructura para agrupar los datos crudos de todas las actividades
-struct RawActividadesData {
-    std::vector<RawCursoData> cursos;
-    std::vector<RawEspecializacionData> especializaciones;
-};
-
 // Resultados de operaciones de archivo
-enum class FileOperationResult {
+enum class FileOperationResult 
+{
     SUCCESS,
     FILE_NOT_FOUND,
     PERMISSION_DENIED,
@@ -61,7 +30,8 @@ enum class FileOperationResult {
     UNKNOWN_ERROR
 };
 
-class FilesManager {
+class FilesManager 
+{
 private:
     // ========== SINGLETON PATTERN ==========
     
@@ -568,7 +538,7 @@ inline RawActividadesData FilesManager::leerDatosActividades() {
         }
         
         std::string nombreEmpresa, titulo, descripcion, instructor, tituloActividad, descripcionActividad;
-        int tipo, idEmpresa;
+        TipoActividad tipo, idEmpresa;
         
         while (archivo >> idEmpresa) {
             archivo.ignore();
@@ -578,7 +548,7 @@ inline RawActividadesData FilesManager::leerDatosActividades() {
             std::getline(archivo, tituloActividad);
             std::getline(archivo, descripcionActividad);
             
-            if (tipo == TIPO_CURSO) {
+            if (tipo == TipoActividad::CURSO) {
                 RawCursoData cursoData;
                 cursoData.idEmpresa = idEmpresa;
                 cursoData.nombreEmpresa = nombreEmpresa;

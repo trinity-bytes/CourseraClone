@@ -139,10 +139,11 @@
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Persistence\ActividadTypes.hpp" />
     <ClInclude Include="Headers\Persistence\BoletaTypes.hpp" />
     <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
-    <ClInclude Include="Headers\Controllers\CourseManager.hpp" />
+    <ClInclude Include="Headers\Controllers\ContentManager.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.hpp" />
     <ClInclude Include="Headers\DataStructures\BinaryHeap.hpp" />
