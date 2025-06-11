@@ -140,7 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Persistence\BoletaTypes.hpp" />
-    <ClInclude Include="Headers\Persistence\FilesManager.hpp" />
+    <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\CourseManager.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp" />

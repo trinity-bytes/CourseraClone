@@ -154,7 +154,7 @@
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Persistence\FilesManager.hpp">
+    <ClInclude Include="Headers\Controllers\FilesManager.hpp">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp">
