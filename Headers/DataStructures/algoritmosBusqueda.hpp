@@ -1,25 +1,19 @@
-// filepath: Headers/DataStructures/AlgoritmosBusqueda.hpp
-// Descripcion: Funciones de algoritmos de búsqueda genéricos.
+#ifndef COURSERACLONE_DATASTRUCTURES_ALGORITMOSBUSQUEDA_HPP
+#define COURSERACLONE_DATASTRUCTURES_ALGORITMOSBUSQUEDA_HPP
 
-#ifndef COURSERACLONE_HEADERS_DATASTRUCTURES_ALGORITMOSBUSQUEDA_HPP
-#define COURSERACLONE_HEADERS_DATASTRUCTURES_ALGORITMOSBUSQUEDA_HPP
-
-template <typename Pred>
-int busquedaBinaria(int l, int r, Pred pred)
+// Funciones de algoritmos de búsqueda genéricos
+template <typename Predicado>
+int busquedaBinaria(int _izquierda, int _derecha, Predicado _predicado)
 {
-    if (l > r)
-    {
-        return l;  // este es el punto de inserción
+    if (_izquierda > _derecha) {
+        return _izquierda;
     }
-    int m = l + (r - l) / 2;
-    if (pred(m))
-    {
-        return busquedaBinaria(l, m - 1, pred);
-    }
-    else
-    {
-        return busquedaBinaria(m + 1, r, pred);
+    int medio = _izquierda + (_derecha - _izquierda) / 2;
+    if (_predicado(medio)) {
+        return busquedaBinaria(_izquierda, medio - 1, _predicado);
+    } else {
+        return busquedaBinaria(medio + 1, _derecha, _predicado);
     }
 }
 
-#endif // COURSERACLONE_HEADERS_DATASTRUCTURES_ALGORITMOSBUSQUEDA_HPP
+#endif // COURSERACLONE_DATASTRUCTURES_ALGORITMOSBUSQUEDA_HPP

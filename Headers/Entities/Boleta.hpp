@@ -1,24 +1,28 @@
+// filepath: Headers/Entities/Boleta.hpp
+// Descripcion: Clase que representa una boleta de pago en el sistema
+
 #ifndef COURSERACLONE_ENTITIES_BOLETA_HPP
 #define COURSERACLONE_ENTITIES_BOLETA_HPP
 
 // Headers estandar
-#include <iostream> // std::cout, std::endl
-#include <string>   // std::string
-#include <ctime>    // time_t, tm, localtime
-#include <fstream>  // std::ofstream, std::fstream
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <fstream>
 
 // Headers propios
 #include "../DataStructures/algoritmosBusqueda.hpp"
 #include "../Persistence/BoletaTypes.hpp"
 
+// Clase que representa una boleta de pago
 class Boleta {
 private:
-    int id;
-    int idEstudiante;
-    int idActividad;
-    int tipoActividad;
-    std::string fecha;
-    double precio;
+    int _id;
+    int _idEstudiante;
+    int _idActividad;
+    int _tipoActividad;
+    std::string _fecha;
+    double _precio;
 
     std::string generarFechaActual() {
         time_t t = time(nullptr);
@@ -26,10 +30,10 @@ private:
 
         std::string fecha;
 
-        auto agregar = [&](int valor) {
-            if (valor < 10) fecha += '0';
-            fecha += std::to_string(valor);
-            };
+        auto agregar = [&](int _valor) {
+            if (_valor < 10) fecha += '0';
+            fecha += std::to_string(_valor);
+        };
 
         agregar(tm.tm_mday);
         fecha += '/';
@@ -47,19 +51,18 @@ private:
     }
 
 public:
-    Boleta(int _id, int est, int act, std::string _fecha, double _precio)
-        : id(_id), idEstudiante(est), idActividad(act),
-        fecha(_fecha), precio(_precio) {
+    Boleta(int _id, int _idEstudiante, int _idActividad, const std::string& _fecha, double _precio)
+        : _id(_id), _idEstudiante(_idEstudiante), _idActividad(_idActividad),
+        _fecha(_fecha), _precio(_precio) {
     }
 
     Boleta() :
-        id(-1), idEstudiante(-1), idActividad(-1), fecha(""), precio(0) {
+        _id(-1), _idEstudiante(-1), _idActividad(-1), _fecha(""), _precio(0) {
     }
 
-    Boleta(int est, int act, double _precio, int _id)
-        : idEstudiante(est), idActividad(act),
-        fecha(generarFechaActual()), precio(_precio), id(_id) {
-
+    Boleta(int _idEstudiante, int _idActividad, double _precio, int _id)
+        : _idEstudiante(_idEstudiante), _idActividad(_idActividad),
+        _fecha(generarFechaActual()), _precio(_precio), _id(_id) {
     }
 
     void guardar() {
@@ -71,11 +74,10 @@ public:
             offset = archivo.tellp();
 
             BoletaBinaria boleBin;
-            boleBin.idEstudiante = idEstudiante;
-            boleBin.idActividad = idActividad;
-            strncpy(boleBin.fecha, fecha.c_str(), sizeof(boleBin.fecha) - 1);
-            boleBin.fecha[sizeof(boleBin.fecha) - 1] = '\0';
-            boleBin.precio = precio;
+            boleBin.idEstudiante = _idEstudiante;
+            boleBin.idActividad = _idActividad;
+            strncpy(boleBin.fecha, _fecha.c_str(), sizeof(boleBin.fecha) - 1);
+            boleBin.fecha[sizeof(boleBin.fecha) - 1] = '\0';            boleBin.precio = _precio;
             archivo.write(reinterpret_cast<char*>(&boleBin), sizeof(boleBin));
             archivo.close();
         }
@@ -86,12 +88,12 @@ public:
             int cantidad = indiceArchivo.tellg() / sizeof(BoletaIndex);
 
             // predicado para busquedaBinaria
-            auto pred = [&](int pos)->bool {
+            auto pred = [&](int _pos) -> bool {
                 BoletaIndex temp;
-                indiceArchivo.seekg(pos * sizeof(temp), std::ios::beg);
+                indiceArchivo.seekg(_pos * sizeof(temp), std::ios::beg);
                 indiceArchivo.read(reinterpret_cast<char*>(&temp), sizeof(temp));
-                return idEstudiante >= temp.idEstudiante;
-                };
+                return _idEstudiante >= temp.idEstudiante;
+            };
 
             int posIns = (cantidad > 0) ? busquedaBinaria(0, cantidad - 1, pred) : 0;
 
@@ -103,25 +105,24 @@ public:
                 indiceArchivo.write(reinterpret_cast<char*>(&t), sizeof(t));
             }
             // insertar nuevo
-            BoletaIndex nuevo(idEstudiante, offset);
+            BoletaIndex nuevo(_idEstudiante, offset);
             indiceArchivo.seekp(posIns * sizeof(nuevo), std::ios::beg);
             indiceArchivo.write(reinterpret_cast<char*>(&nuevo), sizeof(nuevo));
             indiceArchivo.close();
         }
-
-    }
-    void mostrar() 
-    {
-        std::cout << "Boleta ID: " << id << std::endl;
-        std::cout << "ID Estudiante: " << idEstudiante << std::endl;
-        std::cout << "ID Actividad: " << idActividad << std::endl;
-        std::cout << "Fecha: " << fecha << std::endl;
-        std::cout << "Precio: " << precio << std::endl;
     }
 
-    int getId() { return id; }
-    std::string getFecha() { return fecha; }
-    double getPrecio() { return precio; }
+    void mostrar() const {
+        std::cout << "Boleta ID: " << _id << std::endl;
+        std::cout << "ID Estudiante: " << _idEstudiante << std::endl;
+        std::cout << "ID Actividad: " << _idActividad << std::endl;
+        std::cout << "Fecha: " << _fecha << std::endl;
+        std::cout << "Precio: " << _precio << std::endl;
+    }
+
+    int getId() const { return _id; }
+    const std::string& getFecha() const { return _fecha; }
+    double getPrecio() const { return _precio; }
 };
 
-#endif // !COURSERACLONE_ENTITIES_BOLETA_HPP
+#endif // COURSERACLONE_ENTITIES_BOLETA_HPP

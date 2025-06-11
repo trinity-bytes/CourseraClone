@@ -1,5 +1,11 @@
-#pragma once
+// filepath: Headers/Utils/UI_Ascii.hpp
+// Descripcion: Elementos ASCII para interfaces de usuario
+
+#ifndef COURSERACLONE_UTILS_UI_ASCII_HPP
+#define COURSERACLONE_UTILS_UI_ASCII_HPP
+
 #include <iostream>
+#include <string>
 
 /*
 ┌──┬───────┐
@@ -9,12 +15,9 @@
 └──┴───────┘
 */
 
-using namespace std;
-
-/// UI Landing Page
-inline void UI_LandingPage()
-{
-	string ui = R"(
+// UI Landing Page
+inline void UI_LandingPage() {
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  C L O N E                    INICIAR SESION   REGISTRARSE                    ║
@@ -52,13 +55,13 @@ inline void UI_LandingPage()
     Pulsa la tecla ENTER para seleciconar y ESC para SALIR DEL PROGRAMA
 )";
 
-	cout << ui;
+	std::cout << ui;
 }
 
 /// UI Login
 inline void UI_Login()
 {
-	string ui = R"(
+	std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║                                                                                                                ║
@@ -96,13 +99,13 @@ inline void UI_Login()
     Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
 )";
 
-	cout << ui;
+	std::cout << ui;
 }
 
 /// UI Singup
 inline void UI_Signup()
 {
-	string ui = R"(
+	std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║                                                                                                                ║
@@ -140,13 +143,13 @@ inline void UI_Signup()
     Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
 )";
 
-	cout << ui;
+	std::cout << ui;
 }
 
 /// UI Dashboard for student
 inline void UI_StudentDashboard()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  C L O N E  │                                  VER MI PERFIL  CERRAR SESION   ║
@@ -184,13 +187,13 @@ inline void UI_StudentDashboard()
     Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
-    cout << ui;
+    std::cout << ui;
 }
 
 /// UI Dashboard for organization
 inline void UI_OrganizationDashboard()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  C L O N E  │                                  VER MI PERFIL  CERRAR SESION   ║
@@ -228,13 +231,13 @@ inline void UI_OrganizationDashboard()
     Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
-    cout << ui;
+    std::cout << ui;
 }
 
 /// UI User Profile View
 inline void UI_UserProfile()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║     /   __/     /   __/     /   __/     /   __/     /   __/     /   __/     /   __/     /   __/     /   __/    ║
    ║__   \__/  \__   \__/  \__   \__/  \__   \__/  \__   \__/  \__   \__/  \__   \__/  \__   \__/  \__   \__/  \__  ║
@@ -272,13 +275,13 @@ inline void UI_UserProfile()
     Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
-    cout << ui;
+    std::cout << ui;
 }
 
 /// UI Organization Profile View
 inline void UI_OrganizationProfile()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║ / __ \ \__/ / __ \ \__/ / __ \ \__/ / __ \ \__/ / __ \ \__/ / __ \ \__/ / __ \ \__/ / __ \ \__/ / __ \ \__/ / _║
    ║/ /  \ \____/ /  \ \____/ /  \ \____/ /  \ \____/ /  \ \____/ /  \ \____/ /  \ \____/ /  \ \____/ /  \ \____/ / ║
@@ -315,14 +318,14 @@ inline void UI_OrganizationProfile()
     Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior
 )";
 
-    cout << ui;
+    std::cout << ui;
 }
 
 
 /// UI Update profile info
 inline void UI_UserUpdateData()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║                                                                                                                ║
@@ -360,13 +363,13 @@ inline void UI_UserUpdateData()
     Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
 )";
 
-    cout << ui;
+    std::cout << ui;
 }
 
 /// UI Vista de las especialidades
 inline void UI_VistaEspecialidad()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  C L O N E                                                                    ║
@@ -404,13 +407,13 @@ inline void UI_VistaEspecialidad()
     Pulsa ESC para regresar al menu anterior.
 )";
 
-    cout << ui;
+    std::cout << ui;
 }
 
 /// UI Vista de los cursos
 inline void UI_VistaCurso()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  C L O N E                                                                    ║
@@ -448,13 +451,13 @@ inline void UI_VistaCurso()
     Pulsa ESC para regresar al menu anterior.
 )";
 
-    cout << ui;
+    std::cout << ui;
 }
 
 /// UI Vista de los cursos
 inline void UI_ExplorarCursosAndEspecialidades()
 {
-    string ui = R"(
+    std::string ui = R"(
    ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
    ║                                                                                                                ║
    ║   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  C L O N E  │                                                                 ║
@@ -490,9 +493,9 @@ inline void UI_ExplorarCursosAndEspecialidades()
    ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
     Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
     Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.
-)";
+)";    
 
-    cout << ui;
+    std::cout << ui;
 }
 
 /*
@@ -502,3 +505,5 @@ inline void UI_ExplorarCursosAndEspecialidades()
 │  │       │
 └──┴───────┘
 */
+
+#endif // COURSERACLONE_UTILS_UI_ASCII_HPP

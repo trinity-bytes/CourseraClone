@@ -4,7 +4,7 @@
 #include <string>
 #include <cstring>
 
-// Máxima longitud para campos de texto en binarios
+// Maxima longitud para campos de texto en binarios
 static constexpr int MAX_FIELD_LEN = 50;
 
 // Tipos de usuario
@@ -12,6 +12,14 @@ enum class TipoUsuario {
     NINGUNO = 0,
     ESTUDIANTE = 1,
     EMPRESA = 2
+};
+
+// Estado de resultado de login
+enum class LoginStatus {
+    SUCCESS = 0,          // Login exitoso
+    USER_NOT_FOUND = 1,   // Usuario no encontrado
+    WRONG_PASSWORD = 2,   // ContraseÃ±a incorrecta
+    FILE_ERROR = 3        // Error al abrir o leer el archivo
 };
 
 // Estructura para almacenar un usuario en disco (.dat)
@@ -40,7 +48,7 @@ struct UsuarioBinario {
     }
 };
 
-// Estructura para índice de usuarios en disco (.idx)
+// Estructura para ï¿½ndice de usuarios en disco (.idx)
 struct UsuarioIndex {
     char nombreDeUsuario[MAX_FIELD_LEN];
     int  offset;  // byte offset en el archivo de datos
@@ -57,7 +65,7 @@ struct UsuarioIndex {
         nombreDeUsuario[MAX_FIELD_LEN - 1] = '\0';
     }
 
-    // Comparador para ordenar / búsqueda binaria
+    // Comparador para ordenar / bï¿½squeda binaria
     // Retorna <0 si a < b, 0 si iguales, >0 si a > b
     static int compare(const UsuarioIndex& a, const UsuarioIndex& b) {
         return std::strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN);

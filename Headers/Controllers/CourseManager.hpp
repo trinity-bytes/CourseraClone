@@ -13,11 +13,11 @@
 #include <memory>    // Para std::unique_ptr
 
 // Headers propios
-#include "../Entities/Curso.h"
-#include "../Entities/Especializacion.h"
-#include "../Entities/Inscripcion.h"
-#include "../DataStructures/LinkedList.h"
-#include "FilesManager.hpp" // Para RawActividadesData e InscripcionBinaria
+#include "../Entities/Curso.hpp"
+#include "../Entities/Especializacion.hpp"
+#include "../Entities/Inscripcion.hpp"
+#include "../DataStructures/LinkedList.hpp"
+#include "../Persistence/FilesManager.hpp" // Para RawActividadesData e InscripcionBinaria
 
 // Enum class para tipos de actividad
 enum class ActividadTipo : int {
@@ -42,53 +42,49 @@ public:
     CourseManager() = default;
 
     // No necesitamos un destructor ~CourseManager() manual.
-    // std::unique_ptr se encargará de liberar la memoria de los cursos y especializaciones.
-
-    void inicializarDesdeDatos(
+    // std::unique_ptr se encargará de liberar la memoria de los cursos y especializaciones.    void inicializarDesdeDatos(
         const RawActividadesData& _dataActividades, 
         const std::vector<InscripcionBinaria>& _dataInscripciones
     ) {
         // Cargar Cursos
-        for (const auto& cursoData : _dataActividades.cursos) 
+        for (const auto& _cursoData : _dataActividades.cursos) 
         {
             crearCurso(
-                cursoData.idEmpresa,
-                cursoData.tituloActividad,
-                cursoData.nombreEmpresa,
-                cursoData.cantidadClases,
-                cursoData.instructor,
-                cursoData.descripcionActividad,
-                cursoData.titulosClases,
-                cursoData.descripcionesClases
+                _cursoData.idEmpresa,
+                _cursoData.tituloActividad,
+                _cursoData.nombreEmpresa,
+                _cursoData.cantidadClases,
+                _cursoData.instructor,
+                _cursoData.descripcionActividad,
+                _cursoData.titulosClases,
+                _cursoData.descripcionesClases
             );
         }
 
         // Cargar Especializaciones
-        for (const auto& espData : _dataActividades.especializaciones) 
+        for (const auto& _espData : _dataActividades.especializaciones) 
         {
             crearEspecializacion(
-                espData.idEmpresa,
-                espData.nombreEmpresa,
-                espData.tituloActividad,
-                espData.cantidadCursosEnEspecializacion,
-                espData.descripcionActividad,
-                espData.idsCursosInternos
+                _espData.idEmpresa,
+                _espData.nombreEmpresa,
+                _espData.tituloActividad,
+                _espData.cantidadCursosEnEspecializacion,
+                _espData.descripcionActividad,
+                _espData.idsCursosInternos
             );
-        }
-
-        // Procesar Inscripciones para actualizar contadores
-        for (const auto& inscripcion : _dataInscripciones) 
+        }        // Procesar Inscripciones para actualizar contadores
+        for (const auto& _inscripcion : _dataInscripciones) 
         {
-            if (inscripcion.tipoActividad == static_cast<int>(ActividadTipo::CURSO)) 
+            if (_inscripcion.tipoActividad == static_cast<int>(ActividadTipo::CURSO)) 
             {
-                Curso* curso = obtenerCurso(inscripcion.idActividad);
+                Curso* curso = obtenerCurso(_inscripcion.idActividad);
                 if (curso) {
                     curso->aumentarAlumno(1);
                 }
             }
-            else if (inscripcion.tipoActividad == static_cast<int>(ActividadTipo::ESPECIALIZACION)) 
+            else if (_inscripcion.tipoActividad == static_cast<int>(ActividadTipo::ESPECIALIZACION)) 
             {
-                Especializacion* especializacion = obtenerEspecializacion(inscripcion.idActividad);
+                Especializacion* especializacion = obtenerEspecializacion(_inscripcion.idActividad);
                 if (especializacion) {
                     especializacion->aumentarAlumno(1);
                 }

@@ -14,7 +14,7 @@
 #include <stdexcept> // Para manejo de excepciones
 
 // Headers propios
-#include "CourseManager.hpp"
+//#include "CourseManager.hpp"
 //#include "../Entities/Actividad.h"
 //#include "../Entities/Estudiante.h"
 //#include "../Entities/Empresa.h"
@@ -42,7 +42,7 @@ class MainController
 {
 private:
     // Atributos privados
-    unique_ptr<CourseManager> _courseManager;
+    std::unique_ptr<CourseManager> _courseManager;
     //std::vector<Actividad> _actividades;
     //Estudiante* _estudiante; 
     //Empresa* _empresa;
@@ -105,7 +105,7 @@ unique_ptr<PantallaBase> MainController::crearPantallaLandingPage()
 {
     //_estudiante->reset();
     //_empresa->reset();
-    return make_unique<LandingPageScreen>(_courseManager->getCursos(), _courseManager->getEspecializaciones());
+    //>>>>>>>>>>return make_unique<LandingPageScreen>(_courseManager->getCursos(), _courseManager->getEspecializaciones());
 }
 
 // Método principal de ejecución del sistema

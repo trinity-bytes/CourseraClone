@@ -6,7 +6,7 @@
 // Headers de consola
 #include "../Entities/Estudiante.h"
 #include "../Utils/SystemUtils.h"
-#include "../Utils/ScreenSystem.h"
+#include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.h"
 
 // Screen to display student profile information and navigation options

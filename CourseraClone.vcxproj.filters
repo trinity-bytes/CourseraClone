@@ -49,34 +49,34 @@
     <ClInclude Include="Headers\Controllers\MainController.hpp">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.h">
+    <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\BinaryHeap.h">
+    <ClInclude Include="Headers\DataStructures\BinaryHeap.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\BinarySearchTree.h">
+    <ClInclude Include="Headers\DataStructures\BinarySearchTree.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\HashEntity.h">
+    <ClInclude Include="Headers\DataStructures\HashEntity.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\HashTable.h">
+    <ClInclude Include="Headers\DataStructures\HashTable.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\LinkedList.h">
+    <ClInclude Include="Headers\DataStructures\LinkedList.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\Nodo.h">
+    <ClInclude Include="Headers\DataStructures\Nodo.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\PriorityQueue.h">
+    <ClInclude Include="Headers\DataStructures\PriorityQueue.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\Queue.h">
+    <ClInclude Include="Headers\DataStructures\Queue.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\Stack.h">
+    <ClInclude Include="Headers\DataStructures\Stack.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Actividad.hpp">
@@ -85,19 +85,19 @@
     <ClInclude Include="Headers\Entities\Boleta.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Clase.h">
+    <ClInclude Include="Headers\Entities\Clase.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Curso.h">
+    <ClInclude Include="Headers\Entities\Curso.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Empresa.h">
+    <ClInclude Include="Headers\Entities\Empresa.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Especializacion.h">
+    <ClInclude Include="Headers\Entities\Especializacion.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Estudiante.h">
+    <ClInclude Include="Headers\Entities\Estudiante.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Inscripcion.hpp">
@@ -109,49 +109,49 @@
     <ClInclude Include="Headers\Entities\Venta.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h">
+    <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.h">
+    <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\EditarPerfilScreen.h">
+    <ClInclude Include="Headers\Screens\EditarPerfilScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.h">
+    <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Screens\LandingPageScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\LoginScreen.h">
+    <ClInclude Include="Headers\Screens\LoginScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\MostrarCursoScreen.h">
+    <ClInclude Include="Headers\Screens\MostrarCursoScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\MostrarEspecialidadScreen.h">
+    <ClInclude Include="Headers\Screens\MostrarEspecialidadScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\PerfilEstudianteScreen.h">
+    <ClInclude Include="Headers\Screens\PerfilEstudianteScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.h">
+    <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\RegistroScreen.h">
+    <ClInclude Include="Headers\Screens\RegistroScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Screens\VerBoletasScreen.h">
+    <ClInclude Include="Headers\Screens\VerBoletasScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Utils\ScreenSystem.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Utils\SystemUtils.h">
+    <ClInclude Include="Headers\Utils\SystemUtils.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Utils\UI_Ascii.h">
+    <ClInclude Include="Headers\Utils\UI_Ascii.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Persistence\FilesManager.hpp">
@@ -167,7 +167,7 @@
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Persistence\BoletaTypes.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

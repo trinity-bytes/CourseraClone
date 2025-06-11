@@ -1,4 +1,8 @@
-#pragma once
+// filepath: Headers/Utils/ScreenSystem.hpp
+// Descripcion: Sistema de gestión de pantallas y navegación
+
+#ifndef COURSERACLONE_UTILS_SCREENSYSTEM_HPP
+#define COURSERACLONE_UTILS_SCREENSYSTEM_HPP
 
 // Headers de librerías
 #include <string>
@@ -7,12 +11,8 @@
 
 // Headers propios
 #include "../Entities/Usuario.hpp"
-#include "SystemUtils.h"
-#include "UI_Ascii.h"
-
-using std::string;
-using std::vector;
-using std::unique_ptr;
+#include "SystemUtils.hpp"
+#include "UI_Ascii.hpp"
 
 // Declaración anticipada de la clase Controladora
 class Controladora;
@@ -60,13 +60,12 @@ enum class Pantalla {
     DETALLE_ESPECIALIDAD
 };
 
-/// @brief Estructura que encapsula el resultado de la ejecución de una pantalla
-struct ResultadoPantalla 
-{
+// Estructura que encapsula el resultado de la ejecución de una pantalla
+struct ResultadoPantalla {
     // Compatibilidad total con código existente
     AccionPantalla accion = AccionPantalla::NINGUNA;
-    string email;
-    string password;
+    std::string email;
+    std::string password;
     TipoUsuario tipoUsuario = TipoUsuario::ESTUDIANTE;
     int idCursoSeleccionado = -1;
     AccionPantalla accionAnterior = AccionPantalla::NINGUNA;
@@ -84,10 +83,10 @@ struct ResultadoPantalla
         : accion(_accion) {}
 
     explicit ResultadoPantalla(AccionPantalla _accion, TipoUsuario _tipo)
-	: accion(_accion), tipoUsuario(_tipo) {}
+        : accion(_accion), tipoUsuario(_tipo) {}
     
-    ResultadoPantalla(AccionPantalla _accion, const string& _email, 
-                     const string& _password, TipoUsuario _tipo)
+    ResultadoPantalla(AccionPantalla _accion, const std::string& _email, 
+                     const std::string& _password, TipoUsuario _tipo)
         : accion(_accion), email(_email), password(_password), tipoUsuario(_tipo) {}
     
     // Métodos de utilidad
@@ -104,16 +103,16 @@ struct ResultadoPantalla
     }
 };
 
-/// @brief Clase abstracta base para todas las pantallas del sistema
+// Clase abstracta base para todas las pantallas del sistema
 class PantallaBase {
 protected:
     Controladora* _controladora = nullptr;
     bool _esPrimeraVez = true;
-    string _titulo = "";
+    std::string _titulo = "";
     
 public:
-    explicit PantallaBase(Controladora* controladora = nullptr) 
-        : _controladora(controladora) {}
+    explicit PantallaBase(Controladora* _controladora = nullptr) 
+        : _controladora(_controladora) {}
     
     virtual ~PantallaBase() = default;
     
@@ -126,31 +125,30 @@ public:
     virtual bool validarAcceso() { return true; }
     
     // Getters y setters
-    void setControladora(Controladora* controladora) { _controladora = controladora; }
-    void setTitulo(const string& titulo) { _titulo = titulo; }
-    const string& getTitulo() const { return _titulo; }
+    void setControladora(Controladora* _controladora) { this->_controladora = _controladora; }
+    void setTitulo(const std::string& _titulo) { this->_titulo = _titulo; }
+    const std::string& getTitulo() const { return _titulo; }
     bool esPrimeraVez() const { return _esPrimeraVez; }
     
 protected:
     void marcarComoVisitada() { _esPrimeraVez = false; }
     
     // Helpers para crear resultados
-    ResultadoPantalla crearResultado(AccionPantalla accion) const {
-        return ResultadoPantalla(accion);
+    ResultadoPantalla crearResultado(AccionPantalla _accion) const {
+        return ResultadoPantalla(_accion);
     }
 
-    ResultadoPantalla crearResultado(AccionPantalla accion, TipoUsuario user) const {
-        return ResultadoPantalla(accion, user);
+    ResultadoPantalla crearResultado(AccionPantalla _accion, TipoUsuario _user) const {
+        return ResultadoPantalla(_accion, _user);
     }
     
-    ResultadoPantalla crearResultadoLogin(AccionPantalla accion, const string& email, 
-                                        const string& password, TipoUsuario tipo) const {
-        return ResultadoPantalla(accion, email, password, tipo);
+    ResultadoPantalla crearResultadoLogin(AccionPantalla _accion, const std::string& _email, 
+                                        const std::string& _password, TipoUsuario _tipo) const {
+        return ResultadoPantalla(_accion, _email, _password, _tipo);
     }
     
-    ResultadoPantalla crearResultadoConCurso(AccionPantalla accion, int idCurso) const {
-        ResultadoPantalla resultado(accion);
-        resultado.idCursoSeleccionado = idCurso;
+    ResultadoPantalla crearResultadoConCurso(AccionPantalla _accion, int _idCurso) const {
+        ResultadoPantalla resultado(_accion);        resultado.idCursoSeleccionado = _idCurso;
         return resultado;
     }
 };
@@ -158,11 +156,9 @@ protected:
 // UTILIDADES DEL SISTEMA DE PANTALLAS
 namespace ScreenUtils {
     
-    /// @brief Convierte AccionPantalla a string para usarlo en el debugging
-    inline string accionToString(AccionPantalla accion) 
-    {
-        switch (accion) 
-        {
+    // Convierte AccionPantalla a string para usarlo en el debugging
+    inline std::string accionToString(AccionPantalla _accion) {
+        switch (_accion) {
             case AccionPantalla::IR_A_LANDING_PAGE: return "IR_A_LANDING_PAGE";
             case AccionPantalla::IR_A_LOGIN: return "IR_A_LOGIN";
             case AccionPantalla::IR_A_REGISTRO: return "IR_A_REGISTRO";
@@ -173,11 +169,9 @@ namespace ScreenUtils {
         }
     }
     
-    /// @brief Convierte Pantalla a string para debugging
-    inline string pantallaToString(Pantalla pantalla) 
-    {
-        switch (pantalla) 
-        {
+    // Convierte Pantalla a string para debugging
+    inline std::string pantallaToString(Pantalla _pantalla) {
+        switch (_pantalla) {
             case Pantalla::LANDING_PAGE: return "LANDING_PAGE";
             case Pantalla::LOGIN: return "LOGIN";
             case Pantalla::REGISTRO: return "REGISTRO";
@@ -187,11 +181,9 @@ namespace ScreenUtils {
         }
     }
     
-    /// @brief Mapea AccionPantalla a Pantalla
-    inline Pantalla accionAPantalla(AccionPantalla accion) 
-    {
-        switch (accion) 
-        {
+    // Mapea AccionPantalla a Pantalla
+    inline Pantalla accionAPantalla(AccionPantalla _accion) {
+        switch (_accion) {
             case AccionPantalla::IR_A_LANDING_PAGE: return Pantalla::LANDING_PAGE;
             case AccionPantalla::IR_A_LOGIN: return Pantalla::LOGIN;
             case AccionPantalla::IR_A_REGISTRO: return Pantalla::REGISTRO;
@@ -203,16 +195,17 @@ namespace ScreenUtils {
         }
     }
     
-    /// @brief Verifica si una acción es para estudiantes
-    inline bool esAccionEstudiante(AccionPantalla accion) {
-        return accion == AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE ||
-               accion == AccionPantalla::IR_A_PERFIL_ESTUDIANTE;
+    // Verifica si una acción es para estudiantes
+    inline bool esAccionEstudiante(AccionPantalla _accion) {
+        return _accion == AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE ||
+               _accion == AccionPantalla::IR_A_PERFIL_ESTUDIANTE;
     }
     
-    /// @brief Verifica si una acción es para organizaciones
-    inline bool esAccionOrganizacion(AccionPantalla accion) 
-    {
-        return accion == AccionPantalla::IR_A_DASHBOARD_ORGANIZACION ||
-               accion == AccionPantalla::IR_A_PERFIL_ORGANIZACION;
+    // Verifica si una acción es para organizaciones
+    inline bool esAccionOrganizacion(AccionPantalla _accion) {
+        return _accion == AccionPantalla::IR_A_DASHBOARD_ORGANIZACION ||
+               _accion == AccionPantalla::IR_A_PERFIL_ORGANIZACION;
     }
 }
+
+#endif // COURSERACLONE_UTILS_SCREENSYSTEM_HPP

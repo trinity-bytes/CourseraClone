@@ -19,6 +19,13 @@
 #include "../Persistence/UsuarioTypes.hpp" // UsuarioBinario, UsuarioIndex, TipoUsuario, LoginStatus
 #include "../Persistence/FilesManager.hpp"
 
+const std::string DATA_DIR = "Resources/Data/";
+const std::string INDEX_DIR = DATA_DIR + "indices/";
+const std::string EMPRESA_DATA_FILE = DATA_DIR + "usuarios_empresa.dat";
+const std::string ESTUDIANTE_DATA_FILE = DATA_DIR + "usuarios_estudiante.dat";
+const std::string EMPRESA_INDEX_FILE = INDEX_DIR + "usuarios_empresa.dat";       // Debería ser diferente al de datos?Add commentMore actions
+const std::string ESTUDIANTE_INDEX_FILE = INDEX_DIR + "usuarios_estudiante.dat"; // Debería ser diferente al de datos?
+
 /// --- Clase Usuario ---
 // @brief Clase que representa un usuario en el sistema, con métodos para autenticación 
 //        y manejo de archivos binarios.

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COURSERACLONE_SCREENS_MOSTRARCURSOSCREEN_HPP
+#define COURSERACLONE_SCREENS_MOSTRARCURSOSCREEN_HPP
 
 // Headers estándar
 #include <vector>
@@ -7,13 +8,13 @@
 #include <sstream>
 
 // Headers propios
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/UI_Ascii.h"
-#include "../Entities/Curso.h"
-#include "../Entities/Clase.h"
-#include "../Controllers/GestionadorCursos.h"
-#include "../Entities/Estudiante.h"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/UI_Ascii.hpp"
+#include "../Entities/Curso.hpp"
+#include "../Entities/Clase.hpp"
+#include "../Controllers/GestionadorCursos.hpp"
+#include "../Entities/Estudiante.hpp"
 
 // Pantalla que muestra los detalles de un curso específico
 class MostrarCursoScreen : public PantallaBase
@@ -361,8 +362,8 @@ public:
                 res.tipoUsuario = _tipoUsuario; // Ensure we keep the user type
                 return res;
             }
-        }
-
-        return res;
+        }        return res;
     }
 };
+
+#endif // COURSERACLONE_SCREENS_MOSTRARCURSOSCREEN_HPP

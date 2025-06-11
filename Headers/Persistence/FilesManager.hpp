@@ -1,9 +1,8 @@
-// filepath: Headers/Controllers/FileManager.hpp
 // description: Este archivo define la clase FileManager, 
 //				que se encarga de gestionar archivos en el sistema.
 
-#ifndef HEADER_CONTROLLERS_FILEMANAGER_HPP
-#define HEADER_CONTROLLERS_FILEMANAGER_HPP
+#ifndef COURSERACLONE_PERSISTENCE_FILESMANAGER_HPP
+#define COURSERACLONE_PERSISTENCE_FILESMANAGER_HPP
 
 // Headers estandar
 #include <string>    // Para uso de std::string
@@ -203,9 +202,7 @@ inline std::vector<InscripcionBinaria> FileManager::leerDatosInscripciones()
 
     if (archivo.is_open()) { // Asegurarse de cerrar si no hubo excepción que ya lo hizo.
         archivo.close();
-    }
-
-    return listaInscripciones;
+    }    return listaInscripciones;
 }
 
-#endif // !HEADER_CONTROLLERS_FILEMANAGER_HPP
+#endif // COURSERACLONE_PERSISTENCE_FILESMANAGER_HPP

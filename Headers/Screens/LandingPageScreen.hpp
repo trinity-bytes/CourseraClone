@@ -12,7 +12,7 @@
 
 // Librerias propias
 #include "../Utils/ScreenSystem.hpp"
-#include "../DataStructures/PriorityQueue.h"
+#include "../DataStructures/PriorityQueue.hpp"
 #include "../Controllers/CourseManager.hpp"
 
 // forward declarations

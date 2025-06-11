@@ -1,7 +1,7 @@
-// filepath: Headers/Screens/DashboardEstudiante_Screen.h
 // Pantalla principal del estudiante con navegación por secciones
 
-#pragma once
+#ifndef COURSERACLONE_SCREENS_DASHBOARDESTUDIANTESCREEN_HPP
+#define COURSERACLONE_SCREENS_DASHBOARDESTUDIANTESCREEN_HPP
 
 // Headers de librería estándar
 #include <vector>
@@ -12,13 +12,13 @@
 #include <algorithm>  // Para std::min
 
 // Headers propios
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/UI_Ascii.h"
-#include "../Entities/Inscripcion.h"
-#include "../Entities/Curso.h"
-#include "../Entities/Especializacion.h"
-#include "../Controllers/GestionadorCursos.h"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/UI_Ascii.hpp"
+#include "../Entities/Inscripcion.hpp"
+#include "../Entities/Curso.hpp"
+#include "../Entities/Especializacion.hpp"
+#include "../Controllers/GestionadorCursos.hpp"
 
 // forward declarations
 class Controladora; // Declaración adelantada de Controladora
@@ -388,10 +388,13 @@ ResultadoPantalla DashboardEstudianteScreen::procesarSeleccion()
             res.tipoUsuario = TipoUsuario::ESTUDIANTE;
             res.idUsuarioActual = _idEstudiante;
             res.sesionActiva = true;
-            return res;
+        return res;
         }
     }
     
     // Si no hay acción específica, no hacer nada
     return crearResultado(AccionPantalla::NINGUNA);
 }
+};
+
+#endif // COURSERACLONE_SCREENS_DASHBOARDESTUDIANTESCREEN_HPP

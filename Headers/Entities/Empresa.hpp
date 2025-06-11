@@ -1,15 +1,18 @@
 // Descripcion: Clase que representa una empresa en el sistema
 
-#pragma once
+#ifndef COURSERACLONE_ENTITIES_EMPRESA_HPP
+#define COURSERACLONE_ENTITIES_EMPRESA_HPP
 
 // Librerías estándar
 #include <unordered_set>
 #include <stdexcept>
+#include <string>
+#include <iostream>
 
 // Librerias del proyecto
 #include "Usuario.hpp"
-#include "Curso.h"
-#include "Especializacion.h"
+#include "Curso.hpp"
+#include "Especializacion.hpp"
 
 // Clase que representa una empresa usuaria del sistema
 class Empresa : public Usuario
@@ -27,7 +30,7 @@ private:
 public:
     // Constructores
     Empresa();
-    Empresa(int _id, const string& _nombreCompleto, const string& _nickname, const string& _contrasena);
+    Empresa(int _id, const std::string& _nombreCompleto, const std::string& _nickname, const std::string& _contrasena);
 
     // Métodos de gestión de datos
     void cargarDatos();
@@ -64,7 +67,7 @@ inline Empresa::Empresa() : Usuario()
     cargarDatos();
 }
 
-inline Empresa::Empresa(int _id, const string& _nombreCompleto, const string& _nickname, const string& _contrasena)
+inline Empresa::Empresa(int _id, const std::string& _nombreCompleto, const std::string& _nickname, const std::string& _contrasena)
     : Usuario(_id, TipoUsuario::EMPRESA, _nombreCompleto, _nickname, _contrasena)
 {
     cargarDatos();
@@ -94,16 +97,15 @@ inline bool Empresa::validarEspecializacion(const Especializacion& _especializac
 }
 
 inline bool Empresa::crearCurso(const Curso& _nuevoCurso)
-{
-    if (!validarCurso(_nuevoCurso))
+{    if (!validarCurso(_nuevoCurso))
     {
-        throw invalid_argument("Error: El curso proporcionado no es válido.");
+        throw std::invalid_argument("Error: El curso proporcionado no es válido.");
     }
 
     // Verificar que no existe un curso con el mismo ID
     if (tieneCurso(_nuevoCurso.getId()))
     {
-        throw invalid_argument("Error: Ya existe un curso con ese ID.");
+        throw std::invalid_argument("Error: Ya existe un curso con ese ID.");
     }
 
     _cursos.agregarAlFinal(_nuevoCurso);
@@ -114,7 +116,7 @@ inline bool Empresa::eliminarCurso(int _idCurso)
 {
     if (_idCurso <= 0)
     {
-        throw invalid_argument("Error: ID de curso inválido.");
+        throw std::invalid_argument("Error: ID de curso inválido.");
     }
 
     // TODO: Implementar eliminación por ID en LinkedList
@@ -126,13 +128,13 @@ inline bool Empresa::crearEspecializacion(const Especializacion& _nuevaEspeciali
 {
     if (!validarEspecializacion(_nuevaEspecializacion))
     {
-        throw invalid_argument("Error: La especialización proporcionada no es válida.");
+        throw std::invalid_argument("Error: La especialización proporcionada no es válida.");
     }
 
     // Verificar que no existe una especialización con el mismo ID
     if (tieneEspecializacion(_nuevaEspecializacion.getId()))
     {
-        throw invalid_argument("Error: Ya existe una especialización con ese ID.");
+        throw std::invalid_argument("Error: Ya existe una especialización con ese ID.");
     }
 
     _especializaciones.agregarAlFinal(_nuevaEspecializacion);
@@ -143,7 +145,7 @@ inline bool Empresa::eliminarEspecializacion(int _idEspecializacion)
 {
     if (_idEspecializacion <= 0)
     {
-        throw invalid_argument("Error: ID de especialización inválido.");
+        throw std::invalid_argument("Error: ID de especialización inválido.");
     }
 
     // TODO: Implementar eliminación por ID en LinkedList
@@ -152,32 +154,30 @@ inline bool Empresa::eliminarEspecializacion(int _idEspecializacion)
 
 inline void Empresa::mostrarProfesores() const
 {
-    unordered_set<string> profesores;
+    std::unordered_set<std::string> profesores;
 
     // Recopilar profesores únicos de todos los cursos
     for (const auto& curso : _cursos)
     {
         if (validarCurso(curso))
         {
-            string instructor = curso.getInstructor();
+            std::string instructor = curso.getInstructor();
             if (!instructor.empty())
             {
                 profesores.insert(instructor);
             }
         }
-    }
-
-    // Mostrar resultados
+    }    // Mostrar resultados
     if (profesores.empty())
     {
-        cout << "No hay profesores registrados para esta empresa." << endl;
+        std::cout << "No hay profesores registrados para esta empresa." << std::endl;
     }
     else
     {
-        cout << "Profesores asociados a los cursos de la empresa:" << endl;
+        std::cout << "Profesores asociados a los cursos de la empresa:" << std::endl;
         for (const auto& profesor : profesores)
         {
-            cout << "- " << profesor << endl;
+            std::cout << "- " << profesor << std::endl;
         }
     }
 }
@@ -186,12 +186,12 @@ inline bool Empresa::anadirCursoAEspecializacion(int _idEspecializacion, Curso& 
 {
     if (!validarCurso(_curso))
     {
-        throw invalid_argument("Error: El curso proporcionado no es válido.");
+        throw std::invalid_argument("Error: El curso proporcionado no es válido.");
     }
 
     if (_idEspecializacion <= 0)
     {
-        throw invalid_argument("Error: ID de especialización inválido.");
+        throw std::invalid_argument("Error: ID de especialización inválido.");
     }
 
     // Buscar la especialización por ID
@@ -204,14 +204,14 @@ inline bool Empresa::anadirCursoAEspecializacion(int _idEspecializacion, Curso& 
         }
     }
 
-    throw invalid_argument("Error: No se encontró una especialización con el ID proporcionado.");
+    throw std::invalid_argument("Error: No se encontró una especialización con el ID proporcionado.");
 }
 
 inline bool Empresa::eliminarCursoDeEspecializacion(int _idEspecializacion, int _idCurso)
 {
     if (_idEspecializacion <= 0 || _idCurso <= 0)
     {
-        throw invalid_argument("Error: IDs inválidos proporcionados.");
+        throw std::invalid_argument("Error: IDs inválidos proporcionados.");
     }
 
     // Buscar la especialización por ID
@@ -223,7 +223,7 @@ inline bool Empresa::eliminarCursoDeEspecializacion(int _idEspecializacion, int 
         }
     }
 
-    throw invalid_argument("Error: No se encontró una especialización con el ID proporcionado.");
+    throw std::invalid_argument("Error: No se encontró una especialización con el ID proporcionado.");
 }
 
 inline int Empresa::obtenerCantidadCursos() const
@@ -263,3 +263,5 @@ inline bool Empresa::tieneEspecializacion(int _idEspecializacion) const
     }
     return false;
 }
+
+#endif // COURSERACLONE_ENTITIES_EMPRESA_HPP

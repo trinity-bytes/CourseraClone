@@ -1,65 +1,65 @@
+// filepath: Headers/Entities/Actividad.hpp
+// Descripcion: Clase base para actividades educativas (cursos y especializaciones)
+
 #ifndef COURSERACLONE_ENTITIES_ACTIVIDAD_HPP
 #define COURSERACLONE_ENTITIES_ACTIVIDAD_HPP
 
-// Headers estandar
 #include <string>
 
-class Actividad
-{
+// Clase base que representa una actividad educativa
+class Actividad {
 protected:
-	int id;
-	int idEmpresa;
-	std::string nombreEmpresa;
-	std::string titulo;
-	std::string descripcion;
-	int cantidadAlumnos;
-	int tipo;
+    int _id;
+    int _idEmpresa;
+    std::string _nombreEmpresa;
+    std::string _titulo;
+    std::string _descripcion;
+    int _cantidadAlumnos;
+    int _tipo;
 
 public:
-	Actividad() :
-		id(0),
-		idEmpresa(0),
-		nombreEmpresa(""),
-		titulo(""),
-		descripcion(""),
-		cantidadAlumnos(0),
-		tipo(0)
-	{
-	}
+    Actividad() :
+        _id(0),
+        _idEmpresa(0),
+        _nombreEmpresa(""),
+        _titulo(""),
+        _descripcion(""),
+        _cantidadAlumnos(0),
+        _tipo(0) {
+    }
 
-	Actividad(
-		int _id,
-		int _idEmpresa,
-		const std::string& _nombreEmpresa,
-		const std::string& _titulo,
-		int _cantidadAlumnos,
-		int _tipo,
-		const std::string& _descripcion
-	) :
-		id(_id),
-		idEmpresa(_idEmpresa),
-		nombreEmpresa(_nombreEmpresa),
-		titulo(_titulo),
-		cantidadAlumnos(_cantidadAlumnos),
-		tipo(_tipo),
-		descripcion(_descripcion)
-	{
-	}
+    Actividad(
+        int _id,
+        int _idEmpresa,
+        const std::string& _nombreEmpresa,
+        const std::string& _titulo,
+        int _cantidadAlumnos,
+        int _tipo,
+        const std::string& _descripcion
+    ) :
+        _id(_id),
+        _idEmpresa(_idEmpresa),
+        _nombreEmpresa(_nombreEmpresa),
+        _titulo(_titulo),
+        _cantidadAlumnos(_cantidadAlumnos),
+        _tipo(_tipo),
+        _descripcion(_descripcion) {
+    }
 
-	virtual ~Actividad() = default;
+    virtual ~Actividad() = default;
 
-	void aumentarAlumno(int cantidad) {
-		cantidadAlumnos += cantidad;
-	}
+    void aumentarAlumno(int _cantidad) {
+        _cantidadAlumnos += _cantidad;
+    }
 
-	// -- Getters --
-	int getIdEmpresa() const { return idEmpresa; }
-	const std::string& getNombreEmpresa() const { return nombreEmpresa; }
-	int getId() const { return id; }
-	int getTipo() const { return tipo; }
-	int getCantidadAlumnos() const { return cantidadAlumnos; }
-	const std::string& getTitulo() const { return titulo; }
-	const std::string& getDescripcion() const { return descripcion; }
+    // Getters
+    int getIdEmpresa() const { return _idEmpresa; }
+    const std::string& getNombreEmpresa() const { return _nombreEmpresa; }
+    int getId() const { return _id; }
+    int getTipo() const { return _tipo; }
+    int getCantidadAlumnos() const { return _cantidadAlumnos; }
+    const std::string& getTitulo() const { return _titulo; }
+    const std::string& getDescripcion() const { return _descripcion; }
 };
 
-#endif // !COURSERACLONE_ENTITIES_ACTIVIDAD_HPP
+#endif // COURSERACLONE_ENTITIES_ACTIVIDAD_HPP

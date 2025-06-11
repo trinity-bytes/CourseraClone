@@ -1,15 +1,16 @@
-#pragma once
+#ifndef COURSERACLONE_SCREENS_LOGINSCREEN_HPP
+#define COURSERACLONE_SCREENS_LOGINSCREEN_HPP
 
 // Librerias estándar
 #include <string>
 
 // Librerías propias
-#include "../Utils/ScreenSystem.h"
-#include "../Entities/Estudiante.h"
-#include "../Entities/Empresa.h"
-#include "../DataStructures/LinkedList.h"
-#include "../Entities/Curso.h"
-#include "../Entities/Especializacion.h"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Entities/Estudiante.hpp"
+#include "../Entities/Empresa.hpp"
+#include "../DataStructures/LinkedList.hpp"
+#include "../Entities/Curso.hpp"
+#include "../Entities/Especializacion.hpp"
 
 // forward declarations
 class Usuario;
@@ -552,10 +553,12 @@ inline ResultadoPantalla LoginScreen::ejecutar() {
                 break;
                 
             default:
-                _manejarEntradaTexto(tecla);
+        _manejarEntradaTexto(tecla);
                 break;
         }
         
         _limpiarError();
     }
-}
+};
+
+#endif // COURSERACLONE_SCREENS_LOGINSCREEN_HPP

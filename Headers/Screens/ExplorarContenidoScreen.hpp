@@ -1,9 +1,8 @@
-// filepath: Headers/Screens/ExplorarContenidoScreen.h
 // Descripcion: Pantalla que permite a los usuarios explorar, navegar y seleccionar
 //              cursos y especializaciones disponibles en el sistema.
 
-#ifndef SCREENS_EXPLORARCURSOSSCREEN_H
-#define SCREENS_EXPLORARCURSOSSCREEN_H
+#ifndef COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP
+#define COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP
 
 // 1. Includes del sistema
 #include <iostream>
@@ -13,12 +12,12 @@
 #include <conio.h>   // Para _getch()
 
 // 2. Includes del proyecto
-#include "../Entities/Curso.h"
-#include "../Entities/Especializacion.h"
-#include "../Controllers/GestionadorCursos.h"
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/UI_Ascii.h"
+#include "../Entities/Curso.hpp"
+#include "../Entities/Especializacion.hpp"
+#include "../Controllers/GestionadorCursos.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/UI_Ascii.hpp"
 
 // 3. Forward declarations
 class Controladora;
@@ -297,9 +296,8 @@ public:
                     ? AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE
                     : AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
                 return crearResultado(accionDestino, _tipoUsuario);
-            }
-        }
+            }        }
     }
 };
 
-#endif // SCREENS_EXPLORARCURSOSSCREEN_H
+#endif // COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP

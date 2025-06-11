@@ -1,4 +1,8 @@
-#pragma once
+// filepath: Headers/Utils/SystemUtils.hpp
+// Descripcion: Utilidades del sistema y constantes globales
+
+#ifndef COURSERACLONE_UTILS_SYSTEMUTILS_HPP
+#define COURSERACLONE_UTILS_SYSTEMUTILS_HPP
 
 //=============================================================================
 // SISTEMA UNIFICADO DE UTILIDADES - COURSERA CLONE
@@ -28,15 +32,15 @@ const std::string RUTA_BACKUP = "Resources/Backup/";
 // ESTRUCTURAS DE DATOS COMUNES
 //=============================================================================
 
-/// @brief Estructura RGB para definir colores
+// Estructura RGB para definir colores
 struct Color {
     BYTE r, g, b;
     
-    constexpr Color(BYTE red, BYTE green, BYTE blue) 
-        : r(red), g(green), b(blue) {}
+    constexpr Color(BYTE _red, BYTE _green, BYTE _blue) 
+        : r(_red), g(_green), b(_blue) {}
 };
 
-/// @brief Estructura para elementos de menú reutilizable
+// Estructura para elementos de menú reutilizable
 struct ElementoMenu {
     int id = -1;
     std::string titulo;
