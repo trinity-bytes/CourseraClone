@@ -1,17 +1,19 @@
-#pragma once
+#ifndef COURSERACLONE_SCREENS_EDITARPERFILSCREEN_HPP
+#define COURSERACLONE_SCREENS_EDITARPERFILSCREEN_HPP
 
 // Headers de librería estándar
 #include <iostream>
 #include <string>
 
 // Headers propios
-#include "../Entities/Empresa.h"
-#include "../Entities/Estudiante.h"
-#include "../Entities/Usuario.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/UI_Ascii.h"
+#include "../Entities/Empresa.hpp"
+#include "../Entities/Estudiante.hpp"
+#include "../Entities/Usuario.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/UI_Ascii.hpp"
 
+/// Pantalla para editar perfil de usuario
 class EditarPerfilScreen : public PantallaBase
 {
 private:
@@ -315,9 +317,10 @@ public:
                         dibujarInterfazCompleta();
                     }
                 }
-                break;
-            }
+                break;        }
             error = false;
         }
     }
 };
+
+#endif // COURSERACLONE_SCREENS_EDITARPERFILSCREEN_HPP

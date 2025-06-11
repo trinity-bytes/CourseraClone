@@ -1,15 +1,16 @@
-#pragma once
+#ifndef COURSERACLONE_SCREENS_PERFILESTUDIANTESCREEN_HPP
+#define COURSERACLONE_SCREENS_PERFILESTUDIANTESCREEN_HPP
 
 // Headers estándar
 #include <string>
 
-// Headers de consola
-#include "../Entities/Estudiante.h"
-#include "../Utils/SystemUtils.h"
+// Headers propios
+#include "../Entities/Estudiante.hpp"
+#include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
-#include "../Utils/UI_Ascii.h"
+#include "../Utils/UI_Ascii.hpp"
 
-// Screen to display student profile information and navigation options
+/// Pantalla para mostrar perfil de estudiante
 class PerfilEstudianteScreen : public PantallaBase
 {
 private:
@@ -158,3 +159,5 @@ public:
         return res;
     }
 };
+
+#endif // COURSERACLONE_SCREENS_PERFILESTUDIANTESCREEN_HPP

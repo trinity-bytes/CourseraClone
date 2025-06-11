@@ -5,7 +5,7 @@
 #include <iostream> // Para std::cout, std::cerr
 
 // Cabeceras propias
-#include "../Headers/Utils/SystemUtils.h"
+#include "../Headers/Utils/SystemUtils.hpp"
 #include "../Headers/Controllers/MainController.hpp"
 
 // maquetación de funciones

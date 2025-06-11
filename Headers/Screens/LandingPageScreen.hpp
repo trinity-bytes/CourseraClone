@@ -44,19 +44,17 @@ private:
 
     // DATOS ESTÁTICOS DE LA INTERFAZ
     /// @brief Elementos del menú principal de la cabecera
-    const vector<string> ELEMENTOS_CABECERA = {
+    const std::vector<std::string> ELEMENTOS_CABECERA = {
         " Iniciar Sesion ",
         " Registrarse "
-    };
-
-    /// @brief Datos por defecto para demostración
-    const vector<ElementoMenu> _especialidadesDefecto = {
+    };    /// @brief Datos por defecto para demostración
+    const std::vector<ElementoMenu> _especialidadesDefecto = {
         {"Desarrollo Web", "Frontend & Backend"},
         {"Ciencia de Datos", "Analisis y ML"},
         {"Marketing Digital", "SEO, SEM & Ads"}
     };
 
-    const vector<ElementoMenu> _cursosDefecto = {
+    const std::vector<ElementoMenu> _cursosDefecto = {
         {"Curso C++ CLI", "Interaccion consola"},
         {"Curso Python DS", "Data science intro"},
         {"Curso React JS", "Web UI development"}
@@ -97,11 +95,9 @@ private:
 
     /// @brief Flags de control de renderizado
     bool _primeraRenderizacion;
-    bool _presionEnter;
-
-    /// @brief Datos dinámicos del menú
-    vector<ElementoMenu> _especialidades;
-    vector<ElementoMenu> _cursos;
+    bool _presionEnter;    /// @brief Datos dinámicos del menú
+    std::vector<ElementoMenu> _especialidades;
+    std::vector<ElementoMenu> _cursos;
 
     // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
     /// @brief Carga los datos de cursos y especialidades más populares
@@ -127,12 +123,10 @@ private:
 
         // Llenar las colas de prioridad
         priorityCursosLanding.llenarDesde(cursosDatos);
-        priorityEspecializacionesLanding.llenarDesde(especializacionesDatos);
-
-        // Extraer datos relevantes
-        vector<int> idsCursos, idsEspecializaciones;
-        vector<string> titulosCursos, descripcionesCursos;
-        vector<string> titulosEspecializaciones, descripcionesEspecializaciones;
+        priorityEspecializacionesLanding.llenarDesde(especializacionesDatos);        // Extraer datos relevantes
+        std::vector<int> idsCursos, idsEspecializaciones;
+        std::vector<std::string> titulosCursos, descripcionesCursos;
+        std::vector<std::string> titulosEspecializaciones, descripcionesEspecializaciones;
 
         // Lambdas para extracción de datos
         auto idActividad = [](Actividad* a) { return a->getId(); };
@@ -141,17 +135,13 @@ private:
 
         // Ordenar y extraer datos
         priorityCursosLanding.ordenar();
-        priorityEspecializacionesLanding.ordenar();
-
-        idsCursos = priorityCursosLanding.extraerDato<int>(idActividad);
+        priorityEspecializacionesLanding.ordenar();        idsCursos = priorityCursosLanding.extraerDato<int>(idActividad);
         idsEspecializaciones = priorityEspecializacionesLanding.extraerDato<int>(idActividad);
-        titulosCursos = priorityCursosLanding.extraerDato<string>(tituloActividad);
-        titulosEspecializaciones = priorityEspecializacionesLanding.extraerDato<string>(tituloActividad);
-        descripcionesCursos = priorityCursosLanding.extraerDato<string>(descripcionActividad);
-        descripcionesEspecializaciones = priorityEspecializacionesLanding.extraerDato<string>(descripcionActividad);
-
-        // Crear elementos de menú para cursos
-        int cantidadCursos = min(static_cast<int>(titulosCursos.size()), maximo);
+        titulosCursos = priorityCursosLanding.extraerDato<std::string>(tituloActividad);
+        titulosEspecializaciones = priorityEspecializacionesLanding.extraerDato<std::string>(tituloActividad);
+        descripcionesCursos = priorityCursosLanding.extraerDato<std::string>(descripcionActividad);
+        descripcionesEspecializaciones = priorityEspecializacionesLanding.extraerDato<std::string>(descripcionActividad);        // Crear elementos de menú para cursos
+        int cantidadCursos = (std::min)(static_cast<int>(titulosCursos.size()), maximo);
         _cursos.resize(cantidadCursos);
         for (int i = 0; i < cantidadCursos; i++) {
             _cursos[i].id = idsCursos[i];
@@ -160,7 +150,7 @@ private:
         }
 
         // Crear elementos de menú para especialidades
-        int cantidadEspecializaciones = min(static_cast<int>(titulosEspecializaciones.size()), maximo);
+        int cantidadEspecializaciones = (std::min)(static_cast<int>(titulosEspecializaciones.size()), maximo);
         _especialidades.resize(cantidadEspecializaciones);
         for (int i = 0; i < cantidadEspecializaciones; i++) {
             _especialidades[i].id = idsEspecializaciones[i];
@@ -404,12 +394,10 @@ private:
         mostrarDescripcionFormateada(coordDesc, elemento.descripcion);
         
         resetColor();
-    }
-
-    /// @brief Muestra un título formateado en las coordenadas especificadas
+    }    /// @brief Muestra un título formateado en las coordenadas especificadas
     /// @param coord Coordenadas donde mostrar el título
     /// @param titulo Título a mostrar
-    void mostrarTituloFormateado(const COORD& coord, const string& titulo)
+    void mostrarTituloFormateado(const COORD& coord, const std::string& titulo)
     {        // Limpiar área del título
         gotoXY(coord.X, coord.Y);
         std::cout << std::string(MAX_ANCHO_CARACTERES_CUADRO, ' ');
@@ -418,21 +406,19 @@ private:
         gotoXY(coord.X, coord.Y);
         std::string tituloTruncado = truncarTitulo(titulo, MAX_ANCHO_CARACTERES_CUADRO);
         std::cout << tituloTruncado;
-    }
-
-    /// @brief Muestra una descripción formateada en las coordenadas especificadas
+    }    /// @brief Muestra una descripción formateada en las coordenadas especificadas
     /// @param coord Coordenadas donde mostrar la descripción
     /// @param descripcion Descripción a mostrar
-    void mostrarDescripcionFormateada(const COORD& coord, const string& descripcion)
+    void mostrarDescripcionFormateada(const COORD& coord, const std::string& descripcion)
     {
-        string descFormateada = formatearDescripcion(
+        std::string descFormateada = formatearDescripcion(
             descripcion, 
             MAX_ANCHO_CARACTERES_CUADRO, 
             MAX_ALTO_CARACTERES_CUADRO
         );
 
         // Dividir en líneas
-        vector<string> lineas = dividirEnLineas(descFormateada);
+        std::vector<std::string> lineas = dividirEnLineas(descFormateada);
 
         // Mostrar cada línea        
         for (size_t i = 0; i < lineas.size(); ++i) {
@@ -467,17 +453,14 @@ private:
             return titulo;
         }
         return titulo.substr(0, maxLongitud - 3) + "...";
-    }
-
-    /// @brief Formatea descripciones respetando límites de ancho y alto
+    }    /// @brief Formatea descripciones respetando límites de ancho y alto
     /// @param texto Texto original
     /// @param anchoMax Ancho máximo por línea
     /// @param altoMax Número máximo de líneas
     /// @return Texto formateado
-    string formatearDescripcion(const string& texto, int anchoMax, int altoMax)
-    {
-        string resultado;
-        string textoRestante = texto;
+    std::string formatearDescripcion(const std::string& texto, int anchoMax, int altoMax)    {
+        std::string resultado;
+        std::string textoRestante = texto;
 
         for (int linea = 0; linea < altoMax; ++linea) {
             if (textoRestante.empty()) break;
@@ -506,13 +489,11 @@ private:
         }
 
         return resultado;
-    }
-
-    /// @brief Encuentra el punto de corte óptimo para dividir texto
+    }    /// @brief Encuentra el punto de corte óptimo para dividir texto
     /// @param texto Texto a dividir
     /// @param anchoMax Ancho máximo de línea
     /// @return Posición de corte óptima
-    int encontrarPuntoCorte(const string& texto, int anchoMax)
+    int encontrarPuntoCorte(const std::string& texto, int anchoMax)
     {
         int posCorte = anchoMax;
         
@@ -527,18 +508,16 @@ private:
         }
 
         return posCorte;
-    }
-
-    /// @brief Divide un texto formateado en líneas individuales
+    }    /// @brief Divide un texto formateado en líneas individuales
     /// @param texto Texto a dividir
     /// @return Vector de líneas
-    vector<string> dividirEnLineas(const string& texto)
+    std::vector<std::string> dividirEnLineas(const std::string& texto)
     {
-        vector<string> lineas;
-        stringstream ss(texto);
-        string linea;
+        std::vector<std::string> lineas;
+        std::stringstream ss(texto);
+        std::string linea;
 
-        while (getline(ss, linea, '\n')) {
+        while (std::getline(ss, linea, '\n')) {
             lineas.push_back(linea);
         }
 

@@ -4,19 +4,13 @@
 #ifndef COURSERACLONE_UTILS_SYSTEMUTILS_HPP
 #define COURSERACLONE_UTILS_SYSTEMUTILS_HPP
 
-//=============================================================================
-// SISTEMA UNIFICADO DE UTILIDADES - COURSERA CLONE
-//=============================================================================
-
 // Headers del sistema
 #include <windows.h>
 #include <conio.h>
 #include <iostream>
 #include <string>
 
-//=============================================================================
 // CONSTANTES GLOBALES DEL PROGRAMA
-//=============================================================================
 
 // Dimensiones de la consola
 constexpr int ANCHO_CONSOLA = 120;
@@ -28,10 +22,7 @@ constexpr char SEPARADOR_CSV = ',';
 const std::string RUTA_DATOS_USUARIOS = "Resources/Data/";
 const std::string RUTA_BACKUP = "Resources/Backup/";
 
-//=============================================================================
 // ESTRUCTURAS DE DATOS COMUNES
-//=============================================================================
-
 // Estructura RGB para definir colores
 struct Color {
     BYTE r, g, b;
@@ -67,10 +58,8 @@ struct Posicion {
     }
 };
 
-//=============================================================================
-// PALETA DE COLORES COURSERA
-//=============================================================================
 
+// PALETA DE COLORES COURSERA
 namespace Palette {
     // Colores principales de la marca Coursera
     constexpr Color AZUL_PRIMARIO      = { 8, 113, 240 };    // Botones principales, encabezados
@@ -99,10 +88,7 @@ namespace Palette {
     constexpr Color SOMBRA_AZUL        = { 15, 45, 90 };     // Sombras, profundidad
 }
 
-//=============================================================================
 // INDICES DE COLORES DE CONSOLA (0-15)
-//=============================================================================
-
 namespace ColorIndex {
     // Mapeo de colores a índices de consola para fácil referencia
     constexpr int FONDO_GENERAL        = 0;   // Gris muy claro (reemplaza crema)
@@ -123,9 +109,7 @@ namespace ColorIndex {
     constexpr int TEXTO_INTENSO        = 15;  // Blanco puro (para fondos oscuros)
 }
 
-//=============================================================================
 // FUNCIONES DE CONFIGURACIÓN DE CONSOLA
-//=============================================================================
 
 /// @brief Establece una paleta de color en un índice específico
 inline void setPaletteColor(int index, const Color& color) {
@@ -182,9 +166,7 @@ inline void ocultarCursor() {
     SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
 
-//=============================================================================
 // FUNCIONES DE MANIPULACIÓN DE COLORES
-//=============================================================================
 
 /// @brief Establece colores de texto y fondo con control de intensidad
 inline void setConsoleColor(int textColor, int backgroundColor = ColorIndex::FONDO_GENERAL, 
@@ -220,9 +202,7 @@ inline void resetColor() {
     setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::FONDO_GENERAL);
 }
 
-//=============================================================================
 // FUNCIONES DE POSICIONAMIENTO
-//=============================================================================
 
 /// @brief Mueve el cursor a una posición específica
 inline void gotoXY(int x, int y) {
@@ -246,9 +226,7 @@ inline Posicion getCursorPosition() {
     return Posicion(0, 0);
 }
 
-//=============================================================================
 // FUNCIONES DE ENTRADA DE USUARIO
-//=============================================================================
 
 /// @brief Limpia el buffer del teclado
 inline void limpiarBuffer() {
@@ -274,9 +252,7 @@ inline int esperarCualquierTecla() {
     return _getch();
 }
 
-//=============================================================================
 // FUNCIONES DE SALIDA FORMATEADA
-//=============================================================================
 
 /// @brief Muestra un mensaje de error con formato
 inline void mostrarError(const std::string& mensaje, bool nuevaLinea = true) {
@@ -327,9 +303,7 @@ inline void imprimirLinea(char caracter = '-', int longitud = ANCHO_CONSOLA,
     resetColor();
 }
 
-//=============================================================================
 // UTILIDADES DE VALIDACIÓN
-//=============================================================================
 
 /// @brief Verifica si una cadena es un número válido
 inline bool esNumeroValido(const std::string& str) {
@@ -355,10 +329,7 @@ inline std::string limitarTexto(const std::string& texto, size_t maxLength,
     return texto.substr(0, maxLength - sufijo.length()) + sufijo;
 }
 
-//=============================================================================
 // COMPATIBILIDAD CON CÓDIGO EXISTENTE
-//=============================================================================
-
 // Aliases para mantener compatibilidad con Utils.h anterior
 namespace Colors {
     constexpr int NORMAL = ColorIndex::TEXTO_PRINCIPAL;
@@ -402,3 +373,5 @@ inline void configurarConsola() {
     // Título de la aplicación
     SetConsoleTitle(L"Coursera Clone | Alpha 2.1");
 }
+
+#endif // COURSERACLONE_UTILS_SYSTEMUTILS_HPP

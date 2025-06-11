@@ -42,8 +42,9 @@ public:
     CourseManager() = default;
 
     // No necesitamos un destructor ~CourseManager() manual.
-    // std::unique_ptr se encargará de liberar la memoria de los cursos y especializaciones.    void inicializarDesdeDatos(
-        const RawActividadesData& _dataActividades, 
+    // std::unique_ptr se encargará de liberar la memoria de los cursos y especializaciones.    
+    void inicializarDesdeDatos(
+        const RawActividadesData& _dataActividades,
         const std::vector<InscripcionBinaria>& _dataInscripciones
     ) {
         // Cargar Cursos

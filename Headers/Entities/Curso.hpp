@@ -91,13 +91,13 @@ public:
     }
 
     bool eliminarClase(int idClase) {
-        if (idClase < 0 || idClase >= clases.getTamano())
+        if (idClase < 0 || idClase >= _clases.getTamano())
             return false;
 
-        auto it = clases.begin();
-        advance(it, idClase);
-        clases.eliminar(it);
-        cantidadClases--;
+        auto it = _clases.begin();
+        std::advance(it, idClase);
+        _clases.eliminar(it);
+        _cantidadClases--;
         return true;
     }    // Métodos para calificaciones
     void agregarCalificacion(int _calificacion) {
@@ -135,7 +135,8 @@ public:
             return false;
         }
 
-        // Guardar datos básicos        archivo << getIdEmpresa() << '\n'
+        // Guardar datos básicos        
+        archivo << getIdEmpresa() << '\n'
             << getTipo() << '\n'
             << getNombreEmpresa() << '\n'
             << getTitulo() << '\n'

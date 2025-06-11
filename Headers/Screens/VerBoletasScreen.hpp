@@ -1,4 +1,7 @@
-﻿#pragma once
+﻿#ifndef COURSERACLONE_SCREENS_VERBOLETASSCREEN_HPP
+#define COURSERACLONE_SCREENS_VERBOLETASSCREEN_HPP
+
+#pragma once
 
 // Headers estándar
 #include <iomanip>
@@ -13,6 +16,7 @@
 #include "../Utils/ScreenSystem.h"
 #include "../Utils/UI_Ascii.h"
 
+/// Pantalla para ver boletas del estudiante
 // Screen to display student payment receipts/invoices
 class VerBoletasScreen : public PantallaBase
 {
@@ -189,3 +193,5 @@ public:
         return resultado;
     }
 };
+
+#endif // COURSERACLONE_SCREENS_VERBOLETASSCREEN_HPP

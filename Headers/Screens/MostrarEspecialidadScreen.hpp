@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#ifndef COURSERACLONE_SCREENS_MOSTRARESPECIALIDADSCREEN_HPP
+#define COURSERACLONE_SCREENS_MOSTRARESPECIALIDADSCREEN_HPP
 
 // Headers estándar
 #include <algorithm>
@@ -6,15 +7,15 @@
 #include <string>
 #include <vector>
 
-// Headers de consola
-#include "../Controllers/GestionadorCursos.h"
-#include "../Entities/Curso.h"
-#include "../Entities/Especializacion.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/UI_Ascii.h"
+// Headers propios
+#include "../Controllers/GestionadorCursos.hpp"
+#include "../Entities/Curso.hpp"
+#include "../Entities/Especializacion.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/UI_Ascii.hpp"
 
-// Screen to display a specialization with its details and associated courses
+/// Pantalla para mostrar especialización con detalles y cursos asociados
 class MostrarEspecialidadScreen : public PantallaBase
 {
 private:
@@ -358,8 +359,8 @@ public:
                 res.tipoUsuario = _tipoUsuario; // Ensure user type persists
                 return res;
             }
-        }
-
-        return res;
+        }        return res;
     }
 };
+
+#endif // COURSERACLONE_SCREENS_MOSTRARESPECIALIDADSCREEN_HPP

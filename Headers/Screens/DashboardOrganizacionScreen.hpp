@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COURSERACLONE_SCREENS_DASHBOARDORGANIZACIONSCREEN_HPP
+#define COURSERACLONE_SCREENS_DASHBOARDORGANIZACIONSCREEN_HPP
 
 // Headers de librería estándar
 #include <algorithm>
@@ -8,14 +9,15 @@
 #include <vector>
 
 // Headers propios
-#include "../Controllers/GestionadorCursos.h"
-#include "../Entities/Curso.h"
-#include "../Entities/Especializacion.h"
-#include "../Entities/Inscripcion.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/UI_Ascii.h"
+#include "../Controllers/GestionadorCursos.hpp"
+#include "../Entities/Curso.hpp"
+#include "../Entities/Especializacion.hpp"
+#include "../Entities/Inscripcion.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/UI_Ascii.hpp"
 
+/// Pantalla dashboard para organizaciones
 class DashboardOrganizacionScreen : public PantallaBase
 {
 private:
@@ -28,38 +30,36 @@ private:
     static const int MAX_ELEMENTOS_HEADER = 2; // Ver mi perfil, Cerrar sesión
     static const int MAX_ELEMENTOS_MENU = 2; // Explorar cursos, Gestionar cursos
     static const int MAX_ELEMENTOS_CURSOS = 4; // 3 cursos + "Ver todos"
-    static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 4; // 3 especializaciones + "Ver todas"// Estadísticas de la organización
-    int cursosPublicados = 35;
-    int especialidadesPublicadas = 10;
-    int estudiantesInscritos = 342;
+    static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 4; // 3 especializaciones + "Ver todas"    // Estadísticas de la organización
+    int _cursosPublicados = 35;
+    int _especialidadesPublicadas = 10;
+    int _estudiantesInscritos = 342;
 
     // Datos del usuario
-    std::string nombreOrganizacion;
-    int idOrganizacion;
+    std::string _nombreOrganizacion;
+    int _idOrganizacion;
 
     // Coordenadas para dibujar
-    COORD coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { {84, 3}, {99, 3} }; // Perfil, Cerrar sesión
-    COORD coordsElementosMenu[MAX_ELEMENTOS_MENU] = { {9, 10}, {47, 10} }; // Explorar, Gestionar
-    COORD coordsEstadisticas[3] = { {11, 7}, {40, 7}, {76, 7} }; // Estadísticas
-
-    // Coordenadas para cursos
-    COORD coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
+    COORD _coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { {84, 3}, {99, 3} }; // Perfil, Cerrar sesión
+    COORD _coordsElementosMenu[MAX_ELEMENTOS_MENU] = { {9, 10}, {47, 10} }; // Explorar, Gestionar
+    COORD _coordsEstadisticas[3] = { {11, 7}, {40, 7}, {76, 7} }; // Estadísticas    // Coordenadas para cursos
+    COORD _coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
         {11, 15}, {42, 15}, {73, 15}, {101, 17} // 3 cursos + "Ver todos"
     };
 
     // Coordenadas para especializaciones
-    COORD coordsTituloEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES] = {
+    COORD _coordsTituloEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES] = {
         {11, 25}, {42, 25}, {73, 25}, {101, 27} // 3 especializaciones + "Ver todos"
     };
 
     // Estado actual
-    int seccionActual;
-    int elementoActual;
-    int seccionAnterior;
-    int elementoAnterior;
-    bool primeraRenderizacion;    // Datos cargados
-    std::vector<ElementoMenu> cursos;
-    std::vector<ElementoMenu> especializaciones;    void cargarDatos(GestionadorCursos& gestion) {
+    int _seccionActual;
+    int _elementoActual;
+    int _seccionAnterior;
+    int _elementoAnterior;
+    bool _primeraRenderizacion;    // Datos cargados
+    std::vector<ElementoMenu> _cursos;
+    std::vector<ElementoMenu> _especializaciones;void cargarDatos(GestionadorCursos& gestion) {
         // Cargar cursos y especializaciones de la organización
         for (int i = 1; i <= gestion.getCursos().getTamano(); i++) {
             Curso* c = gestion.getCursos().get(i);
@@ -310,10 +310,11 @@ public:
                     }
                     // Aca se pueden agregar mas acciones
                 }
-                break;
-            case 27: // ESC
+                break;            case 27: // ESC
                 return crearResultado(AccionPantalla::IR_A_LANDING_PAGE);
             }
         }
     }
 };
+
+#endif // COURSERACLONE_SCREENS_DASHBOARDORGANIZACIONSCREEN_HPP

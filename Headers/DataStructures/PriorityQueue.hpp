@@ -52,8 +52,8 @@ public:
     void llenarDesde(LinkedList<T>& _lista) {
         Nodo<T>* current = _lista.getHead();
         while (current != nullptr) {
-            enqueue(current->_data);
-            current = current->_next;
+            enqueue(current->data);
+            current = current->next;
         }
         _tamano = _lista.getTamano();
         eliminarExceso();

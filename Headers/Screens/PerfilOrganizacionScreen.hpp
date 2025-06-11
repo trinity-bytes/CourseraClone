@@ -1,3 +1,6 @@
+#ifndef COURSERACLONE_SCREENS_PERFILORGANIZACIONSCREEN_HPP
+#define COURSERACLONE_SCREENS_PERFILORGANIZACIONSCREEN_HPP
+
 #pragma once
 
 // Headers estándar
@@ -9,7 +12,7 @@
 #include "../Utils/ScreenSystem.h"
 #include "../Utils/UI_Ascii.h"
 
-// Screen to display organization profile information
+/// Pantalla para mostrar perfil de organización
 class PerfilOrganizacionScreen : public PantallaBase
 {
 private:
@@ -82,3 +85,5 @@ public:
         }
     }
 };
+
+#endif // COURSERACLONE_SCREENS_PERFILORGANIZACIONSCREEN_HPP

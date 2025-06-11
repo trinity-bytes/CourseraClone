@@ -118,7 +118,7 @@ public:
     void setTipoUsuario(TipoUsuario tipo) { _tipoUsuario = tipo; }
     void setNombreCompleto(const std::string& nombre) { _nombreCompleto = nombre; }
     void setUsername(const std::string& username) { _username = username; }
-    void setContrasena(string _contrasena) { _contrasenaHash = hashContrasena(_contrasena); }
+    void setContrasena(std::string _contrasena) { _contrasenaHash = hashContrasena(_contrasena); }
 
     void reset() 
     {
@@ -235,36 +235,36 @@ public:
     static LoginStatus login(
         Usuario& usuarioLogueado, 
         TipoUsuario tipoUsuario, 
-        string passInput, 
+        std::string passInput, 
         int pos
     ) {
         if (pos == -1) return LoginStatus::USER_NOT_FOUND;
 
 		// Abrir el archivo de índice y leer el registro en la posición `pos`
-        const string indexPath = getIndexFilePath(tipoUsuario);
-        ifstream indexFile(indexPath, ios::in | ios::binary);
+        const  std::string indexPath = getIndexFilePath(tipoUsuario);
+        std::ifstream indexFile(indexPath, std::ios::in | std::ios::binary);
         if (!indexFile.is_open()) {
             return LoginStatus::FILE_ERROR;
         }
-        indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
+        indexFile.seekg(pos * sizeof(UsuarioIndex), std::ios::beg);
         UsuarioIndex encontrado;
         indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
         indexFile.close();
 
         // Abrir el archivo de datos y saltar al offset
-        const string dataPath = getDataFilePath(tipoUsuario);
-        ifstream dataFile(dataPath, ios::in | ios::binary);
+        const  std::string dataPath = getDataFilePath(tipoUsuario);
+        std::ifstream dataFile(dataPath, std::ios::in | std::ios::binary);
         if (!dataFile.is_open()) {
             return LoginStatus::FILE_ERROR;
         }
 
-        dataFile.seekg(encontrado.offset, ios::beg);
+        dataFile.seekg(encontrado.offset, std::ios::beg);
         UsuarioBinario binRec;
         dataFile.read(reinterpret_cast<char*>(&binRec), sizeof(binRec));
         dataFile.close();
 
         // Comparar hashes
-        string inputHash = hashContrasena(passInput);
+        std::string inputHash = hashContrasena(passInput);
         if (strncmp(binRec.contrasenaHash,
             inputHash.c_str(),
             MAX_FIELD_LEN) != 0)
@@ -276,7 +276,7 @@ public:
         return LoginStatus::SUCCESS; // Login logrado wiiiiiii!! ^.^
     }
 
-    static int buscarIndexUsuario(string _username, TipoUsuario tipoUsuario) {
+    static int buscarIndexUsuario(std::string _username, TipoUsuario tipoUsuario) {
         // 1) Normalizar a minúsculas
         for (char& c : _username) {
             if (c >= 'A' && c <= 'Z')
@@ -284,22 +284,22 @@ public:
         }
 
         // 2) Abrir el archivo de índices
-        const string indexFilePath = Usuario::getIndexFilePath(tipoUsuario);
-        ifstream indexFile(indexFilePath, ios::in | ios::binary);
+        const  std::string indexFilePath = Usuario::getIndexFilePath(tipoUsuario);
+        std::ifstream indexFile(indexFilePath, std::ios::in | std::ios::binary);
         if (!indexFile.is_open())
             return -1;
 
         // 3) Calcular cuántos registros hay
-        indexFile.seekg(0, ios::end);
+        indexFile.seekg(0, std::ios::end);
         int cantidad = indexFile.tellg() / sizeof(UsuarioIndex);
-        indexFile.seekg(0, ios::beg);
+        indexFile.seekg(0, std::ios::beg);
         if (cantidad == 0)
             return -1;
 
         // 4) Predicado para lower_bound
         auto pred = [&](int pos) {
             UsuarioIndex tmp;
-            indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
+            indexFile.seekg(pos * sizeof(UsuarioIndex), std::ios::beg);
             indexFile.read(reinterpret_cast<char*>(&tmp), sizeof(tmp));
             return strncmp(_username.c_str(), tmp.nombreDeUsuario, MAX_FIELD_LEN) <= 0;
             };
@@ -308,7 +308,7 @@ public:
         int pos = busquedaBinaria(0, cantidad - 1, pred);
         if (pos < cantidad) {
             UsuarioIndex encontrado;
-            indexFile.seekg(pos * sizeof(UsuarioIndex), ios::beg);
+            indexFile.seekg(pos * sizeof(UsuarioIndex), std::ios::beg);
             indexFile.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
             if (strncmp(encontrado.nombreDeUsuario, _username.c_str(), MAX_FIELD_LEN) == 0)
                 return pos;
@@ -323,58 +323,58 @@ public:
     ) {
 		if (this->_id == -1) // Verificamos si el ID es válido
         {
-            cerr << "Error: Usuario ID no válido para actualización." << endl;
+            std::cerr << "Error: Usuario ID no válido para actualización." << std::endl;
             return false;
         }
 
-        string dataFilePath = getDataFilePath(this->_tipoUsuario);
-        string indexFilePath = getIndexFilePath(this->_tipoUsuario);
+        std::string dataFilePath = getDataFilePath(this->_tipoUsuario);
+        std::string indexFilePath = getIndexFilePath(this->_tipoUsuario);
 
-        fstream indexFileAccess(indexFilePath, ios::binary | ios::in); 
+        std::fstream indexFileAccess(indexFilePath, std::ios::binary | std::ios::in);
         if (!indexFileAccess.is_open()) {
-            cerr << "Error: No se pudo abrir el archivo de índice para leer: " << indexFilePath << endl;
+            std::cerr << "Error: No se pudo abrir el archivo de índice para leer: " << indexFilePath << std::endl;
             return false;
         }
 
-        indexFileAccess.seekg(this->_id * sizeof(UsuarioIndex), ios::beg);
+        indexFileAccess.seekg(this->_id * sizeof(UsuarioIndex), std::ios::beg);
         UsuarioIndex currentIdxRecord;
         indexFileAccess.read(reinterpret_cast<char*>(&currentIdxRecord), sizeof(currentIdxRecord));
 
         if (indexFileAccess.fail()) {
-            cerr << "Error: No se pudo leer el registro de índice en la posición: " << this->_id << endl;
+            std::cerr << "Error: No se pudo leer el registro de índice en la posición: " << this->_id << std::endl;
             indexFileAccess.close();
             return false;
         }
         int dataRecordOffset = currentIdxRecord.offset;
-        string oldUsernameInIndex = string(currentIdxRecord.nombreDeUsuario, strnlen(currentIdxRecord.nombreDeUsuario, MAX_FIELD_LEN));
+        std::string oldUsernameInIndex = std::string(currentIdxRecord.nombreDeUsuario, strnlen(currentIdxRecord.nombreDeUsuario, MAX_FIELD_LEN));
         indexFileAccess.close(); // Close for now, will reopen if username changes significantly
 
         // --- 2. Read the current User's Binary Data from .dat file ---
         // This is to get the existing password hash if nuevaContrasena is empty.
         UsuarioBinario existingBinRecord;
-        ifstream dataFileRead(dataFilePath, ios::binary);
+        std::ifstream dataFileRead(dataFilePath, std::ios::binary);
         if (!dataFileRead.is_open()) {
-            cerr << "Error: No se pudo abrir el archivo de datos para leer datos existentes: " << dataFilePath << endl;
+            std::cerr << "Error: No se pudo abrir el archivo de datos para leer datos existentes: " << dataFilePath << std::endl;
             return false;
         }
-        dataFileRead.seekg(dataRecordOffset, ios::beg);
+        dataFileRead.seekg(dataRecordOffset, std::ios::beg);
         dataFileRead.read(reinterpret_cast<char*>(&existingBinRecord), sizeof(existingBinRecord));
         if (dataFileRead.fail()) {
-            cerr << "Error: No se pudo leer el registro de datos existente para el offset: " << dataRecordOffset << endl;
+            std::cerr << "Error: No se pudo leer el registro de datos existente para el offset: " << dataRecordOffset << std::endl;
             dataFileRead.close();
             return false;
         }
         dataFileRead.close();
 
         // --- 3. Determine the Password Hash to Save and Update Object's State ---
-        string passwordHashParaGuardar;
+        std::string passwordHashParaGuardar;
         if (!_nuevaContrasena.empty()) {
             // User provided a new password, so hash it
             passwordHashParaGuardar = hashContrasena(_nuevaContrasena);
         }
         else {
             // User did not provide a new password, so use the existing hash from the file
-            passwordHashParaGuardar = string(existingBinRecord.contrasenaHash, strnlen(existingBinRecord.contrasenaHash, MAX_FIELD_LEN));
+            passwordHashParaGuardar = std::string(existingBinRecord.contrasenaHash, strnlen(existingBinRecord.contrasenaHash, MAX_FIELD_LEN));
         }
 
         // Update the current Usuario object's instance data
@@ -386,12 +386,12 @@ public:
         UsuarioBinario binDataToSave(this->_nombreCompleto, this->_username, this->_contrasenaHash);
 
         // --- 5. Overwrite the record in the main data file (.dat) ---
-        fstream dataFileWrite(dataFilePath, ios::binary | ios::in | ios::out); // Open for read/write
+        std::fstream dataFileWrite(dataFilePath, std::ios::binary | std::ios::in | std::ios::out); // Open for read/write
         if (!dataFileWrite.is_open()) {
-            cerr << "Error: No se pudo abrir el archivo de datos para actualizar: " << dataFilePath << endl;
+            std::cerr << "Error: No se pudo abrir el archivo de datos para actualizar: " << dataFilePath << std::endl;
             return false;
         }
-        dataFileWrite.seekp(dataRecordOffset, ios::beg); // Go to the specific record's offset
+        dataFileWrite.seekp(dataRecordOffset, std::ios::beg); // Go to the specific record's offset
         dataFileWrite.write(reinterpret_cast<const char*>(&binDataToSave), sizeof(binDataToSave));
         dataFileWrite.close(); // Close data file after writing
 
@@ -399,13 +399,13 @@ public:
         if (this->_username != oldUsernameInIndex) {
             // Username has changed. The index file needs to be restructured.
             // Strategy: Read all, remove old, add new, sort, rewrite.
-            ifstream indexFileRead(indexFilePath, ios::binary);
+            std::ifstream indexFileRead(indexFilePath, std::ios::binary);
             if (!indexFileRead.is_open()) {
-                cerr << "Error: No se pudo reabrir el archivo de índice para procesar cambio de username: " << indexFilePath << endl;
+                std::cerr << "Error: No se pudo reabrir el archivo de índice para procesar cambio de username: " << indexFilePath << std::endl;
                 return false; // Critical error if index can't be read
             }
 
-            vector<UsuarioIndex> allIndices;
+            std::vector<UsuarioIndex> allIndices;
             UsuarioIndex tempIdx;
             while (indexFileRead.read(reinterpret_cast<char*>(&tempIdx), sizeof(UsuarioIndex))) {
                 allIndices.push_back(tempIdx);
@@ -424,8 +424,8 @@ public:
             if (!removed) {
                 // This case implies an inconsistency, as the record we just updated in the .dat file
                 // should have had a corresponding index entry.
-                cerr << "Error crítico: No se encontró el registro de índice antiguo (offset: " << dataRecordOffset
-                    << ") durante la actualización del nombre de usuario. El índice NO se actualizó." << endl;
+                std::cerr << "Error crítico: No se encontró el registro de índice antiguo (offset: " << dataRecordOffset
+                    << ") durante la actualización del nombre de usuario. El índice NO se actualizó." << std::endl;
                 return false; // Prevent leaving index in a more broken state
             }
 
@@ -435,9 +435,9 @@ public:
                 return strncmp(a.nombreDeUsuario, b.nombreDeUsuario, MAX_FIELD_LEN) < 0;
                 });
 
-            ofstream indexFileRewrite(indexFilePath, ios::binary | ios::trunc); // Truncate and write
+            std::ofstream indexFileRewrite(indexFilePath, std::ios::binary | std::ios::trunc); // Truncate and write
             if (!indexFileRewrite.is_open()) {
-                cerr << "Error: No se pudo abrir el archivo de índice para reescribir: " << indexFilePath << endl;
+                std::cerr << "Error: No se pudo abrir el archivo de índice para reescribir: " << indexFilePath << std::endl;
                 return false;
             }
             for (const auto& idxEntry : allIndices) {
@@ -454,7 +454,7 @@ public:
                 }
             }
             if (!idUpdated) {
-                cerr << "Advertencia: No se pudo actualizar el ID del objeto Usuario después de la reordenación del índice." << endl;
+                std::cerr << "Advertencia: No se pudo actualizar el ID del objeto Usuario después de la reordenación del índice." << std::endl;
             }
         }
         // If username didn't change, no index file modification is needed.        

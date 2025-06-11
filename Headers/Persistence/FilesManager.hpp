@@ -94,7 +94,7 @@ namespace FileManager
     inline bool actualizarPagoInscripcion(int posicion, bool estado) {
         std::fstream os(RUTA_INSCRIPCIONES, std::ios::binary | std::ios::in | std::ios::out);
         if (!os.is_open()) return false;
-        os.seekp(posicion * sizeof(InscripcionBinaria) + offsetof(InscripcionBinaria, pagado), ios::beg);
+        os.seekp(posicion * sizeof(InscripcionBinaria) + offsetof(InscripcionBinaria, pagado), std::ios::beg);
         os.write(reinterpret_cast<const char*>(&estado), sizeof(estado));
         return os.good();
     }

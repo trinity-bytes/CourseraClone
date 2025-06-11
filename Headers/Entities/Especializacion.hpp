@@ -31,14 +31,14 @@ public:
     Especializacion() {};
     
     Especializacion(
-        int _id, 
-        int _idEmpresa, 
-        const std::string& _nombreEmpresa, 
-        const std::string& _titulo, 
-        int _cantidadAlumnos, 
-        const std::string& _descripcion,
-        const std::string& _categoria = "", 
-        int _duracionEstimada = 0
+        int id, 
+        int idEmpresa, 
+        const std::string& nombreEmpresa, 
+        const std::string& titulo, 
+        int cantidadAlumnos, 
+        const std::string& descripcion,
+        const std::string& categoria = "", 
+        int duracionEstimada = 0
     ) : Actividad(
         _id, 
         _idEmpresa, 
@@ -46,22 +46,28 @@ public:
         _titulo, 
         _cantidadAlumnos, 
         2, 
-        _descripcion) {
-        this->_categoria = _categoria;
+        _descripcion
+    ) {
+        this->_categoria = categoria;
         this->_calificacionPromedio = 0.0;
         this->_totalCalificaciones = 0;
-        this->_duracionEstimada = _duracionEstimada;
+        this->_duracionEstimada = duracionEstimada;
     }
 
     // Métodos de gestión de cursos
-    void anadirCurso(Curso& _curso) {
+    void anadirCurso(Curso& _curso) 
+    {
         bool idYaExiste = false;
-        for (int id : _idsCursos) {            if (id == _curso.getId()) {
+        for (int id : _idsCursos) 
+        {            
+            if (id == _curso.getId()) 
+            {
                 idYaExiste = true;
                 break;
             }
         }
-        if (!idYaExiste) {
+        if (!idYaExiste) 
+        {
             _idsCursos.push_back(_curso.getId());
         }
 
@@ -78,11 +84,11 @@ public:
         return true;
     }
 
-	vector<int> getIdsCursosVector() const {
-		return idsCursos; // Devuelve una copia del vector para proteger los datos internos
+    std::vector<int> getIdsCursosVector() const {
+		return _idsCursos; // Devuelve una copia del vector para proteger los datos internos
 	}
     // Métodos de categoría y requisitos
-    void setCategoria(const std::string& _categoria) { _categoria = _categoria; }
+    void setCategoria(const std::string& categoria) { _categoria = categoria; }
     const std::string& getCategoria() const { return _categoria; }
 
     void agregarRequisito(const std::string& _requisito) {
@@ -127,41 +133,41 @@ public:
 
 	// Sobrescribir método virtual de Actividad
 	void mostrar() {
-		cout << "Especialización: " << titulo << "\n";
-		cout << "Empresa: " << nombreEmpresa << "\n";
-		cout << "Cantidad de alumnos: " << cantidadAlumnos << "\n";
-		cout << "Descripción: " << descripcion << "\n";
-		cout << "Categoría: " << categoria << "\n";
-		cout << "Duración estimada: " << duracionEstimada << " semanas\n";
-		cout << "Calificación promedio: " << calificacionPromedio << "\n";
-		cout << "Total de calificaciones: " << totalCalificaciones << "\n";
-		cout << "Cursos incluidos:\n";
-		for (const auto& curso : cursos) {
-			cout << "- " << curso.getTitulo() << "\n";
+        std::cout << "Especialización: " << _titulo << "\n";
+        std::cout << "Empresa: " << _nombreEmpresa << "\n";
+        std::cout << "Cantidad de alumnos: " << _cantidadAlumnos << "\n";
+        std::cout << "Descripción: " << _descripcion << "\n";
+        std::cout << "Categoría: " << _categoria << "\n";
+        std::cout << "Duración estimada: " << _duracionEstimada << " semanas\n";
+        std::cout << "Calificación promedio: " << _calificacionPromedio << "\n";
+        std::cout << "Total de calificaciones: " << _totalCalificaciones << "\n";
+        std::cout << "Cursos incluidos:\n";
+		for (const auto& curso : _cursos) {
+            std::cout << "- " << curso.getTitulo() << "\n";
 		}
 	}
 
-	string toString() const {
-		stringstream ss;
-		ss << idEmpresa << '\n'
-		   << tipo << '\n'
-		   << nombreEmpresa << '\n'
-		   << titulo << '\n'
-		   << descripcion << '\n'
-		   << categoria << '\n'
-		   << duracionEstimada << '\n'
-		   << calificacionPromedio << '\n'
-		   << totalCalificaciones << '\n';
+    std::string toString() const {
+        std::stringstream ss;
+		ss << _idEmpresa << '\n'
+		   << _tipo << '\n'
+		   << _nombreEmpresa << '\n'
+		   << _titulo << '\n'
+		   << _descripcion << '\n'
+		   << _categoria << '\n'
+		   << _duracionEstimada << '\n'
+		   << _calificacionPromedio << '\n'
+		   << _totalCalificaciones << '\n';
 		
 		// Guardar cursos
-		ss << cursos.getTamano() << '\n';
-		for (const auto& curso : cursos) {
+		ss << _cursos.getTamano() << '\n';
+		for (const auto& curso : _cursos) {
 			ss << curso.getId() << '\n';
 		}
 		
 		// Guardar requisitos
-		ss << requisitos.size() << '\n';
-		for (const auto& req : requisitos) {
+		ss << _requisitos.size() << '\n';
+		for (const auto& req : _requisitos) {
 			ss << req << '\n';
 		}
 		
@@ -171,11 +177,11 @@ public:
 	LinkedList<Curso> getIdsCursos(LinkedList<Curso> cursosDisponibles) const {
 		LinkedList<Curso> cursosAsociados;
 
-		cerr << "Buscando " << idsCursos.size() << " cursos asociados a especialización " << this->getTitulo() << endl;
+        std::cerr << "Buscando " << _idsCursos.size() << " cursos asociados a especialización " << this->getTitulo() << std::endl;
 
 		// Recorrer todos los IDs de cursos asociados a esta especialización
-		for (int idCurso : idsCursos) {
-			cerr << "Buscando curso con ID: " << idCurso << endl;
+		for (int idCurso : _idsCursos) {
+            std::cerr << "Buscando curso con ID: " << idCurso << std::endl;
 			bool encontrado = false;
 
 			// Buscar este curso en la lista de cursos disponibles
@@ -184,29 +190,30 @@ public:
 				if (curso.getId() == idCurso) {
 					cursosAsociados.agregarAlFinal(curso);
 					encontrado = true;
-					cerr << "  ✓ Encontrado curso: " << curso.getTitulo() << " (ID: " << curso.getId() << ")" << endl;
+                    std::cerr << "  ✓ Encontrado curso: " << curso.getTitulo() << " (ID: " << curso.getId() << ")" << std::endl;
 					break;  // Encontrado, no necesitamos seguir buscando
 				}
 			}
 
 			if (!encontrado) {
-				cerr << "  ✗ No se encontró el curso con ID " << idCurso << endl;
+                std::cerr << "  ✗ No se encontró el curso con ID " << idCurso << std::endl;
 			}
 		}
 
-		cerr << "Total de cursos asociados encontrados: " << cursosAsociados.getTamano() << endl;
+        std::cerr << "Total de cursos asociados encontrados: " << cursosAsociados.getTamano() << std::endl;
 		return cursosAsociados;
 	}
 
 	// Método para agregar un ID de curso a la especialización
 	void anadirCursoPorId(int idCurso) {
-		// Verificar si el ID ya está en la lista para evitar duplicados        for (int id : _idsCursos) {
-            if (id == _idCurso) {
+		// Verificar si el ID ya está en la lista para evitar duplicados        
+        for (int id : _idsCursos) {
+            if (id == idCurso) {
                 return; // El ID ya está en la lista
             }
         }
         // Añadir el ID a la lista
-        _idsCursos.push_back(_idCurso);
+        _idsCursos.push_back(idCurso);
     }
 
     // Método para eliminar un ID de curso de la especialización
