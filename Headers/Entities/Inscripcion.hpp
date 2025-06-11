@@ -1,15 +1,14 @@
-#pragma once
-
-// headers propios
-#include "Actividad.h"
-#include "../Persistence/InscripcionTypes.hpp"
-#include "../Persistence/FilesManager.hpp"
-#include "Venta.h"
+#ifndef COURSERACLONE_ENTITIES_INSCRIPCION_HPP
+#define COURSERACLONE_ENTITIES_INSCRIPCION_HPP
 
 // headers de la libreria estandar
 #include <iostream>
 
-using namespace std;
+// headers propios
+#include "Actividad.hpp"
+#include "Venta.hpp"
+#include "../Persistence/InscripcionTypes.hpp"
+#include "../Persistence/FilesManager.hpp"
 
 class Inscripcion {
 private:
@@ -58,7 +57,7 @@ public:
 
     bool estaPagada() const { return pagado; }
 
-    void marcarComoPagada(LinkedList<Boleta>& boletas) { 
+    void marcarComoPagada(LinkedList<Boleta>& boletas) {
         if (!estaPagada()) {
             pagado = true;
             FileManager::actualizarPagoInscripcion(id, pagado);
@@ -79,3 +78,5 @@ public:
         cout << "Pagado: " << (pagado ? "Si" : "No") << endl;
     }
 };
+
+#endif // !COURSERACLONE_ENTITIES_INSCRIPCION_HPP

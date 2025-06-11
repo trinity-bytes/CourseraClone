@@ -139,6 +139,7 @@
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Persistence\BoletaTypes.hpp" />
     <ClInclude Include="Headers\Persistence\FilesManager.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\CourseManager.hpp" />
@@ -153,16 +154,16 @@
     <ClInclude Include="Headers\DataStructures\PriorityQueue.h" />
     <ClInclude Include="Headers\DataStructures\Queue.h" />
     <ClInclude Include="Headers\DataStructures\Stack.h" />
-    <ClInclude Include="Headers\Entities\Actividad.h" />
-    <ClInclude Include="Headers\Entities\Boleta.h" />
+    <ClInclude Include="Headers\Entities\Actividad.hpp" />
+    <ClInclude Include="Headers\Entities\Boleta.hpp" />
     <ClInclude Include="Headers\Entities\Clase.h" />
     <ClInclude Include="Headers\Entities\Curso.h" />
     <ClInclude Include="Headers\Entities\Empresa.h" />
     <ClInclude Include="Headers\Entities\Especializacion.h" />
     <ClInclude Include="Headers\Entities\Estudiante.h" />
-    <ClInclude Include="Headers\Entities\Inscripcion.h" />
+    <ClInclude Include="Headers\Entities\Inscripcion.hpp" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
-    <ClInclude Include="Headers\Entities\Venta.h" />
+    <ClInclude Include="Headers\Entities\Venta.hpp" />
     <ClInclude Include="Headers\Persistence\InscripcionTypes.hpp" />
     <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp" />
     <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h" />

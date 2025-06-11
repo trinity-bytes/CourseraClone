@@ -1,7 +1,10 @@
-#pragma once
+#ifndef COURSERACLONE_ENTITIES_ACTIVIDAD_HPP
+#define COURSERACLONE_ENTITIES_ACTIVIDAD_HPP
+
+// Headers estandar
 #include <string>
 
-class Actividad 
+class Actividad
 {
 protected:
 	int id;
@@ -13,25 +16,26 @@ protected:
 	int tipo;
 
 public:
-	Actividad() : 
-		id(0), 
-		idEmpresa(0), 
-		nombreEmpresa(""), 
-		titulo(""), 
-		descripcion(""), 
-		cantidadAlumnos(0), 
-		tipo(0) 
-	{}
+	Actividad() :
+		id(0),
+		idEmpresa(0),
+		nombreEmpresa(""),
+		titulo(""),
+		descripcion(""),
+		cantidadAlumnos(0),
+		tipo(0)
+	{
+	}
 
 	Actividad(
-		int _id, 
-		int _idEmpresa, 
+		int _id,
+		int _idEmpresa,
 		const std::string& _nombreEmpresa,
 		const std::string& _titulo,
-		int _cantidadAlumnos, 
-		int _tipo, 
+		int _cantidadAlumnos,
+		int _tipo,
 		const std::string& _descripcion
-	) : 
+	) :
 		id(_id),
 		idEmpresa(_idEmpresa),
 		nombreEmpresa(_nombreEmpresa),
@@ -39,7 +43,8 @@ public:
 		cantidadAlumnos(_cantidadAlumnos),
 		tipo(_tipo),
 		descripcion(_descripcion)
-	{}
+	{
+	}
 
 	virtual ~Actividad() = default;
 
@@ -56,3 +61,5 @@ public:
 	const std::string& getTitulo() const { return titulo; }
 	const std::string& getDescripcion() const { return descripcion; }
 };
+
+#endif // !COURSERACLONE_ENTITIES_ACTIVIDAD_HPP

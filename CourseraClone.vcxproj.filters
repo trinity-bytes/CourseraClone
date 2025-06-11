@@ -79,10 +79,10 @@
     <ClInclude Include="Headers\DataStructures\Stack.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Actividad.h">
+    <ClInclude Include="Headers\Entities\Actividad.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Boleta.h">
+    <ClInclude Include="Headers\Entities\Boleta.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Clase.h">
@@ -100,13 +100,13 @@
     <ClInclude Include="Headers\Entities\Estudiante.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Inscripcion.h">
+    <ClInclude Include="Headers\Entities\Inscripcion.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Entities\Usuario.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\Venta.h">
+    <ClInclude Include="Headers\Entities\Venta.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.h">
@@ -165,6 +165,9 @@
     </ClInclude>
     <ClInclude Include="Headers\Persistence\InscripcionTypes.hpp">
       <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Persistence\BoletaTypes.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
