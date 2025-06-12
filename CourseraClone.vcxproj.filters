@@ -41,7 +41,7 @@
     <None Include="README.md" />
     <None Include="Resources\Documentation\Plan de implementacion.md" />
     <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
-    <None Include="Resources\Documentation\Entendiedno el proyecto.md" />
+    <None Include="Resources\Documentation\Entendiendo el proyecto.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\ContentManager.hpp">
