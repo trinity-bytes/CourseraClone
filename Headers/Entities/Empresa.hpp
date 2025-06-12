@@ -3,13 +3,11 @@
 #ifndef COURSERACLONE_ENTITIES_EMPRESA_HPP
 #define COURSERACLONE_ENTITIES_EMPRESA_HPP
 
-// Librerías estándar
-#include <unordered_set>
-#include <stdexcept>
-#include <string>
+// Librerías del sistema
 #include <iostream>
+#include <vector>
 
-// Librerias del proyecto
+// Librerias propias del proyecto
 #include "Usuario.hpp"
 #include "../Controllers/ContentManager.hpp"
 
@@ -18,14 +16,18 @@ class Empresa : public Usuario
 {
 private:
     // Atributos privados
-    LinkedList<Actividad> _actividadesPropias;
-    LinkedList<Especializacion> _especializaciones;
-    LinkedList<Curso> _cursos;
+    std::vector<int> _idsEspecializaciones;
+    std::vector<int> _idsCursos;
 
 public:
     // Constructores
     Empresa();
-    Empresa(int _id, const std::string& _nombreCompleto, const std::string& _nickname, const std::string& _contrasena);
+    Empresa(
+        int _id, 
+        const std::string& _nombreCompleto, 
+        const std::string& _nickname, 
+        const std::string& _contrasena
+    );
 
     // Métodos de gestión de datos
     void cargarDatos();
