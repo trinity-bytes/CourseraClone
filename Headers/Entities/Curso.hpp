@@ -47,7 +47,7 @@ public:
 
     
 	// Obtener datos crudos del curso
-    RawCursoData obtenerDatosCrudos() override 
+    RawCursoData obtenerDatosCrudosCurso() 
     {
         RawCursoData datos;
 
@@ -64,7 +64,7 @@ public:
 	}
 
     // Método para persistencia
-    bool guardar() 
+    bool guardar() override
     {
 		// ToDo: Implementar la lógica para guardar el curso en un archivo
     }

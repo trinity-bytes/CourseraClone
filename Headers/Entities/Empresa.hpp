@@ -11,8 +11,7 @@
 
 // Librerias del proyecto
 #include "Usuario.hpp"
-#include "Curso.hpp"
-#include "Especializacion.hpp"
+#include "../Controllers/ContentManager.hpp"
 
 // Clase que representa una empresa usuaria del sistema
 class Empresa : public Usuario
@@ -22,10 +21,6 @@ private:
     LinkedList<Actividad> _actividadesPropias;
     LinkedList<Especializacion> _especializaciones;
     LinkedList<Curso> _cursos;
-
-    // Métodos privados de validación
-    bool validarCurso(const Curso& _curso) const;
-    bool validarEspecializacion(const Especializacion& _especializacion) const;
 
 public:
     // Constructores

@@ -13,11 +13,33 @@ struct BoletaBinaria
 
 struct BoletaIndex 
 {
-    int   idEstudiante;
+    int idEstudiante;
     int offset;
 
     BoletaIndex() : idEstudiante(0), offset(0) {}
     BoletaIndex(int _idEstudiante, int _offset) : idEstudiante(_idEstudiante), offset(_offset) {}
+};
+
+struct RawComprobanteData 
+{
+    int id;
+    int idEstudiante;
+    int idActividad; // Curso o Especialidad
+    TipoActividad tipoActividad;
+    std::string fechaEmision;
+    std::string horaEmision;
+    double montoPagado;
+    MetodoDePago metodoPago;
+};
+
+enum class MetodoDePago
+{
+    DEFAULT = 0,
+    EFECTIVO = 1,
+    TARJETA_CREDITO = 2,
+    TARJETA_DEBITO = 3,
+    TRANSFERENCIA_BANCARIA = 4,
+	BILLETERA_DIGITAL = 5
 };
 
 #endif // !COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP

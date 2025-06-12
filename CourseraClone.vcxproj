@@ -140,7 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Persistence\ActividadTypes.hpp" />
-    <ClInclude Include="Headers\Persistence\BoletaTypes.hpp" />
+    <ClInclude Include="Headers\Persistence\ComprobanteDePagoTypes.hpp" />
     <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\ContentManager.hpp" />
@@ -156,7 +156,7 @@
     <ClInclude Include="Headers\DataStructures\Queue.hpp" />
     <ClInclude Include="Headers\DataStructures\Stack.hpp" />
     <ClInclude Include="Headers\Entities\Actividad.hpp" />
-    <ClInclude Include="Headers\Entities\Boleta.hpp" />
+    <ClInclude Include="Headers\Entities\ComprobanteDePago.hpp" />
     <ClInclude Include="Headers\Entities\Clase.hpp" />
     <ClInclude Include="Headers\Entities\Curso.hpp" />
     <ClInclude Include="Headers\Entities\Empresa.hpp" />

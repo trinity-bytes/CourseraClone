@@ -27,8 +27,7 @@ public:
                   _nombreEmpresa(""), 
 		          _categoria(CategoriaActividad::DEFAULT),
                   _titulo(""), 
-                  _descripcion("")
-                  
+                  _descripcion("") 
     {}
 
     Actividad(
@@ -64,7 +63,7 @@ public:
     void setTitulo(const std::string& titulo) { _titulo = titulo; }
     void setDescripcion(const std::string& descripcion) { _descripcion = descripcion; }	
 
-	virtual RawCursoData obtenerDatosCrudos() = 0; // Método virtual puro para obtener datos crudos
+	virtual bool guardar() = 0; // Método virtual puro para guardar la actividad
 };
 
 #endif // COURSERACLONE_ENTITIES_ACTIVIDAD_HPP

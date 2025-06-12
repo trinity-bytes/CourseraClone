@@ -11,8 +11,9 @@
 // Enum para representar los tipos de actividad
 enum class TipoActividad
 {
-    CURSO = 1,
-	ESPECIALIZACION = 2
+	DEFAULT, // Tipo por defecto, no se usa en la práctica
+    CURSO,
+	ESPECIALIZACION
 };
 
 // Datos crudos de un curso leídos del archivo
@@ -32,12 +33,14 @@ struct RawCursoData
 // Datos crudos de una especialización leídos del archivo
 struct RawEspecializacionData 
 {
+    int id;
     int idEmpresa;
-    std::string nombreEmpresa;
-    std::string tituloActividad;
-    std::string descripcionActividad;
-    int cantidadCursosEnEspecializacion;
-    std::vector<int> idsCursosInternos;
+    const std::string& nombreEmpresa;
+    CategoriaActividad categoria;
+    const std::string& titulo;
+    const std::string& descripcion;
+    const std::vector<int>& idsCursos;
+    int duracionEstimada;
 };
 
 // Estructura para agrupar los datos crudos de todas las actividades
