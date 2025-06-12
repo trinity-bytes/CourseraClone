@@ -25,7 +25,7 @@ struct RawCursoData
     std::string titulo;
     std::string descripcion;
     std::string instructor;
-    std::string categoria;
+    CategoriaActividad categoria;
     int cantidadClases;
 };
 
@@ -45,6 +45,65 @@ struct RawActividadesData
 {
     std::vector<RawCursoData> cursos;
     std::vector<RawEspecializacionData> especializaciones;
+};
+
+// Enumeración para las categorías de actividades
+enum class CategoriaActividad
+{
+	DEFAULT, // Categoría por defecto, no se usa en la práctica
+
+    // Tecnología & Desarrollo
+    PROGRAMACION,
+    DESARROLLO_WEB,
+    DESARROLLO_MOVIL,
+    DESARROLLO_JUEGOS,
+    SISTEMAS_EMBEBIDOS,
+    DEVOPS,
+    CLOUD_COMPUTING,
+    REDES,
+    BASES_DE_DATOS,
+    SEGURIDAD_INFORMATICA,
+    INTELIGENCIA_ARTIFICIAL,
+    CIENCIA_DE_DATOS,
+    BLOCKCHAIN,
+    IOT,
+    REALIDAD_VIRTUAL,
+    ROBOTICA,
+    UX_UI,
+
+    // Diseño & Creatividad
+    DISEÑO,
+    DISEÑO_GRAFICO,
+    DISEÑO_INDUSTRIAL,
+    ARTE_DIGITAL,
+    FOTOGRAFIA,
+    VIDEO_ANIMACION,
+    MUSICA_SONIDO,
+    ESCRITURA_CREATIVA,
+
+    // Negocios & Gestión
+    NEGOCIOS,
+    MARKETING_DIGITAL,
+    FINANZAS,
+    EMPRENDIMIENTO,
+    GESTION_PROYECTOS,
+    RECURSOS_HUMANOS,
+    CONSULTORIA,
+    ECOMMERCE,
+    ANALISIS_NEGOCIOS,
+
+    // Ciencias & Educación
+    INVESTIGACION,
+    BIOTECNOLOGIA,
+    INGENIERIA,
+    MATEMATICAS,
+    FISICA,
+    EDUCACION,
+    IDIOMAS,
+    PSICOLOGIA,
+
+    // Categoría general
+    OTROS
 };
 
 #endif // !COURSERACLONE_PERSISTENCE_ACTIVIDADTYPES_HPP

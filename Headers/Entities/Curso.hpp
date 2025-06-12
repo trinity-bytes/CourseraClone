@@ -17,41 +17,37 @@ class Curso : public Actividad
 {
 private:
     std::string _instructor;
-    std::string _categoria;
     int _cantidadClases;
 
 	// ToDo: Implementar lista de clases relacionadas al curso
 public:
-    // Constructores
-    Curso() : Actividad(0, 0, "", "", ""), _instructor(""), _categoria(""), _cantidadClases(0) {}
+    Curso() : Actividad(0, 0, "", CategoriaActividad::DEFAULT, "", ""), _instructor(""), _cantidadClases(0) {}
 
     Curso(
-        int _id,
-        int _idEmpresa,
-        const std::string& _nombreEmpresa,
-        const std::string& _titulo,
-        const std::string& _descripcion,
-        const std::string& _instructor,
-        const std::string& _categoria = "",
-        int _cantidadClases
-    ) : Actividad(_id, _idEmpresa, _nombreEmpresa, _titulo, _descripcion),
-        _instructor(_instructor),
-        _cantidadClases(_cantidadClases),
-        _categoria(_categoria) {}
+        int id,
+        int idEmpresa,
+        const std::string& nombreEmpresa,
+		CategoriaActividad categoria,
+        const std::string& titulo,
+        const std::string& descripcion,
+        const std::string& instructor,
+        int cantidadClases
+    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion),
+        _instructor(instructor),
+        _cantidadClases(cantidadClases) 
+    {}
 
     // Getters
     const std::string& getInstructor() const { return _instructor; }
     int getCantidadClases() const { return _cantidadClases; }
-    const std::string& getCategoria() const { return _categoria; }
 
     // Setters
     void setInstructor(const std::string& _instructor) { this->_instructor = _instructor; }
 	void setInstructor(const std::string& _instructor) { this->_instructor = _instructor; }
-    void setCategoria(const std::string& _categoria) { this->_categoria = _categoria; }
 
     
 	// Obtener datos crudos del curso
-    RawCursoData obtenerDatosCrudos() const 
+    RawCursoData obtenerDatosCrudos() override 
     {
         RawCursoData datos;
 

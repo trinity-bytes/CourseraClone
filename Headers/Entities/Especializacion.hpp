@@ -1,9 +1,10 @@
 // filepath: Headers/Entities/Especializacion.hpp
-// Descripcion: Clase que representa una especialización en el sistema
+// Header para la clase Especializacion que representa una especialización compuesta por varios cursos
 
 #ifndef COURSERACLONE_ENTITIES_ESPECIALIZACION_HPP
 #define COURSERACLONE_ENTITIES_ESPECIALIZACION_HPP
 
+// Includes del sistema y de la STL
 #include <vector>
 #include <string>
 #include <sstream>
@@ -11,26 +12,20 @@
 #include <fstream>
 #include <algorithm>
 
+// Includes propios del proyecto
 #include "Actividad.hpp"
 #include "Curso.hpp"
 #include "../Controllers/ContentManager.hpp"
-#include "../DataStructures/LinkedList.hpp"
 
 // Clase que representa una especialización compuesta por varios cursos
 class Especializacion : public Actividad 
 {
 private:
     std::vector<int> _idsCursos;
-    LinkedList<Curso> _cursos;
-    std::string _categoria;
-    std::vector<std::string> _requisitos;
-    float _calificacionPromedio;
-    int _totalCalificaciones;
-    int _duracionEstimada;
+    CategoriaActividad _categoria;
+	int _duracionEstimada; // Duración estimada en semanas
 
 public:
-    Especializacion() {};
-    
     Especializacion(
         int id, 
         int idEmpresa, 
