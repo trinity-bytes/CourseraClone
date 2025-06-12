@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="Resources\Documentation\Entendiedno el proyecto.md" />
     <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
