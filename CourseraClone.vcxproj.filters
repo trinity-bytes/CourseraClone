@@ -173,7 +173,7 @@
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Persistence\ActividadTypes.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

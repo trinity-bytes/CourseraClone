@@ -21,244 +21,70 @@ private:
 
 public:
     // Constructores
-    Empresa();
-    Empresa(
-        int _id, 
-        const std::string& _nombreCompleto, 
-        const std::string& _nickname, 
-        const std::string& _contrasena
+    inline Empresa();
+    inline Empresa(
+        int id,
+        TipoUsuario tipoUsuario,
+        const std::string& nombreCompleto,
+        const std::string& username,
+        const std::string& contrasenaHash
     );
 
+    /*
+	NOTA IMPORTANTE: Usar el gestor de contenido para mnejar la 
+    creacion, edicion y eliminacion de cursos y especializaciones.
+	Esto permite mantener la integridad de los datos y facilita la gestion de los mismos.
+	Además, el gestor de contenido se encarga de cargar los datos desde el archivo correspondiente.
+    */
+
+	// Getters
+	inline const std::vector<int>& getIdsEspecializaciones() const { return _idsEspecializaciones; }
+	inline const std::vector<int>& getIdsCursos() const { return _idsCursos; }
+
+	// Setters
+	inline void setIdsEspecializaciones(const std::vector<int>& _ids) { _idsEspecializaciones = _ids; }
+	inline void setIdsCursos(const std::vector<int>& _ids) { _idsCursos = _ids; }
+
     // Métodos de gestión de datos
-    void cargarDatos();
-    void reset();
+    inline void cargarDatos();
+    inline void reset();
 
     // Métodos de gestión de cursos
-    bool crearCurso(const Curso& _nuevoCurso);
-    bool eliminarCurso(int _idCurso);
-    LinkedList<Curso>& getCursos() { return _cursos; }
-    const LinkedList<Curso>& getCursos() const { return _cursos; }
+    inline bool crearCurso(const Curso& _nuevoCurso);
+    inline bool eliminarCurso(int _idCurso);
 
     // Métodos de gestión de especializaciones
-    bool crearEspecializacion(const Especializacion& _nuevaEspecializacion);
-    bool eliminarEspecializacion(int _idEspecializacion);
-    LinkedList<Especializacion>& getEspecializaciones() { return _especializaciones; }
-    const LinkedList<Especializacion>& getEspecializaciones() const { return _especializaciones; }
+    inline bool crearEspecializacion(const Especializacion& _nuevaEspecializacion);
+    inline bool eliminarEspecializacion(int _idEspecializacion);
 
     // Métodos de gestión de cursos en especializaciones
-    bool anadirCursoAEspecializacion(int _idEspecializacion, Curso& _curso);
-    bool eliminarCursoDeEspecializacion(int _idEspecializacion, int _idCurso);
+    inline bool anadirCursoAEspecializacion(int _idEspecializacion, Curso& _curso);
+    inline bool eliminarCursoDeEspecializacion(int _idEspecializacion, int _idCurso);
 
     // Métodos de consulta
-    void mostrarProfesores() const;
-    int obtenerCantidadCursos() const;
-    int obtenerCantidadEspecializaciones() const;
-    bool tieneCurso(int _idCurso) const;
-    bool tieneEspecializacion(int _idEspecializacion) const;
+    inline void mostrarProfesores() const;
+    inline int obtenerCantidadCursos() const;
+    inline int obtenerCantidadEspecializaciones() const;
+    inline bool tieneCurso(int _idCurso) const;
+    inline bool tieneEspecializacion(int _idEspecializacion) const;
 };
 
 // --- IMPLEMENTACIONES ---
 
-inline Empresa::Empresa() : Usuario()
+inline Empresa::Empresa() : Usuario(), _idsEspecializaciones(), _idsCursos()
 {
     cargarDatos();
 }
 
-inline Empresa::Empresa(int _id, const std::string& _nombreCompleto, const std::string& _nickname, const std::string& _contrasena)
-    : Usuario(_id, TipoUsuario::EMPRESA, _nombreCompleto, _nickname, _contrasena)
+inline Empresa::Empresa(
+    int id,
+    TipoUsuario tipoUsuario,
+    const std::string& nombreCompleto,
+    const std::string& username,
+    const std::string& contrasena
+) : Usuario(id, TipoUsuario::EMPRESA, nombreCompleto, username, contrasena), _idsEspecializaciones(), _idsCursos()
 {
     cargarDatos();
-}
-
-inline void Empresa::cargarDatos()
-{
-    // TODO: Implementar carga de datos desde archivo
-}
-
-inline void Empresa::reset()
-{
-    Usuario::reset();
-    _actividadesPropias.clear();
-    _especializaciones.clear();
-    _cursos.clear();
-}
-
-inline bool Empresa::validarCurso(const Curso& _curso) const
-{
-    return !_curso.getTitulo().empty() && _curso.getId() > 0;
-}
-
-inline bool Empresa::validarEspecializacion(const Especializacion& _especializacion) const
-{
-    return !_especializacion.getTitulo().empty() && _especializacion.getId() > 0;
-}
-
-inline bool Empresa::crearCurso(const Curso& _nuevoCurso)
-{    if (!validarCurso(_nuevoCurso))
-    {
-        throw std::invalid_argument("Error: El curso proporcionado no es válido.");
-    }
-
-    // Verificar que no existe un curso con el mismo ID
-    if (tieneCurso(_nuevoCurso.getId()))
-    {
-        throw std::invalid_argument("Error: Ya existe un curso con ese ID.");
-    }
-
-    _cursos.agregarAlFinal(_nuevoCurso);
-    return true;
-}
-
-inline bool Empresa::eliminarCurso(int _idCurso)
-{
-    if (_idCurso <= 0)
-    {
-        throw std::invalid_argument("Error: ID de curso inválido.");
-    }
-
-    // TODO: Implementar eliminación por ID en LinkedList
-    // Por ahora retornamos false indicando que no se pudo eliminar
-    return false;
-}
-
-inline bool Empresa::crearEspecializacion(const Especializacion& _nuevaEspecializacion)
-{
-    if (!validarEspecializacion(_nuevaEspecializacion))
-    {
-        throw std::invalid_argument("Error: La especialización proporcionada no es válida.");
-    }
-
-    // Verificar que no existe una especialización con el mismo ID
-    if (tieneEspecializacion(_nuevaEspecializacion.getId()))
-    {
-        throw std::invalid_argument("Error: Ya existe una especialización con ese ID.");
-    }
-
-    _especializaciones.agregarAlFinal(_nuevaEspecializacion);
-    return true;
-}
-
-inline bool Empresa::eliminarEspecializacion(int _idEspecializacion)
-{
-    if (_idEspecializacion <= 0)
-    {
-        throw std::invalid_argument("Error: ID de especialización inválido.");
-    }
-
-    // TODO: Implementar eliminación por ID en LinkedList
-    return false;
-}
-
-inline void Empresa::mostrarProfesores() const
-{
-    std::unordered_set<std::string> profesores;
-
-    // Recopilar profesores únicos de todos los cursos
-    for (const auto& curso : _cursos)
-    {
-        if (validarCurso(curso))
-        {
-            std::string instructor = curso.getInstructor();
-            if (!instructor.empty())
-            {
-                profesores.insert(instructor);
-            }
-        }
-    }    // Mostrar resultados
-    if (profesores.empty())
-    {
-        std::cout << "No hay profesores registrados para esta empresa." << std::endl;
-    }
-    else
-    {
-        std::cout << "Profesores asociados a los cursos de la empresa:" << std::endl;
-        for (const auto& profesor : profesores)
-        {
-            std::cout << "- " << profesor << std::endl;
-        }
-    }
-}
-
-inline bool Empresa::anadirCursoAEspecializacion(int _idEspecializacion, Curso& _curso)
-{
-    if (!validarCurso(_curso))
-    {
-        throw std::invalid_argument("Error: El curso proporcionado no es válido.");
-    }
-
-    if (_idEspecializacion <= 0)
-    {
-        throw std::invalid_argument("Error: ID de especialización inválido.");
-    }
-
-    // Buscar la especialización por ID
-    for (auto& especializacion : _especializaciones)
-    {
-        if (validarEspecializacion(especializacion) && especializacion.getId() == _idEspecializacion)
-        {
-            especializacion.anadirCurso(_curso);
-            return true;
-        }
-    }
-
-    throw std::invalid_argument("Error: No se encontró una especialización con el ID proporcionado.");
-}
-
-inline bool Empresa::eliminarCursoDeEspecializacion(int _idEspecializacion, int _idCurso)
-{
-    if (_idEspecializacion <= 0 || _idCurso <= 0)
-    {
-        throw std::invalid_argument("Error: IDs inválidos proporcionados.");
-    }
-
-    // Buscar la especialización por ID
-    for (auto& especializacion : _especializaciones)
-    {
-        if (validarEspecializacion(especializacion) && especializacion.getId() == _idEspecializacion)
-        {
-            return especializacion.eliminarCurso(_idCurso);
-        }
-    }
-
-    throw std::invalid_argument("Error: No se encontró una especialización con el ID proporcionado.");
-}
-
-inline int Empresa::obtenerCantidadCursos() const
-{
-    return _cursos.getTamano();
-}
-
-inline int Empresa::obtenerCantidadEspecializaciones() const
-{
-    return _especializaciones.getTamano();
-}
-
-inline bool Empresa::tieneCurso(int _idCurso) const
-{
-    if (_idCurso <= 0) return false;
-
-    for (const auto& curso : _cursos)
-    {
-        if (curso.getId() == _idCurso)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-inline bool Empresa::tieneEspecializacion(int _idEspecializacion) const
-{
-    if (_idEspecializacion <= 0) return false;
-
-    for (const auto& especializacion : _especializaciones)
-    {
-        if (especializacion.getId() == _idEspecializacion)
-        {
-            return true;
-        }
-    }
-    return false;
 }
 
 #endif // COURSERACLONE_ENTITIES_EMPRESA_HPP
