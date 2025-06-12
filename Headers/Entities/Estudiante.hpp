@@ -47,6 +47,13 @@ public:
         const std::string& _contrasena
     );
 
+    /*
+	NOTA IMPORTANTE: Para la inscripcion de cursos y especializaciones, se debe tener en cuenta que
+    debemos usar la clase Inscripion que es la que se encarrgara de trabajar con la clase 
+    Gestion de contenido para realizar las operaciones necesarias
+	Para trabajar con archivos esta la clase FilesManager que se encargara de manejar los archivos
+    */
+
     inline void reset();
 
     // Leer inscripción desde archivo binario en posición específica

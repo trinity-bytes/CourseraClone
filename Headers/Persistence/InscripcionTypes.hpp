@@ -3,6 +3,16 @@
 
 #include <cstddef> // For offsetof
 
+struct RawInscripcionData
+{
+    int id;
+    int idEstudiante;
+    int idActividad;
+    double progreso;
+    bool completado;
+    bool pagado;
+};
+
 // Estructura para índice de inscripciones en disco (.dat)
 struct InscripcionIndex {
     int idUsuario;

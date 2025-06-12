@@ -6,77 +6,51 @@
 
 // Headers de la libreria estandar
 #include <iostream>
-#include <fstream>
+#include <memory> // Para std::shared_ptr
 
 // Headers propios
 #include "Actividad.hpp"
 #include "Venta.hpp"
+#include "../Controllers/FilesManager.hpp"
 #include "../Persistence/InscripcionTypes.hpp"
-#include "../Persistence/FilesManager.hpp"
+#include "../Utils/DataPaths.hpp"
 
 // Clase que representa una inscripción de estudiante a una actividad
-class Inscripcion {
+class Inscripcion 
+{
 private:
     int _id;
     int _idEstudiante;
-    Actividad* _actividad;
+    int _idActividad;
     double _progreso;
     bool _completado;
-    bool _pagado;
+    bool _estadoPago;
 
 public:
-    Inscripcion() : _id(0), _idEstudiante(0), _actividad(nullptr), _progreso(0.0), _completado(false), _pagado(false) {}
+    inline Inscripcion();
+    inline Inscripcion(int idEstudiante, int idActividad);
+    inline Inscripcion(InscripcionBinaria& _bin, Actividad* _act, int _off);
 
-    Inscripcion(int _idEstudiante, Actividad* _actividad)
-        : _idEstudiante(_idEstudiante), _actividad(_actividad),
-        _progreso(0.0), _completado(false), _pagado(false) {
-        // Obtener nuevo ID basado en tamaño actual del archivo
-        std::ifstream archivo(RUTA_INSCRIPCIONES, std::ios::binary | std::ios::ate);
-        std::streamoff peso = archivo.tellg();
-        _id = int(peso / sizeof(InscripcionBinaria));
-    }
+	// Getters
+	inline int getId() const;
+	inline int getIdEstudiante() const;
+	inline int getIdActividad() const;
+	inline double getProgreso() const;
+	inline bool getCompletado() const;
+	inline bool getEstadoPago() const;
 
-    Inscripcion(InscripcionBinaria& _bin, Actividad* _act, int _off)
-        : _idEstudiante(_bin.idEstudiante),
-        _actividad(_act),
-        _progreso(_bin.progreso),
-        _completado(_bin.completado),
-        _pagado(_bin.pagado),
-        _id(_off) {
-    }
+    inline void guardar();
 
-    void guardar() {
-        InscripcionBinaria nuevo(_idEstudiante, _actividad->getId(), _actividad->getTipo(), _progreso, _completado, _pagado);
-        int offsetRegistro = 0;
-        if (FileManager::guardarInscripcionBinaria(nuevo, offsetRegistro)) {
-            _id = offsetRegistro;
-        }
-    }    void actualizaPagoEnDisco(int _posicion, bool _estado) {
-        FileManager::actualizarPagoInscripcion(_posicion, _estado);
-    }
+    inline void actualizaPagoEnDisco(int _posicion, bool _estado);
+    inline void marcarComoPagada();
 
-    bool estaPagada() const { return _pagado; }
+    inline RawInscripcionData obtenerDatosCrudos() const;
 
-    void marcarComoPagada(LinkedList<Boleta>& _boletas) {
-        if (!estaPagada()) {
-            _pagado = true;
-            FileManager::actualizarPagoInscripcion(_id, _pagado);
-            Venta prueba;
-            prueba.pagarInscripcion(_id, getIdActividad(), 20.5, _boletas, _idEstudiante);
-        }
-    }
-
-    int getIdActividad() const { return _actividad->getId(); }
-    int getId() const { return _id; }
-    int getIdEstudiante() const { return _idEstudiante; }
-
-    void mostrar() const {
-        std::cout << "ID Estudiante: " << _idEstudiante << std::endl;
-        std::cout << "ID Actividad: " << _actividad->getId() << std::endl;
-        std::cout << "Progreso: " << _progreso << std::endl;
-        std::cout << "Completado: " << (_completado ? "Si" : "No") << std::endl;
-        std::cout << "Pagado: " << (_pagado ? "Si" : "No") << std::endl;
-    }
+    /*
+    NOTA IMPORTANTE:
+    Esta clase debe interactuar con el ContentManager, FilesManager y Usuarios para realizar las operaciones que necesita.
+	No debe contener oeracione mas alla de gestionar inscripciones y su estado.
+    */
 };
 
 #endif // COURSERACLONE_ENTITIES_INSCRIPCION_HPP
