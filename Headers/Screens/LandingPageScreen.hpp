@@ -46,7 +46,7 @@ private:
     // COORDENADAS DE POSICIONAMIENTO
     /// @brief Posiciones fijas para elementos de la cabecera
     const COORD _coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { 
-        {67, 3}, {84, 3} 
+        {67, 1}, {84, 1} 
     };
 
     /// @brief Posiciones para títulos de especialidades
@@ -281,9 +281,9 @@ inline void LandingPageScreen::dibujarInterfazCompleta()
 inline void LandingPageScreen::dibujarFondoCabecera()
 {
 	/// @brief Dibujar fondo de la cabecera
-    for (int y = 2; y < 6; y++) 
+    for (int y = 0; y < 4; y++) 
     {
-        for (int x = 4; x < ANCHO_CONSOLA - 4; x++) 
+        for (int x = 0; x < ANCHO_CONSOLA; x++) 
         {
             gotoXY(x, y);
             setConsoleColor(ColorIndex::TEXTO_INTENSO, ColorIndex::NAVEGACION);
@@ -296,11 +296,11 @@ inline void LandingPageScreen::dibujarLogoYNavegacion()
 {
     // Dibujar logo principal
     setConsoleColor(ColorIndex::ACENTO, ColorIndex::NAVEGACION, true, true);
-    gotoXY(7, 3); std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
-    gotoXY(7, 4); std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(7, 1); std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(7, 2); std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
 
     // Dibujar texto "CLONE"
-    gotoXY(39, 3);
+    gotoXY(39, 1);
     std::cout << "│  C L O N E";
 }
 

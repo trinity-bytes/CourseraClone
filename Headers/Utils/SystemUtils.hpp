@@ -14,7 +14,7 @@
 
 // Dimensiones de la consola
 constexpr int ANCHO_CONSOLA = 120;
-constexpr int ALTO_CONSOLA = 35;
+constexpr int ALTO_CONSOLA = 38;
 
 // Constantes de archivos y datos
 constexpr int MAX_ESTUDIANTES_POR_CURSO = 100;
