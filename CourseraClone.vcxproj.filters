@@ -155,16 +155,16 @@
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp">
+    <ClInclude Include="Headers\Types\UsuarioTypes.hpp">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Persistence\InscripcionTypes.hpp">
+    <ClInclude Include="Headers\Types\InscripcionTypes.hpp">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Persistence\ComprobanteDePagoTypes.hpp">
+    <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Utils\DataPaths.hpp">
@@ -173,8 +173,11 @@
     <ClInclude Include="Headers\Controllers\FilesManager.hpp">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Persistence\ActividadTypes.hpp">
+    <ClInclude Include="Headers\Types\ActividadTypes.hpp">
       <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Types\ScreenTypes.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

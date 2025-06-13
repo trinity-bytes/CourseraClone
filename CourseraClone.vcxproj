@@ -140,8 +140,8 @@
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Persistence\ActividadTypes.hpp" />
-    <ClInclude Include="Headers\Persistence\ComprobanteDePagoTypes.hpp" />
+    <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
+    <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />
     <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\ContentManager.hpp" />
@@ -166,8 +166,9 @@
     <ClInclude Include="Headers\Entities\Inscripcion.hpp" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.hpp" />
-    <ClInclude Include="Headers\Persistence\InscripcionTypes.hpp" />
-    <ClInclude Include="Headers\Persistence\UsuarioTypes.hpp" />
+    <ClInclude Include="Headers\Types\InscripcionTypes.hpp" />
+    <ClInclude Include="Headers\Types\ScreenTypes.hpp" />
+    <ClInclude Include="Headers\Types\UsuarioTypes.hpp" />
     <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.hpp" />
     <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.hpp" />
     <ClInclude Include="Headers\Screens\EditarPerfilScreen.hpp" />

@@ -1,8 +1,8 @@
 // FILEPATH: Headers/Persistence/ActividadTypes.hpp
 // Define tipos de datos para las actividades en la persistencia del sistema
 
-#ifndef COURSERACLONE_PERSISTENCE_ACTIVIDADTYPES_HPP
-#define COURSERACLONE_PERSISTENCE_ACTIVIDADTYPES_HPP
+#ifndef COURSERACLONE_TYPES_ACTIVIDADTYPES_HPP
+#define COURSERACLONE_TYPES_ACTIVIDADTYPES_HPP
 
 // includes del sistema
 #include <string>
@@ -109,4 +109,4 @@ enum class CategoriaActividad
     OTROS
 };
 
-#endif // !COURSERACLONE_PERSISTENCE_ACTIVIDADTYPES_HPP
+#endif // !COURSERACLONE_TYPES_ACTIVIDADTYPES_HPP

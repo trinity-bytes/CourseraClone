@@ -25,53 +25,49 @@ private:
 
 public:
     // Constructor y destructor
-    MainController();
-    ~MainController() = default;
+    inline MainController();
+    inline ~MainController() = default;
 
     // Método principal de ejecución
-    void run();
+    inline void run();
 };
 
 /// Constructor por defecto
-MainController::MainController() : _ejecutando(true)
-{
-    // Inicialización básica
-    std::cout << "Inicializando CourseraClone..." << std::endl;
-}
+inline MainController::MainController() : _ejecutando(true) {}
 
+// FUNCIONES PRIVADAS DE NAVEGACIÓN
 /// Crea una nueva instancia de la pantalla landing page
-std::unique_ptr<PantallaBase> MainController::crearPantallaLandingPage()
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaLandingPage()
 {
     return std::make_unique<LandingPageScreen>();
 }
 
+// ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
-void MainController::run()
+inline void MainController::run()
 {
     std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaLandingPage();
     
-    while (_ejecutando) 
+    do
     {
         ResultadoPantalla _resultado = _pantallaActual->ejecutar();
 
-        switch (_resultado.accion) 
+        switch (_resultado.accion)
         {
-            case AccionPantalla::IR_A_LANDING_PAGE:
-                _pantallaActual = crearPantallaLandingPage();
-                break;
-                
-            case AccionPantalla::SALIR:
-                _ejecutando = false;
-                system("cls");
-                std::cout << "Gracias por usar CourseraClone. Hasta luego!" << std::endl;
-                break;
-                
-            default:
-                // Para acciones no implementadas aún, volver a landing page
-                _pantallaActual = crearPantallaLandingPage();
-                break;
+        case AccionPantalla::IR_A_LANDING_PAGE:
+            _pantallaActual = crearPantallaLandingPage();
+            break;
+
+        case AccionPantalla::SALIR:
+            _ejecutando = false;
+            system("cls");
+            break;
+        default:
+            // Para acciones no implementadas aún, volver a landing page
+            _pantallaActual = crearPantallaLandingPage();
+            break;
         }
-    }
+    } while (_ejecutando);
 }
 
 #endif // COURSERACLONE_CONTROLLERS_MAINCONTROLLER_HPP
