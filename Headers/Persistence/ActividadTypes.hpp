@@ -35,11 +35,11 @@ struct RawEspecializacionData
 {
     int id;
     int idEmpresa;
-    const std::string nombreEmpresa;
+    std::string nombreEmpresa;
     CategoriaActividad categoria;
-    const std::string titulo;
-    const std::string descripcion;
-    const std::vector<int> idsCursos;
+    std::string titulo;
+    std::string descripcion;
+    std::vector<int> idsCursos;
     int duracionEstimada;
 };
 
@@ -51,7 +51,7 @@ struct RawActividadesData
 };
 
 // Enumeración para las categorías de actividades
-enum class CategoriaActividad
+enum class CategoriaActividad : int
 {
 	DEFAULT, // Categoría por defecto, no se usa en la práctica
 
@@ -75,9 +75,9 @@ enum class CategoriaActividad
     UX_UI,
 
     // Diseño & Creatividad
-    DISEÑO,
-    DISEÑO_GRAFICO,
-    DISEÑO_INDUSTRIAL,
+    DISENO,
+    DISENO_GRAFICO,
+    DISENO_INDUSTRIAL,
     ARTE_DIGITAL,
     FOTOGRAFIA,
     VIDEO_ANIMACION,

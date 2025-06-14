@@ -10,7 +10,7 @@
 
 // Headers propios
 #include "Actividad.hpp"                     // Clase base Actividad
-#include "../Persistence/ActividadTypes.hpp" // RawCursoData
+#include "../Persistence/ActividadTypes.hpp"
 
 // Clase que representa un curso en el sistema educativo
 class Curso : public Actividad 
@@ -43,7 +43,6 @@ public:
 
     // Setters
     void setInstructor(const std::string& _instructor) { this->_instructor = _instructor; }
-	void setInstructor(const std::string& _instructor) { this->_instructor = _instructor; }
 
     
 	// Obtener datos crudos del curso

@@ -171,7 +171,7 @@ public:
 
     /*
     */
-    RawEspecializacionData FilesManager::leerDatoEspecializacion();
+    inline void  FilesManager::leerDatoEspecializacion(std::vector<RawEspecializacionData>& vectorEspecializacionAnadir);
 
     /**
      * @brief Lee todos los datos de actividades (cursos y especializaciones)
@@ -570,10 +570,39 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
     }
 }
 
-inline RawEspecializacionData  FilesManager::leerDatoEspecializacion() {
+inline void  FilesManager::leerDatoEspecializacion(std::vector<RawEspecializacionData>& vectorEspecializacionAnadir) {
+    auto path = getDataFilePathActividades(TipoActividad::ESPECIALIZACION);
+    std::ifstream is(path, std::ios::in);
 
+	int id, idEmpresa, duracionEstimada, cantidadCursos, categoriaNumero;
+    std::string nombreEmpresa, titulo, descripcion;
+    CategoriaActividad categoria;
 
-    return RawEspecializacionData();
+    while (is >> id) {
+		// Leer Datos
+		is >> idEmpresa >> nombreEmpresa >> titulo >> descripcion;
+		is >> categoriaNumero >> cantidadCursos; // Leer como entero y convertir a enum
+
+        // Asignar valores
+		RawEspecializacionData especializacionData;
+
+		for (int i = 0; i < cantidadCursos; ++i) {
+			int idCurso;
+			is >> idCurso;
+			especializacionData.idsCursos.push_back(idCurso);
+		}
+
+		especializacionData.id = id;
+		especializacionData.idEmpresa = idEmpresa;
+		especializacionData.nombreEmpresa = nombreEmpresa;
+		especializacionData.titulo = titulo;
+		especializacionData.descripcion = descripcion;
+		especializacionData.categoria = static_cast<CategoriaActividad>(categoriaNumero);
+		especializacionData.duracionEstimada = duracionEstimada;
+
+		// Anadimos al vector
+		vectorEspecializacionAnadir.push_back(especializacionData);
+    }   
 }
 
 inline RawActividadesData FilesManager::leerDatosActividades() {
@@ -583,7 +612,8 @@ inline RawActividadesData FilesManager::leerDatosActividades() {
 
     try {
 
-
+        leerDatoCurso(cursoAnadir);
+        leerDatoEspecializacion(especializacionAnadir);
 
         return{ cursoAnadir, especializacionAnadir };
 

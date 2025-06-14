@@ -14,6 +14,7 @@
 #include "../Utils/UI_Ascii.hpp"
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
+#include "../Controllers/ContentManager.hpp"
 
 /// @brief Pantalla principal del sistema con navegación por secciones
 /// @details Implementa la landing page con navegación entre cabecera, especialidades y cursos
@@ -260,7 +261,19 @@ inline void LandingPageScreen::cargarDatos(int maxEspecialidad, int maxCursos)
 {
 	/// @todo: Implementar lógica para cargar datos dinámicos
 	/// @note Debemos utilizar el ContentManager y el FilesManager para cargar los datos de cursos y especializaciones
+	_especialidades.clear();
+	_cursos.clear();
+
+
+
     
+	// Simulación de carga de datos
+	for (int i = 0; i < maxEspecialidad; ++i) {
+		_especialidades.push_back(ElementoMenu{ "Especialidad " + std::to_string(i + 1), "Descripción de especialidad " + std::to_string(i + 1) });
+	}
+	for (int i = 0; i < maxCursos; ++i) {
+		_cursos.push_back(ElementoMenu{ "Curso " + std::to_string(i + 1), "Descripción de curso " + std::to_string(i + 1) });
+	}
 }
 
 inline void LandingPageScreen::dibujarInterfazCompleta()
