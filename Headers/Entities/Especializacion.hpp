@@ -15,7 +15,7 @@
 // Includes propios del proyecto
 #include "Actividad.hpp"
 #include "../Controllers/ContentManager.hpp"
-#include "../Persistence/ActividadTypes.hpp"
+#include "../Types/ActividadTypes.hpp"
 
 // Clase que representa una especialización compuesta por varios cursos
 class Especializacion : public Actividad 

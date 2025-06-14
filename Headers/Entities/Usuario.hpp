@@ -9,7 +9,7 @@
 #include <iostream>  // Para std::cerr y std::endl
 
 // Headers propios
-#include "../Persistence/UsuarioTypes.hpp"
+#include "../Types/UsuarioTypes.hpp"
 
 /// @brief Clase que representa un usuario en el sistema, con métodos para autenticación 
 ///        y manejo de archivos binarios.

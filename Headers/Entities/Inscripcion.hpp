@@ -12,7 +12,7 @@
 #include "Actividad.hpp"
 #include "Venta.hpp"
 #include "../Controllers/FilesManager.hpp"
-#include "../Persistence/InscripcionTypes.hpp"
+#include "../Types/InscripcionTypes.hpp"
 #include "../Utils/DataPaths.hpp"
 
 // Clase que representa una inscripción de estudiante a una actividad

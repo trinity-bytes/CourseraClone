@@ -14,7 +14,7 @@
 
 // Dimensiones de la consola
 constexpr int ANCHO_CONSOLA = 120;
-constexpr int ALTO_CONSOLA = 38;
+constexpr int ALTO_CONSOLA = 32;
 
 // Constantes de archivos y datos
 constexpr int MAX_ESTUDIANTES_POR_CURSO = 100;
@@ -144,7 +144,7 @@ inline void configurarPaletaColores() {
 }
 
 /// @brief Configura la fuente de la consola
-inline void configurarFuente(const std::wstring& nombreFuente = L"Cascadia Mono", 
+inline void configurarFuente(const std::wstring& nombreFuente = L"Cascadia Code Semibold", 
                              int altoFuente = 22) {
     HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_FONT_INFOEX cfi = { 0 };
@@ -371,7 +371,7 @@ inline void configurarConsola() {
     setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::FONDO_GENERAL);
 
     // Título de la aplicación
-    SetConsoleTitle(L"Coursera Clone | Alpha 2.1");
+    SetConsoleTitle(L"Coursera Clone - Alpha 4");
 }
 
 #endif // COURSERACLONE_UTILS_SYSTEMUTILS_HPP

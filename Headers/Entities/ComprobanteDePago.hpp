@@ -11,8 +11,8 @@
 #include <fstream>  // std::ofstream, std::fstream
 
 // Headers propios
-#include "../Persistence/ComprobanteDePagoTypes.hpp"
-#include "../Persistence/ActividadTypes.hpp"
+#include "../Types/ComprobanteDePagoTypes.hpp"
+#include "../Types/ActividadTypes.hpp"
 
 // Clase que representa una boleta de pago
 class ComprobanteDePago

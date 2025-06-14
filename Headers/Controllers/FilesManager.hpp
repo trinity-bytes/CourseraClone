@@ -15,9 +15,9 @@
 #include <mutex>     // Para std::once_flag
 
 // Headers propios
-#include "..//Persistence/UsuarioTypes.hpp" 
-#include "..//Persistence/InscripcionTypes.hpp"
-#include "..//Persistence/ActividadTypes.hpp"
+#include "../Types/UsuarioTypes.hpp" 
+#include "../Types/InscripcionTypes.hpp"
+#include "../Types/ActividadTypes.hpp"
 #include "../Utils/DataPaths.hpp"
 
 // Resultados de operaciones de archivo
