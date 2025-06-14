@@ -260,6 +260,7 @@ inline void LandingPageScreen::cargarDatos(int maxEspecialidad, int maxCursos)
 {
 	/// @todo: Implementar lógica para cargar datos dinámicos
 	/// @note Debemos utilizar el ContentManager y el FilesManager para cargar los datos de cursos y especializaciones
+    
 }
 
 inline void LandingPageScreen::dibujarInterfazCompleta()

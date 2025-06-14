@@ -16,8 +16,8 @@
 
 // Headers propios
 #include "..//Persistence/UsuarioTypes.hpp" 
-#include "../Persistence/InscripcionTypes.hpp"
-#include "../Persistence/ActividadTypes.hpp"
+#include "..//Persistence/InscripcionTypes.hpp"
+#include "..//Persistence/ActividadTypes.hpp"
 #include "../Utils/DataPaths.hpp"
 
 // Resultados de operaciones de archivo
@@ -59,6 +59,7 @@ private:
     // Helpers para obtener rutas según el tipo de usuario
     std::string getDataFilePath(TipoUsuario tipo);
     std::string getIndexFilePath(TipoUsuario tipo);
+	std::string getDataFilePathActividades(TipoActividad tipo);
     
 public:
     // ========== SINGLETON INTERFACE ==========
@@ -163,7 +164,15 @@ public:
     FileOperationResult eliminarInscripcion(int posicion);
     
     // ========== DOMINIO CONTENT (Cursos y Especializaciones) ==========
-    
+    /*
+    * 
+    */
+    inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAnadir);
+
+    /*
+    */
+    RawEspecializacionData FilesManager::leerDatoEspecializacion();
+
     /**
      * @brief Lee todos los datos de actividades (cursos y especializaciones)
      * @return Estructura con todos los datos de actividades
@@ -383,6 +392,16 @@ inline std::string FilesManager::getIndexFilePath(TipoUsuario tipo) {
     }
 }
 
+std::string getDataFilePathActividades(TipoActividad tipo) {
+    switch (tipo) {
+    case TipoActividad::CURSO:
+        return DataPaths::Content::DB_CURSOS;
+    case TipoActividad::ESPECIALIZACION:
+        return DataPaths::Content::DB_ESPECIALIZACIONES;
+    default:
+        throw std::invalid_argument("Tipo de actividad no válido");
+    }
+}
 // ========== DOMINIO CORE ==========
 
 inline FileOperationResult FilesManager::guardarUsuarioBinario(
@@ -521,8 +540,58 @@ inline FileOperationResult FilesManager::actualizarPagoInscripcion(int posicion,
 
 // ========== DOMINIO CONTENT ==========
 
+inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAnadir) {
+	auto path = getDataFilePathActividades(TipoActividad::CURSO);
+    std::ifstream is(path, std::ios::in);
+
+    int id, idEmpresa, cantidadClases, categoriaNumero;
+    std::string nombreEmpresa, titulo, descripcion, instructor;
+	CategoriaActividad categoria;
+
+    while (is >> id) {
+        // Leer Datos
+        std::cin >> idEmpresa >> nombreEmpresa >> titulo >> descripcion;
+		std::cin >> categoriaNumero; // Leer como entero y convertir a enum
+        std::cin >> instructor;
+        std::cin >> cantidadClases;
+
+        // Asignar valores
+		RawCursoData cursoData;
+		cursoData.id = id;
+		cursoData.idEmpresa = idEmpresa;
+		cursoData.nombreEmpresa = nombreEmpresa;
+		cursoData.titulo = titulo;
+		cursoData.descripcion = descripcion;
+		cursoData.instructor = instructor;
+		cursoData.categoria = static_cast<CategoriaActividad>(categoriaNumero);
+
+        // Anadimos al vector
+		vectorCursoAnadir.push_back(cursoData);
+    }
+}
+
+inline RawEspecializacionData  FilesManager::leerDatoEspecializacion() {
+
+
+    return RawEspecializacionData();
+}
+
 inline RawActividadesData FilesManager::leerDatosActividades() {
 	// Todo: Implementar la lectura de actividades (cursos y especializaciones)
+    std::vector<RawCursoData> cursoAnadir;
+    std::vector<RawEspecializacionData> especializacionAnadir;
+
+    try {
+
+
+
+        return{ cursoAnadir, especializacionAnadir };
+
+    } catch (const std::exception& e) {
+        logError("Error: ", "Actividades", e.what());
+        return RawActividadesData();
+    }
+
 }
 
 // ========== DOMINIO FINANCIAL ==========

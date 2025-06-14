@@ -8,8 +8,8 @@
 #include <string> // std::string
 
 // Headers propios del proyecto
-#include "../Types/ScreenTypes.hpp"  // Acciones de pantalla, Pantallas
-#include "../Types/UsuarioTypes.hpp" // tipos de usuario
+#include "..//Persistence/ScreenTypes.hpp"  // Acciones de pantalla, Pantallas
+#include "..//Persistence/UsuarioTypes.hpp" // tipos de usuario
 
 // Clase abstracta base para todas las pantallas del sistema
 class PantallaBase 

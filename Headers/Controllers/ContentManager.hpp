@@ -331,6 +331,8 @@ inline std::once_flag ContentManager::_onceFlag;
 inline ContentManager::ContentManager()
     : _nextCursoId(1), _nextEspecializacionId(1) {
     logOperation("Constructor", "ContentManager inicializado (Singleton)");
+
+
 }
 
 inline ContentManager& ContentManager::getInstance() {

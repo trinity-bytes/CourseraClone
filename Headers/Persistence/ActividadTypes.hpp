@@ -35,11 +35,11 @@ struct RawEspecializacionData
 {
     int id;
     int idEmpresa;
-    const std::string& nombreEmpresa;
+    const std::string nombreEmpresa;
     CategoriaActividad categoria;
-    const std::string& titulo;
-    const std::string& descripcion;
-    const std::vector<int>& idsCursos;
+    const std::string titulo;
+    const std::string descripcion;
+    const std::vector<int> idsCursos;
     int duracionEstimada;
 };
 
