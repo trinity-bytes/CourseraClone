@@ -301,7 +301,7 @@ public:
      */
     ContentOperationResult recargarDatos();
 
-	inline Especializacion* obtenerEspecializacion(int idCurso) const;
+	//inline Especializacion* obtenerEspecializacion(int idCurso) const;
 
     // ========== GETTERS ==========
 
@@ -328,11 +328,36 @@ inline std::once_flag ContentManager::_onceFlag;
 
 // ========== IMPLEMENTACIONES INLINE ==========
 
+inline bool inicializarSistema() {
+	FilesManager* fileManager = &FilesManager::getInstance();
+
+	if (!fileManager->inicializarSistemaArchivos()) {
+		//logError("Inicialización", "ContentManager", "Error al inicializar el sistema de archivos");
+		return false;
+	}
+	RawActividadesData dataActividades = fileManager->leerDatosActividades();
+	std::vector<InscripcionBinaria> dataInscripciones = fileManager->leerDatosInscripciones();
+
+	int cantidad = dataActividades.cursos.size() + dataActividades.especializaciones.size();
+
+    throw std::runtime_error(std::to_string(cantidad));
+    /*
+	ContentOperationResult result = cargarDesdeDatos(dataActividades, dataInscripciones);
+	if (result != ContentOperationResult::SUCCESS) {
+		logError("Inicialización", "ContentManager", "Error al cargar datos: " + std::to_string(static_cast<int>(result)));
+		return false;
+	}
+	logOperation("Inicialización", "ContentManager completada con éxito");
+	return true;
+    */
+}
+
 inline ContentManager::ContentManager()
     : _nextCursoId(1), _nextEspecializacionId(1) {
+
     logOperation("Constructor", "ContentManager inicializado (Singleton)");
-
-
+    inicializarSistema();
+    
 }
 
 inline ContentManager& ContentManager::getInstance() {

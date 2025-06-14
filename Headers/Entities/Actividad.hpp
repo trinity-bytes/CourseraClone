@@ -10,6 +10,8 @@
 // Includes propios del proyecto
 #include "../Types/ActividadTypes.hpp"
 
+
+
 // Clase base que representa una actividad educativa
 class Actividad 
 {

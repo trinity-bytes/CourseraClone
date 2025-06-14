@@ -14,6 +14,7 @@
 #include "../Utils/UI_Ascii.hpp"
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
+#include "../Controllers/ContentManager.hpp"
 
 /// @brief Pantalla principal del sistema con navegación por secciones
 /// @details Implementa la landing page con navegación entre cabecera, especialidades y cursos
