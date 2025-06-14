@@ -25,11 +25,11 @@
     <Filter Include="Header Files\Screens">
       <UniqueIdentifier>{e6e45ad0-60c3-4742-88e4-fa9ed080def8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Persistence">
-      <UniqueIdentifier>{b1b8deba-26bb-4e19-9af0-e36dc6d469fd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Controller">
       <UniqueIdentifier>{7ebf0f94-3e0e-4f5b-9050-830d0254df8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Types">
+      <UniqueIdentifier>{b1b8deba-26bb-4e19-9af0-e36dc6d469fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -156,16 +156,16 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Types\UsuarioTypes.hpp">
-      <Filter>Header Files\Persistence</Filter>
+      <Filter>Header Files\Types</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Types\InscripcionTypes.hpp">
-      <Filter>Header Files\Persistence</Filter>
+      <Filter>Header Files\Types</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp">
-      <Filter>Header Files\Persistence</Filter>
+      <Filter>Header Files\Types</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Utils\DataPaths.hpp">
       <Filter>Header Files\Utils</Filter>
@@ -174,10 +174,10 @@
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Types\ActividadTypes.hpp">
-      <Filter>Header Files\Persistence</Filter>
+      <Filter>Header Files\Types</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Types\ScreenTypes.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Types</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #ifndef COURSERACLONE_TYPES_SCREENTYPES_HPP
 #define COURSERACLONE_TYPES_SCREENTYPES_HPP
 
-#include "..//Persistence/UsuarioTypes.hpp"
+#include "../Types/UsuarioTypes.hpp"
 
 /// @brief Acciones de navegación disponibles en el sistema
 enum class AccionPantalla

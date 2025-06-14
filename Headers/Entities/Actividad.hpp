@@ -8,7 +8,7 @@
 #include <string>
 
 // Includes propios del proyecto
-#include "../Persistence/ActividadTypes.hpp"
+#include "../Types/ActividadTypes.hpp"
 
 // Clase base que representa una actividad educativa
 class Actividad 

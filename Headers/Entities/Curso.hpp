@@ -10,7 +10,7 @@
 
 // Headers propios
 #include "Actividad.hpp"                     // Clase base Actividad
-#include "../Persistence/ActividadTypes.hpp" // RawCursoData
+#include "../Types/ActividadTypes.hpp" // RawCursoData
 
 // Clase que representa un curso en el sistema educativo
 class Curso : public Actividad 
