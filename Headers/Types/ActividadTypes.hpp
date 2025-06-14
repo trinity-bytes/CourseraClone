@@ -8,52 +8,10 @@
 #include <string>
 #include <vector>
 
-// Enum para representar los tipos de actividad
-enum class TipoActividad
-{
-	DEFAULT, // Tipo por defecto, no se usa en la práctica
-    CURSO,
-	ESPECIALIZACION
-};
-
-// Datos crudos de un curso leídos del archivo
-struct RawCursoData 
-{
-    // Datos generales del curso
-    int id;
-    int idEmpresa;
-    std::string nombreEmpresa;
-    std::string titulo;
-    std::string descripcion;
-    std::string instructor;
-    CategoriaActividad categoria;
-    int cantidadClases;
-};
-
-// Datos crudos de una especialización leídos del archivo
-struct RawEspecializacionData 
-{
-    int id;
-    int idEmpresa;
-    std::string nombreEmpresa;
-    CategoriaActividad categoria;
-    std::string titulo;
-    std::string descripcion;
-    std::vector<int> idsCursos;
-    int duracionEstimada;
-};
-
-// Estructura para agrupar los datos crudos de todas las actividades
-struct RawActividadesData 
-{
-    std::vector<RawCursoData> cursos;
-    std::vector<RawEspecializacionData> especializaciones;
-};
-
 // Enumeración para las categorías de actividades
 enum class CategoriaActividad : int
 {
-	DEFAULT, // Categoría por defecto, no se usa en la práctica
+    DEFAULT, // Categoría por defecto, no se usa en la práctica
 
     // Tecnología & Desarrollo
     PROGRAMACION,
@@ -108,5 +66,49 @@ enum class CategoriaActividad : int
     // Categoría general
     OTROS
 };
+
+// Enum para representar los tipos de actividad
+enum class TipoActividad
+{
+	DEFAULT, // Tipo por defecto, no se usa en la práctica
+    CURSO,
+	ESPECIALIZACION
+};
+
+// Datos crudos de un curso leídos del archivo
+struct RawCursoData 
+{
+    // Datos generales del curso
+    int id;
+    int idEmpresa;
+    std::string nombreEmpresa;
+    std::string titulo;
+    std::string descripcion;
+    std::string instructor;
+    CategoriaActividad categoria;
+    int cantidadClases;
+};
+
+// Datos crudos de una especialización leídos del archivo
+struct RawEspecializacionData 
+{
+    int id;
+    int idEmpresa;
+    std::string nombreEmpresa;
+    CategoriaActividad categoria;
+    std::string titulo;
+    std::string descripcion;
+    std::vector<int> idsCursos;
+    int duracionEstimada;
+};
+
+// Estructura para agrupar los datos crudos de todas las actividades
+struct RawActividadesData 
+{
+    std::vector<RawCursoData> cursos;
+    std::vector<RawEspecializacionData> especializaciones;
+};
+
+
 
 #endif // !COURSERACLONE_TYPES_ACTIVIDADTYPES_HPP

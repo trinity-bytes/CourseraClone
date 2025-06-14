@@ -7,10 +7,10 @@
 #include <string>
 
 // Headers de consola
-#include "../Entities/Empresa.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/UI_Ascii.h"
+//#include "../Entities/Empresa.h"
+//#include "../Utils/SystemUtils.h"
+//#include "../Utils/ScreenSystem.h"
+//#include "../Utils/UI_Ascii.h"
 
 /// Pantalla para mostrar perfil de organización
 class PerfilOrganizacionScreen : public PantallaBase

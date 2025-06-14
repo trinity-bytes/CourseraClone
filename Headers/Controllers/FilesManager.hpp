@@ -546,14 +546,12 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
 
     int id, idEmpresa, cantidadClases, categoriaNumero;
     std::string nombreEmpresa, titulo, descripcion, instructor;
-	CategoriaActividad categoria;
-
-    while (is >> id) {
+	CategoriaActividad categoria;    while (is >> id) {
         // Leer Datos
-        std::cin >> idEmpresa >> nombreEmpresa >> titulo >> descripcion;
-		std::cin >> categoriaNumero; // Leer como entero y convertir a enum
-        std::cin >> instructor;
-        std::cin >> cantidadClases;
+        is >> idEmpresa >> nombreEmpresa >> titulo >> descripcion;
+		is >> categoriaNumero; // Leer como entero y convertir a enum
+        is >> instructor;
+        is >> cantidadClases;
 
         // Asignar valores
 		RawCursoData cursoData;

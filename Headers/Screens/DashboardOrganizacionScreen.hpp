@@ -9,13 +9,13 @@
 #include <vector>
 
 // Headers propios
-#include "../Controllers/GestionadorCursos.hpp"
-#include "../Entities/Curso.hpp"
-#include "../Entities/Especializacion.hpp"
-#include "../Entities/Inscripcion.hpp"
-#include "../Utils/SystemUtils.hpp"
-#include "../Utils/ScreenSystem.hpp"
-#include "../Utils/UI_Ascii.hpp"
+//#include "../Controllers/GestionadorCursos.hpp"
+//#include "../Entities/Curso.hpp"
+//#include "../Entities/Especializacion.hpp"
+//#include "../Entities/Inscripcion.hpp"
+//#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/UI_Ascii.hpp"
 
 /// Pantalla dashboard para organizaciones
 class DashboardOrganizacionScreen : public PantallaBase

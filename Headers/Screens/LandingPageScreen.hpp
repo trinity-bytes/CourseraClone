@@ -1,5 +1,5 @@
 // filepath: Headers/Screens/LandingPageScreen.hpp
-// Pantalla principal del sistema - landing page con navegación por secciones
+// Pantalla principal del sistema - landing page con navegación por secciones    
 
 #ifndef COURSERACLONE_SCREENS_LANDINGPAGESCREEN_HPP
 #define COURSERACLONE_SCREENS_LANDINGPAGESCREEN_HPP
@@ -15,6 +15,7 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Controllers/ContentManager.hpp"
+#include "../Types/ActividadTypes.hpp"
 
 /// @brief Pantalla principal del sistema con navegación por secciones
 /// @details Implementa la landing page con navegación entre cabecera, especialidades y cursos
@@ -82,18 +83,14 @@ private:
 
     /// @brief Flags de control de renderizado
     bool _primeraRenderizacion;
-    bool _presionEnter;    
-
-    /// @brief Datos dinámicos del menú
-    std::vector<ElementoMenu> _especialidades;
-    std::vector<ElementoMenu> _cursos;
-
-    // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
+    bool _presionEnter;        
+    /// @brief Datos dinámicos del menú usando estructuras crudas
+    std::vector<RawEspecializacionData> _especialidades;
+    std::vector<RawCursoData> _cursos;    // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
     /// @brief Carga todos los datos necesarios para la landing page
-    /// @param cursosDatos Lista de cursos disponibles
-    /// @param especializacionesDatos Lista de especializaciones disponibles
-    /// @param maximo Número máximo de elementos por sección
-    inline void cargarDatos(int maxEspecialidad, int maxCursos);
+    /// @param maxEspecializaciones Número máximo de especializaciones a mostrar
+    /// @param maxCursos Número máximo de cursos a mostrar
+    inline void cargarDatos(int maxEspecializaciones, int maxCursos);
 
     // MÉTODOS PRIVADOS - INTERFAZ DE USUARIO
     /// @brief Renderiza todos los interactivos elementos de menú
@@ -137,7 +134,7 @@ private:
     /// @param coordDesc Coordenadas de la descripción
     /// @param elemento Datos del elemento
     /// @param seleccionado Estado de selección
-    inline void actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, const ElementoMenu& elemento, bool seleccionado);
+    inline void actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, const std::string& titulo, const std::string& descripcion, bool seleccionado);
 
     /// @brief Muestra un título formateado en las coordenadas especificadas
     /// @param coord Coordenadas donde mostrar el título
@@ -250,10 +247,21 @@ inline LandingPageScreen::LandingPageScreen() : PantallaBase(),
 
 // ---- MÉTODOS PRIVADOS ----
 
-inline void LandingPageScreen::cargarDatos(int maxEspecialidad, int maxCursos)
+inline void LandingPageScreen::cargarDatos(int maxEspecializaciones, int maxCursos)
 {
-	/// @todo: Implementar lógica para cargar datos dinámicos
-	/// @note Debemos utilizar el ContentManager y el FilesManager para cargar los datos de cursos y especializaciones
+    /// @brief Obtener la instancia del ContentManager
+    ContentManager& contentManager = ContentManager::getInstance();
+    
+    /// @brief Obtener datos crudos desde ContentManager (respetando límites)
+    RawActividadesData datosActividades = contentManager.obtenerDatosCrudos(maxCursos, maxEspecializaciones);
+    
+    /// @brief Limpiar contenedores existentes
+    _especialidades.clear();
+    _cursos.clear();
+    
+    /// @brief Asignar datos directamente sin conversiones
+    _especialidades = datosActividades.especializaciones;
+    _cursos = datosActividades.cursos;
 }
 
 inline void LandingPageScreen::renderizarElementos()
@@ -356,7 +364,8 @@ inline void LandingPageScreen::actualizarElementoEspecialidad(int indice, bool s
     actualizarElementoGenerico(
         _coordsTituloEspecialidad[indice],
         _coordsDescEspecialidad[indice],
-        _especialidades[indice],
+        _especialidades[indice].titulo,
+        _especialidades[indice].descripcion,
         seleccionado
     );
 }
@@ -368,13 +377,14 @@ inline void LandingPageScreen::actualizarElementoCurso(int indice, bool seleccio
     actualizarElementoGenerico(
         _coordsTituloCurso[indice],
         _coordsDescCurso[indice],
-        _cursos[indice],
+        _cursos[indice].titulo,
+        _cursos[indice].descripcion,
         seleccionado
     );
 }
 
-inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc,
-    const ElementoMenu& elemento, bool seleccionado)
+
+inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, const std::string& titulo, const std::string& descripcion, bool seleccionado)
 {
     // Configurar colores según selección
     if (seleccionado) {
@@ -385,10 +395,10 @@ inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitu
     }
 
     // Mostrar título
-    mostrarTituloFormateado(coordTitulo, elemento.titulo);
+    mostrarTituloFormateado(coordTitulo, titulo);
 
     // Mostrar descripción
-    mostrarDescripcionFormateada(coordDesc, elemento.descripcion);
+    mostrarDescripcionFormateada(coordDesc, descripcion);
 
     resetColor();
 }    

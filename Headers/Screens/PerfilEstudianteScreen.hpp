@@ -5,10 +5,10 @@
 #include <string>
 
 // Headers propios
-#include "../Entities/Estudiante.hpp"
-#include "../Utils/SystemUtils.hpp"
-#include "../Utils/ScreenSystem.hpp"
-#include "../Utils/UI_Ascii.hpp"
+//#include "../Entities/Estudiante.hpp"
+//#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/UI_Ascii.hpp"
 
 /// Pantalla para mostrar perfil de estudiante
 class PerfilEstudianteScreen : public PantallaBase

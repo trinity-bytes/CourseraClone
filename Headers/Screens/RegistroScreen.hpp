@@ -5,9 +5,9 @@
 #include <string>
 
 // Headers propios
-#include "../Utils/ScreenSystem.hpp"
-#include "../Entities/Usuario.hpp"
-#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Entities/Usuario.hpp"
+//#include "../Utils/SystemUtils.hpp"
 
 /// Pantalla de registro de usuarios
 class RegistroScreen : public PantallaBase {

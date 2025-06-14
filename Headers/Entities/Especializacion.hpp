@@ -14,7 +14,6 @@
 
 // Includes propios del proyecto
 #include "Actividad.hpp"
-#include "../Controllers/ContentManager.hpp"
 #include "../Types/ActividadTypes.hpp"
 
 // Clase que representa una especialización compuesta por varios cursos
@@ -51,11 +50,21 @@ public:
 	// Setters
     void setIdsCursos(const std::vector<int>& idsCursos) { _idsCursos = idsCursos; }
 	void setDuracionEstimada(int duracionEstimada) { _duracionEstimada = duracionEstimada; }
-
 	// Sobrescribir método virtual de Actividad
 	RawEspecializacionData obtenerDatosCrudosEspecialidad() 
     {
-		// ToDo: Implementar lógica para obtener los datos crudos de la especialización
+        RawEspecializacionData datos;
+        
+        datos.id = this->getId();
+        datos.idEmpresa = this->getIdEmpresa();
+        datos.nombreEmpresa = this->getNombreEmpresa();
+        datos.categoria = this->getCategoria();
+        datos.titulo = this->getTitulo();
+        datos.descripcion = this->getDescripcion();
+        datos.idsCursos = this->_idsCursos;
+        datos.duracionEstimada = this->_duracionEstimada;
+        
+        return datos;
 	}
 
     bool guardar() override
