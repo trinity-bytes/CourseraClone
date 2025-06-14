@@ -53,8 +53,8 @@ private:
     ContentManager();
 
     // Estructuras de datos principales
-    LinkedList<std::unique_ptr<Curso>> _cursos;
-    LinkedList<std::unique_ptr<Especializacion>> _especializaciones;
+    std::vector<std::unique_ptr<Curso>> _cursos;
+    std::vector<std::unique_ptr<Especializacion>> _especializaciones;
 
     // Mapas para seguimiento de progreso y calificaciones
     std::map<int, std::map<int, double>> _progresoEstudiantes; // [idEstudiante][idActividad] -> progreso
@@ -318,11 +318,11 @@ public:
 
     // ========== GETTERS ==========
 
-    const LinkedList<std::unique_ptr<Curso>>& getCursos() const { return _cursos; }
-    const LinkedList<std::unique_ptr<Especializacion>>& getEspecializaciones() const { return _especializaciones; }
+    const std::vector<std::unique_ptr<Curso>>& getCursos() const { return _cursos; }
+    const std::vector<std::unique_ptr<Especializacion>>& getEspecializaciones() const { return _especializaciones; }
 
-    int getTotalCursos() const { return _cursos.getTamano(); }
-    int getTotalEspecializaciones() const { return _especializaciones.getTamano(); }
+    int getTotalCursos() const { return _cursos.size(); }
+    int getTotalEspecializaciones() const { return _especializaciones.size(); }
 
     double obtenerProgreso(int idEstudiante, int idActividad) const;
 };
@@ -430,7 +430,7 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 cursoData.cantidadClases
             );
             
-            _cursos.agregarAlInicio(std::move(curso));
+            _cursos.push_back(std::move(curso));
             
             // Actualizar contador de IDs
             if (cursoData.id >= _nextCursoId) {
@@ -451,7 +451,7 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 espData.duracionEstimada
             );
             
-            _especializaciones.agregarAlInicio(std::move(especializacion));
+            _especializaciones.push_back(std::move(especializacion));
             
             // Actualizar contador de IDs
             if (espData.id >= _nextEspecializacionId) {

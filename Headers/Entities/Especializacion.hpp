@@ -70,6 +70,7 @@ public:
     bool guardar() override
     {
 		// ToDo: Implementar lógica para guardar la especialización en un archivo
+        return true;
     }
 };
 
