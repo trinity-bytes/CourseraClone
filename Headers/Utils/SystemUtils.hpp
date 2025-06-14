@@ -59,54 +59,73 @@ struct Posicion {
 };
 
 
-// PALETA DE COLORES COURSERA
+// PALETA DE COLORES COURSERA OFICIAL
+// Basada en la guía oficial de branding de Coursera (https://about.coursera.org/brand-guide/)
 namespace Palette {
-    // Colores principales de la marca Coursera
-    constexpr Color AZUL_PRIMARIO      = { 8, 113, 240 };    // Botones principales, encabezados
-    constexpr Color AZUL_OSCURO        = { 40, 16, 102 };    // Barra de navegación, fondos importantes
-    constexpr Color AMARILLO_ACCENT    = { 242, 208, 75 };   // Destacar elementos
-    constexpr Color ROSA_SECUNDARIO    = { 238, 154, 128 };  // Botones secundarios
+    // COLORES PRIMARIOS DE MARCA (Oficial Coursera)
+    constexpr Color AZUL_COURSERA      = { 0, 86, 210 };     // #0056D2 - Color primario oficial
+    constexpr Color NEGRO_COURSERA     = { 0, 0, 0 };        // #000000 - Negro oficial
+    constexpr Color BLANCO_COURSERA    = { 255, 255, 255 };  // #FFFFFF - Blanco oficial
     
-    // Colores de estado y feedback
-    constexpr Color VERDE_EXITO        = { 80, 173, 89 };    // Éxito, progreso
-    constexpr Color ROJO_ERROR         = { 222, 53, 57 };    // Errores, advertencias
-    constexpr Color AZUL_LINK          = { 120, 160, 255 };  // Enlaces interactivos
-    constexpr Color AZUL_HOVER         = { 20, 80, 200 };    // Efectos hover
+    // DERIVADOS DEL AZUL PRIMARIO (Para jerarquía visual)
+    constexpr Color AZUL_HOVER         = { 0, 70, 180 };     // Hover del primario (-15% luminosidad)
+    constexpr Color AZUL_PRESIONADO    = { 0, 55, 150 };     // Estado presionado (-25% luminosidad)
+    constexpr Color AZUL_CLARO         = { 51, 133, 229 };   // Versión más clara (+20% luminosidad)
+    constexpr Color AZUL_MUY_CLARO     = { 230, 241, 255 };  // Fondo azul muy sutil
+    constexpr Color AZUL_LINK          = { 25, 100, 220 };   // Enlaces interactivos
     
-    // Colores neutros y fondos
-    constexpr Color BLANCO_PURO        = { 255, 255, 255 };  // Texto principal, fondos limpios
-    constexpr Color GRIS_MUY_CLARO     = { 248, 248, 248 };  // Fondo general principal
-    constexpr Color GRIS_CLARO         = { 230, 230, 230 };  // Fondos de secciones
-    constexpr Color GRIS_SUAVE         = { 180, 180, 180 };  // Bordes, divisorias
-    constexpr Color GRIS_MEDIO         = { 120, 120, 120 };  // Texto secundario
-    constexpr Color GRIS_OSCURO        = { 70, 70, 70 };     // Texto menos importante
-    constexpr Color NEGRO              = { 0, 0, 0 };        // Texto intenso
+    // GRISES NEUTROS (Escala profesional basada en el negro oficial)
+    constexpr Color GRIS_900           = { 17, 17, 17 };     // Casi negro (títulos principales)
+    constexpr Color GRIS_800           = { 34, 34, 34 };     // Texto importante
+    constexpr Color GRIS_700           = { 68, 68, 68 };     // Texto normal
+    constexpr Color GRIS_600           = { 102, 102, 102 };  // Texto secundario
+    constexpr Color GRIS_500           = { 136, 136, 136 };  // Texto deshabilitado
+    constexpr Color GRIS_400           = { 170, 170, 170 };  // Bordes, divisores
+    constexpr Color GRIS_300           = { 204, 204, 204 };  // Bordes sutiles
+    constexpr Color GRIS_200           = { 238, 238, 238 };  // Fondos de sección
+    constexpr Color GRIS_100           = { 248, 248, 248 };  // Fondo general
+    constexpr Color GRIS_50            = { 252, 252, 252 };  // Fondo alternativo
     
-    // Colores de fondo especiales (solo para alertas/notificaciones)
-    constexpr Color CREMA_SUAVE        = { 252, 248, 240 };  // Solo para notificaciones especiales
-    constexpr Color VERDE_CLARO        = { 240, 248, 240 };  // Fondos de éxito
-    constexpr Color SOMBRA_AZUL        = { 15, 45, 90 };     // Sombras, profundidad
+    // COLORES DE ESTADO (Semáforo universal para UX óptima)
+    constexpr Color VERDE_EXITO        = { 34, 139, 34 };    // Verde bosque - éxito, completado
+    constexpr Color VERDE_CLARO        = { 240, 248, 240 };  // Fondo de éxito
+    constexpr Color ROJO_ERROR         = { 220, 38, 38 };    // Rojo profesional - errores
+    constexpr Color ROJO_CLARO         = { 254, 242, 242 };  // Fondo de error
+    constexpr Color AMARILLO_ATENCION  = { 245, 158, 11 };   // Amber - atención, pendiente
+    constexpr Color AMARILLO_CLARO     = { 255, 251, 235 };  // Fondo de atención
+    
+    // COLORES ESPECIALES (Para mejorar UX)
+    constexpr Color AZUL_INFO          = { 59, 130, 246 };   // Información
+    constexpr Color AZUL_INFO_CLARO    = { 239, 246, 255 };  // Fondo informativo
+    constexpr Color VIOLETA_PREMIUM    = { 124, 58, 237 };   // Para contenido premium
+    constexpr Color VIOLETA_CLARO      = { 245, 243, 255 };  // Fondo premium
 }
 
-// INDICES DE COLORES DE CONSOLA (0-15)
+// INDICES DE COLORES DE CONSOLA (0-15) - Optimizados para UX
 namespace ColorIndex {
-    // Mapeo de colores a índices de consola para fácil referencia
-    constexpr int FONDO_GENERAL        = 0;   // Gris muy claro (reemplaza crema)
-    constexpr int TEXTO_PRINCIPAL      = 1;   // Negro (mejor contraste)
-    constexpr int EXITO                = 2;   // Verde éxito
-    constexpr int ERROR_COLOR          = 3;   // Rojo error
-    constexpr int BOTON_PRIMARIO       = 4;   // Azul primario
-    constexpr int BOTON_SECUNDARIO     = 5;   // Rosa secundario
-    constexpr int BORDES               = 6;   // Gris suave
-    constexpr int TEXTO_SECUNDARIO     = 7;   // Gris medio
-    constexpr int HOVER                = 8;   // Azul hover
-    constexpr int FONDO_SECCION        = 9;   // Gris claro (para secciones)
-    constexpr int FONDO_ALERTA         = 10;  // Crema suave (solo alertas)
-    constexpr int ENLACES              = 11;  // Azul link
-    constexpr int ACENTO               = 12;  // Amarillo accent
-    constexpr int NAVEGACION           = 13;  // Azul oscuro
-    constexpr int SOMBRAS              = 14;  // Sombra azul
-    constexpr int TEXTO_INTENSO        = 15;  // Blanco puro (para fondos oscuros)
+    // COLORES FUNDAMENTALES
+    constexpr int FONDO_PRINCIPAL      = 0;   // Gris 100 - Fondo general limpio
+    constexpr int TEXTO_PRIMARIO       = 1;   // Gris 900 - Texto principal legible
+    constexpr int AZUL_MARCA           = 2;   // Azul Coursera oficial - CTAs principales
+    constexpr int BLANCO_PURO          = 3;   // Blanco Coursera - Contraste máximo
+    
+    // COLORES DE INTERACCIÓN
+    constexpr int HOVER_ESTADO         = 4;   // Azul hover - Estados interactivos
+    constexpr int LINK_COLOR           = 5;   // Azul link - Enlaces y navegación
+    constexpr int PRESIONADO           = 6;   // Azul presionado - Feedback táctil
+    constexpr int FONDO_AZUL_SUAVE     = 7;   // Azul muy claro - Destacados sutiles
+    
+    // JERARQUÍA DE TEXTO
+    constexpr int TEXTO_SECUNDARIO     = 8;   // Gris 600 - Información secundaria
+    constexpr int TEXTO_DESHABILITADO  = 9;   // Gris 500 - Estados inactivos
+    constexpr int TEXTO_IMPORTANTE     = 10;  // Gris 800 - Énfasis moderado
+    constexpr int BORDES_SUTILES       = 11;  // Gris 300 - Divisiones suaves
+    
+    // COLORES DE ESTADO (Semáforo UX)
+    constexpr int EXITO_COLOR          = 12;  // Verde éxito - Confirmaciones
+    constexpr int ERROR_COLOR          = 13;  // Rojo error - Alertas críticas
+    constexpr int ATENCION_COLOR       = 14;  // Amarillo atención - Advertencias
+    constexpr int INFO_COLOR           = 15;  // Azul info - Información neutral
 }
 
 // FUNCIONES DE CONFIGURACIÓN DE CONSOLA
@@ -123,24 +142,31 @@ inline void setPaletteColor(int index, const Color& color) {
     }
 }
 
-/// @brief Configura toda la paleta de colores de Coursera
+/// @brief Configura toda la paleta de colores oficial de Coursera
 inline void configurarPaletaColores() {
-    setPaletteColor(ColorIndex::FONDO_GENERAL,      Palette::GRIS_MUY_CLARO);
-    setPaletteColor(ColorIndex::TEXTO_PRINCIPAL,    Palette::NEGRO);
-    setPaletteColor(ColorIndex::EXITO,              Palette::VERDE_EXITO);
-    setPaletteColor(ColorIndex::ERROR_COLOR,              Palette::ROJO_ERROR);
-    setPaletteColor(ColorIndex::BOTON_PRIMARIO,     Palette::AZUL_PRIMARIO);
-    setPaletteColor(ColorIndex::BOTON_SECUNDARIO,   Palette::ROSA_SECUNDARIO);
-    setPaletteColor(ColorIndex::BORDES,             Palette::GRIS_SUAVE);
-    setPaletteColor(ColorIndex::TEXTO_SECUNDARIO,   Palette::GRIS_MEDIO);
-    setPaletteColor(ColorIndex::HOVER,              Palette::AZUL_HOVER);
-    setPaletteColor(ColorIndex::FONDO_SECCION,      Palette::GRIS_CLARO);
-    setPaletteColor(ColorIndex::FONDO_ALERTA,       Palette::CREMA_SUAVE);
-    setPaletteColor(ColorIndex::ENLACES,            Palette::AZUL_LINK);
-    setPaletteColor(ColorIndex::ACENTO,             Palette::AMARILLO_ACCENT);
-    setPaletteColor(ColorIndex::NAVEGACION,         Palette::AZUL_OSCURO);
-    setPaletteColor(ColorIndex::SOMBRAS,            Palette::SOMBRA_AZUL);
-    setPaletteColor(ColorIndex::TEXTO_INTENSO,      Palette::BLANCO_PURO);
+    // COLORES FUNDAMENTALES (Base de la identidad visual)
+    setPaletteColor(ColorIndex::FONDO_PRINCIPAL,        Palette::GRIS_100);
+    setPaletteColor(ColorIndex::TEXTO_PRIMARIO,         Palette::GRIS_900);
+    setPaletteColor(ColorIndex::AZUL_MARCA,             Palette::AZUL_COURSERA);
+    setPaletteColor(ColorIndex::BLANCO_PURO,            Palette::BLANCO_COURSERA);
+    
+    // COLORES DE INTERACCIÓN (Para mejor UX)
+    setPaletteColor(ColorIndex::HOVER_ESTADO,           Palette::AZUL_HOVER);
+    setPaletteColor(ColorIndex::LINK_COLOR,             Palette::AZUL_LINK);
+    setPaletteColor(ColorIndex::PRESIONADO,             Palette::AZUL_PRESIONADO);
+    setPaletteColor(ColorIndex::FONDO_AZUL_SUAVE,       Palette::AZUL_MUY_CLARO);
+    
+    // JERARQUÍA DE TEXTO (Legibilidad optimizada)
+    setPaletteColor(ColorIndex::TEXTO_SECUNDARIO,       Palette::GRIS_600);
+    setPaletteColor(ColorIndex::TEXTO_DESHABILITADO,    Palette::GRIS_500);
+    setPaletteColor(ColorIndex::TEXTO_IMPORTANTE,       Palette::GRIS_800);
+    setPaletteColor(ColorIndex::BORDES_SUTILES,         Palette::GRIS_300);
+    
+    // COLORES DE ESTADO (Semáforo universal)
+    setPaletteColor(ColorIndex::EXITO_COLOR,            Palette::VERDE_EXITO);
+    setPaletteColor(ColorIndex::ERROR_COLOR,            Palette::ROJO_ERROR);
+    setPaletteColor(ColorIndex::ATENCION_COLOR,         Palette::AMARILLO_ATENCION);
+    setPaletteColor(ColorIndex::INFO_COLOR,             Palette::AZUL_INFO);
 }
 
 /// @brief Configura la fuente de la consola
@@ -169,7 +195,7 @@ inline void ocultarCursor() {
 // FUNCIONES DE MANIPULACIÓN DE COLORES
 
 /// @brief Establece colores de texto y fondo con control de intensidad
-inline void setConsoleColor(int textColor, int backgroundColor = ColorIndex::FONDO_GENERAL, 
+inline void setConsoleColor(int textColor, int backgroundColor = ColorIndex::FONDO_PRINCIPAL, 
                             bool intenseText = false, bool intenseBackground = false) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     
@@ -197,9 +223,9 @@ inline void setTextColor(int color, bool intense = false) {
     SetConsoleTextAttribute(hConsole, attributes);
 }
 
-/// @brief Restaura colores por defecto
+/// @brief Restaura colores por defecto (texto primario sobre fondo principal)
 inline void resetColor() {
-    setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::FONDO_GENERAL);
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
 }
 
 // FUNCIONES DE POSICIONAMIENTO
@@ -254,7 +280,7 @@ inline int esperarCualquierTecla() {
 
 // FUNCIONES DE SALIDA FORMATEADA
 
-/// @brief Muestra un mensaje de error con formato
+/// @brief Muestra un mensaje de error con formato profesional
 inline void mostrarError(const std::string& mensaje, bool nuevaLinea = true) {
     setTextColor(ColorIndex::ERROR_COLOR, true);
     std::cout << "[ERROR] " << mensaje;
@@ -262,25 +288,25 @@ inline void mostrarError(const std::string& mensaje, bool nuevaLinea = true) {
     resetColor();
 }
 
-/// @brief Muestra un mensaje de éxito con formato
+/// @brief Muestra un mensaje de éxito con formato profesional
 inline void mostrarExito(const std::string& mensaje, bool nuevaLinea = true) {
-    setTextColor(ColorIndex::EXITO, true);
+    setTextColor(ColorIndex::EXITO_COLOR, true);
     std::cout << "[EXITO] " << mensaje;
     if (nuevaLinea) std::cout << std::endl;
     resetColor();
 }
 
-/// @brief Muestra un mensaje de advertencia con formato
+/// @brief Muestra un mensaje de atención/advertencia con formato profesional
 inline void mostrarAdvertencia(const std::string& mensaje, bool nuevaLinea = true) {
-    setTextColor(ColorIndex::ACENTO, true);
-    std::cout << "[AVISO] " << mensaje;
+    setTextColor(ColorIndex::ATENCION_COLOR, true);
+    std::cout << "[ATENCION] " << mensaje;
     if (nuevaLinea) std::cout << std::endl;
     resetColor();
 }
 
-/// @brief Muestra un mensaje informativo con formato
+/// @brief Muestra un mensaje informativo con formato profesional
 inline void mostrarInfo(const std::string& mensaje, bool nuevaLinea = true) {
-    setTextColor(ColorIndex::ENLACES);
+    setTextColor(ColorIndex::INFO_COLOR);
     std::cout << "[INFO] " << mensaje;
     if (nuevaLinea) std::cout << std::endl;
     resetColor();
@@ -295,11 +321,135 @@ inline void imprimirCentrado(const std::string& texto, int ancho = ANCHO_CONSOLA
     std::cout << texto;
 }
 
-/// @brief Imprime una línea divisoria
+/// @brief Imprime una línea divisoria con estilo Coursera
 inline void imprimirLinea(char caracter = '-', int longitud = ANCHO_CONSOLA, 
-                          int color = ColorIndex::BORDES) {
+                          int color = ColorIndex::BORDES_SUTILES) {
     setTextColor(color);
     std::cout << std::string(longitud, caracter) << std::endl;
+    resetColor();
+}
+
+// FUNCIONES AVANZADAS DE UI CON PALETA COURSERA
+
+/// @brief Muestra un botón estilizado con los colores oficiales de Coursera
+inline void mostrarBoton(const std::string& texto, bool esSeleccionado = false, bool esHover = false) {
+    if (esSeleccionado || esHover) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, esHover ? ColorIndex::HOVER_ESTADO : ColorIndex::AZUL_MARCA);
+    } else {
+        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
+    }
+    std::cout << "[ " << texto << " ]";
+    resetColor();
+}
+
+/// @brief Muestra un título principal con estilo Coursera
+inline void mostrarTituloPrincipal(const std::string& titulo, bool centrado = true) {
+    setTextColor(ColorIndex::AZUL_MARCA, true);
+    if (centrado) {
+        imprimirCentrado(titulo);
+    } else {
+        std::cout << titulo;
+    }
+    resetColor();
+    std::cout << std::endl;
+}
+
+/// @brief Muestra un subtítulo con jerarquía visual clara
+inline void mostrarSubtitulo(const std::string& subtitulo, bool centrado = false) {
+    setTextColor(ColorIndex::TEXTO_IMPORTANTE);
+    if (centrado) {
+        imprimirCentrado(subtitulo);
+    } else {
+        std::cout << subtitulo;
+    }
+    resetColor();
+    std::cout << std::endl;
+}
+
+/// @brief Muestra texto de ayuda o descripción
+inline void mostrarTextoAyuda(const std::string& ayuda, bool centrado = false) {
+    setTextColor(ColorIndex::TEXTO_SECUNDARIO);
+    if (centrado) {
+        imprimirCentrado(ayuda);
+    } else {
+        std::cout << ayuda;
+    }
+    resetColor();
+    std::cout << std::endl;
+}
+
+/// @brief Muestra un enlace interactivo
+inline void mostrarEnlace(const std::string& texto, bool subrayado = false) {
+    setTextColor(ColorIndex::LINK_COLOR);
+    if (subrayado) {
+        std::cout << "\033[4m" << texto << "\033[0m"; // ANSI underline
+    } else {
+        std::cout << texto;
+    }
+    resetColor();
+}
+
+/// @brief Crea una caja de contenido con bordes sutiles
+inline void crearCajaContenido(const std::string& contenido, int ancho = 60) {
+    setTextColor(ColorIndex::BORDES_SUTILES);
+    std::cout << "+" << std::string(ancho - 2, '-') << "+" << std::endl;
+    
+    resetColor();
+    std::cout << "|";
+    setTextColor(ColorIndex::TEXTO_PRIMARIO);
+    
+    int espaciosPadding = (ancho - 2 - static_cast<int>(contenido.length())) / 2;
+    if (espaciosPadding > 0) {
+        std::cout << std::string(espaciosPadding, ' ');
+    }
+    std::cout << contenido;
+    if (espaciosPadding > 0) {
+        std::cout << std::string(espaciosPadding, ' ');
+    }
+    
+    resetColor();
+    setTextColor(ColorIndex::BORDES_SUTILES);
+    std::cout << "|" << std::endl;
+    std::cout << "+" << std::string(ancho - 2, '-') << "+" << std::endl;
+    resetColor();
+}
+
+/// @brief Muestra un indicador de progreso simple
+inline void mostrarProgreso(int porcentaje, int ancho = 30) {
+    setTextColor(ColorIndex::TEXTO_SECUNDARIO);
+    std::cout << "[";
+    
+    int completado = (porcentaje * ancho) / 100;
+    
+    setTextColor(ColorIndex::AZUL_MARCA);
+    for (int i = 0; i < completado; ++i) {
+        std::cout << "█";
+    }
+    
+    setTextColor(ColorIndex::BORDES_SUTILES);
+    for (int i = completado; i < ancho; ++i) {
+        std::cout << "░";
+    }
+    
+    setTextColor(ColorIndex::TEXTO_SECUNDARIO);
+    std::cout << "] " << porcentaje << "%";
+    resetColor();
+}
+
+/// @brief Muestra un badge o etiqueta con color específico
+inline void mostrarBadge(const std::string& texto, int colorFondo = ColorIndex::AZUL_MARCA) {
+    setConsoleColor(ColorIndex::BLANCO_PURO, colorFondo);
+    std::cout << " " << texto << " ";
+    resetColor();
+}
+
+/// @brief Crea un separador visual elegante
+inline void mostrarSeparadorElegante(int longitud = ANCHO_CONSOLA) {
+    setTextColor(ColorIndex::BORDES_SUTILES);
+    for (int i = 0; i < longitud; ++i) {
+        std::cout << (i % 3 == 0 ? "═" : "─");
+    }
+    std::cout << std::endl;
     resetColor();
 }
 
@@ -330,16 +480,19 @@ inline std::string limitarTexto(const std::string& texto, size_t maxLength,
 }
 
 // COMPATIBILIDAD CON CÓDIGO EXISTENTE
-// Aliases para mantener compatibilidad con Utils.h anterior
+// Aliases actualizados para mantener compatibilidad con Utils.h anterior
 namespace Colors {
-    constexpr int NORMAL = ColorIndex::TEXTO_PRINCIPAL;
-    constexpr int FONDO = ColorIndex::FONDO_GENERAL;
-    constexpr int SELECCION = ColorIndex::BOTON_PRIMARIO;
-    constexpr int ERRORES = ColorIndex::ERROR_COLOR;
-    constexpr int TEXTO_SECUNDARIO = ColorIndex::TEXTO_SECUNDARIO;
-    constexpr int EXITO = ColorIndex::EXITO;
-    constexpr int ADVERTENCIA = ColorIndex::ACENTO;
-    constexpr int LINK = ColorIndex::ENLACES;
+    constexpr int NORMAL               = ColorIndex::TEXTO_PRIMARIO;
+    constexpr int FONDO                = ColorIndex::FONDO_PRINCIPAL;
+    constexpr int SELECCION            = ColorIndex::AZUL_MARCA;
+    constexpr int ERRORES              = ColorIndex::ERROR_COLOR;
+    constexpr int TEXTO_SECUNDARIO     = ColorIndex::TEXTO_SECUNDARIO;
+    constexpr int EXITO                = ColorIndex::EXITO_COLOR;
+    constexpr int ADVERTENCIA          = ColorIndex::ATENCION_COLOR;
+    constexpr int LINK                 = ColorIndex::LINK_COLOR;
+    constexpr int HOVER                = ColorIndex::HOVER_ESTADO;
+    constexpr int BLANCO               = ColorIndex::BLANCO_PURO;
+    constexpr int INFO                 = ColorIndex::INFO_COLOR;
 }
 
 // ------
@@ -365,10 +518,8 @@ inline void configurarConsola() {
     SetConsoleScreenBufferSize(hConsole, bufferSize);
 
     SMALL_RECT windowSize = { 0, 0, (SHORT)(ANCHO_CONSOLA - 1), (SHORT)(ALTO_CONSOLA - 1) };
-    SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
-
-    // Configurar color inicial (texto principal sobre fondo general)
-    setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::FONDO_GENERAL);
+    SetConsoleWindowInfo(hConsole, TRUE, &windowSize);    // Configurar color inicial (texto primario sobre fondo principal)
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
 
     // Título de la aplicación
     SetConsoleTitle(L"Coursera Clone - Alpha 4");

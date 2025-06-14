@@ -95,17 +95,7 @@ private:
     inline void cargarDatos(int maxEspecialidad, int maxCursos);
 
     // MÉTODOS PRIVADOS - INTERFAZ DE USUARIO
-
-    /// @brief Dibuja la interfaz completa de la landing page
-    inline void dibujarInterfazCompleta();
-
-    /// @brief Dibuja el fondo de la sección de cabecera
-    inline void dibujarFondoCabecera();
-
-    /// @brief Dibuja el logo y elementos de navegación de la cabecera
-    inline void dibujarLogoYNavegacion();
-
-    /// @brief Renderiza todos los elementos de menú
+    /// @brief Renderiza todos los interactivos elementos de menú
     inline void renderizarElementos();
 
     // MÉTODOS PRIVADOS - ACTUALIZACIÓN DE SELECCIÓN
@@ -263,52 +253,6 @@ inline void LandingPageScreen::cargarDatos(int maxEspecialidad, int maxCursos)
 {
 	/// @todo: Implementar lógica para cargar datos dinámicos
 	/// @note Debemos utilizar el ContentManager y el FilesManager para cargar los datos de cursos y especializaciones
-    
-}
-
-inline void LandingPageScreen::dibujarInterfazCompleta()
-{
-    /// @brief Dibujar fondo de la cabecera
-    dibujarFondoCabecera();
-
-    /// @brief Dibujar logo y elementos de navegación
-    dibujarLogoYNavegacion();
-
-    /// @brief Renderizar todos los elementos
-    renderizarElementos();
-
-    /// @brief Posicionar cursor al final
-    gotoXY(0, ALTO_CONSOLA - 1);
-    resetColor();
-}
-
-inline void LandingPageScreen::dibujarFondoCabecera()
-{
-	/// @brief Dibujar fondo de la cabecera
-    for (int y = 0; y < 4; y++) 
-    {
-        for (int x = 0; x < ANCHO_CONSOLA; x++) 
-        {
-            gotoXY(x, y);
-            setConsoleColor(ColorIndex::TEXTO_INTENSO, ColorIndex::NAVEGACION);
-            std::cout << " ";
-        }
-    }
-	/// @brief Dibujar linea inferior de los botones
-    gotoXY(_coordsElementosCabecera[0].X + 1, _coordsElementosCabecera[0].Y + 1);
-    std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯";
-}
-
-inline void LandingPageScreen::dibujarLogoYNavegacion()
-{
-    // Dibujar logo principal
-    setConsoleColor(ColorIndex::ACENTO, ColorIndex::NAVEGACION, true, true);
-    gotoXY(3, 1); std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
-    gotoXY(3, 2); std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
-
-    // Dibujar texto "CLONE"
-    gotoXY(35, 1);
-    std::cout << "│  C L O N E";
 }
 
 inline void LandingPageScreen::renderizarElementos()
@@ -394,10 +338,10 @@ inline void LandingPageScreen::actualizarElementoCabecera(int indice, bool selec
     gotoXY(_coordsElementosCabecera[indice].X, _coordsElementosCabecera[indice].Y);
 
     if (seleccionado) {
-        setConsoleColor(ColorIndex::TEXTO_INTENSO, ColorIndex::BOTON_PRIMARIO, true, true);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
     }
     else {
-        setConsoleColor(ColorIndex::TEXTO_INTENSO, ColorIndex::NAVEGACION, false, true);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
     }
 
     std::cout << ELEMENTOS_CABECERA[indice];
@@ -433,10 +377,10 @@ inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitu
 {
     // Configurar colores según selección
     if (seleccionado) {
-        setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::NAVEGACION);
+       // setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::NAVEGACION);
     }
     else {
-        setConsoleColor(ColorIndex::NAVEGACION, ColorIndex::FONDO_SECCION);
+        //setConsoleColor(ColorIndex::NAVEGACION, ColorIndex::BLANCO_PURO);
     }
 
     // Mostrar título
@@ -696,7 +640,11 @@ inline void LandingPageScreen::renderizar()
     {
         system("cls");
         UI_LandingPage();
-        dibujarInterfazCompleta();
+
+        /// @brief Renderizar todos los elementos interactivos
+        renderizarElementos();
+
+        resetColor();
         _primeraRenderizacion = false;
     } else {
         actualizarSeleccion();
