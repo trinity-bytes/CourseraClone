@@ -23,30 +23,33 @@ private:
     // CONSTANTES DE CONFIGURACIÓN
     /// @brief Identificadores de secciones navegables
     static const int SECCION_CABECERA = 0;
-    static const int SECCION_ESPECIALIDADES = 1;
-    static const int SECCION_CURSOS = 2;
-    static const int TOTAL_SECCIONES = 3;
+	static const int SECCION_SUBMENU = 1;
+    static const int SECCION_ESPECIALIDADES = 2;
+    static const int SECCION_CURSOS = 3;
+    static const int TOTAL_SECCIONES = 4;
 
     /// @brief Límites máximos de elementos por sección
-    static const int MAX_ELEMENTOS_CABECERA = 2;
+    static const int MAX_ELEMENTOS_CABECERA = 3;
+	static const int MAX_ELEMENTOS_SUBMENU = 2;
     static const int MAX_ELEMENTOS_ESPECIALIDAD = 3;
     static const int MAX_ELEMENTOS_CURSO = 3;
 
     /// @brief Dimensiones de cuadros de contenido
-    static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
+    static const int MAX_ANCHO_CARACTERES_CUADRO = 32;
     static const int MAX_ALTO_CARACTERES_CUADRO = 4;
 
     // DATOS ESTÁTICOS DE LA INTERFAZ
     /// @brief Elementos del menú principal de la cabecera
     const std::vector<std::string> ELEMENTOS_CABECERA = {
         " INICIAR SESION ",
-        " REGISTRARSE "
+        " REGISTRARSE ",
+        " SOBRE NOSOTROS "
     };
 
     // COORDENADAS DE POSICIONAMIENTO
     /// @brief Posiciones fijas para elementos de la cabecera
     const COORD _coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { 
-        {67, 1}, {84, 1} 
+        {71, 1}, {88, 1}, {102, 1}
     };
 
     /// @brief Posiciones para títulos de especialidades
@@ -291,17 +294,20 @@ inline void LandingPageScreen::dibujarFondoCabecera()
             std::cout << " ";
         }
     }
+	/// @brief Dibujar linea inferior de los botones
+    gotoXY(_coordsElementosCabecera[0].X + 1, _coordsElementosCabecera[0].Y + 1);
+    std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯";
 }
 
 inline void LandingPageScreen::dibujarLogoYNavegacion()
 {
     // Dibujar logo principal
     setConsoleColor(ColorIndex::ACENTO, ColorIndex::NAVEGACION, true, true);
-    gotoXY(7, 1); std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
-    gotoXY(7, 2); std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(3, 1); std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2); std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
 
     // Dibujar texto "CLONE"
-    gotoXY(39, 1);
+    gotoXY(35, 1);
     std::cout << "│  C L O N E";
 }
 
