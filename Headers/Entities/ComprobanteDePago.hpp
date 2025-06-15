@@ -13,6 +13,7 @@
 // Headers propios
 #include "../Types/ComprobanteDePagoTypes.hpp"
 #include "../Types/ActividadTypes.hpp"
+#include "../Controllers/FilesManager.hpp"
 
 // Clase que representa una boleta de pago
 class ComprobanteDePago
@@ -117,6 +118,24 @@ std::string ComprobanteDePago::obtenerHoraActual()
 inline void ComprobanteDePago::guardar()
 {
 	// ToDo: Implementar la logica para guardar el comprobante de pago en un archivo
+    std::string datosComprobante =
+        std::to_string(_id) + "|" +
+        std::to_string(_idEstudiante) + "|" +
+        std::to_string(_idActividad) + "|" +
+        std::to_string(static_cast<int>(_tipoActividad)) + "|" +
+        _fechaEmision + "|" +
+        _horaEmision + "|" +
+        std::to_string(_montoPagado) + "|" +
+        std::to_string(static_cast<int>(_metodoPago));
+
+    auto resultado = FilesManager::getInstance().generarComprobantePago(_id, datosComprobante);
+    if (resultado == FileOperationResult::SUCCESS) {
+        std::cout << "Comprobante guardado correctamente." << std::endl;
+    }
+    else {
+        std::cerr << "Error al guardar el comprobante: " << obtenerMensaje(resultado) << std::endl;
+    }
+
 }
 
 inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante()
