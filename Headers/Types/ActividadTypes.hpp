@@ -148,6 +148,7 @@ struct RawCursoData
     std::string descripcion;
     std::string instructor;
     CategoriaActividad categoria;
+	std::vector<std::pair<std::string, std::string>> descripcionClases;
     int cantidadClases;
 	std::vector<std::string> titulosClases;
 	std::vector<std::string> descripcionesClases;

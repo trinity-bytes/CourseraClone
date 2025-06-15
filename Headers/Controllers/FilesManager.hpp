@@ -43,8 +43,6 @@ private:
 
     // ========== MÉTODOS PRIVADOS ==========
     /// @brief Utilidades privadas para logging y validación
-    void logError(const std::string& operation, const std::string& file, const std::string& error);
-    void logInfo(const std::string& operation, const std::string& file);
     bool validateFileIntegrity(const std::string& filePath, size_t expectedRecordSize);
     bool createDirectoryIfNotExists(const std::string& path);
     
@@ -54,6 +52,10 @@ private:
 	std::string getDataFilePathActividades(TipoActividad tipo);
     
 public:
+    // ============== MENSAJES ==============
+    void logError(const std::string& operation, const std::string& file, const std::string& error);
+    void logInfo(const std::string& operation, const std::string& file);
+
     // ========== SINGLETON INTERFACE ==========
     /// @brief Eliminar constructor de copia y operador de asignación
     FilesManager(const FilesManager&) = delete;
