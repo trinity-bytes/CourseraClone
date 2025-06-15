@@ -182,10 +182,16 @@
     <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.hpp" />
     <ClInclude Include="Headers\Screens\RegistroScreen.hpp" />
     <ClInclude Include="Headers\Screens\VerBoletasScreen.hpp" />
+    <ClInclude Include="Headers\Utils\ColorPalette.hpp" />
+    <ClInclude Include="Headers\Utils\ConsoleConfig.hpp" />
+    <ClInclude Include="Headers\Utils\ConsoleRenderer.hpp" />
+    <ClInclude Include="Headers\Utils\ConsoleTypes.hpp" />
     <ClInclude Include="Headers\Utils\DataPaths.hpp" />
+    <ClInclude Include="Headers\Utils\InputUtils.hpp" />
     <ClInclude Include="Headers\Utils\ScreenSystem.hpp" />
     <ClInclude Include="Headers\Utils\SystemUtils.hpp" />
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp" />
+    <ClInclude Include="Headers\Utils\ValidationUtils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

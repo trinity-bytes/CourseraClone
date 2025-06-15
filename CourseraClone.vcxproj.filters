@@ -180,7 +180,25 @@
       <Filter>Header Files\Types</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Types\FilesTypes.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\ColorPalette.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\ConsoleConfig.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\ConsoleRenderer.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\ConsoleTypes.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\InputUtils.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\ValidationUtils.hpp">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
