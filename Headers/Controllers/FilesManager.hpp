@@ -23,6 +23,7 @@
 #include "../Types/ActividadTypes.hpp"
 #include "../Types/FilesTypes.hpp"
 #include "../Utils/DataPaths.hpp"
+#include "../DataStructures/algoritmosBusqueda.hpp"
 
 class FilesManager 
 {
@@ -85,6 +86,10 @@ public:
     bool verificarIntegridadTodosLosArchivos();
     
     // ========== DOMINIO CORE (Usuarios e Inscripciones) ==========
+
+    /// @brief Guarda los datos por oden de idUsuario
+	FileOperationResult guardarInidiceInscripcion(int _idEstudiante, int _offset);
+
     /// @brief Guarda un usuario en formato binario
     /// @param bin Datos binarios del usuario
     /// @param tipo Tipo de usuario (ESTUDIANTE/EMPRESA)
@@ -459,6 +464,58 @@ inline FileOperationResult FilesManager::guardarUsuarioBinario(
         
     } catch (const std::exception& e) {
         logError("Guardar usuario", "Sistema", e.what());
+        return FileOperationResult::UNKNOWN_ERROR;
+    }
+}
+
+inline FileOperationResult FilesManager::guardarInidiceInscripcion(int _idEstudiante, int _offset) {
+    auto path = DataPaths::Core::INDICES_INSCRIPCIONES;
+    std::fstream archivoOrden(path, std::ios::binary | std::ios::app);
+	if (!archivoOrden.is_open()) {
+		logError("Guardar índice de inscripciones", path, "No se pudo abrir el archivo");
+		return FileOperationResult::FILE_NOT_FOUND;
+	}
+	try {
+		archivoOrden.seekg(0, std::ios::end);
+		int cantidad = static_cast<int>(archivoOrden.tellg() / sizeof(InscripcionIndex));
+
+        InscripcionIndex nuevoIndice(_idEstudiante, _offset);
+        if (cantidad == 0) {
+			archivoOrden.seekp(0, std::ios::beg); // Si es el primer registro, ir al inicio
+			archivoOrden.write(reinterpret_cast<char*>(&nuevoIndice), sizeof(InscripcionIndex));
+            archivoOrden.close();
+			logInfo("Guardar índice de inscripciones", path + " (1 registro)");
+			return FileOperationResult::SUCCESS;
+        }
+
+		archivoOrden.seekg(0, std::ios::beg);
+        auto busqueda = [&](int pos) {
+            InscripcionIndex tmp;
+            archivoOrden.seekg(pos * sizeof(InscripcionIndex), std::ios::beg);
+            archivoOrden.read(reinterpret_cast<char*>(&tmp), sizeof(InscripcionIndex));
+
+            return _idEstudiante <= tmp.idUsuario;
+            };
+
+        int pos = busquedaBinaria(0, cantidad - 1, busqueda);
+        for (int i = cantidad - 1; i >= pos; i--) {
+			InscripcionIndex tmp;
+			archivoOrden.seekg(i * sizeof(InscripcionIndex), std::ios::beg);
+			archivoOrden.read(reinterpret_cast<char*>(&tmp), sizeof(InscripcionIndex));
+			archivoOrden.seekp((i + 1) * sizeof(InscripcionIndex), std::ios::beg);
+			archivoOrden.write(reinterpret_cast<char*>(&tmp), sizeof(InscripcionIndex));
+        }
+        
+		archivoOrden.seekp(pos * sizeof(InscripcionIndex), std::ios::beg);
+		archivoOrden.write(reinterpret_cast<char*>(&nuevoIndice), sizeof(InscripcionIndex));
+
+        archivoOrden.close();
+        logInfo("Guardar índice de inscripciones", path + " (Busqueda binaria)");
+        return FileOperationResult::SUCCESS;
+		
+
+    } catch (const std::exception& e) {
+        logError("Guardar índice de inscripciones", "Sistema", e.what());
         return FileOperationResult::UNKNOWN_ERROR;
     }
 }

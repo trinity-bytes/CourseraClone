@@ -94,6 +94,7 @@ inline bool Inscripcion::getEstadoPago() const {
 
 inline void Inscripcion::guardar() {
 	FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago), this->id);
+	FilesManager::getInstance().guardarInidiceInscripcion(idEstudiante, this->id);
 
 }
 
