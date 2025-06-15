@@ -66,6 +66,7 @@ public:
     bool guardar() override
     {
 		// ToDo: Implementar la lógica para guardar el curso en un archivo
+        return true;
     }
 
 	// ToDo: Implementar el método para cargar el curso desde un archivo

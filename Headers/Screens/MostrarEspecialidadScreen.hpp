@@ -8,12 +8,12 @@
 #include <vector>
 
 // Headers propios
-#include "../Controllers/GestionadorCursos.hpp"
-#include "../Entities/Curso.hpp"
-#include "../Entities/Especializacion.hpp"
-#include "../Utils/SystemUtils.hpp"
-#include "../Utils/ScreenSystem.hpp"
-#include "../Utils/UI_Ascii.hpp"
+//#include "../Controllers/GestionadorCursos.hpp"
+//#include "../Entities/Curso.hpp"
+//#include "../Entities/Especializacion.hpp"
+//#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/UI_Ascii.hpp"
 
 /// Pantalla para mostrar especialización con detalles y cursos asociados
 class MostrarEspecialidadScreen : public PantallaBase

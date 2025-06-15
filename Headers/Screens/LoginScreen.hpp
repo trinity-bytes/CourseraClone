@@ -5,12 +5,12 @@
 #include <string>
 
 // Librerías propias
-#include "../Utils/ScreenSystem.hpp"
-#include "../Entities/Estudiante.hpp"
-#include "../Entities/Empresa.hpp"
-#include "../DataStructures/LinkedList.hpp"
-#include "../Entities/Curso.hpp"
-#include "../Entities/Especializacion.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Entities/Estudiante.hpp"
+//#include "../Entities/Empresa.hpp"
+//#include "../DataStructures/LinkedList.hpp"
+//#include "../Entities/Curso.hpp"
+//#include "../Entities/Especializacion.hpp"
 
 // forward declarations
 class Usuario;

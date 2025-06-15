@@ -179,5 +179,8 @@
     <ClInclude Include="Headers\Types\ScreenTypes.hpp">
       <Filter>Header Files\Types</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Types\FilesTypes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

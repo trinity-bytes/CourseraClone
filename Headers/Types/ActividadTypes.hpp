@@ -8,14 +8,6 @@
 #include <string>
 #include <vector>
 
-// Enum para representar los tipos de actividad
-enum class TipoActividad
-{
-	DEFAULT, // Tipo por defecto, no se usa en la práctica
-    CURSO,
-	ESPECIALIZACION
-};
-
 // Enumeración para las categorías de actividades
 enum class CategoriaActividad : int
 {
@@ -75,6 +67,14 @@ enum class CategoriaActividad : int
     OTROS
 };
 
+// Enum para representar los tipos de actividad
+enum class TipoActividad
+{
+	DEFAULT, // Tipo por defecto, no se usa en la práctica
+    CURSO,
+	ESPECIALIZACION
+};
+
 // Datos crudos de un curso leídos del archivo
 struct RawCursoData 
 {
@@ -86,7 +86,6 @@ struct RawCursoData
     std::string descripcion;
     std::string instructor;
     CategoriaActividad categoria;
-	std::vector<std::pair<std::string, std::string>> clases; // Par de título y descripción de cada clase
     int cantidadClases;
 };
 

@@ -12,13 +12,13 @@
 #include <algorithm>  // Para std::min
 
 // Headers propios
-#include "../Utils/ScreenSystem.hpp"
-#include "../Utils/SystemUtils.hpp"
-#include "../Utils/UI_Ascii.hpp"
-#include "../Entities/Inscripcion.hpp"
-#include "../Entities/Curso.hpp"
-#include "../Entities/Especializacion.hpp"
-#include "../Controllers/GestionadorCursos.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/UI_Ascii.hpp"
+//#include "../Entities/Inscripcion.hpp"
+//#include "../Entities/Curso.hpp"
+//#include "../Entities/Especializacion.hpp"
+//#include "../Controllers/ContentManager.hpp"
 
 // forward declarations
 class Controladora; // Declaración adelantada de Controladora

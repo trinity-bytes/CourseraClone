@@ -1,5 +1,5 @@
 // filepath: Headers/Screens/LandingPageScreen.hpp
-// Pantalla principal del sistema - landing page con navegación por secciones
+// Pantalla principal del sistema - landing page con navegación por secciones    
 
 #ifndef COURSERACLONE_SCREENS_LANDINGPAGESCREEN_HPP
 #define COURSERACLONE_SCREENS_LANDINGPAGESCREEN_HPP
@@ -9,12 +9,15 @@
 #include <string>  // std::string
 #include <sstream> // std::stringstream
 #include <conio.h> // _getch()
+#include <chrono>  // std::chrono
+#include <random>  // std::random_device, std::mt19937
 
 // Librerias propias
 #include "../Utils/UI_Ascii.hpp"
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Controllers/ContentManager.hpp"
+#include "../Types/ActividadTypes.hpp"
 
 /// @brief Pantalla principal del sistema con navegación por secciones
 /// @details Implementa la landing page con navegación entre cabecera, especialidades y cursos
@@ -31,13 +34,19 @@ private:
 
     /// @brief Límites máximos de elementos por sección
     static const int MAX_ELEMENTOS_CABECERA = 3;
+    static const int MAX_SLOGANS_DINAMICOS = 3;
+    static const int MAX_SUBTITULOS_DINAMICOS = 2;
 	static const int MAX_ELEMENTOS_SUBMENU = 2;
     static const int MAX_ELEMENTOS_ESPECIALIDAD = 3;
     static const int MAX_ELEMENTOS_CURSO = 3;
 
+    /// @brief Configuración de cambio dinámico
+    static const int TIEMPO_CAMBIO_SLOGAN_MS = 5000;      // 5 segundos
+    static const int TIEMPO_CAMBIO_SUBTITULO_MS = 7000;   // 6 segundos
+
     /// @brief Dimensiones de cuadros de contenido
-    static const int MAX_ANCHO_CARACTERES_CUADRO = 32;
-    static const int MAX_ALTO_CARACTERES_CUADRO = 4;
+    static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
+    static const int MAX_ALTO_CARACTERES_CUADRO = 3;
 
     // DATOS ESTÁTICOS DE LA INTERFAZ
     /// @brief Elementos del menú principal de la cabecera
@@ -47,30 +56,64 @@ private:
         " SOBRE NOSOTROS "
     };
 
+    /// @brief Slogans dinamicos hero-section
+    const std::vector<std::string> SLOGANS_DINAMICOS = {
+        "APRENDE LAS HABILIDADES DEL FUTURO, HOY",
+        "TU CARRERA PROFESIONAL COMIENZA AQUÍ",
+        "CONVIÉRTETE EN EL PROFESIONAL QUE QUIERES SER"
+    };
+
+    /// @brief Subtitulos dinamicos hero-section
+    const std::vector<std::string> SUBTITULOS_DINAMICOS = {
+        "-  Explora cursos online impartidos por expertos de la industria  -",
+        "-  Encuentra el curso perfecto para alcanzar tus metas  -"
+    };
+
+    /// @brief Elementos del Sub Menu
+    const std::vector<std::string> ELEMENTOS_SUBMENU = {
+        " [ Explorar Cursos ] ",
+        " [ Ver Especialidades ] "
+    };
+
     // COORDENADAS DE POSICIONAMIENTO
     /// @brief Posiciones fijas para elementos de la cabecera
     const COORD _coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { 
         {71, 1}, {88, 1}, {102, 1}
+    };    
+    
+    /// @brief Posiciones de los slogans dinamicos del Hero section
+    const COORD _coordsSlogansDinamicos[MAX_SLOGANS_DINAMICOS] = {
+        {33, 5}, {34, 5}, {27, 5}
+    };
+
+    /// @brief Posiciones de los subtitulos dinamicos del Hero section
+    const COORD _coordsSubtitulosDinamicos[MAX_SUBTITULOS_DINAMICOS] = {
+        {24, 6}, {29, 6}
+    };
+
+    /// @brief Posiciones de los botones del submeniu
+    const COORD _coordsBotonesSubMenu[MAX_ELEMENTOS_SUBMENU] = {
+        {34, 8}, {59, 8}
     };
 
     /// @brief Posiciones para títulos de especialidades
     const COORD _coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { 
-        {11, 15}, {45, 15}, {79, 15} 
+        {9, 13}, {45, 13}, {81, 13} 
     };
 
     /// @brief Posiciones para descripciones de especialidades
     const COORD _coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { 
-        {11, 17}, {45, 17}, {79, 17} 
+        {9, 15}, {45, 15}, {81, 15} 
     };
 
     /// @brief Posiciones para títulos de cursos
     const COORD _coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { 
-        {11, 25}, {45, 25}, {79, 25} 
+        {9, 22}, {45, 22}, {81, 22} 
     };
 
     /// @brief Posiciones para descripciones de cursos
     const COORD _coordsDescCurso[MAX_ELEMENTOS_CURSO] = { 
-        {11, 27}, {45, 27}, {79, 27} 
+        {9, 24}, {45, 24}, {81, 24} 
     };
 
     // ESTADO DE NAVEGACIÓN
@@ -82,31 +125,45 @@ private:
 
     /// @brief Flags de control de renderizado
     bool _primeraRenderizacion;
-    bool _presionEnter;    
+    bool _presionEnter;        
 
-    /// @brief Datos dinámicos del menú
-    std::vector<ElementoMenu> _especialidades;
-    std::vector<ElementoMenu> _cursos;
-
+    /// @brief Datos dinámicos del menú usando estructuras crudas
+    std::vector<RawEspecializacionData> _especialidades;
+    std::vector<RawCursoData> _cursos;    
+      // ESTADO DE CONTENIDO DINÁMICO
+    /// @brief Control de cambio dinámico de slogans y subtítulos
+    int _sloganActual;
+    int _subtituloActual;
+    int _sloganAnterior;
+    int _subtituloAnterior;
+    std::chrono::steady_clock::time_point _ultimoCambioSlogan;
+    std::chrono::steady_clock::time_point _ultimoCambioSubtitulo;
+    std::mt19937 _generadorAleatorio;
+    
     // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
     /// @brief Carga todos los datos necesarios para la landing page
-    /// @param cursosDatos Lista de cursos disponibles
-    /// @param especializacionesDatos Lista de especializaciones disponibles
-    /// @param maximo Número máximo de elementos por sección
-    inline void cargarDatos(int maxEspecialidad, int maxCursos);
+    /// @param maxEspecializaciones Número máximo de especializaciones a mostrar
+    /// @param maxCursos Número máximo de cursos a mostrar
+    inline void cargarDatos(int maxEspecializaciones, int maxCursos);
+
+    // MÉTODOS PRIVADOS - CONTENIDO DINÁMICO
+    /// @brief Actualiza el contenido dinámico (slogans y subtítulos)
+    inline void actualizarContenidoDinamico();
+    
+    /// @brief Cambia el slogan actual de forma aleatoria
+    inline void cambiarSlogan();
+    
+    /// @brief Cambia el subtítulo actual de forma aleatoria
+    inline void cambiarSubtitulo();
+    
+    /// @brief Renderiza el slogan actual en pantalla
+    inline void renderizarSloganActual();
+    
+    /// @brief Renderiza el subtítulo actual en pantalla
+    inline void renderizarSubtituloActual();
 
     // MÉTODOS PRIVADOS - INTERFAZ DE USUARIO
-
-    /// @brief Dibuja la interfaz completa de la landing page
-    inline void dibujarInterfazCompleta();
-
-    /// @brief Dibuja el fondo de la sección de cabecera
-    inline void dibujarFondoCabecera();
-
-    /// @brief Dibuja el logo y elementos de navegación de la cabecera
-    inline void dibujarLogoYNavegacion();
-
-    /// @brief Renderiza todos los elementos de menú
+    /// @brief Renderiza todos los interactivos elementos de menú
     inline void renderizarElementos();
 
     // MÉTODOS PRIVADOS - ACTUALIZACIÓN DE SELECCIÓN
@@ -132,6 +189,11 @@ private:
     /// @param seleccionado Estado de selección del elemento
     inline void actualizarElementoCabecera(int indice, bool seleccionado);
 
+    /// @brief Actualiza la visualización de un elemento del submenú
+    /// @param indice Índice del elemento a actualizar
+    /// @param seleccionado Estado de selección del elemento
+    inline void actualizarElementoSubmenu(int indice, bool seleccionado);
+
     /// @brief Actualiza la visualización de un elemento de especialidad
     /// @param indice Índice del elemento a actualizar
     /// @param seleccionado Estado de selección del elemento
@@ -147,7 +209,7 @@ private:
     /// @param coordDesc Coordenadas de la descripción
     /// @param elemento Datos del elemento
     /// @param seleccionado Estado de selección
-    inline void actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, const ElementoMenu& elemento, bool seleccionado);
+    inline void actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, const std::string& titulo, const std::string& descripcion, bool seleccionado);
 
     /// @brief Muestra un título formateado en las coordenadas especificadas
     /// @param coord Coordenadas donde mostrar el título
@@ -230,6 +292,10 @@ private:
     /// @param resultado Resultado de pantalla a modificar
     inline void procesarSeleccionCabecera(ResultadoPantalla& resultado);
 
+    /// @brief Procesa la selección de un elemento del submenú
+    /// @param resultado Resultado de pantalla a modificar
+    inline void procesarSeleccionSubmenu(ResultadoPantalla& resultado);
+
 public:
     /// @brief Constructor por defecto
     inline LandingPageScreen();
@@ -253,77 +319,135 @@ public:
 inline LandingPageScreen::LandingPageScreen() : PantallaBase(),
     _seccionActual(0), _elementoActual(0),
     _seccionAnterior(-1), _elementoAnterior(-1),
-    _primeraRenderizacion(true), _presionEnter(false)
+    _primeraRenderizacion(true), _presionEnter(false),
+    _sloganActual(0), _subtituloActual(0),
+    _sloganAnterior(-1), _subtituloAnterior(-1),
+    _generadorAleatorio(std::random_device{}())
 {
+    // Inicializar tiempos de cambio
+    auto ahora = std::chrono::steady_clock::now();
+    _ultimoCambioSlogan = ahora;
+    _ultimoCambioSubtitulo = ahora;
+    
     cargarDatos(MAX_ELEMENTOS_ESPECIALIDAD, MAX_ELEMENTOS_CURSO);
 }
 
 // ---- MÉTODOS PRIVADOS ----
 
-inline void LandingPageScreen::cargarDatos(int maxEspecialidad, int maxCursos)
+inline void LandingPageScreen::cargarDatos(int maxEspecializaciones, int maxCursos)
 {
-	/// @todo: Implementar lógica para cargar datos dinámicos
-	/// @note Debemos utilizar el ContentManager y el FilesManager para cargar los datos de cursos y especializaciones
-	_especialidades.clear();
-	_cursos.clear();
-
-   
-	ContentManager* contentManager = &ContentManager::getInstance();
-    int cantidad = contentManager->getCursos().getTamano();
-	
+    /// @brief Obtener la instancia del ContentManager
+    ContentManager& contentManager = ContentManager::getInstance();
     
-	// Simulación de carga de datos
-	for (int i = 0; i < maxEspecialidad; ++i) {
-		_especialidades.push_back(ElementoMenu{ "Especialidad " + std::to_string(i + 1), "Descripción de especialidad " + std::to_string(i + 1) });
-	}
-	for (int i = 0; i < maxCursos; ++i) {
-		_cursos.push_back(ElementoMenu{ "Curso " + std::to_string(i + 1), "Descripción de curso " + std::to_string(i + 1) });
-	}
+    /// @brief Obtener datos crudos desde ContentManager (respetando límites)
+    RawActividadesData datosActividades = contentManager.obtenerDatosCrudos(maxCursos, maxEspecializaciones);
+    
+    /// @brief Limpiar contenedores existentes
+    _especialidades.clear();
+    _cursos.clear();
+    
+    /// @brief Asignar datos directamente sin conversiones
+    _especialidades = datosActividades.especializaciones;
+    _cursos = datosActividades.cursos;
 }
 
-inline void LandingPageScreen::dibujarInterfazCompleta()
+// MÉTODOS PRIVADOS - CONTENIDO DINÁMICO
+
+inline void LandingPageScreen::actualizarContenidoDinamico()
 {
-    /// @brief Dibujar fondo de la cabecera
-    dibujarFondoCabecera();
-
-    /// @brief Dibujar logo y elementos de navegación
-    dibujarLogoYNavegacion();
-
-    /// @brief Renderizar todos los elementos
-    renderizarElementos();
-
-    /// @brief Posicionar cursor al final
-    gotoXY(0, ALTO_CONSOLA - 1);
-    resetColor();
-}
-
-inline void LandingPageScreen::dibujarFondoCabecera()
-{
-	/// @brief Dibujar fondo de la cabecera
-    for (int y = 0; y < 4; y++) 
+    auto ahora = std::chrono::steady_clock::now();
+    
+    // Verificar si es tiempo de cambiar el slogan
+    auto tiempoTranscurridoSlogan = std::chrono::duration_cast<std::chrono::milliseconds>(ahora - _ultimoCambioSlogan).count();
+    if (tiempoTranscurridoSlogan >= TIEMPO_CAMBIO_SLOGAN_MS)
     {
-        for (int x = 0; x < ANCHO_CONSOLA; x++) 
-        {
-            gotoXY(x, y);
-            setConsoleColor(ColorIndex::TEXTO_INTENSO, ColorIndex::NAVEGACION);
-            std::cout << " ";
-        }
+        cambiarSlogan();
+        _ultimoCambioSlogan = ahora;
     }
-	/// @brief Dibujar linea inferior de los botones
-    gotoXY(_coordsElementosCabecera[0].X + 1, _coordsElementosCabecera[0].Y + 1);
-    std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯";
+    
+    // Verificar si es tiempo de cambiar el subtítulo
+    auto tiempoTranscurridoSubtitulo = std::chrono::duration_cast<std::chrono::milliseconds>(ahora - _ultimoCambioSubtitulo).count();
+    if (tiempoTranscurridoSubtitulo >= TIEMPO_CAMBIO_SUBTITULO_MS)
+    {
+        cambiarSubtitulo();
+        _ultimoCambioSubtitulo = ahora;
+    }
 }
 
-inline void LandingPageScreen::dibujarLogoYNavegacion()
+inline void LandingPageScreen::cambiarSlogan()
 {
-    // Dibujar logo principal
-    setConsoleColor(ColorIndex::ACENTO, ColorIndex::NAVEGACION, true, true);
-    gotoXY(3, 1); std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
-    gotoXY(3, 2); std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    _sloganAnterior = _sloganActual;
+    
+    // Generar un nuevo slogan diferente al actual
+    do {
+        std::uniform_int_distribution<int> distribucion(0, MAX_SLOGANS_DINAMICOS - 1);
+        _sloganActual = distribucion(_generadorAleatorio);
+    } while (_sloganActual == _sloganAnterior && MAX_SLOGANS_DINAMICOS > 1);
+    
+    renderizarSloganActual();
+}
 
-    // Dibujar texto "CLONE"
-    gotoXY(35, 1);
-    std::cout << "│  C L O N E";
+inline void LandingPageScreen::cambiarSubtitulo()
+{
+    _subtituloAnterior = _subtituloActual;
+    
+    // Generar un nuevo subtítulo diferente al actual
+    do {
+        std::uniform_int_distribution<int> distribucion(0, MAX_SUBTITULOS_DINAMICOS - 1);
+        _subtituloActual = distribucion(_generadorAleatorio);
+    } while (_subtituloActual == _subtituloAnterior && MAX_SUBTITULOS_DINAMICOS > 1);
+    
+    renderizarSubtituloActual();
+}
+
+inline void LandingPageScreen::renderizarSloganActual()
+{
+    // Borrar slogan anterior si existe
+    if (_sloganAnterior >= 0 && _sloganAnterior < MAX_SLOGANS_DINAMICOS)
+    {
+        const COORD& coordAnterior = _coordsSlogansDinamicos[_sloganAnterior];
+        gotoXY(coordAnterior.X, coordAnterior.Y);
+        
+        // Limpiar con espacios suficientes para el slogan anterior
+        const std::string& sloganAnterior = SLOGANS_DINAMICOS[_sloganAnterior];
+        std::string espacios(sloganAnterior.length(), ' ');
+        std::cout << espacios;
+    }
+    
+    // Renderizar nuevo slogan
+    if (_sloganActual >= 0 && _sloganActual < MAX_SLOGANS_DINAMICOS && _sloganActual < SLOGANS_DINAMICOS.size())
+    {
+        const COORD& coord = _coordsSlogansDinamicos[_sloganActual];
+        gotoXY(coord.X, coord.Y);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BLANCO_PURO);
+        std::cout << SLOGANS_DINAMICOS[_sloganActual];
+        resetColor();
+    }
+}
+
+inline void LandingPageScreen::renderizarSubtituloActual()
+{
+    // Borrar subtítulo anterior si existe
+    if (_subtituloAnterior >= 0 && _subtituloAnterior < MAX_SUBTITULOS_DINAMICOS)
+    {
+        const COORD& coordAnterior = _coordsSubtitulosDinamicos[_subtituloAnterior];
+        gotoXY(coordAnterior.X, coordAnterior.Y);
+        
+        // Limpiar con espacios suficientes para el subtítulo anterior
+        const std::string& subtituloAnterior = SUBTITULOS_DINAMICOS[_subtituloAnterior];
+        std::string espacios(subtituloAnterior.length(), ' ');
+        std::cout << espacios;
+    }
+    
+    // Renderizar nuevo subtítulo
+    if (_subtituloActual >= 0 && _subtituloActual < MAX_SUBTITULOS_DINAMICOS && _subtituloActual < SUBTITULOS_DINAMICOS.size())
+    {
+        const COORD& coord = _coordsSubtitulosDinamicos[_subtituloActual];
+        gotoXY(coord.X, coord.Y);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+        std::cout << SUBTITULOS_DINAMICOS[_subtituloActual];
+        resetColor();
+    }
 }
 
 inline void LandingPageScreen::renderizarElementos()
@@ -332,6 +456,12 @@ inline void LandingPageScreen::renderizarElementos()
     for (int i = 0; i < MAX_ELEMENTOS_CABECERA; ++i) 
     {
         actualizarElementoCabecera(i, _seccionActual == SECCION_CABECERA && _elementoActual == i);
+    }
+
+    /// @brief Renderizar botones del submenú
+    for (int i = 0; i < MAX_ELEMENTOS_SUBMENU; ++i) 
+    {
+        actualizarElementoSubmenu(i, _seccionActual == SECCION_SUBMENU && _elementoActual == i);
     }
 
     /// @brief Renderizar especialidades
@@ -391,6 +521,9 @@ inline void LandingPageScreen::actualizarElementoEnSeccion(int seccion, int elem
     case SECCION_CABECERA:
         actualizarElementoCabecera(elemento, seleccionado);
         break;
+    case SECCION_SUBMENU:
+        actualizarElementoSubmenu(elemento, seleccionado);
+        break;
     case SECCION_ESPECIALIDADES:
         actualizarElementoEspecialidad(elemento, seleccionado);
         break;
@@ -409,13 +542,30 @@ inline void LandingPageScreen::actualizarElementoCabecera(int indice, bool selec
     gotoXY(_coordsElementosCabecera[indice].X, _coordsElementosCabecera[indice].Y);
 
     if (seleccionado) {
-        setConsoleColor(ColorIndex::TEXTO_INTENSO, ColorIndex::BOTON_PRIMARIO, true, true);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
     }
     else {
-        setConsoleColor(ColorIndex::TEXTO_INTENSO, ColorIndex::NAVEGACION, false, true);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
     }
 
     std::cout << ELEMENTOS_CABECERA[indice];
+    resetColor();
+}
+
+inline void LandingPageScreen::actualizarElementoSubmenu(int indice, bool seleccionado)
+{
+    if (indice < 0 || indice >= MAX_ELEMENTOS_SUBMENU) return;
+
+    gotoXY(_coordsBotonesSubMenu[indice].X, _coordsBotonesSubMenu[indice].Y);
+
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    }
+    else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BLANCO_PURO);
+    }
+
+    std::cout << ELEMENTOS_SUBMENU[indice];
     resetColor();
 }
 
@@ -426,7 +576,8 @@ inline void LandingPageScreen::actualizarElementoEspecialidad(int indice, bool s
     actualizarElementoGenerico(
         _coordsTituloEspecialidad[indice],
         _coordsDescEspecialidad[indice],
-        _especialidades[indice],
+        _especialidades[indice].titulo,
+        _especialidades[indice].descripcion,
         seleccionado
     );
 }
@@ -438,27 +589,28 @@ inline void LandingPageScreen::actualizarElementoCurso(int indice, bool seleccio
     actualizarElementoGenerico(
         _coordsTituloCurso[indice],
         _coordsDescCurso[indice],
-        _cursos[indice],
+        _cursos[indice].titulo,
+        _cursos[indice].descripcion,
         seleccionado
     );
 }
 
-inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc,
-    const ElementoMenu& elemento, bool seleccionado)
+
+inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, const std::string& titulo, const std::string& descripcion, bool seleccionado)
 {
     // Configurar colores según selección
     if (seleccionado) {
-        setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::NAVEGACION);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_PRIMARIO);
     }
     else {
-        setConsoleColor(ColorIndex::NAVEGACION, ColorIndex::FONDO_SECCION);
+       setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
     }
 
     // Mostrar título
-    mostrarTituloFormateado(coordTitulo, elemento.titulo);
+    mostrarTituloFormateado(coordTitulo, titulo);
 
     // Mostrar descripción
-    mostrarDescripcionFormateada(coordDesc, elemento.descripcion);
+    mostrarDescripcionFormateada(coordDesc, descripcion);
 
     resetColor();
 }    
@@ -584,6 +736,8 @@ inline int LandingPageScreen::obtenerMaxElementosEnSeccion(int seccion)
     switch (seccion) {
     case SECCION_CABECERA:
         return MAX_ELEMENTOS_CABECERA;
+    case SECCION_SUBMENU:
+        return MAX_ELEMENTOS_SUBMENU;
     case SECCION_ESPECIALIDADES:
         return static_cast<int>(_especialidades.size());
     case SECCION_CURSOS:
@@ -664,6 +818,9 @@ inline void LandingPageScreen::procesarSeleccion(ResultadoPantalla& resultado)
     else if (_seccionActual == SECCION_CABECERA) {
         procesarSeleccionCabecera(resultado);
     }
+    else if (_seccionActual == SECCION_SUBMENU) {
+        procesarSeleccionSubmenu(resultado);
+    }
 }
 
 inline void LandingPageScreen::procesarSeleccionCurso(ResultadoPantalla& resultado)
@@ -703,6 +860,23 @@ inline void LandingPageScreen::procesarSeleccionCabecera(ResultadoPantalla& resu
     }
 }
 
+inline void LandingPageScreen::procesarSeleccionSubmenu(ResultadoPantalla& resultado)
+{
+    switch (_elementoActual) {
+    case 0: // Explorar Cursos
+        resultado.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+        resultado.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;
+        break;
+    case 1: // Ver Especialidades
+        resultado.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+        resultado.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;
+        break;
+    default:
+        // No hay acción definida
+        break;
+    }
+}
+
 // MÉTODOS PÚBLICOS - INTERFAZ PRINCIPAL
 
 inline void LandingPageScreen::renderizar()
@@ -711,7 +885,14 @@ inline void LandingPageScreen::renderizar()
     {
         system("cls");
         UI_LandingPage();
-        dibujarInterfazCompleta();
+
+        /// @brief Renderizar todos los elementos interactivos
+        renderizarElementos();
+
+        /// @brief Renderizar contenido dinámico inicial
+        renderizarSloganActual();
+        renderizarSubtituloActual();        
+        resetColor();
         _primeraRenderizacion = false;
     } else {
         actualizarSeleccion();
@@ -755,18 +936,28 @@ inline ResultadoPantalla LandingPageScreen::ejecutar()
     int tecla;
     while (resultado.accion == AccionPantalla::NINGUNA)
     {
-        tecla = _getch();
-        manejarInput(tecla);
-        renderizar();
-
-        if (_presionEnter) // Procesar acciones
+        // Actualizar contenido dinámico independientemente de la entrada del usuario
+        actualizarContenidoDinamico();
+        
+        // Verificar si hay teclas presionadas sin bloquear
+        if (_kbhit())
         {
-            procesarSeleccion(resultado);
-        }
+            tecla = _getch();
+            manejarInput(tecla);
+            renderizar();
 
-        if (tecla == 27) {  // ESC
-            resultado.accion = AccionPantalla::SALIR;
+            if (_presionEnter) // Procesar acciones
+            {
+                procesarSeleccion(resultado);
+            }
+
+            if (tecla == 27) {  // ESC
+                resultado.accion = AccionPantalla::SALIR;
+            }
         }
+        
+        // Pequeña pausa para evitar consumo excesivo de CPU
+        Sleep(50); // 50ms de pausa
     }
 
     return resultado;

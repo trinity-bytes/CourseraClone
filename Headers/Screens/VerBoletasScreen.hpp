@@ -9,12 +9,12 @@
 #include <string>
 #include <vector>
 
-// Headers de consola
-#include "../Entities/Boleta.h"
-#include "../Entities/Estudiante.h"
-#include "../Utils/SystemUtils.h"
-#include "../Utils/ScreenSystem.h"
-#include "../Utils/UI_Ascii.h"
+//// Headers de consola
+//#include "../Entities/Boleta.h"
+//#include "../Entities/Estudiante.h"
+//#include "../Utils/SystemUtils.h"
+//#include "../Utils/ScreenSystem.h"
+//#include "../Utils/UI_Ascii.h"
 
 /// Pantalla para ver boletas del estudiante
 // Screen to display student payment receipts/invoices

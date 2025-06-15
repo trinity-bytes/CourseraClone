@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include "SystemUtils.hpp"
 
 /*
 ┌──┬─────┐    ╔══╦══╗
@@ -27,7 +28,8 @@ inline void UI_LandingPage()
                                  CONVIERTETE EN EL PROFESIONAL QUE QUIERES SER                        
                         -  Explora cursos online impartidos por expertos de la industria  -              
           
-                                  [ Explorar Cursos ]      [ Ver Especialidades ]          
+                                  [ Explorar Cursos ]      [ Ver Especialidades ]      
+                                      
  
       -----------------------------------<<    LAS MEJORES ESPECIALIDADES    >>-----------------------------------  
        ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗
@@ -51,7 +53,29 @@ inline void UI_LandingPage()
  Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por el menu.
  Pulsa la tecla ENTER para seleciconar y ESC para SALIR DEL PROGRAMA.)";
 //----------------------------------------------------------------------------------------------------------------------
+
 	std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Dibujar linea inferior de los botones
+    gotoXY(72, 2);
+    std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯";
+
+    /// @brief/ Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
 }
 
 /// UI Login

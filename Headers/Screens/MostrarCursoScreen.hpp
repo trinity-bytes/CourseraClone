@@ -8,13 +8,13 @@
 #include <sstream>
 
 // Headers propios
-#include "../Utils/ScreenSystem.hpp"
-#include "../Utils/SystemUtils.hpp"
-#include "../Utils/UI_Ascii.hpp"
-#include "../Entities/Curso.hpp"
-#include "../Entities/Clase.hpp"
-#include "../Controllers/GestionadorCursos.hpp"
-#include "../Entities/Estudiante.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/UI_Ascii.hpp"
+//#include "../Entities/Curso.hpp"
+//#include "../Entities/Clase.hpp"
+//#include "../Controllers/GestionadorCursos.hpp"
+//#include "../Entities/Estudiante.hpp"
 
 // Pantalla que muestra los detalles de un curso específico
 class MostrarCursoScreen : public PantallaBase

@@ -12,12 +12,12 @@
 #include <conio.h>   // Para _getch()
 
 // 2. Includes del proyecto
-#include "../Entities/Curso.hpp"
-#include "../Entities/Especializacion.hpp"
-#include "../Controllers/GestionadorCursos.hpp"
-#include "../Utils/ScreenSystem.hpp"
-#include "../Utils/SystemUtils.hpp"
-#include "../Utils/UI_Ascii.hpp"
+//#include "../Entities/Curso.hpp"
+//#include "../Entities/Especializacion.hpp"
+//#include "../Controllers/GestionadorCursos.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/UI_Ascii.hpp"
 
 // 3. Forward declarations
 class Controladora;

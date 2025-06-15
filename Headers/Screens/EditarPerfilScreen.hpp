@@ -6,12 +6,12 @@
 #include <string>
 
 // Headers propios
-#include "../Entities/Empresa.hpp"
-#include "../Entities/Estudiante.hpp"
-#include "../Entities/Usuario.hpp"
-#include "../Utils/SystemUtils.hpp"
-#include "../Utils/ScreenSystem.hpp"
-#include "../Utils/UI_Ascii.hpp"
+//#include "../Entities/Empresa.hpp"
+//#include "../Entities/Estudiante.hpp"
+//#include "../Entities/Usuario.hpp"
+//#include "../Utils/SystemUtils.hpp"
+//#include "../Utils/ScreenSystem.hpp"
+//#include "../Utils/UI_Ascii.hpp"
 
 /// Pantalla para editar perfil de usuario
 class EditarPerfilScreen : public PantallaBase
