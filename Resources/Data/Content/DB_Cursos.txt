@@ -3,7 +3,7 @@
 Microsoft Learning
 Introducción a la Programación en C++
 Curso fundamental para aprender programación orientada a objetos con C++
-1
+PROGRAMACION
 Julia Rodriguez
 5
 Fundamentos y sintaxis básica
@@ -22,7 +22,7 @@ Técnicas para manejar errores y trabajar con archivos externos
 Google Academy
 Python para Ciencia de Datos
 Curso práctico para análisis de datos y machine learning con Python
-12
+CIENCIA_DE_DATOS
 Carlos Martinez
 4
 NumPy y Pandas
@@ -39,7 +39,7 @@ Desarrolla un proyecto completo de ciencia de datos
 Amazon Web Services
 Cloud Computing con AWS
 Aprende a desplegar y gestionar aplicaciones en la nube de Amazon
-7
+CLOUD_COMPUTING
 Sarah Johnson
 3
 Fundamentos de AWS

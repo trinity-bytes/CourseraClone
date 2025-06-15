@@ -595,118 +595,224 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
     std::string linea;
     RawCursoData cursoData;
     int cursosLeidos = 0;
+    int lineCount = 0;
     bool leyendoClases = false;
     int clasesPorLeer = 0;
     int clasesLeidasActual = 0;
+    bool enCurso = false; // Para rastrear si estamos procesando un curso
 
     while (std::getline(archivo, linea)) {
+        lineCount++;
+        
+        // Skip empty lines
+        if (linea.empty()) {
+            continue;
+        }
+
+        // Check for course delimiter
         if (linea == "%%%") {
-            if (cursoData.id != -1) { // Asegurarse de que hay datos de curso para agregar
-                vectorCursoAnadir.push_back(cursoData);
-                escribirDebugLog("Delimitador \'%%%\' encontrado para curso ID: " + std::to_string(cursoData.id));
-                escribirDebugLog("Curso agregado. Total cursos leídos: " + std::to_string(vectorCursoAnadir.size()));
-                cursosLeidos++;
+            // If we have a valid course, add it to the vector
+            if (enCurso && cursoData.id != -1 && !cursoData.titulo.empty() && cursoData.idEmpresa != -1) {
+                // Verify all classes were read correctly
+                if (clasesLeidasActual == clasesPorLeer) {
+                    vectorCursoAnadir.push_back(cursoData);
+                    escribirDebugLog("Curso ID: " + std::to_string(cursoData.id) + " agregado correctamente");
+                    cursosLeidos++;
+                } else {
+                    escribirDebugLog("Curso ID: " + std::to_string(cursoData.id) + " descartado - clases incompletas (" + 
+                        std::to_string(clasesLeidasActual) + "/" + std::to_string(clasesPorLeer) + ")");
+                }
+            } else if (enCurso) {
+                escribirDebugLog("Curso ID: " + std::to_string(cursoData.id) + " descartado - datos incompletos");
             }
-            // Reiniciar para el próximo curso
-            cursoData = RawCursoData(); 
+            
+            // Reset for next course
+            cursoData = RawCursoData();
             leyendoClases = false;
             clasesPorLeer = 0;
             clasesLeidasActual = 0;
-            if (archivo.peek() == EOF) break; // Si es el último delimitador, no intentar leer más.
-            escribirDebugLog("Leyendo curso #" + std::to_string(cursosLeidos + 1));
-            continue; 
-        }
-
-        if (cursoData.id == -1) { // Inicio de un nuevo curso
-             if (cursosLeidos == 0 && vectorCursoAnadir.empty()) { // Solo para el primer curso del archivo
-                escribirDebugLog("Leyendo curso #" + std::to_string(cursosLeidos + 1));
-            }
-            try {
-                cursoData.id = std::stoi(linea);
-                escribirDebugLog("ID Curso: " + std::to_string(cursoData.id));
-            } catch (const std::invalid_argument& ia) {
-                logError("Leer cursos", path, "Error al convertir ID de curso: \'" + linea + "\'. " + ia.what());
-                cursoData = RawCursoData(); // Resetear
-                continue;
-            }
-            // Leer los siguientes campos secuencialmente
-            if (!std::getline(archivo, linea)) { escribirDebugLog("EOF o error leyendo ID empresa para curso ID: " + std::to_string(cursoData.id)); break; }
-            try {
-                cursoData.idEmpresa = std::stoi(linea);
-                escribirDebugLog("ID Empresa: " + std::to_string(cursoData.idEmpresa));
-            } catch (const std::invalid_argument& ia) {
-                logError("Leer cursos", path, "Error al convertir ID de empresa para curso ID: " + std::to_string(cursoData.id) + ". " + ia.what());
-                cursoData = RawCursoData(); continue;
-            }
-
-            if (!std::getline(archivo, cursoData.nombreEmpresa)) { escribirDebugLog("EOF o error leyendo nombre empresa para curso ID: " + std::to_string(cursoData.id)); break; }
-            escribirDebugLog("Nombre Empresa: " + cursoData.nombreEmpresa);
-
-            if (!std::getline(archivo, cursoData.titulo)) { escribirDebugLog("EOF o error leyendo título para curso ID: " + std::to_string(cursoData.id)); break; }
-            escribirDebugLog("Título Curso: " + cursoData.titulo);
-
-            if (!std::getline(archivo, cursoData.descripcion)) { escribirDebugLog("EOF o error leyendo descripción para curso ID: " + std::to_string(cursoData.id)); break; }
-            escribirDebugLog("Descripción Curso: (longitud " + std::to_string(cursoData.descripcion.length()) + ")");
+            enCurso = false;
             
-            if (!std::getline(archivo, linea)) { escribirDebugLog("EOF o error leyendo categoría para curso ID: " + std::to_string(cursoData.id)); break; }
+            if (archivo.eof()) break;
+            
+            escribirDebugLog("Leyendo curso #" + std::to_string(cursosLeidos + 1));
+            continue;
+        }
+
+        // Start of a new course
+        if (!enCurso) {
             try {
-                cursoData.categoria = static_cast<CategoriaActividad>(std::stoi(linea));
-                 escribirDebugLog("Categoría: " + std::to_string(static_cast<int>(cursoData.categoria)));
-            } catch (const std::invalid_argument& ia) {
-                logError("Leer cursos", path, "Error al convertir categoría para curso ID: " + std::to_string(cursoData.id) + ". " + ia.what());
-                cursoData = RawCursoData(); continue;
+                // Read course ID (first line of course data)
+                cursoData.id = std::stoi(linea);
+                enCurso = true;
+                escribirDebugLog("Leyendo curso ID: " + std::to_string(cursoData.id));
+
+                // Read company ID (next line)
+                if (!std::getline(archivo, linea)) {
+                    escribirDebugLog("Error: EOF inesperado después de ID del curso");
+                    break;
+                }
+                cursoData.idEmpresa = std::stoi(linea);
+
+                // Read company name (next line)
+                if (!std::getline(archivo, cursoData.nombreEmpresa)) {
+                    escribirDebugLog("Error: EOF inesperado después de ID de empresa");
+                    break;
+                }
+
+                // Read course title (next line)
+                if (!std::getline(archivo, cursoData.titulo)) {
+                    escribirDebugLog("Error: EOF inesperado después de nombre de empresa");
+                    break;
+                }
+
+                // Read course description (next line)
+                if (!std::getline(archivo, cursoData.descripcion)) {
+                    escribirDebugLog("Error: EOF inesperado después de título del curso");
+                    break;
+                }
+
+                // Read category (next line)
+                if (!std::getline(archivo, linea)) {
+                    escribirDebugLog("Error: EOF inesperado después de descripción del curso");
+                    break;
+                }
+
+                try {
+                    // Remove any whitespace from the category string
+                    linea.erase(std::remove_if(linea.begin(), linea.end(), ::isspace), linea.end());
+                    cursoData.categoria = RawActividadData::stringToCategoria(linea);
+                    escribirDebugLog("Categoría leída: " + linea);
+                }
+                catch (const std::exception& e) {
+                    escribirDebugLog("Advertencia: Categoría no válida '" + linea + "'. Usando valor por defecto. Error: " + e.what());
+                    cursoData.categoria = CategoriaActividad::OTROS;
+                }
+
+                // Read instructor (next line)
+                if (!std::getline(archivo, cursoData.instructor)) {
+                    escribirDebugLog("Error: EOF inesperado después de categoría");
+                    break;
+                }
+
+                // Read number of classes (next line)
+                if (!std::getline(archivo, linea)) {
+                    escribirDebugLog("Error: EOF inesperado después de instructor");
+                    break;
+                }
+
+                try {
+                    clasesPorLeer = std::stoi(linea);
+                    cursoData.cantidadClases = clasesPorLeer;
+                    escribirDebugLog("Cantidad de clases: " + std::to_string(clasesPorLeer));
+
+                    if (clasesPorLeer > 0) {
+                        leyendoClases = true;
+                        clasesLeidasActual = 0;
+                        cursoData.titulosClases.clear();
+                        cursoData.descripcionesClases.clear();
+                    }
+                    else {
+                        escribirDebugLog("Advertencia: El curso no tiene clases definidas");
+                    }
+                }
+                catch (const std::invalid_argument& e) {
+                    escribirDebugLog("Error: Número de clases no válido: " + linea);
+                    enCurso = false;
+                    continue;
+                }
+                catch (const std::out_of_range& e) {
+                    escribirDebugLog("Error: Número de clases fuera de rango: " + linea);
+                    enCurso = false;
+                    continue;
+                }
             }
-
-            if (!std::getline(archivo, cursoData.instructor)) { escribirDebugLog("EOF o error leyendo instructor para curso ID: " + std::to_string(cursoData.id)); break; }
-            escribirDebugLog("Instructor: " + cursoData.instructor);
-
-            if (!std::getline(archivo, linea)) { escribirDebugLog("EOF o error leyendo cantidad de clases para curso ID: " + std::to_string(cursoData.id)); break; }
-            try {
-                clasesPorLeer = std::stoi(linea);
-                cursoData.cantidadClases = clasesPorLeer;
-                escribirDebugLog("Cantidad de Clases: " + std::to_string(clasesPorLeer));
-                leyendoClases = true;
-                clasesLeidasActual = 0;
-                cursoData.titulosClases.clear();
-                cursoData.descripcionesClases.clear();
-            } catch (const std::invalid_argument& ia) {
-                logError("Leer cursos", path, "Error al convertir cantidad de clases para curso ID: " + std::to_string(cursoData.id) + ". " + ia.what());
-                cursoData = RawCursoData(); // Resetear y saltar al próximo %%%
-                leyendoClases = false; // Asegurarse de no intentar leer clases
+            catch (const std::exception& e) {
+                escribirDebugLog("Error inesperado al leer datos del curso: " + std::string(e.what()));
+                enCurso = false;
                 continue;
             }
-        } else if (leyendoClases) {
-            if (clasesLeidasActual < clasesPorLeer) {
-                cursoData.titulosClases.push_back(linea); // Asumir que esta línea es un título
-                if (std::getline(archivo, linea)) { // Leer la descripción correspondiente
-                    cursoData.descripcionesClases.push_back(linea);
-                } else {
-                    escribirDebugLog("EOF o error leyendo descripción para clase #" + std::to_string(clasesLeidasActual + 1) + " del curso ID: " + std::to_string(cursoData.id));
-                    leyendoClases = false; // Detener lectura de clases si falta una descripción
-                    // Considerar si invalidar el curso actual o solo las clases
-                    break; 
+        } else if (leyendoClases && clasesLeidasActual < clasesPorLeer) // Reading class data if we're in the middle of reading classes 
+            {
+                std::string tituloClase = linea;
+                std::string descripcionClase;
+                
+                // Read class description (next line)
+                if (!std::getline(archivo, descripcionClase)) {
+                    escribirDebugLog("Error: EOF inesperado después del título de la clase #" + 
+                                  std::to_string(clasesLeidasActual + 1) + " del curso ID: " + std::to_string(cursoData.id));
+                    enCurso = false;
+                    continue;
                 }
+                
+                // Add class data to the course
+                cursoData.titulosClases.push_back(tituloClase);
+                cursoData.descripcionesClases.push_back(descripcionClase);
                 clasesLeidasActual++;
-            }
-            if (clasesLeidasActual == clasesPorLeer) {
-                leyendoClases = false; // Terminó de leer todas las clases para este curso
-                escribirDebugLog("Todas las " + std::to_string(clasesPorLeer) + " clases leídas para curso ID: " + std::to_string(cursoData.id));
-            }
+                
+                escribirDebugLog("  Clase #" + std::to_string(clasesLeidasActual) + 
+                              "/" + std::to_string(clasesPorLeer) + 
+                              ": " + tituloClase);
+                
+                // If we've read all expected classes, mark as done
+                if (clasesLeidasActual >= clasesPorLeer) {
+                    leyendoClases = false;
+                    escribirDebugLog("Todas las clases leídas para el curso ID: " + std::to_string(cursoData.id));
+                }
+        } else if (leyendoClases) {
+            // This block should not be reached if we're properly handling class data above
+            escribirDebugLog("Error: Estado inesperado - leyendoClases es true pero no se esperaba aquí");
+            leyendoClases = false;
         }
     }
-    // Manejar el último curso si el archivo no termina con %%% (aunque debería)
-    if (cursoData.id != -1 && (vectorCursoAnadir.empty() || vectorCursoAnadir.back().id != cursoData.id) ) {
-         if (clasesLeidasActual == clasesPorLeer) { // Solo agregar si todas sus clases fueron leídas
-            vectorCursoAnadir.push_back(cursoData);
-            escribirDebugLog("Último curso (ID: " + std::to_string(cursoData.id) + ") agregado. Total cursos leídos: " + std::to_string(vectorCursoAnadir.size()));
-            cursosLeidos++;
+    // Handle the last course if the file doesn't end with %%%
+    if (enCurso && cursoData.id != -1 && !cursoData.titulo.empty() && cursoData.idEmpresa != -1) {
+        // Verify all required classes were read
+        if (clasesLeidasActual == clasesPorLeer) {
+            // Check if the course is already in the list
+            bool yaExiste = false;
+            for (const auto& curso : vectorCursoAnadir) {
+                if (curso.id == cursoData.id) {
+                    yaExiste = true;
+                    break;
+                }
+            }
+            
+            if (!yaExiste) {
+                vectorCursoAnadir.push_back(cursoData);
+                escribirDebugLog("Último curso (ID: " + std::to_string(cursoData.id) + ") agregado correctamente");
+                cursosLeidos++;
+            } else {
+                escribirDebugLog("Advertencia: Curso duplicado ID: " + std::to_string(cursoData.id) + ". Ignorando.");
+            }
         } else {
-            escribirDebugLog("Último curso (ID: " + std::to_string(cursoData.id) + ") no agregado por clases incompletas.");
+            escribirDebugLog("Advertencia: Último curso (ID: " + std::to_string(cursoData.id) + ") no agregado - clases incompletas (" + 
+                std::to_string(clasesLeidasActual) + "/" + std::to_string(clasesPorLeer) + ")");
         }
+    } else if (enCurso) {
+        escribirDebugLog("Advertencia: Último curso (ID: " + std::to_string(cursoData.id) + ") no agregado - datos incompletos");
     }
 
+    // Log final statistics
+    std::string mensajeFinal = "Lectura de cursos completada. ";
+    mensajeFinal += "Cursos leídos: " + std::to_string(cursosLeidos) + ". ";
+    mensajeFinal += "Total en memoria: " + std::to_string(vectorCursoAnadir.size());
+    
     logInfo("Leer cursos", path + " (" + std::to_string(cursosLeidos) + " registros)");
-    escribirDebugLog("Lectura de cursos completada. Total: " + std::to_string(vectorCursoAnadir.size()));
+    escribirDebugLog(mensajeFinal);
+    
+    // Log the first few courses for verification
+    int cursosAMostrar = (std::min)(3, static_cast<int>(vectorCursoAnadir.size()));
+    for (int i = 0; i < cursosAMostrar; i++) {
+        escribirDebugLog("  Curso #" + std::to_string(i+1) + ": ID=" + std::to_string(vectorCursoAnadir[i].id) + 
+                        ", Título='" + vectorCursoAnadir[i].titulo + "'" +
+                        ", Categoría='" + std::to_string(static_cast<int>(vectorCursoAnadir[i].categoria)) + "'" +
+                        ", Clases='" + std::to_string(vectorCursoAnadir[i].cantidadClases) + "'");
+    }
+    
+    if (vectorCursoAnadir.empty()) {
+        escribirDebugLog("ADVERTENCIA: No se encontraron cursos válidos en el archivo");
+    }
 }
 
 
