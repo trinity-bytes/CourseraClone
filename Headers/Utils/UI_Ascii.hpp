@@ -23,10 +23,10 @@ inline void UI_LandingPage()
     std::string ui = R"(
    █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  | C L O N E                          INICIAR SESION   REGISTRARSE   SOBRE NOSOTROS   
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                                        
-     
- 
-                                 CONVIERTETE EN EL PROFESIONAL QUE QUIERES SER                        
-                        -  Explora cursos online impartidos por expertos de la industria  -              
+
+
+
+                                     
           
                                   [ Explorar Cursos ]      [ Ver Especialidades ]      
                                       
