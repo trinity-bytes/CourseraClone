@@ -12,7 +12,8 @@ private:
 
 public:
 	// Dominio Nucleo
-    struct Core {
+    struct Core 
+    {
         static const std::string BASE;
 		static const std::string DB_USUARIOS;
         static const std::string DB_INSCRIPCIONES;
@@ -21,19 +22,29 @@ public:
     };
 
 	// Dominio de Contenido 
-    struct Content {
+    struct Content 
+    {
         static const std::string BASE;
         static const std::string DB_CURSOS;
         static const std::string DB_ESPECIALIZACIONES;
     };
 
     // Dominio Financiero
-    struct Financial {
+    struct Financial 
+    {
         static const std::string BASE;
         static const std::string DB_PAGOS;
         static const std::string DB_COMPROBANTES;
         static const std::string INDICES_PAGOS;
         static const std::string INDICES_COMPROBANTES;
+    };
+
+    // Dominio Logs
+    struct Logs
+    {
+        static const std::string BASE;
+        static const std::string ERROR_LOGS;
+        static const std::string INFO_LOGS;
     };
 };
 
@@ -56,5 +67,9 @@ const std::string DataPaths::Financial::DB_PAGOS = Financial::BASE + "DB_Registr
 const std::string DataPaths::Financial::DB_COMPROBANTES = Financial::BASE + "DB_ComprobantesDePago.csv";
 const std::string DataPaths::Financial::INDICES_PAGOS = BASE_PATH + "Indices/IDX_RegistroDePagos.dat";
 const std::string DataPaths::Financial::INDICES_COMPROBANTES = BASE_PATH + "Indices/IDX_ComprobantesDePago.csv";
+
+const std::string DataPaths::Logs::BASE = BASE_PATH + "Logs/";
+const std::string DataPaths::Logs::ERROR_LOGS = BASE + "Error_Logs.txt";
+const std::string DataPaths::Logs::INFO_LOGS = BASE + "Info_Logs.txt";
 
 #endif // COURSERACLONE_UTILS_DATAPATHS_HPP

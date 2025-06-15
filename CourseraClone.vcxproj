@@ -166,6 +166,7 @@
     <ClInclude Include="Headers\Entities\Inscripcion.hpp" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.hpp" />
+    <ClInclude Include="Headers\Types\FilesTypes.hpp" />
     <ClInclude Include="Headers\Types\InscripcionTypes.hpp" />
     <ClInclude Include="Headers\Types\ScreenTypes.hpp" />
     <ClInclude Include="Headers\Types\UsuarioTypes.hpp" />
