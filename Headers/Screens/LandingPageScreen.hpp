@@ -267,8 +267,10 @@ inline void LandingPageScreen::cargarDatos(int maxEspecialidad, int maxCursos)
 	_especialidades.clear();
 	_cursos.clear();
 
-
-
+   
+	ContentManager* contentManager = &ContentManager::getInstance();
+    int cantidad = contentManager->getCursos().getTamano();
+	
     
 	// Simulación de carga de datos
 	for (int i = 0; i < maxEspecialidad; ++i) {

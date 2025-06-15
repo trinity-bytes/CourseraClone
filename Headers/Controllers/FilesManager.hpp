@@ -167,11 +167,11 @@ public:
     /*
     * 
     */
-    inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAnadir);
+    void leerDatoCurso(std::vector<RawCursoData>& vectorCursoAnadir);
 
     /*
     */
-    inline void  FilesManager::leerDatoEspecializacion(std::vector<RawEspecializacionData>& vectorEspecializacionAnadir);
+    void leerDatoEspecializacion(std::vector<RawEspecializacionData>& vectorEspecializacionAnadir);
 
     /**
      * @brief Lee todos los datos de actividades (cursos y especializaciones)
@@ -392,7 +392,7 @@ inline std::string FilesManager::getIndexFilePath(TipoUsuario tipo) {
     }
 }
 
-std::string getDataFilePathActividades(TipoActividad tipo) {
+inline std::string FilesManager::getDataFilePathActividades(TipoActividad tipo) {
     switch (tipo) {
     case TipoActividad::CURSO:
         return DataPaths::Content::DB_CURSOS;
@@ -549,11 +549,29 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
 	CategoriaActividad categoria;
 
     while (is >> id) {
+        is.ignore();
         // Leer Datos
-        std::cin >> idEmpresa >> nombreEmpresa >> titulo >> descripcion;
-		std::cin >> categoriaNumero; // Leer como entero y convertir a enum
-        std::cin >> instructor;
-        std::cin >> cantidadClases;
+        is >> idEmpresa;
+		is.ignore(); // Ignorar el salto de línea anterior
+        getline(is, nombreEmpresa);
+        getline(is, titulo);
+        getline(is, descripcion);
+
+		is >> categoriaNumero; // Leer como entero y convertir a enum
+        is.ignore();
+        getline(is, instructor);
+        is >> cantidadClases;
+        is.ignore();
+
+		std::vector<std::string> arrClasesTi;
+		std::vector<std::string> arrClasesDesc;
+		for (int i = 0; i < cantidadClases; i++) {
+			std::string tituloClase, descripcionClase;
+			getline(is, tituloClase);
+            getline(is, descripcionClase);
+			arrClasesTi.push_back(tituloClase);
+			arrClasesDesc.push_back(descripcionClase);
+		}
 
         // Asignar valores
 		RawCursoData cursoData;
@@ -564,6 +582,9 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
 		cursoData.descripcion = descripcion;
 		cursoData.instructor = instructor;
 		cursoData.categoria = static_cast<CategoriaActividad>(categoriaNumero);
+        for (int i = 0; i < cantidadClases; i++) {
+			cursoData.clases.push_back({ arrClasesTi[i], arrClasesDesc[i] });
+        }
 
         // Anadimos al vector
 		vectorCursoAnadir.push_back(cursoData);
@@ -598,7 +619,7 @@ inline void  FilesManager::leerDatoEspecializacion(std::vector<RawEspecializacio
 		especializacionData.titulo = titulo;
 		especializacionData.descripcion = descripcion;
 		especializacionData.categoria = static_cast<CategoriaActividad>(categoriaNumero);
-		especializacionData.duracionEstimada = duracionEstimada;
+		especializacionData.duracionEstimada = 0;
 
 		// Anadimos al vector
 		vectorEspecializacionAnadir.push_back(especializacionData);

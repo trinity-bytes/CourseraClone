@@ -70,7 +70,7 @@ private:
     // Utilidades privadas
     void actualizarCaches();
     void limpiarCaches();
-    void logOperation(const std::string& operation, const std::string& details = "");
+    void logOperation(const std::string& operation, const std::string& details);
     void logError(const std::string& operation, const std::string& error);
 
 public:
@@ -328,7 +328,7 @@ inline std::once_flag ContentManager::_onceFlag;
 
 // ========== IMPLEMENTACIONES INLINE ==========
 
-inline bool inicializarSistema() {
+inline bool ContentManager::inicializarSistema() {
 	FilesManager* fileManager = &FilesManager::getInstance();
 
 	if (!fileManager->inicializarSistemaArchivos()) {
@@ -338,9 +338,7 @@ inline bool inicializarSistema() {
 	RawActividadesData dataActividades = fileManager->leerDatosActividades();
 	std::vector<InscripcionBinaria> dataInscripciones = fileManager->leerDatosInscripciones();
 
-	int cantidad = dataActividades.cursos.size() + dataActividades.especializaciones.size();
-
-    throw std::runtime_error(std::to_string(cantidad));
+    return true;
     /*
 	ContentOperationResult result = cargarDesdeDatos(dataActividades, dataInscripciones);
 	if (result != ContentOperationResult::SUCCESS) {
@@ -365,7 +363,32 @@ inline ContentManager& ContentManager::getInstance() {
     std::call_once(_onceFlag, []() {
         _instance.reset(new ContentManager());
         });
+
     return *_instance;
+}
+
+inline void ContentManager::actualizarCaches() {
+    /*
+    _cacheIdCursos.clear();
+    _cacheIdEspecializaciones.clear();
+    for (const auto& curso : _cursos) {
+        _cacheIdCursos[curso->getId()] = curso.get();
+    }
+    for (const auto& especializacion : _especializaciones) {
+        _cacheIdEspecializaciones[especializacion->getId()] = especializacion.get();
+    }
+    */
+}
+
+inline void ContentManager::limpiarCaches() {
+}
+
+inline void ContentManager::logOperation(const std::string& operation, const std::string& details = "") {
+
+}
+
+inline void ContentManager::logError(const std::string& operation, const std::string& error) {
+
 }
 
 #endif // COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP
