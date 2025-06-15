@@ -69,7 +69,7 @@ const std::string DataPaths::Financial::INDICES_PAGOS = BASE_PATH + "Indices/IDX
 const std::string DataPaths::Financial::INDICES_COMPROBANTES = BASE_PATH + "Indices/IDX_ComprobantesDePago.csv";
 
 const std::string DataPaths::Logs::BASE = BASE_PATH + "Logs/";
-const std::string DataPaths::Logs::ERROR_LOGS = BASE + "Error_Logs.txt";
-const std::string DataPaths::Logs::INFO_LOGS = BASE + "Info_Logs.txt";
+const std::string DataPaths::Logs::ERROR_LOGS = Logs::BASE + "Error_Logs.txt";
+const std::string DataPaths::Logs::INFO_LOGS = Logs::BASE + "Info_Logs.txt";
 
 #endif // COURSERACLONE_UTILS_DATAPATHS_HPP
