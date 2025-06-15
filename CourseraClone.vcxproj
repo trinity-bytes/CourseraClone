@@ -140,6 +140,8 @@
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
+    <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
     <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
     <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />
     <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
