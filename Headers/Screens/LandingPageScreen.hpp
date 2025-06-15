@@ -265,7 +265,7 @@ public:
 
 inline LandingPageScreen::LandingPageScreen() : PantallaBase(),
     _seccionActual(0), _elementoActual(0),
-    _seccionAnterior(-1), _elementoAnterior(-1),
+    _seccionAnterior(0), _elementoAnterior(0),
     _primeraRenderizacion(true), _presionEnter(false)
 {  
     cargarDatos(MAX_ELEMENTOS_ESPECIALIDAD, MAX_ELEMENTOS_CURSO);
@@ -451,7 +451,7 @@ inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitu
         setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     }
     else {
-       setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+       setConsoleColor(ColorIndex::TEXTO_IMPORTANTE, ColorIndex::FONDO_PRINCIPAL);
     }
 
     if (_primeraRenderizacion)
