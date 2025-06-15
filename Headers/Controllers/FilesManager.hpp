@@ -504,6 +504,7 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
         }
         
         logInfo("Guardar inscripción", DataPaths::Core::DB_INSCRIPCIONES);
+        os.close();
         return FileOperationResult::SUCCESS;
         
     } catch (const std::exception& e) {
