@@ -245,11 +245,14 @@ public:
     /// @brief Obtiene el tamaño de un archivo
     /// @param rutaArchivo Ruta del archivo
     /// @return Tamaño en bytes
-    size_t obtenerTamanoArchivo(const std::string& rutaArchivo);
-
+    size_t obtenerTamanoArchivo(const std::string& rutaArchivo);    
     /// @brief Reinicia el sistema de archivos (para testing)
     /// @return true si el reinicio fue exitoso
     bool reiniciarSistema();
+
+    /// @brief Escribe un mensaje de debug al archivo de logs
+    /// @param mensaje Mensaje a escribir
+    void escribirDebugLog(const std::string& mensaje);
 };
 
 // ========== INICIALIZACIÓN DE MIEMBROS ESTÁTICOS ==========
@@ -314,11 +317,25 @@ inline void FilesManager::logInfo(const std::string& operation, const std::strin
         infoLogFile << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] "
                     << "[INFO] [" << operation << "] " 
                     << infoMessage << std::endl;
-        infoLogFile.close();
-    }
+        infoLogFile.close();    }
     
     // También mostrar en consola para feedback inmediato
     std::cout << "[FilesManager INFO] " << infoMessage << std::endl;
+}
+
+inline void FilesManager::escribirDebugLog(const std::string& mensaje) {
+    // Escribir en el archivo de logs de información (se puede usar para debug)
+    std::ofstream debugLogFile(DataPaths::Logs::INFO_LOGS, std::ios::app);
+    if (debugLogFile.is_open()) {
+        // Obtener timestamp actual
+        auto now = std::chrono::system_clock::now();
+        auto time_t = std::chrono::system_clock::to_time_t(now);
+        auto tm = *std::localtime(&time_t);
+        
+        debugLogFile << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] "
+                     << "[DEBUG] " << mensaje << std::endl;
+        debugLogFile.close();
+    }
 }
 
 inline bool FilesManager::createDirectoryIfNotExists(const std::string& path) {
@@ -493,11 +510,11 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
         }
         
         os.seekp(0, std::ios::end);
-        offsetRegistro = static_cast<int>(os.tellp() / sizeof(InscripcionBinaria));
+        offsetRegistro = static_cast<int>(os.tellp()); // Guardar la posición actual
         os.write(reinterpret_cast<const char*>(&bin), sizeof(bin));
         
         if (!os.good()) {
-            logError("Guardar inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al escribir");
+            logError("Guardar inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al escribir datos");
             return FileOperationResult::UNKNOWN_ERROR;
         }
         
@@ -512,34 +529,47 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
 
 inline FileOperationResult FilesManager::actualizarPagoInscripcion(int posicion, bool estado) {
     if (!_sistemaInicializado) {
-        logError("Actualizar pago", "Sistema", "Sistema no inicializado");
+        logError("Actualizar pago inscripción", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
     }
-    
-    try {
-        std::fstream os(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary | std::ios::in | std::ios::out);
-        
-        if (!os.is_open()) {
-            logError("Actualizar pago", DataPaths::Core::DB_INSCRIPCIONES, "No se pudo abrir el archivo");
-            return FileOperationResult::FILE_NOT_FOUND;
-        }
-        
-        os.seekp(posicion * sizeof(InscripcionBinaria) + offsetof(InscripcionBinaria, pagado), std::ios::beg);
-        os.write(reinterpret_cast<const char*>(&estado), sizeof(estado));
-        
-        if (!os.good()) {
-            logError("Actualizar pago", DataPaths::Core::DB_INSCRIPCIONES, "Error al actualizar");
-            return FileOperationResult::UNKNOWN_ERROR;
-        }
-        
-        logInfo("Actualizar pago", DataPaths::Core::DB_INSCRIPCIONES);
-        return FileOperationResult::SUCCESS;
-        
-    } catch (const std::exception& e) {
-        logError("Actualizar pago", "Sistema", e.what());
+
+    std::fstream archivo(DataPaths::Core::DB_INSCRIPCIONES, std::ios::in | std::ios::out | std::ios::binary);
+    if (!archivo.is_open()) {
+        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "No se pudo abrir el archivo");
+        return FileOperationResult::FILE_NOT_FOUND;
+    }
+
+    archivo.seekg(posicion); // Ir a la posición del registro
+    if (archivo.fail()) {
+        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al buscar la posición del registro");
         return FileOperationResult::UNKNOWN_ERROR;
     }
+
+    InscripcionBinaria inscripcion;
+    archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria));
+    if (archivo.fail() && !archivo.eof()) { // EOF es aceptable si el registro está al final
+        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al leer el registro");
+        return FileOperationResult::UNKNOWN_ERROR;
+    }
+
+    inscripcion.pagado = estado; // Actualizar el campo 'pagado'
+
+    archivo.seekp(posicion); // Volver a la posición para escribir
+    if (archivo.fail()) {
+        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al buscar la posición para escribir");
+        return FileOperationResult::UNKNOWN_ERROR;
+    }
+
+    archivo.write(reinterpret_cast<const char*>(&inscripcion), sizeof(InscripcionBinaria));
+    if (archivo.fail()) {
+        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al escribir el registro actualizado");
+        return FileOperationResult::UNKNOWN_ERROR;
+    }
+
+    logInfo("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES + " (Registro en pos: " + std::to_string(posicion) + " actualizado)");
+    return FileOperationResult::SUCCESS;
 }
+
 
 // ========== DOMINIO CONTENT ==========
 
@@ -549,142 +579,308 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
         return;
     }
 
-    auto path = getDataFilePathActividades(TipoActividad::CURSO);
-    std::ifstream archivo(path, std::ios::in);
+    const std::string path = DataPaths::Content::DB_CURSOS;
+    std::ifstream archivo(path);
 
     if (!archivo.is_open()) {
         logError("Leer cursos", path, "No se pudo abrir el archivo");
         return;
     }
 
-    try {
-        std::string linea;
-        
-        while (std::getline(archivo, linea) && !linea.empty()) {
-            RawCursoData cursoData;
-            
-            // Leer ID del curso
-            cursoData.id = std::stoi(linea);
-            
-            // Leer ID de la empresa
-            if (!std::getline(archivo, linea)) break;
-            cursoData.idEmpresa = std::stoi(linea);
-            
-            // Leer nombre de la empresa
-            if (!std::getline(archivo, linea)) break;
-            cursoData.nombreEmpresa = linea;
-            
-            // Leer título del curso
-            if (!std::getline(archivo, linea)) break;
-            cursoData.titulo = linea;
-            
-            // Leer descripción del curso
-            if (!std::getline(archivo, linea)) break;
-            cursoData.descripcion = linea;
-            
-            // Leer categoría (como número)
-            if (!std::getline(archivo, linea)) break;
-            int categoriaNumero = std::stoi(linea);
-            cursoData.categoria = static_cast<CategoriaActividad>(categoriaNumero);
-            
-            // Leer instructor
-            if (!std::getline(archivo, linea)) break;
-            cursoData.instructor = linea;
-            
-            // Leer cantidad de clases
-            if (!std::getline(archivo, linea)) break;
-            cursoData.cantidadClases = std::stoi(linea);
-            
-            // Saltar las líneas de descripción de clases
-            for (int i = 0; i < cursoData.cantidadClases * 2; ++i) {
-                if (!std::getline(archivo, linea)) break;
+    logInfo("Iniciando lectura", "Cursos");
+    escribirDebugLog("Iniciando lectura de cursos desde: " + path + " con delimitador \'%%%\'");
+
+    std::string linea;
+    RawCursoData cursoData;
+    int cursosLeidos = 0;
+    bool leyendoClases = false;
+    int clasesPorLeer = 0;
+    int clasesLeidasActual = 0;
+
+    while (std::getline(archivo, linea)) {
+        if (linea == "%%%") {
+            if (cursoData.id != -1) { // Asegurarse de que hay datos de curso para agregar
+                vectorCursoAnadir.push_back(cursoData);
+                escribirDebugLog("Delimitador \'%%%\' encontrado para curso ID: " + std::to_string(cursoData.id));
+                escribirDebugLog("Curso agregado. Total cursos leídos: " + std::to_string(vectorCursoAnadir.size()));
+                cursosLeidos++;
             }
-            
-            // Agregar el curso al vector
-            vectorCursoAnadir.push_back(cursoData);
+            // Reiniciar para el próximo curso
+            cursoData = RawCursoData(); 
+            leyendoClases = false;
+            clasesPorLeer = 0;
+            clasesLeidasActual = 0;
+            if (archivo.peek() == EOF) break; // Si es el último delimitador, no intentar leer más.
+            escribirDebugLog("Leyendo curso #" + std::to_string(cursosLeidos + 1));
+            continue; 
         }
-        
-        archivo.close();
-        logInfo("Leer cursos", path + " (" + std::to_string(vectorCursoAnadir.size()) + " registros)");
-        
-    } catch (const std::exception& e) {
-        logError("Leer cursos", path, "Error al procesar archivo: " + std::string(e.what()));
-        archivo.close();
+
+        if (cursoData.id == -1) { // Inicio de un nuevo curso
+             if (cursosLeidos == 0 && vectorCursoAnadir.empty()) { // Solo para el primer curso del archivo
+                escribirDebugLog("Leyendo curso #" + std::to_string(cursosLeidos + 1));
+            }
+            try {
+                cursoData.id = std::stoi(linea);
+                escribirDebugLog("ID Curso: " + std::to_string(cursoData.id));
+            } catch (const std::invalid_argument& ia) {
+                logError("Leer cursos", path, "Error al convertir ID de curso: \'" + linea + "\'. " + ia.what());
+                cursoData = RawCursoData(); // Resetear
+                continue;
+            }
+            // Leer los siguientes campos secuencialmente
+            if (!std::getline(archivo, linea)) { escribirDebugLog("EOF o error leyendo ID empresa para curso ID: " + std::to_string(cursoData.id)); break; }
+            try {
+                cursoData.idEmpresa = std::stoi(linea);
+                escribirDebugLog("ID Empresa: " + std::to_string(cursoData.idEmpresa));
+            } catch (const std::invalid_argument& ia) {
+                logError("Leer cursos", path, "Error al convertir ID de empresa para curso ID: " + std::to_string(cursoData.id) + ". " + ia.what());
+                cursoData = RawCursoData(); continue;
+            }
+
+            if (!std::getline(archivo, cursoData.nombreEmpresa)) { escribirDebugLog("EOF o error leyendo nombre empresa para curso ID: " + std::to_string(cursoData.id)); break; }
+            escribirDebugLog("Nombre Empresa: " + cursoData.nombreEmpresa);
+
+            if (!std::getline(archivo, cursoData.titulo)) { escribirDebugLog("EOF o error leyendo título para curso ID: " + std::to_string(cursoData.id)); break; }
+            escribirDebugLog("Título Curso: " + cursoData.titulo);
+
+            if (!std::getline(archivo, cursoData.descripcion)) { escribirDebugLog("EOF o error leyendo descripción para curso ID: " + std::to_string(cursoData.id)); break; }
+            escribirDebugLog("Descripción Curso: (longitud " + std::to_string(cursoData.descripcion.length()) + ")");
+            
+            if (!std::getline(archivo, linea)) { escribirDebugLog("EOF o error leyendo categoría para curso ID: " + std::to_string(cursoData.id)); break; }
+            try {
+                cursoData.categoria = static_cast<CategoriaActividad>(std::stoi(linea));
+                 escribirDebugLog("Categoría: " + std::to_string(static_cast<int>(cursoData.categoria)));
+            } catch (const std::invalid_argument& ia) {
+                logError("Leer cursos", path, "Error al convertir categoría para curso ID: " + std::to_string(cursoData.id) + ". " + ia.what());
+                cursoData = RawCursoData(); continue;
+            }
+
+            if (!std::getline(archivo, cursoData.instructor)) { escribirDebugLog("EOF o error leyendo instructor para curso ID: " + std::to_string(cursoData.id)); break; }
+            escribirDebugLog("Instructor: " + cursoData.instructor);
+
+            if (!std::getline(archivo, linea)) { escribirDebugLog("EOF o error leyendo cantidad de clases para curso ID: " + std::to_string(cursoData.id)); break; }
+            try {
+                clasesPorLeer = std::stoi(linea);
+                cursoData.cantidadClases = clasesPorLeer;
+                escribirDebugLog("Cantidad de Clases: " + std::to_string(clasesPorLeer));
+                leyendoClases = true;
+                clasesLeidasActual = 0;
+                cursoData.titulosClases.clear();
+                cursoData.descripcionesClases.clear();
+            } catch (const std::invalid_argument& ia) {
+                logError("Leer cursos", path, "Error al convertir cantidad de clases para curso ID: " + std::to_string(cursoData.id) + ". " + ia.what());
+                cursoData = RawCursoData(); // Resetear y saltar al próximo %%%
+                leyendoClases = false; // Asegurarse de no intentar leer clases
+                continue;
+            }
+        } else if (leyendoClases) {
+            if (clasesLeidasActual < clasesPorLeer) {
+                cursoData.titulosClases.push_back(linea); // Asumir que esta línea es un título
+                if (std::getline(archivo, linea)) { // Leer la descripción correspondiente
+                    cursoData.descripcionesClases.push_back(linea);
+                } else {
+                    escribirDebugLog("EOF o error leyendo descripción para clase #" + std::to_string(clasesLeidasActual + 1) + " del curso ID: " + std::to_string(cursoData.id));
+                    leyendoClases = false; // Detener lectura de clases si falta una descripción
+                    // Considerar si invalidar el curso actual o solo las clases
+                    break; 
+                }
+                clasesLeidasActual++;
+            }
+            if (clasesLeidasActual == clasesPorLeer) {
+                leyendoClases = false; // Terminó de leer todas las clases para este curso
+                escribirDebugLog("Todas las " + std::to_string(clasesPorLeer) + " clases leídas para curso ID: " + std::to_string(cursoData.id));
+            }
+        }
     }
+    // Manejar el último curso si el archivo no termina con %%% (aunque debería)
+    if (cursoData.id != -1 && (vectorCursoAnadir.empty() || vectorCursoAnadir.back().id != cursoData.id) ) {
+         if (clasesLeidasActual == clasesPorLeer) { // Solo agregar si todas sus clases fueron leídas
+            vectorCursoAnadir.push_back(cursoData);
+            escribirDebugLog("Último curso (ID: " + std::to_string(cursoData.id) + ") agregado. Total cursos leídos: " + std::to_string(vectorCursoAnadir.size()));
+            cursosLeidos++;
+        } else {
+            escribirDebugLog("Último curso (ID: " + std::to_string(cursoData.id) + ") no agregado por clases incompletas.");
+        }
+    }
+
+    logInfo("Leer cursos", path + " (" + std::to_string(cursosLeidos) + " registros)");
+    escribirDebugLog("Lectura de cursos completada. Total: " + std::to_string(vectorCursoAnadir.size()));
 }
+
 
 inline void FilesManager::leerDatoEspecializacion(std::vector<RawEspecializacionData>& vectorEspecializacionAnadir) {
-    if (!_sistemaInicializado) {
-        logError("Leer especializaciones", "Sistema", "Sistema no inicializado");
+    std::string filePath = DataPaths::Content::DB_ESPECIALIZACIONES;
+    std::ifstream file(filePath);
+
+    if (!file.is_open()) {
+        logError("Leer especializaciones", filePath, "No se pudo abrir el archivo.");
         return;
     }
 
-    auto path = getDataFilePathActividades(TipoActividad::ESPECIALIZACION);
-    std::ifstream archivo(path, std::ios::in);
+    escribirDebugLog("Iniciando lectura de especializaciones desde: " + filePath + " con delimitador '%%%'");
 
-    if (!archivo.is_open()) {
-        logError("Leer especializaciones", path, "No se pudo abrir el archivo");
-        return;
-    }
+    std::string linea;
+    std::string delimitador = "%%%";
+    int especializacionCount = 0;
 
-    try {
-        std::string linea;
-        
-        while (std::getline(archivo, linea) && !linea.empty()) {
-            RawEspecializacionData especializacionData;
-            
-            // Leer ID de la especialización
-            especializacionData.id = std::stoi(linea);
-            
-            // Leer ID de la empresa
-            if (!std::getline(archivo, linea)) break;
-            especializacionData.idEmpresa = std::stoi(linea);
-            
-            // Leer nombre de la empresa
-            if (!std::getline(archivo, linea)) break;
-            especializacionData.nombreEmpresa = linea;
-            
-            // Leer título de la especialización
-            if (!std::getline(archivo, linea)) break;
-            especializacionData.titulo = linea;
-            
-            // Leer descripción de la especialización
-            if (!std::getline(archivo, linea)) break;
-            especializacionData.descripcion = linea;
-            
-            // Leer categoría (como número)
-            if (!std::getline(archivo, linea)) break;
-            int categoriaNumero = std::stoi(linea);
-            especializacionData.categoria = static_cast<CategoriaActividad>(categoriaNumero);
-            
-            // Leer cantidad de cursos
-            if (!std::getline(archivo, linea)) break;
-            int cantidadCursos = std::stoi(linea);
-            
-            // Leer IDs de los cursos
-            especializacionData.idsCursos.clear();
-            for (int i = 0; i < cantidadCursos; ++i) {
-                if (!std::getline(archivo, linea)) break;
-                int idCurso = std::stoi(linea);
-                especializacionData.idsCursos.push_back(idCurso);
-            }
-            
-            // Leer duración estimada
-            if (!std::getline(archivo, linea)) break;
-            especializacionData.duracionEstimada = std::stoi(linea);
-            
-            // Agregar la especialización al vector
-            vectorEspecializacionAnadir.push_back(especializacionData);
+    while (true) {
+        RawEspecializacionData especializacion; 
+        especializacion.id = -1; // Initialize fields to default/invalid state
+        especializacion.idEmpresa = -1;
+        especializacion.cantidadCursos = 0; // Explicitly initialize to 0
+        especializacion.duracionEstimada = 0;
+        // std::string and std::vector are default-initialized correctly (empty)
+
+        if (!std::getline(file, linea)) break; 
+        if (linea.empty() && file.eof()) break; 
+        try {
+            especializacion.id = std::stoi(linea);
+        } catch (const std::exception& e) {
+            logError("Leer especializaciones", filePath, "Error al convertir idEspecializacion: '" + linea + "'. Error: " + e.what());
+            while(std::getline(file, linea) && linea != delimitador) {}
+            if (!file) break;
+            continue;
+        }
+        escribirDebugLog("Record #" + std::to_string(especializacionCount + 1) + ": Parsed idEspecializacion: " + std::to_string(especializacion.id));
+
+        if (!std::getline(file, linea)) { logError("Leer especializaciones", filePath, "EOF inesperado después de idEspecializacion para ID: " + std::to_string(especializacion.id)); break; }
+        try {
+            especializacion.idEmpresa = std::stoi(linea);
+        } catch (const std::exception& e) {
+            logError("Leer especializaciones", filePath, "Error al convertir idEmpresa: '" + linea + "' para Esp ID: " + std::to_string(especializacion.id) + ". Error: " + e.what());
+            while(std::getline(file, linea) && linea != delimitador) {}
+            if (!file) break;
+            continue;
+        }
+
+        if (!std::getline(file, linea)) { logError("Leer especializaciones", filePath, "EOF inesperado antes de nombreEmpresa para Esp ID: " + std::to_string(especializacion.id)); break; }
+        especializacion.nombreEmpresa = linea;
+
+        std::string categoriaStr;
+        if (!std::getline(file, linea)) { logError("Leer especializaciones", filePath, "EOF inesperado antes de categoriaStr para Esp ID: " + std::to_string(especializacion.id)); break; }
+        categoriaStr = linea;
+        try {
+            especializacion.categoria = RawActividadData::stringToCategoria(categoriaStr);
+        } catch (const std::runtime_error& e) {
+            logError("Leer especializaciones", filePath, "Error al convertir categoria: '" + categoriaStr + "' para Esp ID: " + std::to_string(especializacion.id) + ". Error: " + e.what());
+            especializacion.categoria = CategoriaActividad::DEFAULT; // Default o manejo de error
         }
         
-        archivo.close();
-        logInfo("Leer especializaciones", path + " (" + std::to_string(vectorEspecializacionAnadir.size()) + " registros)");
+        if (!std::getline(file, linea)) { logError("Leer especializaciones", filePath, "EOF inesperado antes de titulo para Esp ID: " + std::to_string(especializacion.id)); break; }
+        especializacion.titulo = linea;
+        escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - Titulo leido: '" + especializacion.titulo + "'");
+
+        if (!std::getline(file, linea)) { logError("Leer especializaciones", filePath, "EOF inesperado antes de descripcion para Esp ID: " + std::to_string(especializacion.id)); break; }
+        especializacion.descripcion = linea;
+        escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - Descripcion leida: '" + especializacion.descripcion + "'");
+
+        if (!std::getline(file, linea)) { 
+            logError("Leer especializaciones", filePath, "EOF inesperado antes de numCursos para Esp ID: " + std::to_string(especializacion.id));
+            break; 
+        }
+        escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - Linea para numCursos: '" + linea + "'");
+        try {
+            especializacion.cantidadCursos = std::stoi(linea);
+        } catch (const std::invalid_argument& ia) {
+            logError("Leer especializaciones", filePath, "Error (invalid_argument) al convertir numCursos a entero para Esp ID: " + std::to_string(especializacion.id) + ". Línea: '" + linea + "'. Error: " + ia.what());
+            while(std::getline(file, linea) && linea != delimitador) {}
+            if (!file) break;
+            continue;
+        } catch (const std::out_of_range& oor) {
+            logError("Leer especializaciones", filePath, "Error (out_of_range) al convertir numCursos para Esp ID: " + std::to_string(especializacion.id) + ". Línea: '" + linea + "'. Error: " + oor.what());
+            while(std::getline(file, linea) && linea != delimitador) {}
+            if (!file) break;
+            continue;
+        }
+        escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - numCursos parseado: " + std::to_string(especializacion.cantidadCursos));
+
+        std::string idsCursosLinea;
+        if (!std::getline(file, idsCursosLinea)) { 
+            logError("Leer especializaciones", filePath, "EOF inesperado antes de idsCursos para Esp ID: " + std::to_string(especializacion.id));
+            break; 
+        }
+        escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - Linea para idsCursos: '" + idsCursosLinea + "'");
         
-    } catch (const std::exception& e) {
-        logError("Leer especializaciones", path, "Error al procesar archivo: " + std::string(e.what()));
-        archivo.close();
+        std::stringstream ss(idsCursosLinea);
+        std::string idCursoStr;
+        int idCursoVal; // Renamed to avoid conflict with a potential global
+        especializacion.idsCursos.clear(); 
+        while (std::getline(ss, idCursoStr, ',')) {
+            escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - Procesando token idCurso: '" + idCursoStr + "'");
+            try {
+                idCursoVal = std::stoi(idCursoStr);
+                especializacion.idsCursos.push_back(idCursoVal);
+            } catch (const std::invalid_argument& ia) {
+                logError("Leer especializaciones", filePath, "Error (invalid_argument) al convertir ID de curso a entero: '" + idCursoStr + "' para Esp ID: " + std::to_string(especializacion.id) + ". Error: " + ia.what());
+            } catch (const std::out_of_range& oor) {
+                logError("Leer especializaciones", filePath, "Error (out_of_range) al convertir ID de curso: '" + idCursoStr + "' para Esp ID: " + std::to_string(especializacion.id) + ". Error: " + oor.what());
+            }
+        }
+        escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - idsCursos parseados count: " + std::to_string(especializacion.idsCursos.size()));
+
+        escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - ANTES DE CHECK: numCursos = " + std::to_string(especializacion.cantidadCursos) + ", idsCursos.size() = " + std::to_string(especializacion.idsCursos.size()));
+        if (especializacion.idsCursos.size() != static_cast<size_t>(especializacion.cantidadCursos)) {
+            logError("Leer especializaciones", filePath, 
+                     "Inconsistencia en IDs de cursos para especialización ID: " + std::to_string(especializacion.id) +
+                     ". Esperados: " + std::to_string(especializacion.cantidadCursos) +
+                     ", Encontrados: " + std::to_string(especializacion.idsCursos.size()) +
+                     ". Linea IDs: '" + idsCursosLinea + "'");
+            while(std::getline(file, linea) && linea != delimitador) {} 
+            if (!file && linea != delimitador) break; // If EOF and no delimiter found
+            if (linea != delimitador && std::getline(file, linea) && linea != delimitador) { // check next line if current wasn't delimiter
+                 // If still not delimiter after consuming one more line, or EOF
+                 if (!file) break;
+            }
+            if (!file && linea != delimitador) break; // Check again if EOF reached before finding delimiter
+            if (linea != delimitador) { // If after all attempts, delimiter is not found (and not EOF)
+                 logError("Leer especializaciones", filePath, "Consumido hasta non-delimiter '" + linea + "' para Esp ID " + std::to_string(especializacion.id) + ", pero no '%%%' o EOF.");
+                 // break; // Decide if this is fatal for the whole file reading
+            }
+            continue; 
+        }
+
+        if (!std::getline(file, linea)) { 
+            logError("Leer especializaciones", filePath, "EOF inesperado antes de duracionEstimada para Esp ID: " + std::to_string(especializacion.id));
+            break; 
+        }
+        try {
+            especializacion.duracionEstimada = std::stoi(linea);
+        } catch (const std::exception& e) {
+            logError("Leer especializaciones", filePath, "Error al convertir duracionEstimada: '" + linea + "' para Esp ID: " + std::to_string(especializacion.id) + ". Error: " + e.what());
+            while(std::getline(file, linea) && linea != delimitador) {}
+            if (!file) break;
+            continue;
+        }
+
+        if (!std::getline(file, linea) || linea != delimitador) {
+            if (file.eof() && (linea.empty() || linea != delimitador) && especializacionCount == 0 && vectorEspecializacionAnadir.empty() && especializacion.id != -1) {
+                 // Special case: if it's the first record, and we parsed something, but then EOF instead of '%%%'
+
+                 // This might be a valid single record file without a trailing delimiter.
+                 // However, our format expects '%%%'
+
+                 logError("Leer especializaciones", filePath, "Archivo parece tener un solo registro sin delimitador '%%%' final, o formato incorrecto. Ultima linea: '" + linea + "' para Esp ID: " + std::to_string(especializacion.id));
+            } else if (linea != delimitador) {
+                logError("Leer especializaciones", filePath, "Delimitador '%%%' no encontrado después de especialización ID: " + std::to_string(especializacion.id) + ". Encontrado: '" + linea + "'");
+            } else { // !file case
+                 logError("Leer especializaciones", filePath, "EOF inesperado buscando delimitador para especialización ID: " + std::to_string(especializacion.id));
+            }
+            break; 
+        }
+        
+        escribirDebugLog("Delimitador '%%%' encontrado para especialización ID: " + std::to_string(especializacion.id));
+        vectorEspecializacionAnadir.push_back(especializacion);
+        especializacionCount++;
+        escribirDebugLog("Especialización agregada. Total especializaciones leídas: " + std::to_string(especializacionCount));
+        if(file.peek() != EOF) { // Check if there's more to read before logging "Leyendo siguiente"
+            escribirDebugLog("Leyendo especialización #" + std::to_string(especializacionCount + 1));
+        }
     }
+
+    logInfo("Leer especializaciones", filePath + " (" + std::to_string(especializacionCount) + " registros)");
+    escribirDebugLog("Lectura de especializaciones completada. Total: " + std::to_string(especializacionCount));
 }
+
 
 inline RawActividadesData FilesManager::leerDatosActividades() {
     if (!_sistemaInicializado) {
