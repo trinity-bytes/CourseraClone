@@ -232,7 +232,7 @@ public:
      * @param id ID del curso
      * @return Puntero al curso o nullptr si no existe
      */
-    Curso* obtenerCurso(int id) const;
+    Curso* obtenerCurso(int id);
 
     /**
      * @brief Obtiene una especialización por su ID
@@ -349,17 +349,19 @@ inline bool ContentManager::inicializarSistema()
 		//logError("Inicialización", "ContentManager", "Error al inicializar el sistema de archivos");
 		return false;
 	}
+
 	RawActividadesData dataActividades = fileManager->leerDatosActividades();
 	std::vector<InscripcionBinaria> dataInscripciones = fileManager->leerDatosInscripciones();
 
 	// Para debugging: mostrar cantidad de datos cargados
 	int cantidad = dataActividades.cursos.size() + dataActividades.especializaciones.size();
+    // throw std::runtime_error(std::to_string(cantidad));
     
     ContentOperationResult result = cargarDesdeDatos(dataActividades, dataInscripciones);
 
 	if (result != ContentOperationResult::SUCCESS) {
 		//logError("Inicialización", "ContentManager", "Error al cargar datos: " + std::to_string(static_cast<int>(result)));
-		return false;
+        return false;
 	}
 	//logOperation("Inicialización", "ContentManager completada con éxito");
 	return true;
@@ -404,6 +406,46 @@ inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int 
     }
     
     return datos;
+}
+
+inline Curso* ContentManager::obtenerCurso(int id) {
+	if (id < 0 || id >= _nextCursoId) {
+		logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
+		return nullptr; // ID inválido
+	}
+    return _cursos[id].get();
+	auto it = _cacheIdCursos.find(id);
+	if (it != _cacheIdCursos.end()) {
+		return it->second;
+	}
+	return nullptr; // Curso no encontrado
+}
+
+
+
+inline ContentOperationResult inscribirEstudianteACurso(int idEstudiante, int idCurso) {
+    // Verificar si el curso existe
+    /*
+    Curso* curso = obtenerCurso(idCurso);
+    if (!curso) {
+        logError("InscribirEstudianteACurso", "Curso no encontrado: " + std::to_string(idCurso));
+        return ContentOperationResult::COURSE_NOT_FOUND;
+    }
+    // Verificar si el estudiante ya está inscrito
+    if (std::find_if(_cursos.begin(), _cursos.end(), [idEstudiante, idCurso](const std::unique_ptr<Curso>& c) {
+        return c->estaInscrito(idEstudiante);
+        }) != _cursos.end()) {
+        logError("InscribirEstudianteACurso", "Estudiante ya inscrito en el curso: " + std::to_string(idCurso));
+        return ContentOperationResult::STUDENT_ALREADY_ENROLLED;
+    }
+    // Inscribir al estudiante
+    curso->inscribirEstudiante(idEstudiante);
+
+    logOperation("InscribirEstudianteACurso", "Estudiante " + std::to_string(idEstudiante) +
+        " inscrito en curso " + std::to_string(idCurso));
+
+    return ContentOperationResult::SUCCESS;
+    */
 }
 
 // ========== CARGA DE DATOS ==========
@@ -476,10 +518,25 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========
+inline void ContentManager::logError(const std::string& operation, const std::string& error) {
+    // Implementación simple para logging de errores
+    FilesManager& fileManager = FilesManager::getInstance();
+    fileManager.logError(operation, "ContentManager", error);
+    //#ifdef _DEBUG
+
+
+    //std::cerr << "[ContentManager ERROR] " << operation << " - " << error << std::endl;
+    //#endif
+}
+
 
 inline void ContentManager::logOperation(const std::string& operation, const std::string& details) {
     // Implementación simple para logging de operaciones
     // En un proyecto más complejo esto iría a un archivo de log
+	FilesManager& fileManager = FilesManager::getInstance();
+	fileManager.logInfo(operation, "ContentManager");
+
+    /*
     #ifdef _DEBUG
     std::cout << "[ContentManager] " << operation;
     if (!details.empty()) {
@@ -487,21 +544,16 @@ inline void ContentManager::logOperation(const std::string& operation, const std
     }
     std::cout << std::endl;
     #endif
+    */
 }
 
-inline void ContentManager::logError(const std::string& operation, const std::string& error) {
-    // Implementación simple para logging de errores
-    #ifdef _DEBUG
-    std::cerr << "[ContentManager ERROR] " << operation << " - " << error << std::endl;
-    #endif
-}
+
 
 // ========== MÉTODOS PRIVADOS - GESTIÓN DE CACHE ==========
 
 inline void ContentManager::actualizarCaches() {
     // Limpiar caches existentes
-    _cacheIdCursos.clear();
-    _cacheIdEspecializaciones.clear();
+	ContentManager::limpiarCaches();
     
     // Actualizar cache de cursos
     for (auto it = _cursos.begin(); it != _cursos.end(); ++it) {
@@ -524,29 +576,5 @@ inline void ContentManager::limpiarCaches() {
 }
 
 // ========== UTILIDADES ==========
-
-inline void ContentManager::actualizarCaches() {
-    /*
-    _cacheIdCursos.clear();
-    _cacheIdEspecializaciones.clear();
-    for (const auto& curso : _cursos) {
-        _cacheIdCursos[curso->getId()] = curso.get();
-    }
-    for (const auto& especializacion : _especializaciones) {
-        _cacheIdEspecializaciones[especializacion->getId()] = especializacion.get();
-    }
-    */
-}
-
-inline void ContentManager::limpiarCaches() {
-}
-
-inline void ContentManager::logOperation(const std::string& operation, const std::string& details = "") {
-
-}
-
-inline void ContentManager::logError(const std::string& operation, const std::string& error) {
-
-}
 
 #endif // COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP

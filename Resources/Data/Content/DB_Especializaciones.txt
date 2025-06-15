@@ -9,6 +9,7 @@ Programa completo para convertirte en desarrollador .NET y Angular
 1
 4
 2
+20
 1
 1
 Google Academy
@@ -20,6 +21,7 @@ Programa completo para dominar estrategias de marketing online
 1
 4
 2
+23
 2
 2
 Amazon Web Services
@@ -31,3 +33,4 @@ Programa integral para implementar metodologías DevOps en tu organización
 1
 4
 2
+25

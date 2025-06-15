@@ -43,8 +43,6 @@ private:
 
     // ========== MÉTODOS PRIVADOS ==========
     /// @brief Utilidades privadas para logging y validación
-    void logError(const std::string& operation, const std::string& file, const std::string& error);
-    void logInfo(const std::string& operation, const std::string& file);
     bool validateFileIntegrity(const std::string& filePath, size_t expectedRecordSize);
     bool createDirectoryIfNotExists(const std::string& path);
     
@@ -54,6 +52,10 @@ private:
 	std::string getDataFilePathActividades(TipoActividad tipo);
     
 public:
+    // ============== MENSAJES ==============
+    void logError(const std::string& operation, const std::string& file, const std::string& error);
+    void logInfo(const std::string& operation, const std::string& file);
+
     // ========== SINGLETON INTERFACE ==========
     /// @brief Eliminar constructor de copia y operador de asignación
     FilesManager(const FilesManager&) = delete;
@@ -596,8 +598,12 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
             cursoData.cantidadClases = std::stoi(linea);
             
             // Saltar las líneas de descripción de clases
-            for (int i = 0; i < cursoData.cantidadClases * 2; ++i) {
+            for (int i = 0; i < cursoData.cantidadClases; ++i) {
                 if (!std::getline(archivo, linea)) break;
+                std::string tituloClase = linea;
+				if (!std::getline(archivo, linea)) break;
+				std::string descripcionClase = linea;
+				cursoData.descripcionClases.push_back({ tituloClase, descripcionClase });
             }
             
             // Agregar el curso al vector
