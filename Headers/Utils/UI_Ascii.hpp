@@ -28,7 +28,8 @@ inline void UI_LandingPage()
                                  CONVIERTETE EN EL PROFESIONAL QUE QUIERES SER                        
                         -  Explora cursos online impartidos por expertos de la industria  -              
           
-                                  [ Explorar Cursos ]      [ Ver Especialidades ]          
+                                  [ Explorar Cursos ]      [ Ver Especialidades ]      
+                                      
  
       -----------------------------------<<    LAS MEJORES ESPECIALIDADES    >>-----------------------------------  
        ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗

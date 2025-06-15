@@ -32,13 +32,15 @@ private:
 
     /// @brief Límites máximos de elementos por sección
     static const int MAX_ELEMENTOS_CABECERA = 3;
+    static const int MAX_SLOGANS_DINAMICOS = 3;
+    static const int MAX_SUBTITULOS_DINAMICOS = 2;
 	static const int MAX_ELEMENTOS_SUBMENU = 2;
     static const int MAX_ELEMENTOS_ESPECIALIDAD = 3;
     static const int MAX_ELEMENTOS_CURSO = 3;
 
     /// @brief Dimensiones de cuadros de contenido
-    static const int MAX_ANCHO_CARACTERES_CUADRO = 32;
-    static const int MAX_ALTO_CARACTERES_CUADRO = 4;
+    static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
+    static const int MAX_ALTO_CARACTERES_CUADRO = 3;
 
     // DATOS ESTÁTICOS DE LA INTERFAZ
     /// @brief Elementos del menú principal de la cabecera
@@ -48,30 +50,64 @@ private:
         " SOBRE NOSOTROS "
     };
 
+    /// @brief Slogans dinamicos hero-section
+    const std::vector<std::string> SLOGANS_DINAMICOS = {
+        "APRENDE LAS HABILIDADES DEL FUTURO, HOY",
+        "TU CARRERA PROFESIONAL COMIENZA AQUÍ",
+        "CONVIÉRTETE EN EL PROFESIONAL QUE QUIERES SER"
+    };
+
+    /// @brief Subtitulos dinamicos hero-section
+    const std::vector<std::string> SUBTITULOS_DINAMICOS = {
+        "-  Explora cursos online impartidos por expertos de la industria  -",
+        "-  Encuentra el curso perfecto para alcanzar tus metas  -"
+    };
+
+    /// @brief Elementos del Sub Menu
+    const std::vector<std::string> ELEMENTOS_SUBMENU = {
+        " [ Explorar Cursos ] ",
+        " [ Ver Especialidades ] "
+    };
+
     // COORDENADAS DE POSICIONAMIENTO
     /// @brief Posiciones fijas para elementos de la cabecera
     const COORD _coordsElementosCabecera[MAX_ELEMENTOS_CABECERA] = { 
         {71, 1}, {88, 1}, {102, 1}
     };
 
+    /// @brief Posiciones de los slogans dinamicos del Hero section
+    const COORD _coordsSlogansDinamicos[MAX_SLOGANS_DINAMICOS] = {
+        {33, 5}, {34, 5}, {27, 5}
+    };
+
+    /// @brief Posiciones de los subtitulos dinamicos del Hero section
+    const COORD _coordsSubtitulosDinamicos[MAX_SUBTITULOS_DINAMICOS] = {
+        {24, 6}, {29, 6}
+    };
+
+    /// @brief Posiciones de los botones del submeniu
+    const COORD _coordsBotonesSubMenu[MAX_ELEMENTOS_SUBMENU] = {
+        {34, 8}, {59, 8}
+    };
+
     /// @brief Posiciones para títulos de especialidades
     const COORD _coordsTituloEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { 
-        {11, 15}, {45, 15}, {79, 15} 
+        {9, 13}, {45, 13}, {81, 13} 
     };
 
     /// @brief Posiciones para descripciones de especialidades
     const COORD _coordsDescEspecialidad[MAX_ELEMENTOS_ESPECIALIDAD] = { 
-        {11, 17}, {45, 17}, {79, 17} 
+        {9, 15}, {45, 15}, {81, 15} 
     };
 
     /// @brief Posiciones para títulos de cursos
     const COORD _coordsTituloCurso[MAX_ELEMENTOS_CURSO] = { 
-        {11, 25}, {45, 25}, {79, 25} 
+        {9, 22}, {45, 22}, {81, 22} 
     };
 
     /// @brief Posiciones para descripciones de cursos
     const COORD _coordsDescCurso[MAX_ELEMENTOS_CURSO] = { 
-        {11, 27}, {45, 27}, {79, 27} 
+        {9, 24}, {45, 24}, {81, 24} 
     };
 
     // ESTADO DE NAVEGACIÓN
@@ -84,9 +120,12 @@ private:
     /// @brief Flags de control de renderizado
     bool _primeraRenderizacion;
     bool _presionEnter;        
+
     /// @brief Datos dinámicos del menú usando estructuras crudas
     std::vector<RawEspecializacionData> _especialidades;
-    std::vector<RawCursoData> _cursos;    // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
+    std::vector<RawCursoData> _cursos;    
+    
+    // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
     /// @brief Carga todos los datos necesarios para la landing page
     /// @param maxEspecializaciones Número máximo de especializaciones a mostrar
     /// @param maxCursos Número máximo de cursos a mostrar
@@ -118,6 +157,11 @@ private:
     /// @param indice Índice del elemento a actualizar
     /// @param seleccionado Estado de selección del elemento
     inline void actualizarElementoCabecera(int indice, bool seleccionado);
+
+    /// @brief Actualiza la visualización de un elemento del submenú
+    /// @param indice Índice del elemento a actualizar
+    /// @param seleccionado Estado de selección del elemento
+    inline void actualizarElementoSubmenu(int indice, bool seleccionado);
 
     /// @brief Actualiza la visualización de un elemento de especialidad
     /// @param indice Índice del elemento a actualizar
@@ -217,6 +261,10 @@ private:
     /// @param resultado Resultado de pantalla a modificar
     inline void procesarSeleccionCabecera(ResultadoPantalla& resultado);
 
+    /// @brief Procesa la selección de un elemento del submenú
+    /// @param resultado Resultado de pantalla a modificar
+    inline void procesarSeleccionSubmenu(ResultadoPantalla& resultado);
+
 public:
     /// @brief Constructor por defecto
     inline LandingPageScreen();
@@ -270,6 +318,12 @@ inline void LandingPageScreen::renderizarElementos()
     for (int i = 0; i < MAX_ELEMENTOS_CABECERA; ++i) 
     {
         actualizarElementoCabecera(i, _seccionActual == SECCION_CABECERA && _elementoActual == i);
+    }
+
+    /// @brief Renderizar botones del submenú
+    for (int i = 0; i < MAX_ELEMENTOS_SUBMENU; ++i) 
+    {
+        actualizarElementoSubmenu(i, _seccionActual == SECCION_SUBMENU && _elementoActual == i);
     }
 
     /// @brief Renderizar especialidades
@@ -329,6 +383,9 @@ inline void LandingPageScreen::actualizarElementoEnSeccion(int seccion, int elem
     case SECCION_CABECERA:
         actualizarElementoCabecera(elemento, seleccionado);
         break;
+    case SECCION_SUBMENU:
+        actualizarElementoSubmenu(elemento, seleccionado);
+        break;
     case SECCION_ESPECIALIDADES:
         actualizarElementoEspecialidad(elemento, seleccionado);
         break;
@@ -354,6 +411,23 @@ inline void LandingPageScreen::actualizarElementoCabecera(int indice, bool selec
     }
 
     std::cout << ELEMENTOS_CABECERA[indice];
+    resetColor();
+}
+
+inline void LandingPageScreen::actualizarElementoSubmenu(int indice, bool seleccionado)
+{
+    if (indice < 0 || indice >= MAX_ELEMENTOS_SUBMENU) return;
+
+    gotoXY(_coordsBotonesSubMenu[indice].X, _coordsBotonesSubMenu[indice].Y);
+
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    }
+    else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BLANCO_PURO);
+    }
+
+    std::cout << ELEMENTOS_SUBMENU[indice];
     resetColor();
 }
 
@@ -388,10 +462,10 @@ inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitu
 {
     // Configurar colores según selección
     if (seleccionado) {
-       // setConsoleColor(ColorIndex::TEXTO_PRINCIPAL, ColorIndex::NAVEGACION);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_PRIMARIO);
     }
     else {
-        //setConsoleColor(ColorIndex::NAVEGACION, ColorIndex::BLANCO_PURO);
+       setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
     }
 
     // Mostrar título
@@ -524,6 +598,8 @@ inline int LandingPageScreen::obtenerMaxElementosEnSeccion(int seccion)
     switch (seccion) {
     case SECCION_CABECERA:
         return MAX_ELEMENTOS_CABECERA;
+    case SECCION_SUBMENU:
+        return MAX_ELEMENTOS_SUBMENU;
     case SECCION_ESPECIALIDADES:
         return static_cast<int>(_especialidades.size());
     case SECCION_CURSOS:
@@ -604,6 +680,9 @@ inline void LandingPageScreen::procesarSeleccion(ResultadoPantalla& resultado)
     else if (_seccionActual == SECCION_CABECERA) {
         procesarSeleccionCabecera(resultado);
     }
+    else if (_seccionActual == SECCION_SUBMENU) {
+        procesarSeleccionSubmenu(resultado);
+    }
 }
 
 inline void LandingPageScreen::procesarSeleccionCurso(ResultadoPantalla& resultado)
@@ -636,6 +715,23 @@ inline void LandingPageScreen::procesarSeleccionCabecera(ResultadoPantalla& resu
         break;
     case Pantalla::REGISTRO:
         resultado.accion = AccionPantalla::IR_A_REGISTRO;
+        break;
+    default:
+        // No hay acción definida
+        break;
+    }
+}
+
+inline void LandingPageScreen::procesarSeleccionSubmenu(ResultadoPantalla& resultado)
+{
+    switch (_elementoActual) {
+    case 0: // Explorar Cursos
+        resultado.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+        resultado.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;
+        break;
+    case 1: // Ver Especialidades
+        resultado.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+        resultado.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;
         break;
     default:
         // No hay acción definida
