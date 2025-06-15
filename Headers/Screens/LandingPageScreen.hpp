@@ -52,8 +52,8 @@ private:
 
     /// @brief Elementos del Sub Menu
     const std::vector<std::string> ELEMENTOS_SUBMENU = {
-        " Explorar Cursos ",
-        " Ver Especialidades "
+        " EXPLORAR CURSOS ",
+        " VER ESPECIALIDADES "
     };
 
     // COORDENADAS DE POSICIONAMIENTO
@@ -383,7 +383,7 @@ inline void LandingPageScreen::actualizarElementoCabecera(int indice, bool selec
     gotoXY(_coordsElementosCabecera[indice].X, _coordsElementosCabecera[indice].Y);
 
     if (seleccionado) {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     }
     else {
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
@@ -400,10 +400,10 @@ inline void LandingPageScreen::actualizarElementoSubmenu(int indice, bool selecc
     gotoXY(_coordsBotonesSubMenu[indice].X, _coordsBotonesSubMenu[indice].Y);
 
     if (seleccionado) {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     }
     else {
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BLANCO_PURO);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_AZUL_SUAVE);
     }
 
     std::cout << ELEMENTOS_SUBMENU[indice];
@@ -441,17 +441,24 @@ inline void LandingPageScreen::actualizarElementoGenerico(const COORD& coordTitu
 {
     // Configurar colores según selección
     if (seleccionado) {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_PRIMARIO);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     }
     else {
-       setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+       setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
 
-    // Mostrar título
-    mostrarTituloFormateado(coordTitulo, titulo);
+    if (_primeraRenderizacion)
+    {
+        // Mostrar título
+        mostrarTituloFormateado(coordTitulo, titulo);
 
-    // Mostrar descripción
-    mostrarDescripcionFormateada(coordDesc, descripcion);
+        // Mostrar descripción
+        mostrarDescripcionFormateada(coordDesc, descripcion);
+    }
+    else {
+        // Mostrar título
+        mostrarTituloFormateado(coordTitulo, titulo);
+    }
 
     resetColor();
 }    

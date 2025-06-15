@@ -33,5 +33,5 @@ int main()
 
 void SecuenciaInicializacion()
 {
-	configurarConsola();
+	inicializarSistema();
 }
