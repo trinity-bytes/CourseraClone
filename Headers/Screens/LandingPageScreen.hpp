@@ -17,6 +17,7 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Controllers/ContentManager.hpp"
+#include "../Controllers/FilesManager.hpp"
 #include "../Types/ActividadTypes.hpp"
 
 /// @brief Pantalla principal del sistema con navegación por secciones
@@ -285,8 +286,14 @@ inline void LandingPageScreen::cargarDatos(int maxEspecializaciones, int maxCurs
     _cursos.clear();
     
     /// @brief Asignar datos directamente sin conversiones
-    _especialidades = datosActividades.especializaciones;
-    _cursos = datosActividades.cursos;
+    _especialidades = datosActividades.especializaciones;    _cursos = datosActividades.cursos;
+    
+    /// DEBUG: Verificar cuántas especialidades se cargaron
+    FilesManager& filesManager = FilesManager::getInstance();
+    filesManager.escribirDebugLog("Especialidades cargadas: " + std::to_string(_especialidades.size()));
+    for (size_t i = 0; i < _especialidades.size(); ++i) {
+        filesManager.escribirDebugLog("  - " + std::to_string(i) + ": " + _especialidades[i].titulo);
+    }
 }
 
 // MÉTODOS PRIVADOS - CONTENIDO DINÁMICO
@@ -731,7 +738,9 @@ inline void LandingPageScreen::renderizar()
 {
     if (_primeraRenderizacion)
     {
+		//system("pause"); // Pausa para leer los logs iniciales del sistema
         system("cls");
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         UI_LandingPage();
 
         /// @brief Renderizar todos los elementos interactivos

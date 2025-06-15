@@ -3,7 +3,7 @@
 Microsoft Learning
 Introducción a la Programación en C++
 Curso fundamental para aprender programación orientada a objetos con C++
-1
+PROGRAMACION
 Julia Rodriguez
 5
 Fundamentos y sintaxis básica
@@ -16,12 +16,13 @@ Herencia y polimorfismo
 Conceptos avanzados de POO para crear código más flexible
 Manejo de excepciones y archivos
 Técnicas para manejar errores y trabajar con archivos externos
+%%%
 1
 2
 Google Academy
 Python para Ciencia de Datos
 Curso práctico para análisis de datos y machine learning con Python
-12
+CIENCIA_DE_DATOS
 Carlos Martinez
 4
 NumPy y Pandas
@@ -32,12 +33,13 @@ Machine Learning básico
 Introducción a algoritmos de aprendizaje supervisado y no supervisado
 Proyecto final integrador
 Desarrolla un proyecto completo de ciencia de datos
+%%%
 2
 3
 Amazon Web Services
 Cloud Computing con AWS
 Aprende a desplegar y gestionar aplicaciones en la nube de Amazon
-7
+CLOUD_COMPUTING
 Sarah Johnson
 3
 Fundamentos de AWS
@@ -46,6 +48,7 @@ Computación y almacenamiento
 EC2, S3 y servicios relacionados para hosting de aplicaciones
 Redes y seguridad
 VPC, grupos de seguridad y buenas prácticas de protección
+%%%
 3
 4
 Meta Developers
@@ -64,6 +67,7 @@ Enrutamiento con React Router
 Navegación entre páginas en aplicaciones SPA
 Redux y gestión de estado
 Manejo escalable del estado en aplicaciones complejas
+%%%
 4
 5
 Oracle Academy
@@ -78,6 +82,7 @@ Modelo relacional
 Diseño de bases de datos y normalización
 Optimización de consultas
 Indices y técnicas para mejorar el rendimiento
+%%%
 5
 6
 Cisco Networking
@@ -94,6 +99,7 @@ Dispositivos de red
 Configuración básica de routers y switches
 Protocolos de comunicación
 Análisis de los protocolos más comunes en redes actuales
+%%%
 6
 7
 Google Academy
@@ -108,6 +114,7 @@ Investigación de palabras clave
 Técnicas para identificar términos relevantes para tu negocio
 Analítica web y SEO
 Medición y optimización de resultados con Google Analytics
+%%%
 8
 9
 Meta Developers
@@ -124,3 +131,4 @@ Prototipado y wireframing
 Creación de modelos para validar soluciones
 Test de usabilidad
 Evaluación y mejora de la experiencia del usuario
+%%%
