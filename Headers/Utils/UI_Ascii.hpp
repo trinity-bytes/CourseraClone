@@ -25,15 +25,15 @@ inline void UI_LandingPage()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                                        
 
 
-
-                                     
+                      E L  S I G U I E N T E  N I V E L  D E  T U  C A R R E R A  E S T Á  A Q U Í                      
+                      -  Especialízate en las áreas con más demanda laboral y da el gran salto.  -
           
-                                  [ Explorar Cursos ]      [ Ver Especialidades ]      
+                                     
                                       
  
       -----------------------------------<<    LAS MEJORES ESPECIALIDADES    >>-----------------------------------  
        ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗
-       ║ Data Analyst                   ║  ║ Project Manager                ║  ║ Data Scientist                 ║
+       ║                                ║  ║                                ║  ║                                ║
        ╠════════════════════════════════╣  ╠════════════════════════════════╣  ╠════════════════════════════════╣
        ║                                ║  ║                                ║  ║                                ║
        ║                                ║  ║                                ║  ║                                ║
@@ -42,7 +42,7 @@ inline void UI_LandingPage()
 
       ----------------------------------------<<    CURSOS POPULARES    >>----------------------------------------  
        ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗
-       ║ Backend con Python             ║  ║ Java Basico                    ║  ║ C++ for Dummies                ║
+       ║                                ║  ║                                ║  ║                                ║
        ╠════════════════════════════════╣  ╠════════════════════════════════╣  ╠════════════════════════════════╣
        ║                                ║  ║                                ║  ║                                ║
        ║                                ║  ║                                ║  ║                                ║
@@ -68,8 +68,22 @@ inline void UI_LandingPage()
     }
 
     /// @brief Dibujar linea inferior de los botones
-    gotoXY(72, 2);
-    std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯";
+    gotoXY(72, 2); std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯";
+
+    /// @brief Dibujar fondo del hero-section
+    for (int y = 4; y < 10; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+            std::cout << " ";
+        }
+    }
+
+	/// @brief Mostrar slogan y sugbtitulo en hero section
+	gotoXY(22, 5); std::cout << "E L  S I G U I E N T E  N I V E L  D E  T U  C A R R E R A  E S T Á  A Q U Í";
+	gotoXY(22, 6); std::cout << "-  Especialízate en las áreas con más demanda laboral y da el gran salto.  -";
 
     /// @brief/ Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
