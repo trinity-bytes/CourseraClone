@@ -87,6 +87,15 @@ public:
     bool verificarIntegridadTodosLosArchivos();
     
     // ========== DOMINIO CORE (Usuarios e Inscripciones) ==========
+	/// @brief Carga los datos de los offsets de inscripciones con busqueda binaria
+	/// @param id ID del estudiante
+	/// @param offsets Vector donde se almacenarán los offsets encontrados
+    FileOperationResult cargarOffsets(int id, std::vector<int>& offsets);
+
+	/// @brief Carga los datos de inscripciones en bruto desde un archivo
+	/// @param _offsets Vector de offsets de inscripciones
+	/// @param is Archivo de entrada para leer los datos
+    std::vector<RawInscripcionData> getInscripcionesRawData(std::vector<int> _offsets, std::ifstream& is);
 
     /// @brief Guarda los datos por oden de idUsuario
 	FileOperationResult guardarInidiceInscripcion(int _idEstudiante, int _offset);
@@ -118,7 +127,7 @@ public:
     /// @brief Carga todas las inscripciones del estudiante
     /// @param id Id del estudiante
     /// @return Resultado de la operación
-    FileOperationResult cargarInscripcionesPorEstudiante(int id, std::vector<int>& offsets);
+    FileOperationResult cargarInscripcionesPorEstudiante(int id, std::vector<RawInscripcionData>& inscripciones);
 
     /// @brief Guarda una inscripción en formato binario
     /// @param bin Datos de la inscripción
@@ -436,8 +445,72 @@ inline std::string FilesManager::getDataFilePathActividades(TipoActividad tipo) 
 }
 
 // ========== DOMINIO CORE ==========
+inline FileOperationResult FilesManager::cargarOffsets(int id, std::vector<int>& offsets) {
+    offsets.clear();
 
-inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id, std::vector<int>& offsets) {
+    auto path = DataPaths::Core::INDICES_INSCRIPCIONES;
+    std::fstream archivoOrden(path, std::ios::binary | std::ios::in);
+
+    archivoOrden.seekg(0, std::ios::end);
+    int cantidad = static_cast<int>(archivoOrden.tellg() / sizeof(InscripcionIndex));
+
+    if (cantidad == 0) {
+        logInfo("Leer inscripciones", path + " (No hay registros)");
+        archivoOrden.close();
+        return FileOperationResult::SUCCESS;
+    }
+
+    auto busqueda = crearPredicadoBusqueda(archivoOrden, id);
+    int pos = busquedaBinaria(0, cantidad - 1, busqueda);
+
+    if (pos < 0 || pos >= cantidad) {
+        logInfo("Cargar inscripciones", "No se encontraron inscripciones para el ID: " + std::to_string(id));
+        return FileOperationResult::SUCCESS;
+    }
+
+    int contador = 0;
+    for (int i = pos; i < cantidad; i++) {
+        contador++;
+        InscripcionIndex tmpIndex;
+        archivoOrden.seekg(i * sizeof(InscripcionIndex), std::ios::beg);
+        archivoOrden.read(reinterpret_cast<char*>(&tmpIndex), sizeof(InscripcionIndex));
+        if (tmpIndex.idUsuario == id) {
+            offsets.push_back(tmpIndex.offset);
+            logInfo("Cargar inscripciones", "Inscripcion encontrada: id " + std::to_string(tmpIndex.offset));
+        }
+    }
+
+    logInfo("Cargar inscripciones", "Se han cargado " + std::to_string(cantidad) + " offsets de inscripciones");
+    archivoOrden.close();
+
+    return FileOperationResult::SUCCESS;
+}
+
+inline std::vector<RawInscripcionData> FilesManager::getInscripcionesRawData(std::vector<int> _offsets, std::ifstream& is) {
+	std::vector<RawInscripcionData> inscripciones;
+
+    for (int& offset : _offsets) {
+        InscripcionBinaria inscripcion;
+		RawInscripcionData rawInscripcion;
+
+        is.seekg(offset * sizeof(InscripcionBinaria), std::ios::beg);
+        is.read(reinterpret_cast<char*>(&inscripcion), sizeof(inscripcion));
+        rawInscripcion.id = offset;
+		rawInscripcion.completado = inscripcion.completado;
+		rawInscripcion.idActividad = inscripcion.idActividad;
+		rawInscripcion.idEstudiante = inscripcion.idEstudiante;
+        rawInscripcion.tipo = static_cast<TipoActividad>(inscripcion.tipoActividad);
+		rawInscripcion.progreso = inscripcion.progreso;
+		rawInscripcion.pagado = inscripcion.pagado;
+		
+		inscripciones.push_back(rawInscripcion);
+        logInfo("Cargar inscripciones", "Inscripción cargada: id " + std::to_string(inscripcion.idActividad));
+    }
+
+    return inscripciones;
+}
+
+inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id, std::vector<RawInscripcionData>& inscripciones) {
     if (!_sistemaInicializado) {
         logError("Cargar inscripciones", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
@@ -451,40 +524,21 @@ inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id
             return FileOperationResult::FILE_NOT_FOUND;
         }
 
-		auto path = DataPaths::Core::INDICES_INSCRIPCIONES;
-		std::fstream archivoOrden(path, std::ios::binary | std::ios::in);
+		std::vector<int> offsets;
+		FileOperationResult resultadoOffsets = cargarOffsets(id, offsets);
+        if (resultadoOffsets == FileOperationResult::SUCCESS) {
 
-        archivoOrden.seekg(0, std::ios::end);
-        int cantidad = static_cast<int>(archivoOrden.tellg() / sizeof(InscripcionIndex));
-
-        if (cantidad == 0) {
-            logInfo("Leer inscripciones", path + " (No hay registros)");
-            archivoOrden.close();
-            return FileOperationResult::SUCCESS;
+            inscripciones.clear();
+			inscripciones = getInscripcionesRawData(offsets, is);
+			is.close();
+			logInfo("Cargar inscripciones", "Se han cargado " + std::to_string(inscripciones.size()) + " inscripciones para el ID: " + std::to_string(id));
+		}
+        else {
+			logError("Cargar inscripciones", "Sistema", "Error al cargar offsets");
+            return FileOperationResult::UNKNOWN_ERROR;
         }
 
-        auto busqueda = crearPredicadoBusqueda(archivoOrden, id);
-        int pos = busquedaBinaria(0, cantidad - 1, busqueda);
-
-		if (pos < 0 || pos >= cantidad) {
-			logInfo("Cargar inscripciones", "No se encontraron inscripciones para el ID: " + std::to_string(id));
-            return FileOperationResult::SUCCESS;
-		}
-
-        int contador = 0;
-        for (int i = pos; i < cantidad; i++) {
-            contador++;
-			InscripcionIndex tmpIndex;
-			archivoOrden.seekg(i * sizeof(InscripcionIndex), std::ios::beg);
-			archivoOrden.read(reinterpret_cast<char*>(&tmpIndex), sizeof(InscripcionIndex));
-			if (tmpIndex.idUsuario == id) {
-				offsets.push_back(tmpIndex.offset);
-                logInfo("Cargar inscripciones", "Inscripcion encontrada: id " + std::to_string(tmpIndex.offset));
-			}
-		}
-
-        logInfo("Cargar inscripciones", "Se han cargado " + std::to_string(cantidad) + " offsets de inscripciones");
-        archivoOrden.close();
+		
         return FileOperationResult::SUCCESS;
 
     }

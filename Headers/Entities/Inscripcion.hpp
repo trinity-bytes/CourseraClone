@@ -31,6 +31,7 @@ public:
     inline Inscripcion();
     inline Inscripcion(int _idEstudiante, int _idActividad, int _id);
     inline Inscripcion(InscripcionBinaria& _bin, int _off);
+    inline Inscripcion(RawInscripcionData rawInscripcionData);
 
 	// Getters
 	inline int getId() const;
@@ -39,6 +40,7 @@ public:
 	inline double getProgreso() const;
 	inline bool getCompletado() const;
 	inline bool getEstadoPago() const;
+    inline TipoActividad getTipo() const;
 
     inline void guardar();
 
@@ -71,6 +73,13 @@ inline Inscripcion::Inscripcion(InscripcionBinaria& _bin, int _off)
 {
 
 }
+inline Inscripcion::Inscripcion(RawInscripcionData rawInscripcionData)
+    : id(rawInscripcionData.id), idEstudiante(rawInscripcionData.idEstudiante),
+    idActividad(rawInscripcionData.idActividad), progreso(rawInscripcionData.progreso),
+    completado(rawInscripcionData.completado), estadoPago(rawInscripcionData.pagado),
+    tipo(rawInscripcionData.tipo)
+{
+}
 
 // Getters
 inline int Inscripcion::getId() const {
@@ -90,6 +99,9 @@ inline bool Inscripcion::getCompletado() const {
 }
 inline bool Inscripcion::getEstadoPago() const {
     return this->estadoPago;
+}
+inline TipoActividad Inscripcion::getTipo() const {
+    return this->tipo;
 }
 
 inline void Inscripcion::guardar() {
