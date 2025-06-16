@@ -4,7 +4,7 @@
 // Headers estándar
 #include <string>
 
-// Headers propios
+// Headers propios del proyecto
 //#include "../Utils/ScreenSystem.hpp"
 //#include "../Entities/Usuario.hpp"
 //#include "../Utils/SystemUtils.hpp"
