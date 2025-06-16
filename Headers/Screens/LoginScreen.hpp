@@ -192,9 +192,9 @@ inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, 
 
 inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, bool seleccionado)
 {
-    gotoXY(_coordsBotones[indice].X, _coordsBotones[indice].Y);
-    _configurarCursor(false);
-
+    _configurarCursor(false);  
+    gotoXY(_coordsBotones[indice].X, _coordsBotones[indice].Y);  
+    
     if (indice == 0 || indice == 1)
     {
         // Botones de tipo de usuario (ESTUDIANTE y ORGANIZACION)
@@ -207,13 +207,13 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
             esTipoSeleccionado = true;
         }
 
-        if (esTipoSeleccionado) {
-            // Tipo de usuario seleccionado - resaltado activo
-            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_IMPORTANTE);
-        }
-        else if (seleccionado) {
-            // Botón con hover/foco pero no seleccionado como tipo
+        if (seleccionado) {
+            // Si tiene foco/hover, siempre usar color azul para mejor UX
             setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+        }
+        else if (esTipoSeleccionado) {
+            // Tipo de usuario seleccionado pero sin foco - resaltado activo
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_IMPORTANTE);
         }
         else {
             // Estado normal sin selección
@@ -226,7 +226,7 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
             setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
         }
         else {
-            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         }
     }
 
