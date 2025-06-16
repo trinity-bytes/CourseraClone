@@ -54,6 +54,7 @@ inline void UI_LandingPage()
  Pulsa la tecla ENTER para seleciconar y ESC para SALIR DEL PROGRAMA.)";
 //----------------------------------------------------------------------------------------------------------------------
 
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
 	std::cout << ui;
 
     /// @brief Dibujar fondo de la cabecera
@@ -90,12 +91,16 @@ inline void UI_LandingPage()
 	/// @brief Mostrar slogan y sugbtitulo en hero section
 	gotoXY(22, 5); std::cout << "E L  S I G U I E N T E  N I V E L  D E  T U  C A R R E R A  E S T Á  A Q U Í";
 	gotoXY(22, 6); std::cout << "-  Especialízate en las áreas con más demanda laboral y da el gran salto.  -";
+
+	resetColor();
 }
 
 /// UI Login
 inline void UI_Login()
 {
+//----------------------------------------------------------------------------------------------------------------------
 	std::string ui = R"(
+
                                          ▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█                                      
                                          ▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█                                      
                                          ▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀                                      
@@ -118,7 +123,6 @@ inline void UI_Login()
                                  Que tipo de usuario eres?:                                                          
                                                                                                                      
                                              ESTUDIANTE        ORGANIZACION                                          
-                                                                                           
                                                                                                                      
                                                                                                                      
                                                      INICIAR SESION                                                  
@@ -127,28 +131,32 @@ inline void UI_Login()
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     Usa las flechas de direccion (ARRIBA Y ABAJO) para navegar por el menu.
     Pulsa la tecla ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
+//----------------------------------------------------------------------------------------------------------------------
 
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
 	std::cout << ui;
 
     /// @brief Dibujar fondo de la cabecera
-    for (int y = 0; y < 8; y++)
+    for (int y = 0; y < 10; y++)
     {
         for (int x = 0; x < ANCHO_CONSOLA; x++)
         {
             gotoXY(x, y);
-            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
             std::cout << " ";
         }
     }
 
+    gotoXY(44, 7);  std::cout << "- QUE BUENO TENERTE DE VUELTA! -";
 
-    gotoXY(42, 1);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
-    gotoXY(42, 2);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
-    gotoXY(42, 3);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(42, 2);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+    gotoXY(42, 3);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+    gotoXY(42, 4);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
 
-    gotoXY(71, 4);  std::cout << "C L O N E";
+    gotoXY(57, 5);  std::cout << "C L O N E";
 
-    gotoXY(44, 6);  std::cout << "- QUE BUENO TENERTE DE VUELTA! -";
+    resetColor();
 }
 
 /// UI Singup

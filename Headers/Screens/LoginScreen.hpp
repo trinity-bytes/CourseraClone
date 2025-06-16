@@ -36,7 +36,7 @@ private:
         {34, 15}, {34, 20} 
     };
 
-    COORD _coordsBotones[CANT_BOTONES] = { {44, 25}, {62, 25}, {52, 29} };
+    COORD _coordsBotones[CANT_BOTONES] = { {44, 23}, {62, 23}, {52, 26} };
 
     const std::string _elementosUserinput[ELEMENTOS_INPUT] = { " ", " " };
 
@@ -184,33 +184,32 @@ inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, 
 inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, bool seleccionado) {
     gotoXY(_coordsBotones[indice].X, _coordsBotones[indice].Y);
     
-    if (indice == 0 || indice == 1) {
+    if (indice == 0 || indice == 1) 
+    {
         if (seleccionado || (indice == 0 && _tipoUsuarioActual == TipoUsuario::ESTUDIANTE) || (indice == 1 && _tipoUsuarioActual == TipoUsuario::EMPRESA)) {
-            setConsoleColor(1, 4, true, true);
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         } else {
-            setConsoleColor(7, 0);
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         }
     } else {
         if (seleccionado) {
-            setConsoleColor(1, 5, true, true);
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
         } else {
-            setConsoleColor(5, 1, false, true);
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         }
     }
     
     _configurarCursor(false);
     std::cout << texto;
-    setConsoleColor(15, 0);
+	resetColor();
 }
 
 inline void LoginScreen::_dibujarInterfazCompleta() 
 {
-    setConsoleColor(15, 0);
     system("cls");
-    
     UI_Login();
-    
-    setConsoleColor(15, 0);
+
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
     
     // Renderizar campos de entrada
     for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
@@ -223,7 +222,7 @@ inline void LoginScreen::_dibujarInterfazCompleta()
         _renderizarBoton(_textosBotones[i], i, _campoActual == i + 2);
     }
     
-    gotoXY(34, 15);
+	gotoXY(34, 13); /// @brief Posicionar cursor en el primer campo
 }
 
 inline void LoginScreen::_actualizarSeleccion() {

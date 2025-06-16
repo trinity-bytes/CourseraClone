@@ -740,7 +740,6 @@ inline void LandingPageScreen::renderizar()
     {
 		//system("pause"); // Pausa para leer los logs iniciales del sistema
         system("cls");
-        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         UI_LandingPage();
 
         /// @brief Renderizar todos los elementos interactivos
