@@ -25,6 +25,11 @@ public:
 	inline InscripcionesController();
 	// Constructor con id del alumno para cargar datos
 	inline InscripcionesController(int _idEstudiante);
+
+	// Metodos para inscripciones
+	inline void guardarCursoInscripcion(Inscripcion inscripcion);
+	inline void guardarEspecializacionInscripcion(Inscripcion inscripcion);
+	inline FileOperationResult inscribirCurso(int idEstudiante, int idCurso);
 };
 
 // Constructores
@@ -47,24 +52,10 @@ inline InscripcionesController::InscripcionesController(int _idEstudiante) {
 		for (RawInscripcionData& rawInscripcion : inscripcionesCursosRaw) {
 			Inscripcion inscripcion(rawInscripcion);
 			if (inscripcion.getTipo() == TipoActividad::CURSO) {
-				inscripcionesCursos.push(inscripcion);
-				int idActividad = inscripcion.getIdActividad();
-				if (idCursos->Insertar(inscripcion.getIdActividad())) {
-					logOperation("Insertar en AVL de curso", "ID: " + std::to_string(idActividad));
-				}
-				else {
-					logError("Insertar en AVL de curso", "Error en el ID: " + std::to_string(idActividad));
-				}
+				guardarCursoInscripcion(inscripcion);
 			}
 			else if (inscripcion.getTipo() == TipoActividad::ESPECIALIZACION) {
-				inscripcionesEspecialidades.push(inscripcion);
-				int idEspecializacion = inscripcion.getIdActividad();
-				if (idCursos->Insertar(inscripcion.getIdActividad())) {
-					logOperation("Insertar en AVL de especialidad", "ID: " + std::to_string(idEspecializacion));
-				}
-				else {
-					logError("Insertar en AVL de especialidad", "Error en el ID: " + std::to_string(idEspecializacion));
-				}
+				guardarEspecializacionInscripcion(inscripcion);
 			}
 		}
 		logOperation("Cargar inscripciones", "Se han cargado " + std::to_string(inscripcionesCursosRaw.size()) + " inscripciones para el ID: " + std::to_string(_idEstudiante));
@@ -74,6 +65,46 @@ inline InscripcionesController::InscripcionesController(int _idEstudiante) {
 		logError("Cargar inscripciones", "Fallo en el resultado de inscripciones RAW");
 	}
 }
+
+
+// ========== MÉTODOS DE INSCRIPCION ==========
+inline void InscripcionesController::guardarCursoInscripcion(Inscripcion inscripcion) {
+	inscripcionesCursos.push(inscripcion);
+	int idActividad = inscripcion.getIdActividad();
+	if (idCursos->Insertar(inscripcion.getIdActividad())) {
+		logOperation("Insertar en AVL de curso", "ID: " + std::to_string(idActividad));
+	}
+	else {
+		logError("Insertar en AVL de curso", "Error en el ID: " + std::to_string(idActividad));
+	}
+}
+
+inline void InscripcionesController::guardarEspecializacionInscripcion(Inscripcion inscripcion) {
+	inscripcionesEspecialidades.push(inscripcion);
+	int idEspecializacion = inscripcion.getIdActividad();
+	if (idEspecialidades->Insertar(inscripcion.getIdActividad())) {
+		logOperation("Insertar en AVL de especialidad", "ID: " + std::to_string(idEspecializacion));
+	}
+	else {
+		logError("Insertar en AVL de especialidad", "Error en el ID: " + std::to_string(idEspecializacion));
+	}
+}
+
+inline FileOperationResult InscripcionesController::inscribirCurso(int idEstudiante, int idCurso) {
+	bool encontrado = idCursos.get()->Buscar(idCurso);
+	if (!encontrado) {
+		int idActual = FilesManager::getInstance().cantidadInscripciones();
+		Inscripcion nuevaInscripcion(idEstudiante, idCurso, idActual);
+		guardarCursoInscripcion(nuevaInscripcion);
+		nuevaInscripcion.guardar();
+		return FileOperationResult::SUCCESS;
+	}
+	else {
+		logError("Inscribir curso", "Curso encontrado con el id " + std::to_string(idCurso) + ", en el alumno con id: " + std::to_string(idEstudiante));
+		return FileOperationResult::UNKNOWN_ERROR;
+	}
+}
+
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========
 inline void InscripcionesController::logError(const std::string& operation, const std::string& error) {

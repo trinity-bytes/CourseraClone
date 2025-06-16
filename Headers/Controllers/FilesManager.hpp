@@ -135,6 +135,10 @@ public:
     /// @return Resultado de la operación
     FileOperationResult guardarInscripcionBinaria(const InscripcionBinaria& bin, int& offsetRegistro);
 
+	/// @brief Devuelve la cantidad de inscripciones registradas en el sistema
+    /// @return Cantidad de inscripciones
+    int cantidadInscripciones();
+
     /// @brief Actualiza el estado de pago de una inscripción
     /// @param posicion Posición del registro en el archivo
     /// @param estado Nuevo estado de pago
@@ -696,6 +700,23 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
         logError("Guardar inscripción", "Sistema", e.what());
         return FileOperationResult::UNKNOWN_ERROR;
     }
+}
+
+inline int FilesManager::cantidadInscripciones() {
+    if (!_sistemaInicializado) {
+        logError("Cantidad de inscripciones", "Sistema", "Sistema no inicializado");
+        return -1; // Indica error
+    }
+    std::ifstream archivo(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary);
+    if (!archivo.is_open()) {
+        logError("Cantidad de inscripciones", DataPaths::Core::DB_INSCRIPCIONES, "No se pudo abrir el archivo");
+        return -1; // Indica error
+    }
+    archivo.seekg(0, std::ios::end);
+    int cantidad = static_cast<int>(archivo.tellg() / sizeof(InscripcionBinaria));
+    archivo.close();
+    logInfo("Cantidad de inscripciones", DataPaths::Core::DB_INSCRIPCIONES + " (" + std::to_string(cantidad) + " registros)");
+    return cantidad;
 }
 
 inline FileOperationResult FilesManager::actualizarPagoInscripcion(int posicion, bool estado) {

@@ -85,6 +85,17 @@ private:
         return true;
     }
 
+	// Busca un valor en el árbol
+    bool _buscar(NodoAVL<T>* nodo, const T& valor) const {
+        if (!nodo) return false;
+        if (valor == nodo->elemento)
+            return true;
+        else if (valor < nodo->elemento)
+            return _buscar(nodo->izq, valor);
+        else
+            return _buscar(nodo->der, valor);
+    }
+
     // Recorrido in-order de elementos
     void _inOrden(NodoAVL<T>* nodo) {
         if (!nodo) return;
@@ -115,6 +126,11 @@ public:
     // Imprime los elementos en orden
     void inOrden() {
         _inOrden(raiz);
+    }
+
+	// Busca un valor en el árbol
+    bool Buscar(const T& valor) const {
+        return _buscar(raiz, valor);
     }
 
     // Imprime las alturas de los nodos en orden
