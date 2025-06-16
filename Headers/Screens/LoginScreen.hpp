@@ -3,71 +3,62 @@
 
 // Librerias estándar
 #include <string>
+#include <vector>
 
 // Librerías propias
-//#include "../Utils/ScreenSystem.hpp"
-//#include "../Entities/Estudiante.hpp"
-//#include "../Entities/Empresa.hpp"
-//#include "../DataStructures/LinkedList.hpp"
-//#include "../Entities/Curso.hpp"
-//#include "../Entities/Especializacion.hpp"
-
-// forward declarations
-class Usuario;
+#include "../Entities/Usuario.hpp"
+#include "../Types/ActividadTypes.hpp"
+#include "../Types/UsuarioTypes.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/UI_Ascii.hpp"
 
 class LoginScreen : public PantallaBase 
 {
-// Atributos privados
 private:
-    static const int ELEMENTOS_INPUT = 2;     /// Número de campos de entrada
-    static const int CANT_BOTONES = 3;        /// Número de botones en la interfaz
+	// ---- ATRIBUTOS PRIVADOS ----
+    static const int ELEMENTOS_INPUT = 2;   
+    static const int CANT_BOTONES = 3;        
 
-    // Datos de entrada del usuario
-    std::string _email;                       /// Email ingresado por el usuario
-    std::string _password;                    /// Contraseña ingresada
-    TipoUsuario _tipoUsuario;                 /// Tipo de usuario seleccionado
+    /// @brief Datos de entrada del usuario
+    std::string _email;                       
+    std::string _password;                    
+    TipoUsuario _tipoUsuario;                 
     
-    // Estado de la interfaz
-    int _campoActual;                         /// Campo actualmente seleccionado
-    int _campoAnterior;                       /// Campo anteriormente seleccionado
-    bool _primeraRenderizacion;               /// Bandera para primera renderización
-    int _tipoUsuarioActual;                   /// 0: Estudiante, 1: Organización
+    /// @brief Estado de la interfaz
+    int _campoActual;                         
+    int _campoAnterior;                       
+    bool _primeraRenderizacion;              
+    TipoUsuario _tipoUsuarioActual;                       
     
-    // Manejo de errores
-    bool _error;                              /// Bandera de error
-    std::string _mensajeError;                /// Mensaje de error a mostrar
-    
-    // Referencias a entidades
-    Estudiante& _estudiante;                  /// Referencia al estudiante
-    Empresa& _empresa;                        /// Referencia a la empresa
-    LinkedList<Curso*>& _cursos;              /// Lista de cursos disponibles
-    LinkedList<Especializacion*>& _especialidades; /// Lista de especializaciones
-    
-    // Configuración de interfaz
-    COORD _coordsElementosUserInput[ELEMENTOS_INPUT] = { {34, 15}, {34, 20} };
+    /// @brief Configuración de interfaz
+    COORD _coordsElementosUserInput[ELEMENTOS_INPUT] = { 
+        {34, 15}, {34, 20} 
+    };
+
     COORD _coordsBotones[CANT_BOTONES] = { {44, 25}, {62, 25}, {52, 29} };
-    const std::string _elementosUserinput[ELEMENTOS_INPUT] = { " ", " " };
-    const std::string _textosBotones[CANT_BOTONES] = { " Estudiante ", " Organizacion ", " Iniciar Sesión " };
 
-// Metodos privados para manejar la interfaz y la lógica de login
-private:
-    /**
-     * @brief Configura la visibilidad del cursor
-     * @param mostrar True para mostrar el cursor, false para ocultarlo
-     */
+    const std::string _elementosUserinput[ELEMENTOS_INPUT] = { " ", " " };
+
+    std::vector<std::string> _textosBotones = { 
+        " ESTUDIANTE ", 
+        " ORGANIZACION ", 
+        " INICIAR SESION " 
+    };
+
+	// ---- METODOS PRIVADOS ----
+
+    /// @brief Configura la visibilidad del cursor
+    /// @param mostrar True para mostrar el cursor, false para ocultarlo
     void _configurarCursor(bool mostrar);
-    
-    /**
-     * @brief Limpia el estado interno de la pantalla
-     */
+
+    /// @brief Limpia el estado interno de la pantalla
     void _limpiarEstado();
 
-    /**
-     * @brief Renderiza un campo de entrada de texto
-     * @param valor Valor actual del campo
-     * @param indice Índice del campo
-     * @param seleccionado Estado de selección del campo
-     */
+    /// @brief Renderiza un campo de entrada de texto
+    /// @param valor Valor actual del campo
+    /// @param indice Índice del campo
+    /// @param seleccionado Estado de selección del campo
     void _renderizarCampo(const std::string& valor, int indice, bool seleccionado);
     
     /**
@@ -82,16 +73,6 @@ private:
      * @brief Dibuja la interfaz completa de login
      */
     void _dibujarInterfazCompleta();
-    
-    /**
-     * @brief Dibuja el header visual del sistema
-     */
-    void _dibujarHeader();
-    
-    /**
-     * @brief Dibuja el mensaje de bienvenida
-     */
-    void _dibujarMensajeBienvenida();
     
     /**
      * @brief Actualiza la selección visual de campos y botones
@@ -137,47 +118,13 @@ private:
      * @brief Configura la sesión del estudiante después del login exitoso
      * @param index Índice del usuario en la base de datos
      */
-    void _configurarSesionEstudiante(int index);
-    
-    /**
-     * @brief Configura la sesión de la empresa después del login exitoso
-     * @param index Índice del usuario en la base de datos
-     */
-    void _configurarSesionEmpresa(int index);
+    UsuarioRawData _configurarSesionUsuario(int index);
 
-    /**
-     * @brief Muestra un mensaje de error en la interfaz
-     * @param mensaje Mensaje de error a mostrar
-     */
-    void _mostrarError(const std::string& mensaje);
-    
-    /**
-     * @brief Limpia el estado de error
-     */
-    void _limpiarError();
-
-// Metodos públicos
 public:
-    /**
-     * @brief Constructor por defecto
-     */
+    /// @brief Constructor por defecto
     LoginScreen();
-    
-    /**
-     * @brief Constructor con parámetros
-     * @param estudiante Referencia al objeto estudiante
-     * @param empresa Referencia al objeto empresa
-     * @param cursos Lista de cursos disponibles
-     * @param especialidades Lista de especializaciones disponibles
-     */
-    LoginScreen(Estudiante& estudiante, 
-                Empresa& empresa, 
-                LinkedList<Curso*>& cursos, 
-                LinkedList<Especializacion*>& especialidades);
 
-    /**
-     * @brief Destructor virtual
-     */
+    /// @brief Destructor virtual
     virtual ~LoginScreen() = default;
 
     /**
@@ -185,9 +132,6 @@ public:
      * @return Resultado de la ejecución con la acción a realizar
      */
     ResultadoPantalla ejecutar() override;
-    
-    // Limpia el estado de la pantalla para una nueva sesión
-    void clearState();
 
     /**
      * @brief Obtiene el email ingresado
@@ -200,52 +144,13 @@ public:
      * @return Tipo de usuario
      */
     TipoUsuario getTipoUsuario() const { return _tipoUsuario; }
-    
-    /**
-     * @brief Verifica si hay un error activo
-     * @return True si hay error, false en caso contrario
-     */
-    bool hasError() const { return _error; }
-    
-    /**
-     * @brief Obtiene el mensaje de error actual
-     * @return Mensaje de error
-     */
-    const std::string& getMensajeError() const { return _mensajeError; }
+
 };
 
-// Alias para LoginScreen (COMPATIBILIDAD)
-using Login = LoginScreen;
+// ---- CONSTUCTORES INLINE ----
+inline LoginScreen::LoginScreen() : PantallaBase() {}
 
-inline LoginScreen::LoginScreen() 
-    : _campoActual(0)
-    , _campoAnterior(-1)
-    , _primeraRenderizacion(true)
-    , _error(false)
-    , _tipoUsuarioActual(0)
-    , _estudiante(*(new Estudiante()))
-    , _empresa(*(new Empresa()))
-    , _cursos(*(new LinkedList<Curso*>()))
-    , _especialidades(*(new LinkedList<Especializacion*>()))
-{
-}
-
-inline LoginScreen::LoginScreen(Estudiante& estudiante, 
-                                Empresa& empresa, 
-                                LinkedList<Curso*>& cursos, 
-                                LinkedList<Especializacion*>& especialidades)
-    : _campoActual(0)
-    , _campoAnterior(-1)
-    , _primeraRenderizacion(true)
-    , _error(false)
-    , _tipoUsuarioActual(0)
-    , _estudiante(estudiante)
-    , _empresa(empresa)
-    , _cursos(cursos)
-    , _especialidades(especialidades)
-{
-}
-
+// ---- METODOS PRIVADOS ----
 inline void LoginScreen::_configurarCursor(bool mostrar) {
     CONSOLE_CURSOR_INFO cursorInfo;
     GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
@@ -256,24 +161,9 @@ inline void LoginScreen::_configurarCursor(bool mostrar) {
 inline void LoginScreen::_limpiarEstado() {
     _email.clear();
     _password.clear();
-    _tipoUsuarioActual = 0;
+    _tipoUsuarioActual = TipoUsuario::DEFAULT;
     _campoActual = 0;
     _campoAnterior = -1;
-    _limpiarError();
-}
-
-inline void LoginScreen::_limpiarError() {
-    _error = false;
-    _mensajeError.clear();
-}
-
-inline void LoginScreen::_mostrarError(const std::string& mensaje) {
-    _error = true;
-    _mensajeError = mensaje;
-}
-
-inline void LoginScreen::clearState() {
-    _limpiarEstado();
 }
 
 inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, bool seleccionado) {
@@ -295,7 +185,7 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
     gotoXY(_coordsBotones[indice].X, _coordsBotones[indice].Y);
     
     if (indice == 0 || indice == 1) {
-        if (seleccionado || (indice == 0 && _tipoUsuarioActual == 0) || (indice == 1 && _tipoUsuarioActual == 1)) {
+        if (seleccionado || (indice == 0 && _tipoUsuarioActual == TipoUsuario::ESTUDIANTE) || (indice == 1 && _tipoUsuarioActual == TipoUsuario::EMPRESA)) {
             setConsoleColor(1, 4, true, true);
         } else {
             setConsoleColor(7, 0);
@@ -313,37 +203,12 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
     setConsoleColor(15, 0);
 }
 
-inline void LoginScreen::_dibujarHeader() {
-    setConsoleColor(12, 13, true, true);
-    gotoXY(42, 4);    std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
-    gotoXY(42, 5);    std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
-    gotoXY(42, 6);    std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
-    
-    setConsoleColor(12, 13, true, true);
-    gotoXY(71, 7);    std::cout << "C L O N E";
-}
-
-inline void LoginScreen::_dibujarMensajeBienvenida() {
-    setConsoleColor(8, 0, true);
-    gotoXY(44, 9);
-    std::cout << "- QUE BUENO TENERTE DE VUELTA! -";
-}
-
-inline void LoginScreen::_dibujarInterfazCompleta() {
+inline void LoginScreen::_dibujarInterfazCompleta() 
+{
     setConsoleColor(15, 0);
     system("cls");
     
     UI_Login();
-    
-    // Dibuja el fondo del header
-    for (int i = 3; i <= 7; i++) {
-        gotoXY(3, i);
-        setConsoleColor(1, 13, true);
-        std::cout << std::string(114, ' ');
-    }
-    
-    _dibujarHeader();
-    _dibujarMensajeBienvenida();
     
     setConsoleColor(15, 0);
     
@@ -356,14 +221,6 @@ inline void LoginScreen::_dibujarInterfazCompleta() {
     // Renderizar botones
     for (int i = 0; i < CANT_BOTONES; ++i) {
         _renderizarBoton(_textosBotones[i], i, _campoActual == i + 2);
-    }
-    
-    // Mostrar mensaje de error si existe
-    if (_error) {
-        gotoXY(ANCHO_CONSOLA / 2 - _mensajeError.length() / 2, 11);
-        setConsoleColor(1, 3);
-        std::cout << _mensajeError;
-        setConsoleColor(15, 1);
     }
     
     gotoXY(34, 15);
@@ -433,7 +290,7 @@ inline void LoginScreen::_manejarRetroceso() {
 
 inline bool LoginScreen::_validarCampos() {
     if (_email.empty() || _password.empty()) {
-        _mostrarError("Todos los campos son obligatorios");
+        //_mostrarError("Todos los campos son obligatorios");
         return false;
     }
     return true;
@@ -441,37 +298,29 @@ inline bool LoginScreen::_validarCampos() {
 
 inline LoginStatus LoginScreen::_autenticarUsuario() {
     Usuario usuarioTemp;
-    _tipoUsuario = (_tipoUsuarioActual == 0) ? TipoUsuario::ESTUDIANTE : TipoUsuario::EMPRESA;
+    
+    if (_tipoUsuarioActual == TipoUsuario::DEFAULT) {
+		/// @todo implementar la selección de tipo de usuario
+        
+	}
+
     int index = usuarioTemp.buscarIndexUsuario(_email, _tipoUsuario);
     
     if (index == -1) {
-        _mostrarError("Usuario no encontrado");
+        //_mostrarError("Usuario no encontrado");
         return LoginStatus::USER_NOT_FOUND;
     }
     
     return usuarioTemp.login(usuarioTemp, _tipoUsuario, _password, index);
 }
 
-inline void LoginScreen::_configurarSesionEstudiante(int index) {
+inline UsuarioRawData LoginScreen::_configurarSesionUsuario(int index) {
     Usuario usuarioTemp;
-    _estudiante.reset();
-    _estudiante.setId(index);
-    _estudiante.setNombre(usuarioTemp.getNombreCompleto());
-    _estudiante.setUsername(_email);
-    _estudiante.setContrasena("");
-    _estudiante.cargarInscripciones(_cursos, _especialidades);
-    _estudiante.cargarDatos();
-    _empresa.reset();
-}
+	UsuarioRawData usuarioData;
 
-inline void LoginScreen::_configurarSesionEmpresa(int index) {
-    Usuario usuarioTemp;
-    _empresa.reset();
-    _empresa.setId(index);
-    _empresa.setNombre(usuarioTemp.getNombreCompleto());
-    _empresa.setUsername(_email);
-    _empresa.setContrasena("");
-    _estudiante.reset();
+	/// @todo implementar la asignacion de datos del usuario para la sesión
+
+    return usuarioData;
 }
 
 inline ResultadoPantalla LoginScreen::_procesarLogin() {
@@ -493,17 +342,17 @@ inline ResultadoPantalla LoginScreen::_procesarLogin() {
         int index = usuarioTemp.buscarIndexUsuario(_email, _tipoUsuario);
         
         if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
-            _configurarSesionEstudiante(index);
+            //_configurarSesionUsuario(index);
             res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
         } else {
-            _configurarSesionEmpresa(index);
+            //_configurarSesionUsuario(index);
             res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
         }
         
-        clearState();
+        _limpiarEstado();
         return res;
     } else {
-        _mostrarError("Contraseña incorrecta");
+        //_mostrarError("Contraseña incorrecta");
         _dibujarInterfazCompleta();
         return res;
     }
@@ -535,10 +384,10 @@ inline ResultadoPantalla LoginScreen::ejecutar() {
                 
             case 13: // Enter
                 if (_campoActual == 2) { // Botón Estudiante
-                    _tipoUsuarioActual = 0;
+                    _tipoUsuarioActual = TipoUsuario::ESTUDIANTE;
                     _dibujarInterfazCompleta();
                 } else if (_campoActual == 3) { // Botón Organización
-                    _tipoUsuarioActual = 1;
+                    _tipoUsuarioActual = TipoUsuario::EMPRESA;
                     _dibujarInterfazCompleta();
                 } else if (_campoActual == 4) { // Iniciar Sesión
                     ResultadoPantalla loginRes = _procesarLogin();
@@ -557,7 +406,7 @@ inline ResultadoPantalla LoginScreen::ejecutar() {
                 break;
         }
         
-        _limpiarError();
+        //_limpiarError();
     }
 };
 

@@ -192,12 +192,14 @@ inline LoginStatus Usuario::login(
 ) {
 	// ToDo: Implementar la lógica de autenticación.
 	// Usaremos las funciones de la clase FilesManager para manejar los archivos.
+	return LoginStatus::SUCCESS; // Retorna un código de estado de error por defecto
 }
 
 inline int Usuario::buscarIndexUsuario(std::string _username, TipoUsuario tipoUsuario)
 {
 	// Todo: Implementar la lógica para buscar el índice del usuario en el archivo de índice.
 	// Usaremos las funciones de la clase FilesManager para manejar los archivos.
+	return -1; // Retorna -1 si no se encuentra el usuario
 }
 
 inline bool Usuario::actualizarUsuario(

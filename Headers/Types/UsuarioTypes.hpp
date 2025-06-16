@@ -84,4 +84,18 @@ struct UsuarioIndex {
     }
 };
 
+struct UsuarioRawData {
+    int id;
+    TipoUsuario tipoUsuario;
+    char nombreCompleto[MAX_FIELD_LEN];
+    char nombreDeUsuario[MAX_FIELD_LEN];
+    char contrasenaHash[MAX_FIELD_LEN];
+    // Constructor por defecto
+    UsuarioRawData() : id(0), tipoUsuario(TipoUsuario::DEFAULT) {
+        std::memset(nombreCompleto, 0, MAX_FIELD_LEN);
+        std::memset(nombreDeUsuario, 0, MAX_FIELD_LEN);
+        std::memset(contrasenaHash, 0, MAX_FIELD_LEN);
+    }
+};
+
 #endif // !COURSERACLONE_PERSISTENCE_USUARIOTYPES_HPP
