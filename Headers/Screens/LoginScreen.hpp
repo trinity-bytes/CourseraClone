@@ -71,10 +71,11 @@ private:
     inline void _renderizarBoton(const std::string& texto, int indice, bool seleccionado);
 
     /// @brief Dibuja la interfaz completa de login
-    inline void _dibujarInterfazCompleta();
-
-    /// @brief Actualiza la selección visual de campos y botones
+    inline void _dibujarInterfazCompleta();    /// @brief Actualiza la selección visual de campos y botones
     inline void _actualizarSeleccion();
+
+    /// @brief Actualiza la renderización de todos los botones
+    inline void _actualizarBotones();
 
     /// @brief Maneja la entrada de caracteres en los campos
     /// @param tecla Tecla presionada
@@ -164,11 +165,9 @@ inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, 
     if (seleccionado)
     {
         setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BORDES_SUTILES);
-        _configurarCursor(true);
     }
     else {
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-        _configurarCursor(false);
     }
 
     // Mostrar el valor con padding para limpiar caracteres residuales
@@ -176,10 +175,16 @@ inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, 
     display.resize(52, ' '); // Asegurar que el campo tenga tamaño fijo
     std::cout << display;
 
-    // Posicionar cursor al final del texto real
+    // Posicionar cursor al final del texto real inmediatamente después de renderizar
     if (seleccionado) 
     {
         gotoXY(_coordsElementosUserInput[indice].X + valor.length(), _coordsElementosUserInput[indice].Y);
+        // Asegurar que el cursor esté visible después del posicionamiento
+        _configurarCursor(true);
+    }
+    else
+    {
+        _configurarCursor(true);
     }
 
     resetColor();
@@ -192,27 +197,36 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
 
     if (indice == 0 || indice == 1)
     {
-        // Botones de tipo de usuario
-        if (_tipoUsuarioActual == TipoUsuario::DEFAULT)
-        {
-            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+        // Botones de tipo de usuario (ESTUDIANTE y ORGANIZACION)
+        bool esTipoSeleccionado = false;
+        
+        if (indice == 0 && _tipoUsuarioActual == TipoUsuario::ESTUDIANTE) {
+            esTipoSeleccionado = true;
         }
-        else if ((_tipoUsuarioActual == TipoUsuario::ESTUDIANTE && indice == 0) ||
-                 (_tipoUsuarioActual == TipoUsuario::EMPRESA && indice == 1))
-        {
+        else if (indice == 1 && _tipoUsuarioActual == TipoUsuario::EMPRESA) {
+            esTipoSeleccionado = true;
+        }
+
+        if (esTipoSeleccionado) {
+            // Tipo de usuario seleccionado - resaltado activo
             setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_IMPORTANTE);
         }
+        else if (seleccionado) {
+            // Botón con hover/foco pero no seleccionado como tipo
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+        }
         else {
-            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+            // Estado normal sin selección
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         }
     }
     else {
-        // Botón de iniciar sesión
+        // Botón de iniciar sesión (indice == 2)
         if (seleccionado) {
             setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
         }
         else {
-            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         }
     }
 
@@ -261,6 +275,14 @@ inline void LoginScreen::_actualizarSeleccion()
         }
 
         _campoAnterior = _campoActual;
+    }
+}
+
+inline void LoginScreen::_actualizarBotones()
+{
+    for (int i = 0; i < CANT_BOTONES; ++i)
+    {
+        _renderizarBoton(_textosBotones[i], i, _campoActual == i + ELEMENTOS_INPUT);
     }
 }
 
@@ -397,9 +419,6 @@ inline ResultadoPantalla LoginScreen::ejecutar()
 
         int tecla = _getch();
 
-        // Debug: Mostrar código de tecla (opcional, quitar en producción)
-        // gotoXY(1, 1); std::cout << "Tecla: " << tecla << "   ";
-
         switch (tecla) {
         case 0:  // Teclas especiales - leer segundo byte
         case 224: // Teclas especiales en algunos sistemas
@@ -416,18 +435,16 @@ inline ResultadoPantalla LoginScreen::ejecutar()
 
         case 27: // ESC
             res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-            return res;
-
-        case 13: // Enter
+            return res;        case 13: // Enter
             if (_campoActual == ELEMENTOS_INPUT)
             { // Botón Estudiante
                 _tipoUsuarioActual = TipoUsuario::ESTUDIANTE;
-                _actualizarSeleccion();
+                _actualizarBotones(); // Actualizar solo los botones para reflejar el cambio
             }
             else if (_campoActual == ELEMENTOS_INPUT + 1)
             { // Botón Organización
                 _tipoUsuarioActual = TipoUsuario::EMPRESA;
-                _actualizarSeleccion();
+                _actualizarBotones(); // Actualizar solo los botones para reflejar el cambio
             }
             else if (_campoActual == ELEMENTOS_INPUT + 2)
             { // Iniciar Sesión
