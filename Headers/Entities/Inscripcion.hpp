@@ -19,17 +19,18 @@
 class Inscripcion 
 {
 private:
-    int _id;
-    int _idEstudiante;
-    int _idActividad;
-    double _progreso;
-    bool _completado;
-    bool _estadoPago;
+    int id;
+    int idEstudiante;
+    int idActividad;
+	TipoActividad tipo;
+    double progreso;
+    bool completado;
+    bool estadoPago;
 
 public:
     inline Inscripcion();
-    inline Inscripcion(int idEstudiante, int idActividad);
-    inline Inscripcion(InscripcionBinaria& _bin, Actividad* _act, int _off);
+    inline Inscripcion(int _idEstudiante, int _idActividad, int _id);
+    inline Inscripcion(InscripcionBinaria& _bin, int _off);
 
 	// Getters
 	inline int getId() const;
@@ -52,5 +53,66 @@ public:
 	No debe contener oeracione mas alla de gestionar inscripciones y su estado.
     */
 };
+
+inline Inscripcion::Inscripcion()
+    : id(0), idEstudiante(0), idActividad(0),
+    progreso(0.0), completado(false), estadoPago(false) {
+}
+inline Inscripcion::Inscripcion(int _idEstudiante, int _idActividad, int _id)
+    : id(_id), idEstudiante(_idEstudiante), idActividad(_idActividad), 
+    progreso(0.0), completado(false), estadoPago(false)   
+{
+
+}
+inline Inscripcion::Inscripcion(InscripcionBinaria& _bin, int _off)
+    : id(_off), idEstudiante(_bin.idEstudiante), idActividad(_bin.idActividad),
+    progreso(_bin.progreso), completado(_bin.completado),
+    estadoPago(_bin.pagado), tipo(static_cast<TipoActividad>(_bin.tipoActividad))
+{
+
+}
+
+// Getters
+inline int Inscripcion::getId() const {
+    return this->id;
+}
+inline int Inscripcion::getIdEstudiante() const {
+	return this->idEstudiante;
+}
+inline int Inscripcion::getIdActividad() const {
+    return this->idActividad;
+}
+inline double Inscripcion::getProgreso() const {
+	return this->progreso;
+}
+inline bool Inscripcion::getCompletado() const {
+    return this->completado;
+}
+inline bool Inscripcion::getEstadoPago() const {
+    return this->estadoPago;
+}
+
+inline void Inscripcion::guardar() {
+	FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago), this->id);
+    FilesManager::getInstance().guardarInidiceInscripcion(idEstudiante, this->id);
+}
+
+inline void Inscripcion::marcarComoPagada() {
+	this->estadoPago = true;
+	FilesManager::getInstance().actualizarPagoInscripcion(id, this->estadoPago);
+}
+
+inline RawInscripcionData Inscripcion::obtenerDatosCrudos() const {
+	RawInscripcionData datos;
+	datos.id = this->id;
+	datos.idEstudiante = this->idEstudiante;
+	datos.idActividad = this->idActividad;
+	datos.progreso = this->progreso;
+	datos.completado = this->completado;
+	datos.pagado = this->estadoPago;
+	datos.tipo = this->tipo;
+	return datos;
+}
+
 
 #endif // COURSERACLONE_ENTITIES_INSCRIPCION_HPP

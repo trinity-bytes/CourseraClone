@@ -14,6 +14,9 @@
 #include "ComprobanteDePago.hpp"
 #include "../DataStructures/LinkedList.hpp"
 #include "../DataStructures/Stack.hpp"
+#include "Inscripcion.hpp"
+#include "Curso.hpp"
+#include "Especializacion.hpp"
 
 /// @brief Clase que representa a un estudiante en el sistema de cursos
 /// @details Hereda de Usuario y maneja inscripciones a cursos y especializaciones, así como boletas de pago.

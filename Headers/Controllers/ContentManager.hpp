@@ -414,23 +414,17 @@ inline Curso* ContentManager::obtenerCurso(int id) {
 		return nullptr; // ID inválido
 	}
     return _cursos[id].get();
-	auto it = _cacheIdCursos.find(id);
-	if (it != _cacheIdCursos.end()) {
-		return it->second;
-	}
-	return nullptr; // Curso no encontrado
 }
 
-
-
-inline ContentOperationResult inscribirEstudianteACurso(int idEstudiante, int idCurso) {
-    // Verificar si el curso existe
-    /*
+inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
     Curso* curso = obtenerCurso(idCurso);
     if (!curso) {
         logError("InscribirEstudianteACurso", "Curso no encontrado: " + std::to_string(idCurso));
         return ContentOperationResult::COURSE_NOT_FOUND;
     }
+
+
+    /*
     // Verificar si el estudiante ya está inscrito
     if (std::find_if(_cursos.begin(), _cursos.end(), [idEstudiante, idCurso](const std::unique_ptr<Curso>& c) {
         return c->estaInscrito(idEstudiante);
@@ -438,6 +432,7 @@ inline ContentOperationResult inscribirEstudianteACurso(int idEstudiante, int id
         logError("InscribirEstudianteACurso", "Estudiante ya inscrito en el curso: " + std::to_string(idCurso));
         return ContentOperationResult::STUDENT_ALREADY_ENROLLED;
     }
+
     // Inscribir al estudiante
     curso->inscribirEstudiante(idEstudiante);
 

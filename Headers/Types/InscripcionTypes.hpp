@@ -1,13 +1,14 @@
 #ifndef COURSERACLONE_PERSISTENCE_INSCRIPCIONTYPES_HPP
 #define COURSERACLONE_PERSISTENCE_INSCRIPCIONTYPES_HPP
 
-#include <cstddef> // For offsetof
+#include "ActividadTypes.hpp"
 
 struct RawInscripcionData
 {
     int id;
     int idEstudiante;
     int idActividad;
+    TipoActividad tipo;
     double progreso;
     bool completado;
     bool pagado;

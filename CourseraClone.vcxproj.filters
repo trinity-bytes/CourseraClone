@@ -200,5 +200,17 @@
     <ClInclude Include="Headers\Utils\ValidationUtils.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\DataStructures\NodoAVL.hpp">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Controllers\InscripcionesController.hpp">
+      <Filter>Header Files\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\Lambda.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
