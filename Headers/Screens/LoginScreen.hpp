@@ -36,7 +36,9 @@ private:
         {34, 15}, {34, 20} 
     };
 
-    COORD _coordsBotones[CANT_BOTONES] = { {44, 23}, {62, 23}, {52, 26} };
+    COORD _coordsBotones[CANT_BOTONES] = { 
+        {44, 23}, {62, 23}, {52, 26} 
+    };
 
     const std::string _elementosUserinput[ELEMENTOS_INPUT] = { " ", " " };
 
@@ -47,11 +49,6 @@ private:
     };
 
 	// ---- METODOS PRIVADOS ----
-
-    /// @brief Configura la visibilidad del cursor
-    /// @param mostrar True para mostrar el cursor, false para ocultarlo
-    void _configurarCursor(bool mostrar);
-
     /// @brief Limpia el estado interno de la pantalla
     void _limpiarEstado();
 
@@ -61,63 +58,43 @@ private:
     /// @param seleccionado Estado de selección del campo
     void _renderizarCampo(const std::string& valor, int indice, bool seleccionado);
     
-    /**
-     * @brief Renderiza un botón de la interfaz
-     * @param texto Texto del botón
-     * @param indice Índice del botón
-     * @param seleccionado Estado de selección del botón
-     */
+    /// @brief Renderiza un botón de la interfaz
+/// @param texto Texto del botón
+/// @param indice Índice del botón
+/// @param seleccionado Estado de selección del botón
     void _renderizarBoton(const std::string& texto, int indice, bool seleccionado);
-    
-    /**
-     * @brief Dibuja la interfaz completa de login
-     */
+
+    /// @brief Dibuja la interfaz completa de login
     void _dibujarInterfazCompleta();
-    
-    /**
-     * @brief Actualiza la selección visual de campos y botones
-     */
+
+    /// @brief Actualiza la selección visual de campos y botones
     void _actualizarSeleccion();
 
-    /**
-     * @brief Maneja la entrada de caracteres en los campos
-     * @param tecla Tecla presionada
-     */
+    /// @brief Maneja la entrada de caracteres en los campos
+    /// @param tecla Tecla presionada
     void _manejarEntradaTexto(int tecla);
-    
-    /**
-     * @brief Maneja la navegación con las teclas direccionales
-     * @param tecla Código de la tecla presionada
-     */
+
+    /// @brief Maneja la navegación con las teclas direccionales
+    /// @param tecla Código de la tecla presionada
     void _manejarNavegacion(int tecla);
-    
-    /**
-     * @brief Maneja la acción de retroceso (Backspace)
-     */
+
+    /// @brief Maneja la acción de retroceso (Backspace)
     void _manejarRetroceso();
 
-    /**
-     * @brief Valida los campos de entrada
-     * @return True si los campos son válidos, false en caso contrario
-     */
+    /// @brief Valida los campos de entrada
+    /// @return True si los campos son válidos, false en caso contrario
     bool _validarCampos();
-    
-    /**
-     * @brief Procesa el intento de inicio de sesión
-     * @return Resultado del proceso de autenticación
-     */
+
+    /// @brief Procesa el intento de inicio de sesión
+    /// @return Resultado del proceso de autenticación
     ResultadoPantalla _procesarLogin();
-    
-    /**
-     * @brief Autentica al usuario con las credenciales proporcionadas
-     * @return Estado del login
-     */
+
+    /// @brief Autentica al usuario con las credenciales proporcionadas
+    /// @return Estado del login
     LoginStatus _autenticarUsuario();
-    
-    /**
-     * @brief Configura la sesión del estudiante después del login exitoso
-     * @param index Índice del usuario en la base de datos
-     */
+
+    /// @brief Configura la sesión del estudiante después del login exitoso
+    /// @param index Índice del usuario en la base de datos
     UsuarioRawData _configurarSesionUsuario(int index);
 
 public:
@@ -127,22 +104,16 @@ public:
     /// @brief Destructor virtual
     virtual ~LoginScreen() = default;
 
-    /**
-     * @brief Ejecuta la pantalla de login
-     * @return Resultado de la ejecución con la acción a realizar
-     */
+    /// @brief Ejecuta la pantalla de login
+/// @return Resultado de la ejecución con la acción a realizar
     ResultadoPantalla ejecutar() override;
 
-    /**
-     * @brief Obtiene el email ingresado
-     * @return Email del usuario
-     */
+    /// @brief Obtiene el email ingresado
+    /// @return Email del usuario
     const std::string& getEmail() const { return _email; }
-    
-    /**
-     * @brief Obtiene el tipo de usuario seleccionado
-     * @return Tipo de usuario
-     */
+
+    /// @brief Obtiene el tipo de usuario seleccionado
+    /// @return Tipo de usuario
     TipoUsuario getTipoUsuario() const { return _tipoUsuario; }
 
 };
@@ -151,14 +122,8 @@ public:
 inline LoginScreen::LoginScreen() : PantallaBase() {}
 
 // ---- METODOS PRIVADOS ----
-inline void LoginScreen::_configurarCursor(bool mostrar) {
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-    cursorInfo.bVisible = mostrar;
-    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-}
-
-inline void LoginScreen::_limpiarEstado() {
+inline void LoginScreen::_limpiarEstado() 
+{
     _email.clear();
     _password.clear();
     _tipoUsuarioActual = TipoUsuario::DEFAULT;
@@ -166,27 +131,32 @@ inline void LoginScreen::_limpiarEstado() {
     _campoAnterior = -1;
 }
 
-inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, bool seleccionado) {
+inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, bool seleccionado) 
+{
     gotoXY(_coordsElementosUserInput[indice].X, _coordsElementosUserInput[indice].Y);
     
-    if (seleccionado) {
-        setConsoleColor(15, 4, true, true);
+    if (seleccionado) 
+    {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         _configurarCursor(true);
     } else {
-        setConsoleColor(15, 0);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BORDES_SUTILES);
         _configurarCursor(false);
     }
     
-    setConsoleColor(15, 1);
     std::cout << valor;
+    resetColor();
 }
 
-inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, bool seleccionado) {
+inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, bool seleccionado) 
+{
     gotoXY(_coordsBotones[indice].X, _coordsBotones[indice].Y);
+    _configurarCursor(false);
     
     if (indice == 0 || indice == 1) 
     {
-        if (seleccionado || (indice == 0 && _tipoUsuarioActual == TipoUsuario::ESTUDIANTE) || (indice == 1 && _tipoUsuarioActual == TipoUsuario::EMPRESA)) {
+        if ((indice == 0 && _tipoUsuarioActual == TipoUsuario::ESTUDIANTE) || (indice == 1 && _tipoUsuarioActual == TipoUsuario::EMPRESA)) 
+        {
             setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         } else {
             setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -198,8 +168,7 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
             setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         }
     }
-    
-    _configurarCursor(false);
+
     std::cout << texto;
 	resetColor();
 }
@@ -212,7 +181,8 @@ inline void LoginScreen::_dibujarInterfazCompleta()
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
     
     // Renderizar campos de entrada
-    for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
+    for (int i = 0; i < ELEMENTOS_INPUT; ++i) 
+    {
         std::string valor = (i == 0) ? _email : std::string(_password.length(), '*');
         _renderizarCampo(valor, i, _campoActual == i);
     }
@@ -360,8 +330,10 @@ inline ResultadoPantalla LoginScreen::_procesarLogin() {
 inline ResultadoPantalla LoginScreen::ejecutar() {
     ResultadoPantalla res;
     
-    while (true) {
-        if (_primeraRenderizacion) {
+    while (true) 
+    {
+        if (_primeraRenderizacion) 
+        {
             _dibujarInterfazCompleta();
             _configurarCursor(true);
             _primeraRenderizacion = false;
@@ -382,13 +354,16 @@ inline ResultadoPantalla LoginScreen::ejecutar() {
                 return res;
                 
             case 13: // Enter
-                if (_campoActual == 2) { // Botón Estudiante
+                if (_campoActual == 2) 
+                { // Botón Estudiante
                     _tipoUsuarioActual = TipoUsuario::ESTUDIANTE;
                     _dibujarInterfazCompleta();
-                } else if (_campoActual == 3) { // Botón Organización
+                } else if (_campoActual == 3) 
+                { // Botón Organización
                     _tipoUsuarioActual = TipoUsuario::EMPRESA;
                     _dibujarInterfazCompleta();
-                } else if (_campoActual == 4) { // Iniciar Sesión
+                } else if (_campoActual == 4) 
+                { // Iniciar Sesión
                     ResultadoPantalla loginRes = _procesarLogin();
                     if (loginRes.accion != AccionPantalla::NINGUNA) {
                         return loginRes;
@@ -401,7 +376,7 @@ inline ResultadoPantalla LoginScreen::ejecutar() {
                 break;
                 
             default:
-        _manejarEntradaTexto(tecla);
+                _manejarEntradaTexto(tecla);
                 break;
         }
         

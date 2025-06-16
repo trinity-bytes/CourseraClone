@@ -129,8 +129,8 @@ inline void UI_Login()
                                                      ¯¯¯¯¯¯¯¯¯¯¯¯¯¯                                                  
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-    Usa las flechas de direccion (ARRIBA Y ABAJO) para navegar por el menu.
-    Pulsa la tecla ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
+ Usa las flechas de direccion (ARRIBA Y ABAJO) para navegar por el menu.
+ Pulsa la tecla ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -147,7 +147,7 @@ inline void UI_Login()
         }
     }
 
-    gotoXY(44, 7);  std::cout << "- QUE BUENO TENERTE DE VUELTA! -";
+    gotoXY(45, 7);  std::cout << "- QUE BUENO TENERTE DE VUELTA! -";
 
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_AZUL_SUAVE);
     gotoXY(42, 2);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
