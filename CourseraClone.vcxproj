@@ -140,6 +140,7 @@
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Controllers\InscripcionesController.hpp" />
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
     <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Headers\Utils\ConsoleTypes.hpp" />
     <ClInclude Include="Headers\Utils\DataPaths.hpp" />
     <ClInclude Include="Headers\Utils\InputUtils.hpp" />
+    <ClInclude Include="Headers\Utils\Lambda.hpp" />
     <ClInclude Include="Headers\Utils\ScreenSystem.hpp" />
     <ClInclude Include="Headers\Utils\SystemUtils.hpp" />
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp" />

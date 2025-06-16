@@ -24,6 +24,7 @@
 #include "../Types/FilesTypes.hpp"
 #include "../Utils/DataPaths.hpp"
 #include "../DataStructures/algoritmosBusqueda.hpp"
+#include "../Utils/Lambda.hpp"
 
 class FilesManager 
 {
@@ -113,6 +114,11 @@ public:
     /// @param offset Posición en el archivo
     /// @return Datos binarios del usuario
     UsuarioBinario cargarUsuarioPorOffset(TipoUsuario tipo, long offset);
+
+    /// @brief Carga todas las inscripciones del estudiante
+    /// @param id Id del estudiante
+    /// @return Resultado de la operación
+    FileOperationResult cargarInscripcionesPorEstudiante(int id, std::vector<int>& offsets);
 
     /// @brief Guarda una inscripción en formato binario
     /// @param bin Datos de la inscripción
@@ -431,6 +437,63 @@ inline std::string FilesManager::getDataFilePathActividades(TipoActividad tipo) 
 
 // ========== DOMINIO CORE ==========
 
+inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id, std::vector<int>& offsets) {
+    if (!_sistemaInicializado) {
+        logError("Cargar inscripciones", "Sistema", "Sistema no inicializado");
+        return FileOperationResult::UNKNOWN_ERROR;
+    }
+
+    try {
+        std::ifstream is(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary);
+
+        if (!is.is_open()) {
+            logError("Cargar inscripciones", DataPaths::Core::DB_INSCRIPCIONES, "Archivo no encontrado");
+            return FileOperationResult::FILE_NOT_FOUND;
+        }
+
+		auto path = DataPaths::Core::INDICES_INSCRIPCIONES;
+		std::fstream archivoOrden(path, std::ios::binary | std::ios::in);
+
+        archivoOrden.seekg(0, std::ios::end);
+        int cantidad = static_cast<int>(archivoOrden.tellg() / sizeof(InscripcionIndex));
+
+        if (cantidad == 0) {
+            logInfo("Leer inscripciones", path + " (No hay registros)");
+            archivoOrden.close();
+            return FileOperationResult::SUCCESS;
+        }
+
+        auto busqueda = crearPredicadoBusqueda(archivoOrden, id);
+        int pos = busquedaBinaria(0, cantidad - 1, busqueda);
+
+		if (pos < 0 || pos >= cantidad) {
+			logInfo("Cargar inscripciones", "No se encontraron inscripciones para el ID: " + std::to_string(id));
+            return FileOperationResult::SUCCESS;
+		}
+
+        int contador = 0;
+        for (int i = pos; i < cantidad; i++) {
+            contador++;
+			InscripcionIndex tmpIndex;
+			archivoOrden.seekg(i * sizeof(InscripcionIndex), std::ios::beg);
+			archivoOrden.read(reinterpret_cast<char*>(&tmpIndex), sizeof(InscripcionIndex));
+			if (tmpIndex.idUsuario == id) {
+				offsets.push_back(tmpIndex.offset);
+                logInfo("Cargar inscripciones", "Inscripcion encontrada: id " + std::to_string(tmpIndex.offset));
+			}
+		}
+
+        logInfo("Cargar inscripciones", "Se han cargado " + std::to_string(cantidad) + " offsets de inscripciones");
+        archivoOrden.close();
+        return FileOperationResult::SUCCESS;
+
+    }
+    catch (const std::exception& e) {
+        logError("Cargar inscripciones", "Sistema", e.what());
+        return FileOperationResult::UNKNOWN_ERROR;
+    }
+}
+
 inline FileOperationResult FilesManager::guardarUsuarioBinario(
     const UsuarioBinario& bin,
     TipoUsuario tipo,
@@ -489,13 +552,7 @@ inline FileOperationResult FilesManager::guardarInidiceInscripcion(int _idEstudi
         }
 
 		archivoOrden.seekg(0, std::ios::beg);
-        auto busqueda = [&](int pos) {
-            InscripcionIndex tmp;
-            archivoOrden.seekg(pos * sizeof(InscripcionIndex), std::ios::beg);
-            archivoOrden.read(reinterpret_cast<char*>(&tmp), sizeof(InscripcionIndex));
-
-            return _idEstudiante <= tmp.idUsuario;
-            };
+        auto busqueda = crearPredicadoBusqueda(archivoOrden, _idEstudiante);
 
         int pos = busquedaBinaria(0, cantidad - 1, busqueda);
         for (int i = cantidad - 1; i >= pos; i--) {
