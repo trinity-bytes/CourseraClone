@@ -177,7 +177,8 @@ inline void LoginScreen::_renderizarCampo(const std::string& valor, int indice, 
     std::cout << display;
 
     // Posicionar cursor al final del texto real
-    if (seleccionado) {
+    if (seleccionado) 
+    {
         gotoXY(_coordsElementosUserInput[indice].X + valor.length(), _coordsElementosUserInput[indice].Y);
     }
 
@@ -192,13 +193,17 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
     if (indice == 0 || indice == 1)
     {
         // Botones de tipo de usuario
-        if ((indice == 0 && _tipoUsuarioActual == TipoUsuario::ESTUDIANTE) ||
-            (indice == 1 && _tipoUsuarioActual == TipoUsuario::EMPRESA))
+        if (_tipoUsuarioActual == TipoUsuario::DEFAULT)
         {
-            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+        }
+        else if ((_tipoUsuarioActual == TipoUsuario::ESTUDIANTE && indice == 0) ||
+                 (_tipoUsuarioActual == TipoUsuario::EMPRESA && indice == 1))
+        {
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_IMPORTANTE);
         }
         else {
-            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         }
     }
     else {
@@ -222,7 +227,7 @@ inline void LoginScreen::_dibujarInterfazCompleta()
 
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
 
-    // Renderizar campos de entrada
+    /// @brief Renderizar campos de entrada
     for (int i = 0; i < ELEMENTOS_INPUT; ++i)
     {
         std::string valor = (i == 0) ? _email : std::string(_password.length(), '*');
@@ -417,12 +422,12 @@ inline ResultadoPantalla LoginScreen::ejecutar()
             if (_campoActual == ELEMENTOS_INPUT)
             { // Botón Estudiante
                 _tipoUsuarioActual = TipoUsuario::ESTUDIANTE;
-                _dibujarInterfazCompleta();
+                _actualizarSeleccion();
             }
             else if (_campoActual == ELEMENTOS_INPUT + 1)
             { // Botón Organización
                 _tipoUsuarioActual = TipoUsuario::EMPRESA;
-                _dibujarInterfazCompleta();
+                _actualizarSeleccion();
             }
             else if (_campoActual == ELEMENTOS_INPUT + 2)
             { // Iniciar Sesión
