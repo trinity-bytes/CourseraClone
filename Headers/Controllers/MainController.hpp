@@ -10,6 +10,7 @@
 // Headers propios del proyecto
 #include "../Screens/LandingPageScreen.hpp"
 #include "../Screens/LoginScreen.hpp"
+#include "../Screens/RegistroScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
@@ -21,6 +22,7 @@ private:
     /// @brief Métodos privados de navegación
     std::unique_ptr<PantallaBase> crearPantallaLandingPage();
     std::unique_ptr<PantallaBase> crearPantallaLogin();
+    std::unique_ptr<PantallaBase> crearPantallaRegistro();
 
 public:
     /// @brief Constructor y destructor
@@ -41,16 +43,23 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaLandingPage()
     return std::make_unique<LandingPageScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla de login
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaLogin()
 {
     return std::make_unique<LoginScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla de registro
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaRegistro()
+{
+    return std::make_unique<RegistroScreen>();
 }
 
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaLogin();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaRegistro();
     
     do
     {
@@ -62,12 +71,20 @@ inline void MainController::run()
             _pantallaActual = crearPantallaLandingPage();
             break;
 
+        case AccionPantalla::IR_A_LOGIN:
+            _pantallaActual = crearPantallaLogin();
+			break;
+
+        case AccionPantalla::IR_A_REGISTRO:
+            _pantallaActual = crearPantallaRegistro();
+			break;
+
         case AccionPantalla::SALIR:
             _ejecutando = false;
             system("cls");
             break;
         default:
-            // Para acciones no implementadas aún, volver a landing page
+            /// @brief Para acciones no implementadas aún, se regresa a landing page
             _pantallaActual = crearPantallaLandingPage();
             break;
         }

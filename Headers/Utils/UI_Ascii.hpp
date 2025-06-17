@@ -58,12 +58,12 @@ inline void UI_LandingPage()
 	std::cout << ui;
 
     /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
     for (int y = 0; y < 4; y++)
     {
         for (int x = 0; x < ANCHO_CONSOLA; x++)
         {
             gotoXY(x, y);
-            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
             std::cout << " ";
         }
     }
@@ -78,12 +78,12 @@ inline void UI_LandingPage()
     gotoXY(35, 1); std::cout << "│  C L O N E";
 
     /// @brief Dibujar fondo del hero-section
+     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
     for (int y = 4; y < 10; y++)
     {
         for (int x = 0; x < ANCHO_CONSOLA; x++)
         {
             gotoXY(x, y);
-            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
             std::cout << " ";
         }
     }
@@ -137,12 +137,12 @@ inline void UI_Login()
 	std::cout << ui;
 
     /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
     for (int y = 0; y < 10; y++)
     {
         for (int x = 0; x < ANCHO_CONSOLA; x++)
         {
             gotoXY(x, y);
-            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
             std::cout << " ";
         }
     }
@@ -164,35 +164,34 @@ inline void UI_Signup()
 {
 //----------------------------------------------------------------------------------------------------------------------
 	std::string ui = R"(
-                                         ▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█                                      
+                                         ▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█                                         
                                          ▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█                                     
                                          ▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀                                     
                                                         C L O N E                                                   
-                                                                                                                    
+                                                                                        
    
-                    Nombre completo (Nombres y apellidos):
-                    
-                    ────────────────────────────────────────────────────────────────────────────────     
+                         Nombres y apellidos (O nombre de la empresa):
+                         ┌──────────────────────────────────────────────────────────────────┐  
+                         │                                                                  │
+                         └──────────────────────────────────────────────────────────────────┘ 
+                         Email:
+                         ┌──────────────────────────────────────────────────────────────────┐
+                         │                                                                  │
+                         └──────────────────────────────────────────────────────────────────┘
+                         Contraseña:
+                         ┌──────────────────────────────────────────────────────────────────┐
+                         │                                                                  │
+                         └──────────────────────────────────────────────────────────────────┘
+                         Vuelva a ingresar su contraseña:
+                         ┌──────────────────────────────────────────────────────────────────┐
+                         │                                                                  │
+                         └──────────────────────────────────────────────────────────────────┘
 
-                    Email:
-                    
-                    ────────────────────────────────────────────────────────────────────────────────
-                                                                                                                    
-                    Contrasena (Ingrese su contrasena 2 veces):                         
-                                                                  
-                    ────────────────────────────────────────────────────────────────────────────────       
-                                                             
-                    
-                    ──────────────────────────────────────────────────────────────────────────────── 
+                         Que tipo de usuario seras?:   UN ESTUDIANTE   UNA ORGANIZACION 
 
-                    Que tipo de usuario seras?:
-                                                                         
-                          UN ESTUDIANTE        UNA ORGANIZACION      
 
-                                                                                                                    
                                                       CREAR CUENTA                                                  
                                                       ¯¯¯¯¯¯¯¯¯¯¯¯                                                  
-                                                                                                                    
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
  Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.)";
@@ -200,6 +199,24 @@ inline void UI_Signup()
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
 	std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 0; y < 6; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(42, 1);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+    gotoXY(42, 2);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+    gotoXY(42, 3);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
+
+    gotoXY(57, 4);  std::cout << "C L O N E";
 }
 
 /// UI Dashboard for student
@@ -211,9 +228,9 @@ inline void UI_StudentDashboard()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯  ¯¯¯¯¯¯¯¯¯¯¯¯¯
                                                                                                                      
 
-            "Frase motivacional generica" - anonimUwU                                                            
+            BIENVENID@  DE VUELTA   
           
-                                                                                                                     
+            RECUERDA:                                                                                                         
        
        
                                                                                                                      
