@@ -11,6 +11,7 @@
 #include "../Screens/LandingPageScreen.hpp"
 #include "../Screens/LoginScreen.hpp"
 #include "../Screens/RegistroScreen.hpp"
+#include "../Screens/DashboardEstudianteScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
@@ -18,11 +19,11 @@ class MainController
 private:
     /// @brief Estado de la aplicación
     bool _ejecutando;
-    
-    /// @brief Métodos privados de navegación
+      /// @brief Métodos privados de navegación
     std::unique_ptr<PantallaBase> crearPantallaLandingPage();
     std::unique_ptr<PantallaBase> crearPantallaLogin();
     std::unique_ptr<PantallaBase> crearPantallaRegistro();
+    std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
 
 public:
     /// @brief Constructor y destructor
@@ -55,11 +56,17 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaRegistro()
     return std::make_unique<RegistroScreen>();
 }
 
+/// @brief Crea una nueva instancia del dashboard de estudiante
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaDashboardEstudiante()
+{
+    return std::make_unique<DashboardEstudianteScreen>();
+}
+
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaRegistro();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaLandingPage();
     
     do
     {
@@ -73,11 +80,13 @@ inline void MainController::run()
 
         case AccionPantalla::IR_A_LOGIN:
             _pantallaActual = crearPantallaLogin();
-			break;
-
-        case AccionPantalla::IR_A_REGISTRO:
+			break;        case AccionPantalla::IR_A_REGISTRO:
             _pantallaActual = crearPantallaRegistro();
 			break;
+
+        case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+            _pantallaActual = crearPantallaDashboardEstudiante();
+            break;
 
         case AccionPantalla::SALIR:
             _ejecutando = false;

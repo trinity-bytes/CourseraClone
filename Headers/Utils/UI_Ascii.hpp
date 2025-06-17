@@ -224,27 +224,27 @@ inline void UI_StudentDashboard()
 {
 //----------------------------------------------------------------------------------------------------------------------
     std::string ui = R"(
-   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       EXPLORAR CURSOS Y ESPECIALIDADES   VER MI PERFIL  CERRAR SESION   
-   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯  ¯¯¯¯¯¯¯¯¯¯¯¯¯
+   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E                                          VER MI PERFIL  CERRAR SESION   
+   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                                                        ¯¯¯¯¯¯¯¯¯¯¯¯¯  ¯¯¯¯¯¯¯¯¯¯¯¯¯
                                                                                                                      
 
-            BIENVENID@  DE VUELTA   
-          
-            RECUERDA:                                                                                                         
-       
+            Te damos la bienvenida   
+            RECUERDA: 
+                                                                                                                    
+        EXPLORAR CURSOS Y ESPECIALIDADES
        
                                                                                                                      
        MIS CURSOS: [ VER TODOS ]
-       ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗         
+       ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗
        ║                                ║  ║                                ║  ║                                ║
        ╠════════════════════════════════╣  ╠════════════════════════════════╣  ╠════════════════════════════════╣
        ║                                ║  ║                                ║  ║                                ║
-       ║                                ║  ║                                ║  ║                                ║       
+       ║                                ║  ║                                ║  ║                                ║
        ║                                ║  ║                                ║  ║                                ║
        ╚════════════════════════════════╝  ╚════════════════════════════════╝  ╚════════════════════════════════╝
 
        MIS ESPECIALIZACIONES [ VER TODAS ]
-       ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗ 
+       ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗
        ║                                ║  ║                                ║  ║                                ║
        ╠════════════════════════════════╣  ╠════════════════════════════════╣  ╠════════════════════════════════╣
        ║                                ║  ║                                ║  ║                                ║
@@ -259,6 +259,42 @@ inline void UI_StudentDashboard()
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Dibujar linea inferior de los botones
+    gotoXY(89, 2); std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯  ¯¯¯¯¯¯¯¯¯¯¯¯¯";
+
+    /// @brief/ Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    /// @brief Dibujar fondo del hero-section
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 4; y < 10; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    gotoXY(22, 5); std::cout << "Te damos la bienvenida";
+    gotoXY(22, 6); std::cout << "RECUERDA:";
+
+	resetColor();
 }
 
 /// UI Dashboard for organization

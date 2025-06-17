@@ -6,287 +6,287 @@
 // Headers de librería estándar
 #include <vector>
 #include <string>
-#include <fstream>    // Para std::ifstream
 #include <sstream>    // Para std::stringstream
-#include <windows.h>  // Para COORD y funciones de consola y que std::min funcione bien
-#include <algorithm>  // Para std::min
+#include <conio.h>    // Para _getch()
 
-// Headers propios
-//#include "../Utils/ScreenSystem.hpp"
-//#include "../Utils/SystemUtils.hpp"
-//#include "../Utils/UI_Ascii.hpp"
-//#include "../Entities/Inscripcion.hpp"
-//#include "../Entities/Curso.hpp"
-//#include "../Entities/Especializacion.hpp"
-//#include "../Controllers/ContentManager.hpp"
-
-// forward declarations
-class Controladora; // Declaración adelantada de Controladora
+// Headers propios del proyecto
+#include "../Controllers/ContentManager.hpp"
+#include "../Controllers/FilesManager.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/DataPaths.hpp"
+#include "../Utils/UI_Ascii.hpp"
+#include "../Utils/ConsoleTypes.hpp"
+#include "../Types/UsuarioTypes.hpp"
 
 // Pantalla principal del dashboard del estudiante
 class DashboardEstudianteScreen : public PantallaBase
 {
 private:
-    // Constantes de configuración de secciones
+    /// @brief Constantes de configuración de secciones
     static const int SECCION_HEADER = 0;
     static const int SECCION_MENU_SUPERIOR = 1;
     static const int SECCION_CURSOS = 2;
     static const int SECCION_ESPECIALIZACIONES = 3;
-    static const int TOTAL_SECCIONES = 4;
-
-    // Constantes de elementos por sección
+    static const int TOTAL_SECCIONES = 4;    /// @brief Constantes de elementos por sección
     static const int MAX_ELEMENTOS_HEADER = 2;
     static const int MAX_ELEMENTOS_MENU = 1;
-    static const int MAX_ELEMENTOS_CURSOS = 4;
-    static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 4;    // Ruta de archivos de datos
-    static const std::string RUTA_INSCRIPCIONES;
+    static const int MAX_ELEMENTOS_CURSOS = 3;
+    static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 3;
+    static const int TOTAL_ELEMENTOS_NAVEGABLES = MAX_ELEMENTOS_HEADER + MAX_ELEMENTOS_MENU + MAX_ELEMENTOS_CURSOS + MAX_ELEMENTOS_ESPECIALIZACIONES;
+    
+    /// @brief Constantes de formateo de texto (siguiendo patrón del LandingPage)
+    static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
+    static const int MAX_ALTO_CARACTERES_CUADRO = 3;
 
-    // Datos del usuario logueado
+    /// @brief Datos del usuario logueado
     std::string _nombreEstudiante;
     int _idEstudiante;
 
-    // Estado de navegación
+    /// @brief Estado de navegación
     int _seccionActual;
     int _elementoActual;
     int _seccionAnterior;
     int _elementoAnterior;
     bool _primeraRenderizacion;
 
-    // Índices de visualización
+    /// @brief Índices de visualización
     int _indCursoVisible;
-    int _indEspVisible;
-
-    // Coordenadas de interfaz
-    COORD _coordsElementosHeader[MAX_ELEMENTOS_HEADER];
-    COORD _coordsElementosMenu[MAX_ELEMENTOS_MENU];
-    COORD _coordsTituloCursos[MAX_ELEMENTOS_CURSOS];
-    COORD _coordsTituloEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES];    // Datos cargados
+    int _indEspVisible;    /// @brief Coordenadas de interfaz
+    COORD _coordsElementosHeader[MAX_ELEMENTOS_HEADER] = {
+        {88, 1}, {103, 1}
+    };
+    COORD _coordsElementosMenu[MAX_ELEMENTOS_MENU] = {
+        {7, 8}
+    };
+      /// @brief Coordenadas para títulos y descripciones de cursos
+    COORD _coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
+        {9, 13}, {45, 13}, {81, 13}
+    };
+    COORD _coordsDescCursos[MAX_ELEMENTOS_CURSOS] = {
+        {9, 15}, {45, 15}, {81, 15}
+    };
+    
+    /// @brief Coordenadas para títulos y descripciones de especializaciones
+    COORD _coordsTituloEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES] = {
+        {9, 22}, {45, 22}, {81, 22}
+    };
+    COORD _coordsDescEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES] = {
+        {9, 24}, {45, 24}, {81, 24}
+    };
     std::vector<ElementoMenu> _cursosInscritos;
     std::vector<ElementoMenu> _especializacionesInscritas;
+	// ---- METODOS PRIVADOS ----
 
-    // Métodos de inicialización
-    void inicializarCoordenadas();
-    void cargarDatos(GestionadorCursos& _gestion);
-    void cargarInscripciones(GestionadorCursos& _gestion);
+    /// @brief Métodos de inicialización
+    inline void _limpiarEstado();
+    inline void _cargarDatosDummy();
 
-    // Métodos de renderizado
-    void dibujarInterfazCompleta();
-    void renderizarHeader();
-    void renderizarMenuSuperior();    void renderizarCursos();
-    void renderizarEspecializaciones();
-    void actualizarSeleccion();
+    /// @brief Métodos de renderizado
+    inline void _dibujarInterfazCompleta();
+    inline void _renderizarHeader();
+    inline void _renderizarMenuSuperior();
+    inline void _renderizarCursos();
+    inline void _renderizarEspecializaciones();
+    inline void _actualizarSeleccion();
     
-    // Métodos de utilidad
-    int obtenerMaxElementosEnSeccion(int _seccion);
-    ResultadoPantalla procesarSeleccion();
+    /// @brief Métodos de navegación
+    inline void _manejarNavegacion(int tecla);
+    inline void _calcularPosicionEnSeccion(int indiceGlobal, int& seccion, int& elemento);
+    inline int _calcularIndiceGlobal(int seccion, int elemento);
+      /// @brief Métodos de utilidad
+    inline int _obtenerMaxElementosEnSeccion(int seccion);
+    inline ResultadoPantalla _procesarSeleccion();
+    
+    /// @brief Métodos de formateo (siguiendo patrón del LandingPage)
+    inline void _mostrarTituloFormateado(const COORD& coord, const std::string& titulo);
+    inline void _mostrarDescripcionFormateada(const COORD& coord, const std::string& descripcion);
+    inline std::string _truncarTitulo(const std::string& titulo, int maxLongitud);
+    inline std::string _formatearDescripcion(const std::string& texto, int anchoMax, int altoMax);
+    inline void _actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, 
+                                           const std::string& titulo, const std::string& descripcion, bool seleccionado);
 
 public:
-    DashboardEstudianteScreen(Controladora* _controladora, int _idEstudiante, const std::string& _nombreEstudiante);
-    ResultadoPantalla ejecutar() override;
+    inline DashboardEstudianteScreen();
+    inline ResultadoPantalla ejecutar() override;
 };
 
-// Definición de constante estática fuera de la clase
-const std::string DashboardEstudianteScreen::RUTA_INSCRIPCIONES = "Resources/Data/inscripciones.dat";
-
-// Implementación de métodos
-
-void DashboardEstudianteScreen::inicializarCoordenadas()
-{
-    _coordsElementosHeader[0] = {84, 3};
-    _coordsElementosHeader[1] = {99, 3};
-    
-    _coordsElementosMenu[0] = {9, 10};
-    
-    _coordsTituloCursos[0] = {11, 15};
-    _coordsTituloCursos[1] = {42, 15};
-    _coordsTituloCursos[2] = {73, 15};
-    _coordsTituloCursos[3] = {101, 17};
-    
-    _coordsTituloEspecializaciones[0] = {11, 25};
-    _coordsTituloEspecializaciones[1] = {42, 25};
-    _coordsTituloEspecializaciones[2] = {73, 25};
-    _coordsTituloEspecializaciones[3] = {101, 27};
+// ---- CONSTRUCTORES INLINE ----
+inline DashboardEstudianteScreen::DashboardEstudianteScreen() : PantallaBase(), 
+    _nombreEstudiante("Juan Estudiante"), _idEstudiante(1),
+    _seccionActual(0), _elementoActual(0), _seccionAnterior(-1), _elementoAnterior(-1),
+    _primeraRenderizacion(true), _indCursoVisible(0), _indEspVisible(0) {
 }
 
-void DashboardEstudianteScreen::cargarDatos(GestionadorCursos& _gestion)
+// ---- METODOS PRIVADOS ----
+inline void DashboardEstudianteScreen::_limpiarEstado()
 {
-    cargarInscripciones(_gestion);
-
-    // Mostrar mensajes por defecto si no hay inscripciones
-    if (_cursosInscritos.empty()) {
-        for (int i = 0; i < 3; i++) {
-            _cursosInscritos.emplace_back("No inscrito", "Aqui apareceran los cursos en los que te has inscrito");
-        }
-    }
-
-    if (_especializacionesInscritas.empty()) {
-                for (int i = 0; i < 3; i++) {
-            _especializacionesInscritas.emplace_back("No inscrito", "Aqui apareceran las especialidades en las que te has inscrito");
-        }
-    }
+    _seccionActual = 0;
+    _elementoActual = 0;
+    _seccionAnterior = -1;
+    _elementoAnterior = -1;
+    _primeraRenderizacion = true;
+    _indCursoVisible = 0;
+    _indEspVisible = 0;
 }
 
-void DashboardEstudianteScreen::cargarInscripciones(GestionadorCursos& _gestion)
+inline void DashboardEstudianteScreen::_cargarDatosDummy()
 {
-    std::ifstream archivo(RUTA_INSCRIPCIONES, std::ios::binary);
-    if (!archivo.is_open()) {
-        throw std::runtime_error("Error: No se pudo abrir el archivo de inscripciones");
-    }
-    
-    // Leer todas las inscripciones del archivo
-    InscripcionBinaria inscripcion;
-    while (archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria))) {
-        // Filtrar solo las inscripciones del estudiante actual
-        if (inscripcion.idEstudiante == _idEstudiante) {
-            if (inscripcion.tipoActividad == 1) { // Es un curso
-                Curso* curso = _gestion.obtenerCurso(inscripcion.idActividad);
-                if (curso) {
-                    _cursosInscritos.emplace_back(curso->getTitulo(), curso->getDescripcion());
-                }
-            }
-            else if (inscripcion.tipoActividad == 2) { // Es una especialización
-                Especializacion* especializacion = _gestion.obtenerEspecializacion(inscripcion.idActividad);
-                if (especializacion) {
-                    _especializacionesInscritas.emplace_back(especializacion->getTitulo(), especializacion->getDescripcion());
-                }
-            }
-        }
-    }
-    archivo.close();
+    // Cargar datos dummy para los cursos
+    _cursosInscritos.clear();
+    _cursosInscritos.push_back(ElementoMenu("Introducción a Python", "Fundamentos de programación en Python", 1));
+    _cursosInscritos.push_back(ElementoMenu("Estructuras de Datos", "Arrays, listas, pilas y colas", 2));
+    _cursosInscritos.push_back(ElementoMenu("Algoritmos Avanzados", "Ordenamiento y búsqueda eficiente", 3));
+    _cursosInscritos.push_back(ElementoMenu("Desarrollo Web", "HTML, CSS y JavaScript moderno", 4));
+
+    // Cargar datos dummy para las especializaciones
+    _especializacionesInscritas.clear();
+    _especializacionesInscritas.push_back(ElementoMenu("Ciencia de Datos", "Machine Learning y análisis estadístico", 1));
+    _especializacionesInscritas.push_back(ElementoMenu("Desarrollo Full Stack", "Frontend y backend completo", 2));
+    _especializacionesInscritas.push_back(ElementoMenu("Ciberseguridad", "Protección de sistemas y redes", 3));
+    _especializacionesInscritas.push_back(ElementoMenu("Inteligencia Artificial", "Deep Learning y redes neuronales", 4));
 }
 
-void DashboardEstudianteScreen::dibujarInterfazCompleta()
+inline void DashboardEstudianteScreen::_dibujarInterfazCompleta()
 {
-    setConsoleColor(15, 0);
     system("cls");
     UI_StudentDashboard();
-    renderizarHeader();
-    renderizarMenuSuperior();
-    renderizarCursos();
-    renderizarEspecializaciones();
+
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+
+    // Renderizar todas las secciones
+    _renderizarHeader();
+    _renderizarMenuSuperior();
+    _renderizarCursos();
+    _renderizarEspecializaciones();
+
+    resetColor();
 }
 
-void DashboardEstudianteScreen::renderizarHeader()
-{    // Mostrar nombre del estudiante
-    gotoXY(52, 3);
-    setConsoleColor(15, 1);
-    std::cout << _nombreEstudiante;
-    setConsoleColor(15, 0);
-
-    // Renderizar botones del header
-    for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i) {
-        gotoXY(_coordsElementosHeader[i].X, _coordsElementosHeader[i].Y);
-        if (_seccionActual == SECCION_HEADER && _elementoActual == i) {
-            setConsoleColor(1, 13);
-        }
-        else {
-            setConsoleColor(15, 0);        }
-        std::cout << (i == 0 ? " VER MI PERFIL " : " CERRAR SESION ");
-    }
-    setConsoleColor(15, 0);
-}
-
-void DashboardEstudianteScreen::renderizarMenuSuperior()
+inline void DashboardEstudianteScreen::_renderizarHeader()
 {
-    for (int i = 0; i < MAX_ELEMENTOS_MENU; ++i) {
-        gotoXY(_coordsElementosMenu[i].X, _coordsElementosMenu[i].Y);
-        if (_seccionActual == SECCION_MENU_SUPERIOR && _elementoActual == i) {
-            setConsoleColor(1, 13);
-        }
-        else {
-            setConsoleColor(15, 0);        }
-        std::cout << (i == 0 ? " EXPLORAR CURSOS Y ESPECIALIDADES " : " GESTIONAR MIS INSCRIPCIONES ");
-    }
-    setConsoleColor(15, 0);
-}
-
-void DashboardEstudianteScreen::renderizarCursos()
-{
-    // Renderizar hasta 3 cursos inscritos
-    int numCursos = (std::min)(3, static_cast<int>(_cursosInscritos.size()));
-
-    for (int i = 0; i < numCursos; ++i) {
-        gotoXY(_coordsTituloCursos[i].X, _coordsTituloCursos[i].Y);
-        if (_seccionActual == SECCION_CURSOS && _elementoActual == i) {
-            setConsoleColor(1, 13);
-        }
-        else {
-            setConsoleColor(15, 0);
-        }
-        std::cout << _cursosInscritos[i].titulo;
-    }
-
-    // Botón "Ver todos"
-    gotoXY(_coordsTituloCursos[3].X, _coordsTituloCursos[3].Y);
-    if (_seccionActual == SECCION_CURSOS && _elementoActual == 3) {
-        setConsoleColor(1, 13);
-    }    else {
-        setConsoleColor(15, 0);
-    }
-    std::cout << " Ver todos ";
-    setConsoleColor(15, 0);
-}
-
-void DashboardEstudianteScreen::renderizarEspecializaciones()
-{
-    // Renderizar hasta 3 especializaciones inscritas
-    int numEspecializaciones = (std::min)(3, static_cast<int>(_especializacionesInscritas.size()));
-
-    for (int i = 0; i < numEspecializaciones; ++i) 
+    // Renderizar elementos del header (perfil y configuración)
+    for (int i = 0; i < MAX_ELEMENTOS_HEADER; ++i)
     {
-        gotoXY(_coordsTituloEspecializaciones[i].X, _coordsTituloEspecializaciones[i].Y);
-        if (_seccionActual == SECCION_ESPECIALIZACIONES && _elementoActual == i) {
-            setConsoleColor(1, 13);
+        bool seleccionado = (_seccionActual == SECCION_HEADER && _elementoActual == i);
+        
+        gotoXY(_coordsElementosHeader[i].X, _coordsElementosHeader[i].Y);
+        
+        if (seleccionado)
+        {
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
         }
-        else {
-            setConsoleColor(15, 13);
+        else
+        {
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         }
-        std::cout << _especializacionesInscritas[i].titulo;
-    }
 
-    // Botón "Ver todas"
-    gotoXY(_coordsTituloEspecializaciones[3].X, _coordsTituloEspecializaciones[3].Y);
-    if (_seccionActual == SECCION_ESPECIALIZACIONES && _elementoActual == 3) {
-        setConsoleColor(1, 13);
-    }    else {
-        setConsoleColor(15, 13);
+        if (i == 0)
+        {
+            std::cout << " VER MI PERFIL ";
+        }
+        else if (i == 1)
+        {
+            std::cout << " CERRAR SESION ";
+        }
+        
+        resetColor();
     }
-    std::cout << " Ver todas ";
-    setConsoleColor(15, 0);
 }
 
-void DashboardEstudianteScreen::actualizarSeleccion()
+inline void DashboardEstudianteScreen::_renderizarMenuSuperior()
 {
-    if (_seccionActual != _seccionAnterior || _elementoActual != _elementoAnterior) {
-        // Re-renderizar sección anterior para quitar selección
-        switch (_seccionAnterior) {
-        case SECCION_HEADER:
-            renderizarHeader();
-            break;
-        case SECCION_MENU_SUPERIOR:
-            renderizarMenuSuperior();
-            break;
-        case SECCION_CURSOS:
-            renderizarCursos();
-            break;
-        case SECCION_ESPECIALIZACIONES:
-            renderizarEspecializaciones();
-            break;
+    // Renderizar elemento del menú superior (explorar contenido)
+    bool seleccionado = (_seccionActual == SECCION_MENU_SUPERIOR && _elementoActual == 0);
+    
+    gotoXY(_coordsElementosMenu[0].X, _coordsElementosMenu[0].Y);
+    
+    if (seleccionado)
+    {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+    }
+    else
+    {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    }
+
+    std::cout << " EXPLORAR CURSOS Y ESPECIALIDADES ";
+    resetColor();
+}
+
+inline void DashboardEstudianteScreen::_renderizarCursos()
+{
+    // Renderizar tarjetas de cursos siguiendo el patrón del LandingPage
+    for (int i = 0; i < MAX_ELEMENTOS_CURSOS && i < _cursosInscritos.size(); ++i)
+    {
+        bool seleccionado = (_seccionActual == SECCION_CURSOS && _elementoActual == i);
+        
+        _actualizarElementoGenerico(
+            _coordsTituloCursos[i],
+            _coordsDescCursos[i],
+            _cursosInscritos[i].titulo,
+            _cursosInscritos[i].descripcion,
+            seleccionado
+        );
+    }
+}
+
+inline void DashboardEstudianteScreen::_renderizarEspecializaciones()
+{
+    // Renderizar tarjetas de especializaciones siguiendo el patrón del LandingPage
+    for (int i = 0; i < MAX_ELEMENTOS_ESPECIALIZACIONES && i < _especializacionesInscritas.size(); ++i)
+    {
+        bool seleccionado = (_seccionActual == SECCION_ESPECIALIZACIONES && _elementoActual == i);
+        
+        _actualizarElementoGenerico(
+            _coordsTituloEspecializaciones[i],
+            _coordsDescEspecializaciones[i],
+            _especializacionesInscritas[i].titulo,
+            _especializacionesInscritas[i].descripcion,
+            seleccionado
+        );
+    }
+}
+
+inline void DashboardEstudianteScreen::_actualizarSeleccion()
+{
+    // Solo actualizar si hay cambio de selección
+    if (_seccionAnterior != _seccionActual || _elementoAnterior != _elementoActual)
+    {
+        // Redibujar la sección anterior
+        if (_seccionAnterior >= 0)
+        {
+            switch (_seccionAnterior)
+            {
+            case SECCION_HEADER:
+                _renderizarHeader();
+                break;
+            case SECCION_MENU_SUPERIOR:
+                _renderizarMenuSuperior();
+                break;
+            case SECCION_CURSOS:
+                _renderizarCursos();
+                break;
+            case SECCION_ESPECIALIZACIONES:
+                _renderizarEspecializaciones();
+                break;
+            }
         }
 
-        // Re-renderizar sección actual para mostrar nueva selección
-        switch (_seccionActual) {
+        // Redibujar la sección actual
+        switch (_seccionActual)
+        {
         case SECCION_HEADER:
-            renderizarHeader();
+            _renderizarHeader();
             break;
         case SECCION_MENU_SUPERIOR:
-            renderizarMenuSuperior();
+            _renderizarMenuSuperior();
             break;
         case SECCION_CURSOS:
-            renderizarCursos();
+            _renderizarCursos();
             break;
         case SECCION_ESPECIALIZACIONES:
-            renderizarEspecializaciones();
+            _renderizarEspecializaciones();
             break;
         }
 
@@ -295,106 +295,311 @@ void DashboardEstudianteScreen::actualizarSeleccion()
     }
 }
 
-int DashboardEstudianteScreen::obtenerMaxElementosEnSeccion(int _seccion)
+inline void DashboardEstudianteScreen::_manejarNavegacion(int tecla)
 {
-    switch (_seccion) {
-    case SECCION_HEADER: 
-        return MAX_ELEMENTOS_HEADER;
-    case SECCION_MENU_SUPERIOR: 
-        return MAX_ELEMENTOS_MENU;
-    case SECCION_CURSOS: 
-        return MAX_ELEMENTOS_CURSOS;
-    case SECCION_ESPECIALIZACIONES: 
-        return MAX_ELEMENTOS_ESPECIALIZACIONES;
-    default: 
-        return 0;
-    }
-}
-
-DashboardEstudianteScreen::DashboardEstudianteScreen(Controladora* _controladora, int _idEstudiante, const std::string& _nombreEstudiante)
-    : PantallaBase(_controladora), _seccionActual(SECCION_HEADER), _elementoActual(0),
-      _seccionAnterior(-1), _elementoAnterior(-1),
-      _primeraRenderizacion(true), _idEstudiante(_idEstudiante),
-      _nombreEstudiante(_nombreEstudiante), _indCursoVisible(0), _indEspVisible(0)
-{    inicializarCoordenadas();
-    // Cargar datos usando el GestionadorCursos de la controladora
-    if (_controladora) {
-        cargarDatos(_controladora->getGestionadorCursos());
-    }
-}
-
-ResultadoPantalla DashboardEstudianteScreen::ejecutar()
-{
-    while (true) {
-        if (_primeraRenderizacion) {
-            dibujarInterfazCompleta();
-            _primeraRenderizacion = false;
+    switch (tecla) {
+    case 72: // Flecha arriba
+        if (_seccionActual > 0)
+        {
+            _seccionActual--;
+            _elementoActual = (std::min)(_elementoActual, _obtenerMaxElementosEnSeccion(_seccionActual) - 1);
         }
-        else {
-            actualizarSeleccion();
+        else
+        {
+            _seccionActual = TOTAL_SECCIONES - 1;
+            _elementoActual = (std::min)(_elementoActual, _obtenerMaxElementosEnSeccion(_seccionActual) - 1);
         }
-
-        int tecla = _getch();
-        switch (tecla) {
-        case 224: // Teclas de dirección
-            tecla = _getch();
-            switch (tecla) {
-            case 72: // Flecha arriba
-                if (_seccionActual > SECCION_HEADER) {
-                    _seccionActual--;
-                    _elementoActual = 0;
-                }
-                break;
-            case 80: // Flecha abajo
-                if (_seccionActual < TOTAL_SECCIONES - 1) {
-                    _seccionActual++;
-                    _elementoActual = 0;
-                }
-                break;
-            case 75: // Flecha izquierda
-                if (_elementoActual > 0) {
-                    _elementoActual--;
-                }
-                break;
-            case 77: // Flecha derecha
-                if (_elementoActual < obtenerMaxElementosEnSeccion(_seccionActual) - 1) {
-                    _elementoActual++;
-                }
-                break;
-            }
-            break;
+        break;
         
-        case 13: // Enter - Procesar selección
-            return procesarSeleccion();
-              case 27: // ESC - Volver al landing page
-            return crearResultado(AccionPantalla::IR_A_LANDING_PAGE);
+    case 80: // Flecha abajo
+        if (_seccionActual < TOTAL_SECCIONES - 1)
+        {
+            _seccionActual++;
+            _elementoActual = (std::min)(_elementoActual, _obtenerMaxElementosEnSeccion(_seccionActual) - 1);
         }
+        else
+        {
+            _seccionActual = 0;
+            _elementoActual = (std::min)(_elementoActual, _obtenerMaxElementosEnSeccion(_seccionActual) - 1);
+        }
+        break;
+        
+    case 75: // Flecha izquierda
+        if (_elementoActual > 0)
+        {
+            _elementoActual--;
+        }
+        else
+        {
+            _elementoActual = _obtenerMaxElementosEnSeccion(_seccionActual) - 1;
+        }
+        break;
+        
+    case 77: // Flecha derecha
+        if (_elementoActual < _obtenerMaxElementosEnSeccion(_seccionActual) - 1)
+        {
+            _elementoActual++;
+        }
+        else
+        {
+            _elementoActual = 0;
+        }
+        break;
     }
 }
 
-ResultadoPantalla DashboardEstudianteScreen::procesarSeleccion()
+inline void DashboardEstudianteScreen::_calcularPosicionEnSeccion(int indiceGlobal, int& seccion, int& elemento)
 {
-    if (_seccionActual == SECCION_HEADER) {
-        if (_elementoActual == 0) {
-            return crearResultado(AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
+    int acumulado = 0;
+    
+    for (int s = 0; s < TOTAL_SECCIONES; ++s)
+    {
+        int maxElementos = _obtenerMaxElementosEnSeccion(s);
+        if (indiceGlobal < acumulado + maxElementos)
+        {
+            seccion = s;
+            elemento = indiceGlobal - acumulado;
+            return;
         }
-        else if (_elementoActual == 1) {
-            return crearResultado(AccionPantalla::IR_A_LANDING_PAGE);
-        }
-    }
-    else if (_seccionActual == SECCION_MENU_SUPERIOR) {
-        if (_elementoActual == 0) {
-            ResultadoPantalla res = crearResultado(AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES);
-            res.tipoUsuario = TipoUsuario::ESTUDIANTE;
-            res.idUsuarioActual = _idEstudiante;
-            res.sesionActiva = true;
-        return res;
-        }
+        acumulado += maxElementos;
     }
     
-    // Si no hay acción específica, no hacer nada
-    return crearResultado(AccionPantalla::NINGUNA);
+    // Si llegamos aquí, usar los últimos elementos válidos
+    seccion = TOTAL_SECCIONES - 1;
+    elemento = _obtenerMaxElementosEnSeccion(seccion) - 1;
 }
-};
+
+inline int DashboardEstudianteScreen::_calcularIndiceGlobal(int seccion, int elemento)
+{
+    int indice = 0;
+    
+    for (int s = 0; s < seccion; ++s)
+    {
+        indice += _obtenerMaxElementosEnSeccion(s);
+    }
+    
+    return indice + elemento;
+}
+
+inline int DashboardEstudianteScreen::_obtenerMaxElementosEnSeccion(int seccion)
+{
+    switch (seccion)
+    {
+    case SECCION_HEADER:
+        return MAX_ELEMENTOS_HEADER;
+    case SECCION_MENU_SUPERIOR:
+        return MAX_ELEMENTOS_MENU;
+    case SECCION_CURSOS:
+        return (std::min)(MAX_ELEMENTOS_CURSOS, static_cast<int>(_cursosInscritos.size()));
+    case SECCION_ESPECIALIZACIONES:
+        return (std::min)(MAX_ELEMENTOS_ESPECIALIZACIONES, static_cast<int>(_especializacionesInscritas.size()));
+    default:
+        return 1;
+    }
+}
+
+inline ResultadoPantalla DashboardEstudianteScreen::_procesarSeleccion()
+{
+    switch (_seccionActual)
+    {
+    case SECCION_HEADER:
+        if (_elementoActual == 0) // MI PERFIL
+        {
+            return ResultadoPantalla(AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
+        }
+        else if (_elementoActual == 1) // SALIR
+        {
+            return ResultadoPantalla(AccionPantalla::IR_A_LOGIN);
+        }
+        break;
+        
+    case SECCION_MENU_SUPERIOR:
+        if (_elementoActual == 0) // EXPLORAR CURSOS Y ESPECIALIDADES
+        {
+            return ResultadoPantalla(AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES);
+        }
+        break;
+        
+    case SECCION_CURSOS:
+        if (_elementoActual < _cursosInscritos.size())
+        {
+            // TODO: Aquí se podría pasar el ID del curso seleccionado
+            return ResultadoPantalla(AccionPantalla::IR_A_MOSTRAR_CURSO);
+        }
+        break;
+        
+    case SECCION_ESPECIALIZACIONES:
+        if (_elementoActual < _especializacionesInscritas.size())
+        {
+            // TODO: Aquí se podría pasar el ID de la especialización seleccionada
+            return ResultadoPantalla(AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION);
+        }
+        break;
+    }
+    
+    return ResultadoPantalla(AccionPantalla::NINGUNA);
+}
+
+inline ResultadoPantalla DashboardEstudianteScreen::ejecutar()
+{
+    _limpiarEstado();
+    _cargarDatosDummy();
+    
+    if (_primeraRenderizacion)
+    {
+        _dibujarInterfazCompleta();
+        _primeraRenderizacion = false;
+    }
+
+    while (true)
+    {
+        _actualizarSeleccion();
+
+        int tecla = _getch();
+
+        // Verificar si es una tecla especial (códigos extendidos)
+        if (tecla == 224 || tecla == 0)
+        {
+            int codigoExtendido = _getch();
+            _manejarNavegacion(codigoExtendido);
+        }
+        else
+        {
+            switch (tecla)
+            {
+            case 13: // Enter
+                return _procesarSeleccion();
+
+            case 27: // ESC - Salir al login
+                return ResultadoPantalla(AccionPantalla::IR_A_LOGIN);
+
+            default:
+                // Ignorar otras teclas
+                break;
+            }
+        }    }
+}
+
+// ---- MÉTODOS DE FORMATEO ----
+
+inline void DashboardEstudianteScreen::_actualizarElementoGenerico(const COORD& coordTitulo, const COORD& coordDesc, 
+                                                                  const std::string& titulo, const std::string& descripcion, bool seleccionado)
+{
+    // Configurar colores según selección
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    }
+    else {
+        setConsoleColor(ColorIndex::TEXTO_IMPORTANTE, ColorIndex::FONDO_PRINCIPAL);
+    }
+
+    // Mostrar título
+    _mostrarTituloFormateado(coordTitulo, titulo);
+
+    // Cambiar color para descripción
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    
+    // Mostrar descripción
+    _mostrarDescripcionFormateada(coordDesc, descripcion);
+
+    resetColor();
+}
+
+inline void DashboardEstudianteScreen::_mostrarTituloFormateado(const COORD& coord, const std::string& titulo)
+{
+    // Limpiar área del título
+    gotoXY(coord.X, coord.Y);
+    std::cout << std::string(MAX_ANCHO_CARACTERES_CUADRO, ' ');
+
+    // Mostrar título truncado si es necesario
+    gotoXY(coord.X, coord.Y);
+    std::string tituloTruncado = _truncarTitulo(titulo, MAX_ANCHO_CARACTERES_CUADRO);
+    std::cout << tituloTruncado;
+}
+
+inline void DashboardEstudianteScreen::_mostrarDescripcionFormateada(const COORD& coord, const std::string& descripcion)
+{
+    std::string descFormateada = _formatearDescripcion(
+        descripcion,
+        MAX_ANCHO_CARACTERES_CUADRO,
+        MAX_ALTO_CARACTERES_CUADRO
+    );
+
+    // Dividir en líneas (método simplificado)
+    std::vector<std::string> lineas;
+    std::stringstream ss(descFormateada);
+    std::string linea;
+    
+    while (std::getline(ss, linea, '\n')) {
+        lineas.push_back(linea);
+    }
+
+    // Mostrar cada línea
+    for (size_t i = 0; i < lineas.size() && i < MAX_ALTO_CARACTERES_CUADRO; ++i) {
+        gotoXY(coord.X, coord.Y + i);
+        std::cout << std::string(MAX_ANCHO_CARACTERES_CUADRO, ' ');  // Limpiar línea
+        gotoXY(coord.X, coord.Y + i);
+        std::cout << lineas[i];
+    }
+
+    // Limpiar líneas sobrantes
+    for (size_t i = lineas.size(); i < MAX_ALTO_CARACTERES_CUADRO; ++i) {
+        gotoXY(coord.X, coord.Y + i);
+        std::cout << std::string(MAX_ANCHO_CARACTERES_CUADRO, ' ');
+    }
+}
+
+inline std::string DashboardEstudianteScreen::_truncarTitulo(const std::string& titulo, int maxLongitud)
+{
+    if (titulo.length() <= maxLongitud) {
+        return titulo;
+    }
+    return titulo.substr(0, maxLongitud - 3) + "...";
+}
+
+inline std::string DashboardEstudianteScreen::_formatearDescripcion(const std::string& texto, int anchoMax, int altoMax)
+{
+    std::string resultado;
+    std::string textoRestante = texto;
+
+    for (int linea = 0; linea < altoMax; ++linea) {
+        if (textoRestante.empty()) break;
+
+        // Manejo de la última línea
+        if (linea == altoMax - 1 && textoRestante.length() > anchoMax) {
+            resultado += textoRestante.substr(0, anchoMax - 3) + "...";
+            break;
+        }
+
+        // Procesamiento de línea normal
+        if (textoRestante.length() <= anchoMax) {
+            resultado += textoRestante;
+            textoRestante.clear();
+        }
+        else {
+            // Buscar punto de corte óptimo
+            int posCorte = anchoMax;
+            while (posCorte > 0 && textoRestante[posCorte] != ' ' && textoRestante[posCorte - 1] != ' ') {
+                posCorte--;
+            }
+            
+            if (posCorte <= 0) {
+                posCorte = anchoMax;
+            }
+            
+            resultado += textoRestante.substr(0, posCorte);
+            textoRestante = textoRestante.substr(posCorte);
+            textoRestante.erase(0, textoRestante.find_first_not_of(" "));
+        }
+
+        // Agregar salto de línea si no es la última
+        if (linea < altoMax - 1 && !textoRestante.empty()) {
+            resultado += "\n";
+        }
+    }
+
+    return resultado;
+}
+
 
 #endif // COURSERACLONE_SCREENS_DASHBOARDESTUDIANTESCREEN_HPP
