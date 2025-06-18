@@ -20,7 +20,8 @@ class MainController
 private:
     /// @brief Estado de la aplicación
     bool _ejecutando;
-      /// @brief Métodos privados de navegación
+
+    /// @brief Métodos privados de navegación
     std::unique_ptr<PantallaBase> crearPantallaLandingPage();
     std::unique_ptr<PantallaBase> crearPantallaSobreNosotros();
     std::unique_ptr<PantallaBase> crearPantallaLogin();
@@ -74,7 +75,7 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaDashboardEstud
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaSobreNosotros();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaLandingPage();
     
     do
     {

@@ -286,7 +286,8 @@ inline void LandingPageScreen::cargarDatos(int maxEspecializaciones, int maxCurs
     _cursos.clear();
     
     /// @brief Asignar datos directamente sin conversiones
-    _especialidades = datosActividades.especializaciones;    _cursos = datosActividades.cursos;
+    _especialidades = datosActividades.especializaciones;    
+    _cursos = datosActividades.cursos;
     
     /// DEBUG: Verificar cuántas especialidades se cargaron
     FilesManager& filesManager = FilesManager::getInstance();
@@ -616,6 +617,7 @@ inline Pantalla LandingPageScreen::getSiguientePantalla()
         switch (_elementoActual) {
         case 0: return Pantalla::LOGIN;
         case 1: return Pantalla::REGISTRO;
+		case 2: return Pantalla::SOBRE_NOSOTROS;
         default: return Pantalla::NONE;
         }
     }
@@ -664,16 +666,20 @@ inline void LandingPageScreen::manejarNavegacionHorizontal(int direccion)
 
 inline void LandingPageScreen::procesarSeleccion(ResultadoPantalla& resultado)
 {
-    if (_seccionActual == SECCION_CURSOS) {
+    if (_seccionActual == SECCION_CURSOS) 
+    {
         procesarSeleccionCurso(resultado);
     }
-    else if (_seccionActual == SECCION_ESPECIALIDADES) {
+    else if (_seccionActual == SECCION_ESPECIALIDADES) 
+    {
         procesarSeleccionEspecialidad(resultado);
     }
-    else if (_seccionActual == SECCION_CABECERA) {
+    else if (_seccionActual == SECCION_CABECERA) 
+    {
         procesarSeleccionCabecera(resultado);
     }
-    else if (_seccionActual == SECCION_SUBMENU) {
+    else if (_seccionActual == SECCION_SUBMENU) 
+    {
         procesarSeleccionSubmenu(resultado);
     }
 }
@@ -709,8 +715,11 @@ inline void LandingPageScreen::procesarSeleccionCabecera(ResultadoPantalla& resu
     case Pantalla::REGISTRO:
         resultado.accion = AccionPantalla::IR_A_REGISTRO;
         break;
+    case Pantalla::SOBRE_NOSOTROS:
+        resultado.accion = AccionPantalla::IR_A_SOBRE_NOSOTROS;
+        break;
     default:
-        // No hay acción definida
+        resultado.accion = AccionPantalla::IR_A_LANDING_PAGE;
         break;
     }
 }
@@ -783,6 +792,7 @@ inline void LandingPageScreen::manejarInput(int tecla)
 inline ResultadoPantalla LandingPageScreen::ejecutar()
 {
     ResultadoPantalla resultado;
+	
     renderizar();
 
     int tecla;

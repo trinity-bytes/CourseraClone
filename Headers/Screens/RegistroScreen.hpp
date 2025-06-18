@@ -422,9 +422,9 @@ inline ResultadoPantalla RegistroScreen::_procesarRegistro()
     gotoXY(11, 11);
     setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
     std::cout << "[EXITO]: Usuario registrado correctamente.";
-    resetColor();
-    _getch();
-
+    _configurarCursor(false);  // Asegurar que el cursor esté oculto
+    _limpiarEstado();
+    system("cls");
     return ResultadoPantalla(AccionPantalla::IR_A_LOGIN);
 }
 
@@ -480,7 +480,8 @@ inline ResultadoPantalla RegistroScreen::ejecutar()
                 break;
 
             case 27: // ESC - Regresar al login
-                return ResultadoPantalla(AccionPantalla::IR_A_LOGIN);
+                _configurarCursor(false);  // Asegurar que el cursor esté oculto
+                return ResultadoPantalla(AccionPantalla::IR_A_LANDING_PAGE);
 
             default:
                 _manejarEntradaTexto(tecla);
@@ -488,6 +489,7 @@ inline ResultadoPantalla RegistroScreen::ejecutar()
             }
         }
     }
+    _configurarCursor(false); // Desactivar cursor
 }
 
 
