@@ -28,7 +28,9 @@ private:
     static const int SECCION_MENU_SUPERIOR = 1;
     static const int SECCION_CURSOS = 2;
     static const int SECCION_ESPECIALIZACIONES = 3;
-    static const int TOTAL_SECCIONES = 4;    /// @brief Constantes de elementos por sección
+    static const int TOTAL_SECCIONES = 4;  
+
+    /// @brief Constantes de elementos por sección
     static const int MAX_ELEMENTOS_HEADER = 2;
     static const int MAX_ELEMENTOS_MENU = 1;
     static const int MAX_ELEMENTOS_CURSOS = 3;
@@ -36,7 +38,7 @@ private:
     static const int TOTAL_ELEMENTOS_NAVEGABLES = MAX_ELEMENTOS_HEADER + MAX_ELEMENTOS_MENU + MAX_ELEMENTOS_CURSOS + MAX_ELEMENTOS_ESPECIALIZACIONES;
     
     /// @brief Constantes de formateo de texto (siguiendo patrón del LandingPage)
-    static const int MAX_ANCHO_CARACTERES_CUADRO = 30;
+    static const int MAX_ANCHO_CARACTERES_CUADRO = 32;
     static const int MAX_ALTO_CARACTERES_CUADRO = 3;
 
     /// @brief Datos del usuario logueado
@@ -52,30 +54,45 @@ private:
 
     /// @brief Índices de visualización
     int _indCursoVisible;
-    int _indEspVisible;    /// @brief Coordenadas de interfaz
+    int _indEspVisible;    
+    
+    /// @brief Coordenadas de interfaz
     COORD _coordsElementosHeader[MAX_ELEMENTOS_HEADER] = {
         {88, 1}, {103, 1}
     };
     COORD _coordsElementosMenu[MAX_ELEMENTOS_MENU] = {
         {7, 8}
     };
-      /// @brief Coordenadas para títulos y descripciones de cursos
+
+    /// @brief Coordenadas para títulos y descripciones de cursos
     COORD _coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
-        {9, 13}, {45, 13}, {81, 13}
+        {8, 13}, {44, 13}, {80, 13}
     };
     COORD _coordsDescCursos[MAX_ELEMENTOS_CURSOS] = {
-        {9, 15}, {45, 15}, {81, 15}
+        {8, 15}, {44, 15}, {80, 15}
     };
     
     /// @brief Coordenadas para títulos y descripciones de especializaciones
     COORD _coordsTituloEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES] = {
-        {9, 22}, {45, 22}, {81, 22}
+        {8, 22}, {44, 22}, {80, 22}
     };
     COORD _coordsDescEspecializaciones[MAX_ELEMENTOS_ESPECIALIZACIONES] = {
-        {9, 24}, {45, 24}, {81, 24}
+        {8, 24}, {44, 24}, {80, 24}
     };
+
+	/// @brief Listas de cursos y especializaciones inscritas
     std::vector<ElementoMenu> _cursosInscritos;
     std::vector<ElementoMenu> _especializacionesInscritas;
+
+	/// @brief Elementos de botones
+    std::vector<std::string> _elementosHeader = {
+        " VER MI PERFIL ",
+        " CERRAR SESION "
+	};
+    std::vector<std::string> _elementosMenu = {
+        " EXPLORAR CURSOS Y ESPECIALIDADES "
+    };
+
 	// ---- METODOS PRIVADOS ----
 
     /// @brief Métodos de inicialización
@@ -94,6 +111,7 @@ private:
     inline void _manejarNavegacion(int tecla);
     inline void _calcularPosicionEnSeccion(int indiceGlobal, int& seccion, int& elemento);
     inline int _calcularIndiceGlobal(int seccion, int elemento);
+
       /// @brief Métodos de utilidad
     inline int _obtenerMaxElementosEnSeccion(int seccion);
     inline ResultadoPantalla _procesarSeleccion();
@@ -178,17 +196,10 @@ inline void DashboardEstudianteScreen::_renderizarHeader()
         }
         else
         {
-            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
         }
 
-        if (i == 0)
-        {
-            std::cout << " VER MI PERFIL ";
-        }
-        else if (i == 1)
-        {
-            std::cout << " CERRAR SESION ";
-        }
+		std::cout << _elementosHeader[i];
         
         resetColor();
     }
@@ -203,14 +214,14 @@ inline void DashboardEstudianteScreen::_renderizarMenuSuperior()
     
     if (seleccionado)
     {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     }
     else
     {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_AZUL_SUAVE);
     }
 
-    std::cout << " EXPLORAR CURSOS Y ESPECIALIDADES ";
+    std::cout << _elementosMenu[0];
     resetColor();
 }
 
