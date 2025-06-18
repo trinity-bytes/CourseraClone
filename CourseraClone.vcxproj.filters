@@ -212,5 +212,8 @@
     <ClInclude Include="Headers\Utils\Lambda.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

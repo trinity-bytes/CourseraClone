@@ -9,6 +9,7 @@
 
 // Headers propios del proyecto
 #include "../Screens/LandingPageScreen.hpp"
+#include "../Screens/SobreNosotrosScreen.hpp"
 #include "../Screens/LoginScreen.hpp"
 #include "../Screens/RegistroScreen.hpp"
 #include "../Screens/DashboardEstudianteScreen.hpp"
@@ -21,6 +22,7 @@ private:
     bool _ejecutando;
       /// @brief Métodos privados de navegación
     std::unique_ptr<PantallaBase> crearPantallaLandingPage();
+    std::unique_ptr<PantallaBase> crearPantallaSobreNosotros();
     std::unique_ptr<PantallaBase> crearPantallaLogin();
     std::unique_ptr<PantallaBase> crearPantallaRegistro();
     std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
@@ -42,6 +44,12 @@ inline MainController::MainController() : _ejecutando(true) {}
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaLandingPage()
 {
     return std::make_unique<LandingPageScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla Sobre Nosotros
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaSobreNosotros()
+{
+    return std::make_unique<SobreNosotrosScreen>();
 }
 
 /// @brief Crea una nueva instancia de la pantalla de login
@@ -66,7 +74,7 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaDashboardEstud
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaDashboardEstudiante();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaSobreNosotros();
     
     do
     {
@@ -80,13 +88,19 @@ inline void MainController::run()
 
         case AccionPantalla::IR_A_LOGIN:
             _pantallaActual = crearPantallaLogin();
-			break;        case AccionPantalla::IR_A_REGISTRO:
+			break;        
+        
+        case AccionPantalla::IR_A_REGISTRO:
             _pantallaActual = crearPantallaRegistro();
 			break;
 
         case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
             _pantallaActual = crearPantallaDashboardEstudiante();
             break;
+
+		case AccionPantalla::IR_A_SOBRE_NOSOTROS:
+            _pantallaActual = crearPantallaSobreNosotros();
+			break;
 
         case AccionPantalla::SALIR:
             _ejecutando = false;

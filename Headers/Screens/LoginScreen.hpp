@@ -71,7 +71,9 @@ private:
     inline void _renderizarBoton(const std::string& texto, int indice, bool seleccionado);
 
     /// @brief Dibuja la interfaz completa de login
-    inline void _dibujarInterfazCompleta();    /// @brief Actualiza la selección visual de campos y botones
+    inline void _dibujarInterfazCompleta();    
+    
+    /// @brief Actualiza la selección visual de campos y botones
     inline void _actualizarSeleccion();
 
     /// @brief Actualiza la renderización de todos los botones

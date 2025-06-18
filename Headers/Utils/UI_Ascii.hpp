@@ -598,6 +598,66 @@ inline void UI_ExplorarCursosAndEspecialidades()
     std::cout << ui;
 }
 
+/// UI Update profile info
+inline void UI_AboutUs()
+{
+//----------------------------------------------------------------------------------------------------------------------
+    std::string ui = R"(
+                                         ▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█                                     
+                                         ▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█                                    
+                                         ▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀                                     
+                                                        C L O N E       
+
+
+        CourseraClone es un sistema de gestión de cursos desarrollado en C++ que replica las funcionalidades    
+        core de una plataforma educativa moderna inspirada en Coursera. Implementa estructuras de datos         
+        avanzadas (AVL, HashMap, PriorityQueue) y algoritmos optimizados para ofrecer una experiencia completa  
+        de inscripciones, exploración de contenido y gestión de usuarios, todo desde una interfaz de consola.   
+ 
+                                        IR AL REPOSITORIO DE GITHUB DEL PROYECTO                                        
+
+        ----------------------------------------<<  DESARROLLADORES  >>----------------------------------------
+                         Fabrizio Santi  -  (u202411774@upc.edu.pe)  [ Ver perfil de GitHub ]
+                         Mauricio Teran  -  (u202417423@upc.edu.pe)  [ Ver perfil de GitHub ]
+                         Jahat Trinidad  -  (u202412248@upc.edu.pe)  [ Ver perfil de GitHub ]
+
+        ───────────────────────────────────────<<  STACK TECNOLÓGICO  >>───────────────────────────────────────
+                          Lenguaje: C++17  -  IDE: Visual Studio 2022  -  Plataforma: Windows  
+
+        ───────────────────────────────────<<  INFORMACION INSTITUCIONAL  >>───────────────────────────────────
+                       Universidad Peruana de Ciencias Aplicadas (UPC) - Facultad de Ingeniería                
+                                                Ciclo académico: 2025-1
+
+
+                                     "CourseraClone - Sistema de Gestión de Cursos"
+                                   Versión actual: 2.0.0 (Arquitectura Refactorizada)                                   
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Usa las flechas de direccion (ARRIBA Y ABAJO) para navegar por las opciones.
+ Pulsa la tecla ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
+//----------------------------------------------------------------------------------------------------------------------
+
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 0; y < 6; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(42, 1);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+    gotoXY(42, 2);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+    gotoXY(42, 3);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
+
+    gotoXY(57, 4);  std::cout << "C L O N E";
+}
+
 /*
 ┌──┬───────┐
 │  │       │
