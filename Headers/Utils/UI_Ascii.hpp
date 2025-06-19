@@ -25,11 +25,11 @@ inline void UI_LandingPage()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                                        
 
 
-                      E L  S I G U I E N T E  N I V E L  D E  T U  C A R R E R A  E S T Á  A Q U Í                      
+                    "E L  S I G U I E N T E  N I V E L  D E  T U  C A R R E R A  E S T Á  A Q U Í                      
                       -  Especialízate en las áreas con más demanda laboral y da el gran salto.  -
           
-                                     
-                                      
+                                 EXPLORAR CURSOS Y ESPECIALIDADES      REVISAR OFERTAS 
+ 
  
       -----------------------------------<<    LAS MEJORES ESPECIALIDADES    >>-----------------------------------  
        ╔════════════════════════════════╗  ╔════════════════════════════════╗  ╔════════════════════════════════╗
@@ -231,7 +231,7 @@ inline void UI_StudentDashboard()
             Te damos la bienvenida   
             RECUERDA: 
                                                                                                                     
-        EXPLORAR CURSOS Y ESPECIALIDADES      REVISAR OFERTAS   
+                                 EXPLORAR CURSOS Y ESPECIALIDADES      REVISAR OFERTAS                                 |
        
                                                                                                                      
        MIS CURSOS: [ VER TODOS ]
@@ -302,14 +302,14 @@ inline void UI_OrganizationDashboard()
 {
 //----------------------------------------------------------------------------------------------------------------------
     std::string ui = R"(
-   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E                                          VER MI PERFIL  CERRAR SESION
-   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                                                        ¯¯¯¯¯¯¯¯¯¯¯¯¯  ¯¯¯¯¯¯¯¯¯¯¯¯¯
+   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E                                         VER MI PERFIL   CERRAR SESION
+   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                                                       ¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯
                                                                                                                      
-          ┌───────────────────────────┬───────────────────────────────────┬──────────────────────────────────┐       
-          │ Cursos publicados:        │ Especialidades publicadas:        │ Estudiantes inscritos: 342       │       
-          └───────────────────────────┴───────────────────────────────────┴──────────────────────────────────┘       
+          ┌───────────────────────────┬───────────────────────────────────┬──────────────────────────────────┐
+          │ Cursos publicados:        │ Especialidades publicadas:        │ Estudiantes inscritos:           │
+          └───────────────────────────┴───────────────────────────────────┴──────────────────────────────────┘
                                                                                                                 
-                  EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MI CONTENIDO      VER ESTADISTICAS              
+                   EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MI CONTENIDO      VER ESTADISTICAS                  
 
                                                                                                             
        MIS CURSOS: [ VER TODOS ]
@@ -337,6 +337,43 @@ inline void UI_OrganizationDashboard()
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Dibujar linea inferior de los botones
+    gotoXY(88, 2); std::cout << "¯¯¯¯¯¯¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯¯¯¯¯¯";
+
+    /// @brief/ Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    /// @brief Dibujar fondo del menu suoerior
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 4; y < 10; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+	gotoXY(10, 4);  std::cout << "┌───────────────────────────┬───────────────────────────────────┬──────────────────────────────────┐";
+	gotoXY(10, 5);  std::cout << "│ Cursos publicados:        │ Especialidades publicadas:        │ Estudiantes inscritos:           │";
+	gotoXY(10, 6);  std::cout << "└───────────────────────────┴───────────────────────────────────┴──────────────────────────────────┘";
+
+	resetColor();
 }
 
 /// UI User Profile View

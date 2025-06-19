@@ -32,10 +32,10 @@ private:
 
     /// @brief Constantes de elementos por sección
     static const int MAX_ELEMENTOS_HEADER = 2;
-    static const int MAX_ELEMENTOS_MENU = 1;
+    static const int MAX_ELEMENTOS_MENU_SUPERIOR = 2;
     static const int MAX_ELEMENTOS_CURSOS = 3;
     static const int MAX_ELEMENTOS_ESPECIALIZACIONES = 3;
-    static const int TOTAL_ELEMENTOS_NAVEGABLES = MAX_ELEMENTOS_HEADER + MAX_ELEMENTOS_MENU + MAX_ELEMENTOS_CURSOS + MAX_ELEMENTOS_ESPECIALIZACIONES;
+    static const int TOTAL_ELEMENTOS_NAVEGABLES = MAX_ELEMENTOS_HEADER + MAX_ELEMENTOS_MENU_SUPERIOR + MAX_ELEMENTOS_CURSOS + MAX_ELEMENTOS_ESPECIALIZACIONES;
     
     /// @brief Constantes de formateo de texto (siguiendo patrón del LandingPage)
     static const int MAX_ANCHO_CARACTERES_CUADRO = 32;
@@ -60,7 +60,7 @@ private:
     COORD _coordsElementosHeader[MAX_ELEMENTOS_HEADER] = {
         {88, 1}, {103, 1}
     };
-    COORD _coordsElementosMenu[MAX_ELEMENTOS_MENU] = {
+    COORD _coordsElementosMenu[MAX_ELEMENTOS_MENU_SUPERIOR] = {
         {7, 8}
     };
 
@@ -399,7 +399,7 @@ inline int DashboardEstudianteScreen::_obtenerMaxElementosEnSeccion(int seccion)
     case SECCION_HEADER:
         return MAX_ELEMENTOS_HEADER;
     case SECCION_MENU_SUPERIOR:
-        return MAX_ELEMENTOS_MENU;
+        return MAX_ELEMENTOS_MENU_SUPERIOR;
     case SECCION_CURSOS:
         return (std::min)(MAX_ELEMENTOS_CURSOS, static_cast<int>(_cursosInscritos.size()));
     case SECCION_ESPECIALIZACIONES:

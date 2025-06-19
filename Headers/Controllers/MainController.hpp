@@ -13,6 +13,7 @@
 #include "../Screens/LoginScreen.hpp"
 #include "../Screens/RegistroScreen.hpp"
 #include "../Screens/DashboardEstudianteScreen.hpp"
+#include "../Screens/DashboardOrganizacionScreen.hpp"
 #include "../Screens/ExplorarContenidoScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
@@ -23,9 +24,9 @@ private:
     bool _ejecutando;    /// @brief Métodos privados de navegación
     std::unique_ptr<PantallaBase> crearPantallaLandingPage();
     std::unique_ptr<PantallaBase> crearPantallaSobreNosotros();
-    std::unique_ptr<PantallaBase> crearPantallaLogin();
-    std::unique_ptr<PantallaBase> crearPantallaRegistro();
+    std::unique_ptr<PantallaBase> crearPantallaLogin();    std::unique_ptr<PantallaBase> crearPantallaRegistro();
     std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
+    std::unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();
     std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
 
 public:
@@ -71,6 +72,12 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaDashboardEstud
     return std::make_unique<DashboardEstudianteScreen>();
 }
 
+/// @brief Crea una nueva instancia del dashboard de organización
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaDashboardOrganizacion()
+{
+    return std::make_unique<DashboardOrganizacionScreen>();
+}
+
 /// @brief Crea una nueva instancia de la pantalla explorar contenido
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarContenido()
 {
@@ -81,7 +88,7 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarConten
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaExplorarContenido();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaDashboardOrganizacion();
     
     do
     {
@@ -99,11 +106,14 @@ inline void MainController::run()
         
         case AccionPantalla::IR_A_REGISTRO:
             _pantallaActual = crearPantallaRegistro();
-			break;
-
-        case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+			break;        case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
             _pantallaActual = crearPantallaDashboardEstudiante();
             break;
+
+        case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
+            _pantallaActual = crearPantallaDashboardOrganizacion();
+            break;
+
 		case AccionPantalla::IR_A_SOBRE_NOSOTROS:
             _pantallaActual = crearPantallaSobreNosotros();
 			break;
