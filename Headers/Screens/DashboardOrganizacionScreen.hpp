@@ -2,17 +2,10 @@
 #define COURSERACLONE_SCREENS_DASHBOARDORGANIZACIONSCREEN_HPP
 
 // Headers de librería estándar
-#include <algorithm>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <vector>
 
-// Headers propios
-//#include "../Controllers/GestionadorCursos.hpp"
-//#include "../Entities/Curso.hpp"
-//#include "../Entities/Especializacion.hpp"
-//#include "../Entities/Inscripcion.hpp"
+// Headers propios del proyecto
 //#include "../Utils/SystemUtils.hpp"
 //#include "../Utils/ScreenSystem.hpp"
 //#include "../Utils/UI_Ascii.hpp"

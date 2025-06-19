@@ -557,11 +557,12 @@ inline void UI_ExplorarContenido()
 ┌──<<  FILTRAR POR  >>──┐                  ┌──────────────────────────────────────────────────────────────────┐        
 │                       │         Buscar:  │                                                                  │
 │ Tipo de contenido:    │                  └──────────────────────────────────────────────────────────────────┘
-│   CURSOS              │
+│   TODOS               │
+│   CURSOS              │        -
 │   ESPECIALIDADES      │        -
 │                       │        -
 │ Categoria:            │        -
-│                       │        -
+│   TODAS               │        -
 │                       │        -
 │                       │        -
 │                       │        -
@@ -576,14 +577,32 @@ inline void UI_ExplorarContenido()
 │                       │        -
 │                       │        -
 │                       │
-│                       │                          < ANTERIOR   1 - 2 - 3 - 4 ... N   SIGUIENTE >
-└───────────────────────┘
+└───────────────────────┘                                     < ANTERIOR  SIGUIENTE >
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
  Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    resetColor();
 }
 
 /// UI Update profile info
