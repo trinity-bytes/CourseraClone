@@ -35,10 +35,10 @@ class ExplorarContenidoScreen : public PantallaBase
 private:
     // --- Constantes de configuración ---
     static const int SECCION_BUSCADOR = 0;
-    static const int SECCION_FILTRO_TIPOS = 1;
-    static const int SECCION_FILTRO_CATEGORIAS = 2;
-    static const int SECCION_RESULTADOS = 3;
-    static const int SECCION_NAVEGACION_PAGINAS = 4;
+    static const int SECCION_RESULTADOS = 1;
+    static const int SECCION_NAVEGACION_PAGINAS = 2;
+    static const int SECCION_FILTRO_TIPOS = 3;
+    static const int SECCION_FILTRO_CATEGORIAS = 4;
     static const int TOTAL_SECCIONES = 5;
 
     // Límites por sección
@@ -46,11 +46,11 @@ private:
     static const int MAX_RESULTADOS_VISIBLES = 6;
 
     // --- Coordenadas de la interfaz ---
-    COORD _coordBuscador = {44, 6};
-    COORD _coordFiltroTipos = {3, 8};
-    COORD _coordFiltroCategorias = {2, 13};
-    COORD _coordResultados = {34, 9};
-    COORD _coordNavegacionPaginas = {70, 28};
+    COORD _coordBuscador = {16, 6};
+    COORD _coordFiltroTipos = {94, 8};
+    COORD _coordFiltroCategorias = {94, 13};
+    COORD _coordResultados = {4, 9};
+    COORD _coordNavegacionPaginas = {44, 28};
 
     // --- Estado de navegación ---
     int _seccionActual;
@@ -79,10 +79,10 @@ private:
     // --- Métodos privados de inicialización ---
     inline void _inicializarDatos();
     inline void _cargarCategorias();
-    inline void _cargarResultadosEjemplo();
-
-    // --- Métodos privados de estado ---
+    inline void _cargarResultadosEjemplo();    // --- Métodos privados de estado ---
     inline void _limpiarEstado();
+    inline void _mostrarCursor();
+    inline void _ocultarCursor();
 
     // --- Métodos privados de renderizado ---
     inline void _dibujarInterfazCompleta();
@@ -200,6 +200,24 @@ inline void ExplorarContenidoScreen::_limpiarEstado()
     _textoBusqueda.clear();
 }
 
+// Mostrar cursor
+inline void ExplorarContenidoScreen::_mostrarCursor()
+{
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    cursorInfo.bVisible = TRUE;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
+// Ocultar cursor
+inline void ExplorarContenidoScreen::_ocultarCursor()
+{
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    cursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
 // Dibujar interfaz completa
 inline void ExplorarContenidoScreen::_dibujarInterfazCompleta()
 {
@@ -214,6 +232,13 @@ inline void ExplorarContenidoScreen::_dibujarInterfazCompleta()
     _renderizarResultados();
     _renderizarNavegacionPaginas();
 
+    // Configurar cursor inicial
+    if (_seccionActual == SECCION_BUSCADOR) {
+        _mostrarCursor();
+    } else {
+        _ocultarCursor();
+    }
+
     resetColor();
 }
 
@@ -222,6 +247,13 @@ inline void ExplorarContenidoScreen::_actualizarSeleccion()
 {
     if (_seccionAnterior != _seccionActual || _elementoAnterior != _elementoActual)
     {
+        // Manejar cursor
+        if (_seccionActual == SECCION_BUSCADOR) {
+            _mostrarCursor();
+        } else {
+            _ocultarCursor();
+        }
+
         // Actualizar sección anterior
         switch (_seccionAnterior) {
         case SECCION_BUSCADOR:
@@ -271,16 +303,26 @@ inline void ExplorarContenidoScreen::_renderizarBuscador(bool seleccionado)
     gotoXY(_coordBuscador.X, _coordBuscador.Y);
     
     if (seleccionado) {
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BLANCO_PURO);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BORDES_SUTILES);
     } else {
-        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
     
     std::string texto = _textoBusqueda;
     if (texto.length() > 60) texto = texto.substr(0, 60);
-    texto.resize(66, ' '); // Rellenar con espacios
     
-    std::cout << texto;
+    // Rellenar con espacios hasta el ancho total
+    std::string textoCompleto = texto;
+    textoCompleto.resize(66, ' ');
+    
+    std::cout << textoCompleto;
+    
+    // Si está seleccionado, posicionar el cursor al final del texto
+    if (seleccionado) {
+        gotoXY(_coordBuscador.X + texto.length(), _coordBuscador.Y);
+        _mostrarCursor();
+    }
+    
     resetColor();
 }
 
@@ -334,14 +376,14 @@ inline void ExplorarContenidoScreen::_renderizarElementoCategoria(int indice, bo
     gotoXY(_coordFiltroCategorias.X, _coordFiltroCategorias.Y + indice);
     
     if (seleccionado) {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     } else if (indiceReal == _categoriaSeleccionada) {
-        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
     } else {
-        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
     }
     
-    std::string texto = "  " + _nombresCategorias[indiceReal];
+    std::string texto = " " + _nombresCategorias[indiceReal] + " ";
     if (texto.length() > 19) texto = texto.substr(0, 19);
     std::cout << texto;
     resetColor();
@@ -362,10 +404,10 @@ inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bo
 {
     if (indice >= _textosResultadosEjemplo.size()) return;
     
-    gotoXY(_coordResultados.X, _coordResultados.Y + (indice * 3));
+    gotoXY(_coordResultados.X, _coordResultados.Y + indice);
     
     if (seleccionado) {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     } else {
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
@@ -388,16 +430,16 @@ inline void ExplorarContenidoScreen::_renderizarNavegacionPaginas()
 // Renderizar elemento de navegación
 inline void ExplorarContenidoScreen::_renderizarElementoNavegacion(int indice, bool seleccionado)
 {
-    std::vector<std::string> elementos = {"< ANTERIOR", "SIGUIENTE >"};
+    std::vector<std::string> elementos = {" < ANTERIOR ", " SIGUIENTE > "};
     if (indice >= elementos.size()) return;
     
-    int offsetX = (indice == 0) ? -10 : 15;
+    int offsetX = (indice == 0) ? -10 : 3;
     gotoXY(_coordNavegacionPaginas.X + offsetX, _coordNavegacionPaginas.Y);
     
     if (seleccionado) {
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
     } else {
-        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
     }
     
     std::cout << elementos[indice];
@@ -460,20 +502,89 @@ inline void ExplorarContenidoScreen::_manejarNavegacion(int tecla)
 // Manejar navegación vertical
 inline void ExplorarContenidoScreen::_manejarNavegacionVertical(int direccion)
 {
-    if (_seccionActual == SECCION_BUSCADOR) {
-        // Desde buscador, moverse a otras secciones
-        if (direccion > 0) {
-            _seccionActual = SECCION_FILTRO_TIPOS;
+    if (direccion > 0) { // ABAJO
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+            // Desde buscador -> Resultados
+            _seccionActual = SECCION_RESULTADOS;
             _elementoActual = 0;
-        }
-    } else {
-        int maxElementos = _obtenerMaxElementosEnSeccion(_seccionActual);
-        if (maxElementos > 0) {
-            if (direccion > 0) {
-                _elementoActual = (_elementoActual < maxElementos - 1) ? _elementoActual + 1 : 0;
-            } else {
-                _elementoActual = (_elementoActual > 0) ? _elementoActual - 1 : maxElementos - 1;
+            break;
+            
+        case SECCION_RESULTADOS:
+        {   // Navegar dentro de resultados
+            int maxResultados = _obtenerMaxElementosEnSeccion(SECCION_RESULTADOS);
+            if (_elementoActual < maxResultados - 1) {
+                _elementoActual++;
             }
+            else {
+                // Al final de resultados -> Navegación de páginas
+                _seccionActual = SECCION_NAVEGACION_PAGINAS;
+                _elementoActual = 0;
+            }
+            break;
+        }
+        case SECCION_NAVEGACION_PAGINAS:
+            // Ciclar dentro de navegación de páginas
+            _elementoActual = (_elementoActual == 0) ? 1 : 0;
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+        {   // Navegar dentro de filtro tipos
+            int maxTipos = _obtenerMaxElementosEnSeccion(SECCION_FILTRO_TIPOS);
+            if (_elementoActual < maxTipos - 1) {
+                _elementoActual++;
+            }
+            else {
+                // Al final de tipos -> Categorías
+                _seccionActual = SECCION_FILTRO_CATEGORIAS;
+                _elementoActual = 0;
+            }
+            break;
+        }
+        case SECCION_FILTRO_CATEGORIAS:
+        {    // Navegar dentro de categorías
+            int maxCategorias = _obtenerMaxElementosEnSeccion(SECCION_FILTRO_CATEGORIAS);
+            if (_elementoActual < maxCategorias - 1) {
+                _elementoActual++;
+            }
+            break;
+        }
+        }
+    } else { // ARRIBA
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+            // No hay nada arriba del buscador
+            break;
+            
+        case SECCION_RESULTADOS:
+            if (_elementoActual > 0) {
+                _elementoActual--;
+            } else {
+                // Al inicio de resultados -> Buscador
+                _seccionActual = SECCION_BUSCADOR;
+                _elementoActual = 0;
+            }
+            break;
+            
+        case SECCION_NAVEGACION_PAGINAS:
+            // Desde navegación -> Último resultado
+            _seccionActual = SECCION_RESULTADOS;
+            _elementoActual = _obtenerMaxElementosEnSeccion(SECCION_RESULTADOS) - 1;
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+            // No hay nada arriba de tipos
+            break;
+            
+        case SECCION_FILTRO_CATEGORIAS:
+            if (_elementoActual > 0) {
+                _elementoActual--;
+            } else {
+                // Al inicio de categorías -> Tipos
+                _seccionActual = SECCION_FILTRO_TIPOS;
+                _elementoActual = _obtenerMaxElementosEnSeccion(SECCION_FILTRO_TIPOS) - 1;
+            }
+            break;
         }
     }
 }
@@ -481,17 +592,52 @@ inline void ExplorarContenidoScreen::_manejarNavegacionVertical(int direccion)
 // Manejar navegación horizontal
 inline void ExplorarContenidoScreen::_manejarNavegacionHorizontal(int direccion)
 {
-    if (direccion > 0) {
-        // Moverse a la derecha entre secciones
-        if (_seccionActual < TOTAL_SECCIONES - 1) {
-            _seccionActual++;
+    if (direccion > 0) { // DERECHA
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+        case SECCION_RESULTADOS:
+            // Desde buscador o resultados -> Filtros (tipos)
+            _seccionActual = SECCION_FILTRO_TIPOS;
             _elementoActual = 0;
+            break;
+            
+        case SECCION_NAVEGACION_PAGINAS:
+            if (_elementoActual == 0) {
+                // Primer botón -> Segundo botón
+                _elementoActual = 1;
+            } else {
+                // Segundo botón -> Filtros (DERECHA x2)
+                _seccionActual = SECCION_FILTRO_TIPOS;
+                _elementoActual = 0;
+            }
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+        case SECCION_FILTRO_CATEGORIAS:
+            // Dentro de filtros, no hacer nada o ciclar
+            break;
         }
-    } else {
-        // Moverse a la izquierda entre secciones
-        if (_seccionActual > 0) {
-            _seccionActual--;
+    } else { // IZQUIERDA
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+        case SECCION_RESULTADOS:
+            // No hay nada a la izquierda
+            break;
+            
+        case SECCION_NAVEGACION_PAGINAS:
+            if (_elementoActual == 1) {
+                // Segundo botón -> Primer botón
+                _elementoActual = 0;
+            }
+            // Si ya está en el primer botón, no hacer nada
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+        case SECCION_FILTRO_CATEGORIAS:
+            // Desde filtros -> Regresar a resultados
+            _seccionActual = SECCION_RESULTADOS;
             _elementoActual = 0;
+            break;
         }
     }
 }
@@ -587,15 +733,13 @@ inline ResultadoPantalla ExplorarContenidoScreen::ejecutar()
         case KEY_LEFT:
         case KEY_RIGHT:
             _manejarNavegacion(tecla);
-            break;
-
-        case KEY_ESCAPE: // ESC - Regresar
+            break;        case KEY_ESCAPE: // ESC - Regresar
+            _ocultarCursor(); // Ocultar cursor antes de salir
             res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-            return res;
-
-        case KEY_ENTER: // Enter - Procesar selección
+            return res;        case KEY_ENTER: // Enter - Procesar selección
             res = _procesarSeleccion();
             if (res.accion != AccionPantalla::NINGUNA) {
+                _ocultarCursor(); // Ocultar cursor antes de salir
                 return res;
             }
             break;

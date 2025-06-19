@@ -309,7 +309,7 @@ inline void UI_OrganizationDashboard()
           │ Cursos publicados:        │ Especialidades publicadas:        │ Estudiantes inscritos: 342       │       
           └───────────────────────────┴───────────────────────────────────┴──────────────────────────────────┘       
                                                                                                                 
-                  EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MI CONTENIDO      VER ESTADISTICAS                                             
+                  EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MI CONTENIDO      VER ESTADISTICAS              
 
                                                                                                             
        MIS CURSOS: [ VER TODOS ]
@@ -554,30 +554,30 @@ inline void UI_ExplorarContenido()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-┌──<<  FILTRAR POR  >>──┐                  ┌──────────────────────────────────────────────────────────────────┐        
-│                       │         Buscar:  │                                                                  │
-│ Tipo de contenido:    │                  └──────────────────────────────────────────────────────────────────┘
-│   TODOS               │
-│   CURSOS              │        -
-│   ESPECIALIDADES      │        -
-│                       │        -
-│ Categoria:            │        -
-│   TODAS               │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │        -
-│                       │
-└───────────────────────┘                                     < ANTERIOR  SIGUIENTE >
+               ┌──────────────────────────────────────────────────────────────────┐         ┌──<<  FILTRAR POR  >>──┐  
+      Buscar:  │                                                                  │         │                       │   
+               └──────────────────────────────────────────────────────────────────┘         │ Tipo de contenido:    │   
+                                                                                            │   TODOS               │
+    -                                                                                       │   CURSOS              │
+    -                                                                                       │   ESPECIALIDADES      │
+    -                                                                                       │                       │
+    -                                                                                       │ Categoria:            │
+    -                                                                                       │   TODAS               │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+    -                                                                                       │                       │
+                                                                                            │                       │
+                                  < ANTERIOR   SIGUIENTE >                                  └───────────────────────┘
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
  Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
