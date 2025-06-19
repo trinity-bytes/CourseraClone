@@ -45,6 +45,8 @@ public:
 
     void guardar();
     RawComprobanteData obtenerDatosCrudosComprobante();
+    void mostrarComprobantePorId(int id);
+
 };
 
 ComprobanteDePago::ComprobanteDePago() : 
@@ -148,4 +150,22 @@ inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante(){
 
     return data;
 }
+
+inline void mostrarComprobantePorId(int id) {
+	RawComprobanteData comprobante;
+	if (FilesManager::getInstance().buscarComprobantePorIdHash(id, comprobante)) {
+		std::cout << "Comprobante ID: " << comprobante.id << std::endl;
+		std::cout << "Estudiante ID: " << comprobante.idEstudiante << std::endl;
+		std::cout << "Actividad ID: " << comprobante.idActividad << std::endl;
+		std::cout << "Tipo de Actividad: " << static_cast<int>(comprobante.tipoActividad) << std::endl;
+		std::cout << "Fecha de Emisión: " << comprobante.fechaEmision << std::endl;
+		std::cout << "Hora de Emisión: " << comprobante.horaEmision << std::endl;
+		std::cout << "Monto Pagado: " << comprobante.montoPagado << std::endl;
+		std::cout << "Método de Pago: " << static_cast<int>(comprobante.metodoPago) << std::endl;
+	}
+	else {
+		std::cerr << "No se encontró el comprobante con ID: " << id << std::endl;
+	}
+}
+
 #endif // COURSERACLONE_ENTITIES_BOLETA_HPP

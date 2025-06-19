@@ -13,12 +13,10 @@
 #include "../Types/ActividadTypes.hpp" // RawCursoData
 
 // Clase que representa un curso en el sistema educativo
-class Curso : public Actividad 
-{
+class Curso : public Actividad {
 private:
     std::string _instructor;
     int _cantidadClases;
-
 	// ToDo: Implementar lista de clases relacionadas al curso
 public:
     Curso() : Actividad(0, 0, "", CategoriaActividad::DEFAULT, "", ""), _instructor(""), _cantidadClases(0) {}
@@ -46,8 +44,7 @@ public:
 
     
 	// Obtener datos crudos del curso
-    RawCursoData obtenerDatosCrudosCurso() 
-    {
+    RawCursoData obtenerDatosCrudosCurso() {
         RawCursoData datos;
 
         datos.id = this->getId();
@@ -63,13 +60,30 @@ public:
 	}
 
     // Método para persistencia
-    bool guardar() override
-    {
+    bool guardar() override{
 		// ToDo: Implementar la lógica para guardar el curso en un archivo
+
         return true;
     }
 
 	// ToDo: Implementar el método para cargar el curso desde un archivo
+
+    void mostrarCursoPorId(int id) {
+        RawCursoData curso;
+		if (FilesManager::getInstance().buscarCursoPorIdHash(this->getId(), curso)) {
+			std::cout << "Curso ID: " << curso.id << std::endl;
+			std::cout << "Empresa ID: " << curso.idEmpresa << std::endl;
+			std::cout << "Nombre Empresa: " << curso.nombreEmpresa << std::endl;
+			std::cout << "Título: " << curso.titulo << std::endl;
+			std::cout << "Descripción: " << curso.descripcion << std::endl;
+			std::cout << "Instructor: " << curso.instructor << std::endl;
+			std::cout << "Categoría: " << static_cast<int>(curso.categoria) << std::endl;
+			std::cout << "Cantidad de Clases: " << curso.cantidadClases << std::endl;
+		}
+		else {
+			std::cerr << "Curso no encontrado." << std::endl;
+		}
+    }
 };
 
 #endif // COURSERACLONE_ENTITIES_CURSO_HPP
