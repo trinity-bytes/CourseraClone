@@ -15,6 +15,7 @@ private:
 	Stack<Inscripcion> inscripcionesCursos;
 	Stack<Inscripcion> inscripcionesEspecialidades;
 	std::unique_ptr<ArbolAVL<int>> idCursos, idEspecialidades;
+	int idEstudiante;
 
 	// Utilidades privadas
 	void logOperation(const std::string& operation, const std::string& details);
@@ -29,7 +30,8 @@ public:
 	// Metodos para inscripciones
 	inline void guardarCursoInscripcion(Inscripcion inscripcion);
 	inline void guardarEspecializacionInscripcion(Inscripcion inscripcion);
-	inline FileOperationResult inscribirCurso(int idEstudiante, int idCurso);
+	inline FileOperationResult inscribirCurso(int idCurso);
+	inline void mostrarCursos();
 };
 
 // Constructores
@@ -37,18 +39,22 @@ inline InscripcionesController::InscripcionesController()
 {
 	idCursos = std::make_unique<ArbolAVL<int>>();
 	idEspecialidades = std::make_unique<ArbolAVL<int>>();
+	idEstudiante = -1;
 }
 
 inline InscripcionesController::InscripcionesController(int _idEstudiante) {
 	// Inicializar estructuras de datos
 	idCursos = std::make_unique<ArbolAVL<int>>();
 	idEspecialidades = std::make_unique<ArbolAVL<int>>();
+	idEstudiante = _idEstudiante;
 
 	std::vector<RawInscripcionData> inscripcionesCursosRaw;
 	// Cargar inscripciones desde disco
 	FileOperationResult resultado = FilesManager::getInstance().cargarInscripcionesPorEstudiante(_idEstudiante, inscripcionesCursosRaw);
+	// throw std::runtime_error(std::to_string(inscripcionesCursosRaw.size()));
 
 	if (resultado == FileOperationResult::SUCCESS) {
+	
 		for (RawInscripcionData& rawInscripcion : inscripcionesCursosRaw) {
 			Inscripcion inscripcion(rawInscripcion);
 			if (inscripcion.getTipo() == TipoActividad::CURSO) {
@@ -69,9 +75,10 @@ inline InscripcionesController::InscripcionesController(int _idEstudiante) {
 
 // ========== MÉTODOS DE INSCRIPCION ==========
 inline void InscripcionesController::guardarCursoInscripcion(Inscripcion inscripcion) {
-	inscripcionesCursos.push(inscripcion);
+	
 	int idActividad = inscripcion.getIdActividad();
 	if (idCursos->Insertar(inscripcion.getIdActividad())) {
+		inscripcionesCursos.push(inscripcion);
 		logOperation("Insertar en AVL de curso", "ID: " + std::to_string(idActividad));
 	}
 	else {
@@ -80,9 +87,9 @@ inline void InscripcionesController::guardarCursoInscripcion(Inscripcion inscrip
 }
 
 inline void InscripcionesController::guardarEspecializacionInscripcion(Inscripcion inscripcion) {
-	inscripcionesEspecialidades.push(inscripcion);
 	int idEspecializacion = inscripcion.getIdActividad();
 	if (idEspecialidades->Insertar(inscripcion.getIdActividad())) {
+		inscripcionesEspecialidades.push(inscripcion);
 		logOperation("Insertar en AVL de especialidad", "ID: " + std::to_string(idEspecializacion));
 	}
 	else {
@@ -90,19 +97,29 @@ inline void InscripcionesController::guardarEspecializacionInscripcion(Inscripci
 	}
 }
 
-inline FileOperationResult InscripcionesController::inscribirCurso(int idEstudiante, int idCurso) {
-	bool encontrado = idCursos.get()->Buscar(idCurso);
-	if (!encontrado) {
-		int idActual = FilesManager::getInstance().cantidadInscripciones();
-		Inscripcion nuevaInscripcion(idEstudiante, idCurso, idActual);
-		guardarCursoInscripcion(nuevaInscripcion);
-		nuevaInscripcion.guardar();
-		return FileOperationResult::SUCCESS;
+inline FileOperationResult InscripcionesController::inscribirCurso(int idCurso) {
+	if (!idCursos->Insertar(idCurso)) {
+		logError("Inscribir curso",
+			"ID duplicado, no se agrega: curso " + std::to_string(idCurso) +
+			" para estudiante " + std::to_string(idEstudiante));
+		return FileOperationResult::DUPLICATED_VALUE;
 	}
-	else {
-		logError("Inscribir curso", "Curso encontrado con el id " + std::to_string(idCurso) + ", en el alumno con id: " + std::to_string(idEstudiante));
-		return FileOperationResult::UNKNOWN_ERROR;
-	}
+
+	// 2) Crea la nueva Inscripcion y la persiste en disco
+	int idActual = FilesManager::getInstance().cantidadInscripciones();
+	Inscripcion nueva(idEstudiante, idCurso, idActual, TipoActividad::CURSO);
+	nueva.guardar();
+	inscripcionesCursos.push(nueva);
+
+	logOperation("Inscribir curso",
+		"Éxito: curso " + std::to_string(idCurso) +
+		" para estudiante " + std::to_string(idEstudiante));
+	return FileOperationResult::SUCCESS;
+}
+
+inline void InscripcionesController::mostrarCursos() {
+	idCursos.get()->inOrden();
+	
 }
 
 

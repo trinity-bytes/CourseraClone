@@ -29,7 +29,7 @@ private:
 
 public:
     inline Inscripcion();
-    inline Inscripcion(int _idEstudiante, int _idActividad, int _id);
+    inline Inscripcion(int _idEstudiante, int _idActividad, int _id, TipoActividad _tipo);
     inline Inscripcion(InscripcionBinaria& _bin, int _off);
     inline Inscripcion(RawInscripcionData rawInscripcionData);
 
@@ -60,9 +60,9 @@ inline Inscripcion::Inscripcion()
     : id(0), idEstudiante(0), idActividad(0),
     progreso(0.0), completado(false), estadoPago(false) {
 }
-inline Inscripcion::Inscripcion(int _idEstudiante, int _idActividad, int _id)
+inline Inscripcion::Inscripcion(int _idEstudiante, int _idActividad, int _id, TipoActividad _tipo)
     : id(_id), idEstudiante(_idEstudiante), idActividad(_idActividad), 
-    progreso(0.0), completado(false), estadoPago(false)   
+    progreso(0.0), completado(false), estadoPago(false), tipo(_tipo)
 {
 
 }

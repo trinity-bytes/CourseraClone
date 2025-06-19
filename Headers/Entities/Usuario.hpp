@@ -7,6 +7,7 @@
 
 // Headers de la libreria estandar
 #include <iostream>  // Para std::cerr y std::endl
+#include "../Controllers/FilesManager.hpp"
 
 // Headers propios
 #include "../Types/UsuarioTypes.hpp"
@@ -33,10 +34,13 @@ private:
     inline Usuario fromUsuarioBinario(const UsuarioBinario& bin);
 
     // Convierte un objeto Usuario a UsuarioIndex
-    inline UsuarioIndex toUsuarioIndex(int offset);
+    inline UsuarioIndex toUsuarioIndex();
 
     // Convierte struct UsuarioIndex a string de nombre de usuario
     inline std::string getUsernameFromIndex(const UsuarioIndex& index);
+
+    // Convierte correo a minuscula
+    inline std::string Usuario::correoCorrecto(std::string _correo);
 
 	// Hashea la contraseña usando un método seguro
     inline std::string hashContrasena(const std::string& contrasena);
@@ -72,7 +76,7 @@ public:
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
     inline LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, std::string passInput, int pos);
 
-    inline int buscarIndexUsuario(std::string _username, TipoUsuario tipoUsuario);
+    inline int buscarIndexUsuario();
 
     inline bool actualizarUsuario(const std::string& _nuevoNombre, const std::string& _nuevoUsername, const std::string& _nuevaContrasena);
 };
@@ -96,7 +100,7 @@ inline Usuario::Usuario(
 ) : _id(id),
     _tipoUsuario(tipoUsuario),
     _nombreCompleto(nombreCompleto),
-    _username(username),
+    _username(correoCorrecto(username)),
     _contrasenaHash(contrasenaHash) 
 {}
 
@@ -128,9 +132,9 @@ inline Usuario Usuario::fromUsuarioBinario(const UsuarioBinario& binario)
 }
 
 // Convierte objeto Usuario a struct UsuarioIndex
-inline UsuarioIndex Usuario::toUsuarioIndex(int offset)
+inline UsuarioIndex Usuario::toUsuarioIndex()
 {
-    return UsuarioIndex(_username, offset);
+    return UsuarioIndex(_username, _id);
 }
 
 // Convierte struct UsuarioIndex a string de nombre de usuario
@@ -140,9 +144,17 @@ inline std::string Usuario::getUsernameFromIndex(const UsuarioIndex& index)
     return std::string(index.nombreDeUsuario, strnlen(index.nombreDeUsuario, MAX_FIELD_LEN));
 }
 
+inline std::string Usuario::correoCorrecto(std::string _correo) {
+    std::string res = "";
+    for (char c : _correo) res += tolower(c);
+    return res;
+}
+
 inline std::string Usuario::hashContrasena(const std::string& contrasena)
 {
-	// ToDo : Implementar un método de hash seguro para contraseñas.
+    std::string mockHash = "atalapastrukaGohGohGoh"; // Hash inicial con la palabra de seguridad xd
+    mockHash += contrasena.substr(0, min((int)contrasena.length(), MAX_FIELD_LEN - (int)mockHash.length() - 1));
+    return mockHash;
 }
 
 // IMPLEMENTACION DE FUNCIONES ESTATICAS PUBLICAS
@@ -180,8 +192,10 @@ inline void Usuario::establecerDatosBase(Usuario otroUsuario)
 
 inline void Usuario::guardar()
 {
-	// Todo: Implementar la lógica para guardar el usuario en el archivo correspondiente.
-	// Usaremos las funciones de la clase FilesManager para manejar los archivos.
+    // Todo: Implementar la lógica para guardar el usuario en el archivo correspondiente.
+    // Usaremos las funciones de la clase FilesManager para manejar los archivos.
+	FilesManager::getInstance().guardarUsuarioBinario(toUsuarioBinario(), _tipoUsuario);
+    FilesManager::getInstance().guardarIndiceUsuario(toUsuarioIndex(), _tipoUsuario);
 }
 
 /// --- Método estático para manejar el login ---
@@ -196,11 +210,8 @@ inline LoginStatus Usuario::login(
 	return LoginStatus::SUCCESS; // Retorna un código de estado de error por defecto
 }
 
-inline int Usuario::buscarIndexUsuario(std::string _username, TipoUsuario tipoUsuario)
-{
-	// Todo: Implementar la lógica para buscar el índice del usuario en el archivo de índice.
-	// Usaremos las funciones de la clase FilesManager para manejar los archivos.
-	return -1; // Retorna -1 si no se encuentra el usuario
+inline int Usuario::buscarIndexUsuario() {
+	return FilesManager::getInstance().buscarIndexUsuario(_nombreCompleto, static_cast<int>(_tipoUsuario));
 }
 
 inline bool Usuario::actualizarUsuario(

@@ -67,8 +67,8 @@ const std::string DataPaths::Content::DB_ESPECIALIZACIONES = Content::BASE + "DB
 const std::string DataPaths::Financial::BASE = BASE_PATH + "Financial/";
 const std::string DataPaths::Financial::DB_PAGOS = Financial::BASE + "DB_RegistroDePagos.dat";
 const std::string DataPaths::Financial::DB_COMPROBANTES = Financial::BASE + "DB_ComprobantesDePago.csv";
-const std::string DataPaths::Financial::INDICES_PAGOS = BASE_PATH + "Indices/IDX_RegistroDePagos.dat";
-const std::string DataPaths::Financial::INDICES_COMPROBANTES = BASE_PATH + "Indices/IDX_ComprobantesDePago.csv";
+const std::string DataPaths::Financial::INDICES_PAGOS = BASE_PATH + "Index/IDX_RegistroDePagos.dat";
+const std::string DataPaths::Financial::INDICES_COMPROBANTES = BASE_PATH + "Index/IDX_ComprobantesDePago.csv";
 
 const std::string DataPaths::Logs::BASE = BASE_PATH + "Logs/";
 const std::string DataPaths::Logs::ERROR_LOGS = Logs::BASE + "Error_Logs.txt";

@@ -6,6 +6,7 @@
 
 #include <string>
 #include <cctype>
+#include "../Controllers/FilesManager.hpp"
 
 // UTILIDADES DE VALIDACIÓN
 
@@ -31,6 +32,16 @@ inline std::string limitarTexto(const std::string& texto, size_t maxLength,
                                const std::string& sufijo = "...") {
     if (texto.length() <= maxLength) return texto;
     return texto.substr(0, maxLength - sufijo.length()) + sufijo;
+}
+
+inline bool emailRepetido(std::string _email, int tipo) {
+	for (char& c : _email) {
+		c = std::tolower(c);
+	}
+
+	int pos = FilesManager::getInstance().buscarIndexUsuario(_email, tipo);
+    if (pos == -1) return false;
+    return true;
 }
 
 #endif // COURSERACLONE_UTILS_VALIDATIONUTILS_HPP

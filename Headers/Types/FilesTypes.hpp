@@ -8,7 +8,8 @@ enum class FileOperationResult
     FILE_NOT_FOUND,
     PERMISSION_DENIED,
     CORRUPTION_DETECTED,
-    UNKNOWN_ERROR
+    UNKNOWN_ERROR,
+    DUPLICATED_VALUE
 };
 inline std::string obtenerMensaje(FileOperationResult resultado) {
     switch (resultado) {
