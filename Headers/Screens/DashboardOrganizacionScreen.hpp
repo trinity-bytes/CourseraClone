@@ -373,11 +373,7 @@ inline void DashboardOrganizacionScreen::_renderizarElementoCurso(int indice, bo
             
             // Renderizar descripción
             gotoXY(_coordsDescCursos[indice].X, _coordsDescCursos[indice].Y);
-            if (seleccionado) {
-                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-            } else {
-                setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-            }
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
             std::string descFormateada = _formatearDescripcion(_cursos[cursoIndex].descripcion, MAX_ANCHO_CARACTERES_CUADRO, MAX_ALTO_CARACTERES_CUADRO);
             std::cout << descFormateada;
         }
@@ -418,11 +414,7 @@ inline void DashboardOrganizacionScreen::_renderizarElementoEspecializacion(int 
             
             // Renderizar descripción
             gotoXY(_coordsDescEspecializaciones[indice].X, _coordsDescEspecializaciones[indice].Y);
-            if (seleccionado) {
-                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-            } else {
-                setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-            }
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
             std::string descFormateada = _formatearDescripcion(_especializaciones[espIndex].descripcion, MAX_ANCHO_CARACTERES_CUADRO, MAX_ALTO_CARACTERES_CUADRO);
             std::cout << descFormateada;
         }
