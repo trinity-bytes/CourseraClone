@@ -453,7 +453,7 @@ inline FileOperationResult FilesManager::cargarOffsets(int id, std::vector<int>&
     offsets.clear();
 
     auto path = DataPaths::Core::INDICES_INSCRIPCIONES;
-    std::fstream archivoOrden(path, std::ios::binary | std::ios::in);
+    std::fstream archivoOrden(path, std::ios::binary | std::ios::in | std::ios::ate);
 
     archivoOrden.seekg(0, std::ios::end);
     int cantidad = static_cast<int>(archivoOrden.tellg() / sizeof(InscripcionIndex));
@@ -471,6 +471,7 @@ inline FileOperationResult FilesManager::cargarOffsets(int id, std::vector<int>&
         logInfo("Cargar inscripciones", "No se encontraron inscripciones para el ID: " + std::to_string(id));
         return FileOperationResult::SUCCESS;
     }
+	logInfo("Cargar inscripciones", "Primer ID encontrado en: " + std::to_string(pos));
 
     int contador = 0;
     for (int i = pos; i < cantidad; i++) {
@@ -483,6 +484,7 @@ inline FileOperationResult FilesManager::cargarOffsets(int id, std::vector<int>&
             logInfo("Cargar inscripciones", "Inscripcion encontrada: id " + std::to_string(tmpIndex.offset));
         }
     }
+    
 
     logInfo("Cargar inscripciones", "Se han cargado " + std::to_string(cantidad) + " offsets de inscripciones");
     archivoOrden.close();
@@ -515,10 +517,12 @@ inline std::vector<RawInscripcionData> FilesManager::getInscripcionesRawData(std
 }
 
 inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id, std::vector<RawInscripcionData>& inscripciones) {
+    /*
     if (!_sistemaInicializado) {
         logError("Cargar inscripciones", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
     }
+    */
 
     try {
         std::ifstream is(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary);
@@ -529,6 +533,7 @@ inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id
         }
 
 		std::vector<int> offsets;
+
 		FileOperationResult resultadoOffsets = cargarOffsets(id, offsets);
         if (resultadoOffsets == FileOperationResult::SUCCESS) {
 
@@ -557,10 +562,12 @@ inline FileOperationResult FilesManager::guardarUsuarioBinario(
     TipoUsuario tipo,
     long& offset
 ) {
+    /*
     if (!_sistemaInicializado) {
         logError("Guardar usuario", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
     }
+    */
     
     try {
         auto path = getDataFilePath(tipo);
@@ -591,7 +598,7 @@ inline FileOperationResult FilesManager::guardarUsuarioBinario(
 
 inline FileOperationResult FilesManager::guardarInidiceInscripcion(int _idEstudiante, int _offset) {
     auto path = DataPaths::Core::INDICES_INSCRIPCIONES;
-    std::fstream archivoOrden(path, std::ios::binary | std::ios::app);
+    std::fstream archivoOrden(path, std::ios::binary | std::ios::in | std::ios::out);
 	if (!archivoOrden.is_open()) {
 		logError("Guardar índice de inscripciones", path, "No se pudo abrir el archivo");
 		return FileOperationResult::FILE_NOT_FOUND;
@@ -623,8 +630,8 @@ inline FileOperationResult FilesManager::guardarInidiceInscripcion(int _idEstudi
         
 		archivoOrden.seekp(pos * sizeof(InscripcionIndex), std::ios::beg);
 		archivoOrden.write(reinterpret_cast<char*>(&nuevoIndice), sizeof(InscripcionIndex));
-
         archivoOrden.close();
+
         logInfo("Guardar índice de inscripciones", path + " (Busqueda binaria)");
         return FileOperationResult::SUCCESS;
 		
@@ -637,11 +644,12 @@ inline FileOperationResult FilesManager::guardarInidiceInscripcion(int _idEstudi
 
 inline std::vector<UsuarioIndex> FilesManager::cargarIndicesUsuario(TipoUsuario tipo) {
     std::vector<UsuarioIndex> indices;
-    
+    /*
     if (!_sistemaInicializado) {
         logError("Cargar índices", "Sistema", "Sistema no inicializado");
         return indices;
     }
+    */
     
     try {
         auto path = getIndexFilePath(tipo);
@@ -670,10 +678,12 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
     const InscripcionBinaria& bin,
     int& offsetRegistro
 ) {
+    /*
     if (!_sistemaInicializado) {
         logError("Guardar inscripción", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
     }
+    */
     
     try {
         std::ofstream os(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary | std::ios::app);
@@ -684,7 +694,8 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
         }
         
         os.seekp(0, std::ios::end);
-        offsetRegistro = static_cast<int>(os.tellp()); // Guardar la posición actual
+        offsetRegistro = static_cast<int>(os.tellp() / sizeof(InscripcionBinaria));
+
         os.write(reinterpret_cast<const char*>(&bin), sizeof(bin));
         
         if (!os.good()) {
@@ -692,7 +703,7 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
             return FileOperationResult::UNKNOWN_ERROR;
         }
         
-        logInfo("Guardar inscripción", DataPaths::Core::DB_INSCRIPCIONES);
+        logInfo("Guardar inscripción " + std::to_string(offsetRegistro), DataPaths::Core::DB_INSCRIPCIONES);
         os.close();
         return FileOperationResult::SUCCESS;
         
@@ -703,10 +714,12 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(
 }
 
 inline int FilesManager::cantidadInscripciones() {
+    /*
     if (!_sistemaInicializado) {
         logError("Cantidad de inscripciones", "Sistema", "Sistema no inicializado");
         return -1; // Indica error
     }
+    */
     std::ifstream archivo(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary);
     if (!archivo.is_open()) {
         logError("Cantidad de inscripciones", DataPaths::Core::DB_INSCRIPCIONES, "No se pudo abrir el archivo");
@@ -720,6 +733,7 @@ inline int FilesManager::cantidadInscripciones() {
 }
 
 inline FileOperationResult FilesManager::actualizarPagoInscripcion(int posicion, bool estado) {
+    
     if (!_sistemaInicializado) {
         logError("Actualizar pago inscripción", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;

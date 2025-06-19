@@ -12,6 +12,7 @@
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/UI_Ascii.hpp"
+#include "../Controllers/InscripcionesController.hpp" // ELiminar luego de prueba
 
 class LoginScreen : public PantallaBase 
 {
@@ -148,7 +149,15 @@ public:
 };
 
 // ---- CONSTUCTORES INLINE ----
-inline LoginScreen::LoginScreen() : PantallaBase() {}
+inline LoginScreen::LoginScreen() : PantallaBase() { // Eliminar luego de prueba
+    /*
+    InscripcionesController insCon(2);
+    insCon.inscribirCurso(3);
+    //insCon.mostrarCursos();
+    insCon.inscribirCurso(4);
+	insCon.inscribirCurso(3);
+    */
+}
 
 // ---- METODOS PRIVADOS ----
 inline void LoginScreen::_configurarCursor(bool mostrar) {

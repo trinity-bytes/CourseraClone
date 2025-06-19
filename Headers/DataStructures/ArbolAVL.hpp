@@ -14,6 +14,10 @@ private:
         std::cout << " " << valor;
     }
 
+	int maximo(int a, int b) {
+		return (a > b) ? a : b;
+	}
+
     // Altura de un nodo (nullptr -> 0)
     int _altura(NodoAVL<T>* nodo) {
         return nodo ? nodo->altura : 0;
@@ -30,8 +34,8 @@ private:
         NodoAVL<T>* rl = r->izq;
         r->izq = nodo;
         nodo->der = rl;
-        nodo->altura = 1 + std::max(_altura(nodo->izq), _altura(nodo->der));
-        r->altura = 1 + std::max(_altura(r->izq), _altura(r->der));
+        nodo->altura = 1 + maximo(_altura(nodo->izq), _altura(nodo->der));
+        r->altura = 1 + maximo(_altura(r->izq), _altura(r->der));
         nodo = r;
     }
 
@@ -41,8 +45,8 @@ private:
         NodoAVL<T>* lr = l->der;
         l->der = nodo;
         nodo->izq = lr;
-        nodo->altura = 1 + std::max(_altura(nodo->izq), _altura(nodo->der));
-        l->altura = 1 + std::max(_altura(l->izq), _altura(l->der));
+        nodo->altura = 1 + maximo(_altura(nodo->izq), _altura(nodo->der));
+        l->altura = 1 + maximo(_altura(l->izq), _altura(l->der));
         nodo = l;
     }
 
@@ -62,7 +66,7 @@ private:
         }
         else {
             // Actualiza altura si sin rotación
-            nodo->altura = 1 + std::max(_altura(nodo->izq), _altura(nodo->der));
+			nodo->altura = 1 + maximo(_altura(nodo->izq), _altura(nodo->der));
         }
     }
 
