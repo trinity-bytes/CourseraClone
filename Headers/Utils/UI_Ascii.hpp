@@ -414,8 +414,10 @@ __/  \__   \__/  \__  │   (  ._.  )   │  \__   \__/  \__   \__/  \__   \__/ 
  Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
     std::cout << ui;
+
+    resetColor();
 }
 
 /// UI Organization Profile View
@@ -456,8 +458,10 @@ inline void UI_OrganizationProfile()
  Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior)";
 //----------------------------------------------------------------------------------------------------------------------
 
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
     std::cout << ui;
+
+    resetColor();
 }
 
 
@@ -499,7 +503,30 @@ inline void UI_UserUpdateData()
  Pulsa ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 0; y < 8; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    gotoXY(42, 6);  std::cout << "- ACTUALIZA TU INFORMACION PERSONAL -";
+
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(42, 1);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+    gotoXY(42, 2);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+    gotoXY(42, 3);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
+
+    gotoXY(57, 4);  std::cout << "C L O N E";
+
+	resetColor();
 }
 
 /// UI Vista de las especialidades
