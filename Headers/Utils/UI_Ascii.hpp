@@ -414,7 +414,7 @@ __/  \__   \__/  \__  │   (  ._.  )   │  \__   \__/  \__   \__/  \__   \__/ 
  Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
 
     resetColor();
@@ -458,7 +458,7 @@ inline void UI_OrganizationProfile()
  Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior)";
 //----------------------------------------------------------------------------------------------------------------------
 
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
 
     resetColor();
