@@ -9,18 +9,24 @@
 
 // Headers propios del proyecto
 #include "../Screens/LandingPageScreen.hpp"
+#include "../Screens/SobreNosotrosScreen.hpp"
 #include "../Screens/LoginScreen.hpp"
+#include "../Screens/RegistroScreen.hpp"
+#include "../Screens/DashboardEstudianteScreen.hpp"
+#include "../Screens/ExplorarContenidoScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
 {
 private:
     /// @brief Estado de la aplicación
-    bool _ejecutando;
-    
-    /// @brief Métodos privados de navegación
+    bool _ejecutando;    /// @brief Métodos privados de navegación
     std::unique_ptr<PantallaBase> crearPantallaLandingPage();
+    std::unique_ptr<PantallaBase> crearPantallaSobreNosotros();
     std::unique_ptr<PantallaBase> crearPantallaLogin();
+    std::unique_ptr<PantallaBase> crearPantallaRegistro();
+    std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
+    std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
 
 public:
     /// @brief Constructor y destructor
@@ -41,16 +47,41 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaLandingPage()
     return std::make_unique<LandingPageScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla Sobre Nosotros
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaSobreNosotros()
+{
+    return std::make_unique<SobreNosotrosScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla de login
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaLogin()
 {
     return std::make_unique<LoginScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla de registro
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaRegistro()
+{
+    return std::make_unique<RegistroScreen>();
+}
+
+/// @brief Crea una nueva instancia del dashboard de estudiante
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaDashboardEstudiante()
+{
+    return std::make_unique<DashboardEstudianteScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla explorar contenido
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarContenido()
+{
+    return std::make_unique<ExplorarContenidoScreen>();
 }
 
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaLogin();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaExplorarContenido();
     
     do
     {
@@ -62,12 +93,31 @@ inline void MainController::run()
             _pantallaActual = crearPantallaLandingPage();
             break;
 
+        case AccionPantalla::IR_A_LOGIN:
+            _pantallaActual = crearPantallaLogin();
+			break;        
+        
+        case AccionPantalla::IR_A_REGISTRO:
+            _pantallaActual = crearPantallaRegistro();
+			break;
+
+        case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+            _pantallaActual = crearPantallaDashboardEstudiante();
+            break;
+		case AccionPantalla::IR_A_SOBRE_NOSOTROS:
+            _pantallaActual = crearPantallaSobreNosotros();
+			break;
+
+        case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
+            _pantallaActual = crearPantallaExplorarContenido();
+            break;
+
         case AccionPantalla::SALIR:
             _ejecutando = false;
             system("cls");
             break;
         default:
-            // Para acciones no implementadas aún, volver a landing page
+            /// @brief Para acciones no implementadas aún, se regresa a landing page
             _pantallaActual = crearPantallaLandingPage();
             break;
         }

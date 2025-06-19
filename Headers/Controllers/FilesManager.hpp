@@ -345,8 +345,8 @@ inline void FilesManager::logInfo(const std::string& operation, const std::strin
                     << infoMessage << std::endl;
         infoLogFile.close();    }
     
-    // También mostrar en consola para feedback inmediato
-    std::cout << "[FilesManager INFO] " << infoMessage << std::endl;
+	/// @brief También mostrar en consola para feedback inmediato - Comentar y descomentar para depuración
+    //std::cout << "[FilesManager INFO] " << infoMessage << std::endl;
 }
 
 inline void FilesManager::escribirDebugLog(const std::string& mensaje) {

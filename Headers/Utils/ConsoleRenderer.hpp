@@ -245,4 +245,13 @@ inline void mostrarSeparadorElegante(int longitud = ANCHO_CONSOLA) {
     resetColor();
 }
 
+/// @brief Configura la visibilidad del cursor en la consola
+inline void _configurarCursor(bool mostrar) 
+{
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    cursorInfo.bVisible = mostrar;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
 #endif // COURSERACLONE_UTILS_CONSOLERENDERER_HPP

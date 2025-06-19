@@ -4,300 +4,755 @@
 #ifndef COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP
 #define COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP
 
-// 1. Includes del sistema
+// Includes del sistema
 #include <iostream>
 #include <string>
-#include <vector>    // Para manejar listas de cursos y especializaciones
-#include <algorithm> // Para std::min y std::max
+#include <vector>
 #include <conio.h>   // Para _getch()
 
-// 2. Includes del proyecto
-//#include "../Entities/Curso.hpp"
-//#include "../Entities/Especializacion.hpp"
-//#include "../Controllers/GestionadorCursos.hpp"
-//#include "../Utils/ScreenSystem.hpp"
-//#include "../Utils/SystemUtils.hpp"
-//#include "../Utils/UI_Ascii.hpp"
+// Includes propios del proyecto
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/UI_Ascii.hpp"
+#include "../Types/ActividadTypes.hpp"
 
-// 3. Forward declarations
-class Controladora;
-
-// 4. Constantes y tipos
+// Constantes para teclas
 enum KeyCode 
 {
     KEY_ENTER = 13,
     KEY_ESCAPE = 27,
     KEY_UP = 72,
     KEY_DOWN = 80,
-    KEY_PAGE_UP = 33,
-    KEY_PAGE_DOWN = 34,
+    KEY_LEFT = 75,
+    KEY_RIGHT = 77,
+    KEY_BACKSPACE = 8,
     KEY_EXTEND = 224,
     KEY_NULL = 0
 };
 
-// Clase para explorar el contenido del sistema.
 class ExplorarContenidoScreen : public PantallaBase 
 {
 private:
-    // --- Atributos de Configuración y Constantes ---
+    // --- Constantes de configuración ---
+    static const int SECCION_BUSCADOR = 0;
+    static const int SECCION_RESULTADOS = 1;
+    static const int SECCION_NAVEGACION_PAGINAS = 2;
+    static const int SECCION_FILTRO_TIPOS = 3;
+    static const int SECCION_FILTRO_CATEGORIAS = 4;
+    static const int TOTAL_SECCIONES = 5;
 
-    // Secciones de la pantalla
-    static const int SECCION_CURSOS = 0;
-    static const int SECCION_ESPECIALIDADES = 1;
-    static const int TOTAL_SECCIONES = 2;
+    // Límites por sección
+    static const int MAX_CATEGORIAS_VISIBLES = 15;
+    static const int MAX_RESULTADOS_VISIBLES = 6;
 
-    // Coordenadas para la UI
-    struct Coords {
-        const int tituloCol = 50,       tituloFila = 3;
-        const int cursosTituloCol = 7,  cursosTituloFila = 7;
-        const int cursosListaCol = 7,   cursosListaFila = 9;
-        const int espTituloCol = 7,     espTituloFila = 20;
-        const int espListaCol = 7,      espListaFila = 22;
-        const int anchoElemento = 60;
-    } _uiCoords;
+    // --- Coordenadas de la interfaz ---
+    COORD _coordBuscador = {16, 6};
+    COORD _coordFiltroTipos = {94, 8};
+    COORD _coordFiltroCategorias = {94, 13};
+    COORD _coordResultados = {4, 9};
+    COORD _coordNavegacionPaginas = {44, 28};
 
-    // --- Atributos de Estado ---
-
+    // --- Estado de navegación ---
     int _seccionActual;
     int _elementoActual;
     int _seccionAnterior;
     int _elementoAnterior;
-    int _indicesInicio[TOTAL_SECCIONES]; // 0 para cursos, 1 para especialidades
-    bool _necesitaRedibujarTodo;
+    bool _primeraRenderizacion;
 
-    // Paginación
-    const int _itemsPorPaginaCursos = 5;
-    const int _itemsPorPaginaEspecialidades = 5;
+    // --- Datos del buscador ---
+    std::string _textoBusqueda;
 
-    // Datos del usuario actual
-    TipoUsuario _tipoUsuario;
-    int _idUsuario;
-    std::string _nombreUsuario;
+    // --- Datos de filtros ---
+    int _tipoSeleccionado; // 0=TODOS, 1=CURSOS, 2=ESPECIALIDADES
+    int _categoriaSeleccionada; // índice en el vector de categorías
+    int _paginaCategoriaActual;
+    
+    // --- Datos de resultados (ejemplo) ---
+    int _paginaResultadosActual;
+    int _totalPaginas;
 
-    // --- Referencias ---
-    Controladora* _controladora; // Sigue la convención de prefijo _
+    // --- Vectores de datos ---
+    std::vector<std::string> _nombresCategorias;
+    std::vector<std::string> _textosResultadosEjemplo;
+    std::vector<std::string> _textosFiltroTipos;
 
-    // --- Métodos Privados de Renderizado ---
+    // --- Métodos privados de inicialización ---
+    inline void _inicializarDatos();
+    inline void _cargarCategorias();
+    inline void _cargarResultadosEjemplo();    // --- Métodos privados de estado ---
+    inline void _limpiarEstado();
+    inline void _mostrarCursor();
+    inline void _ocultarCursor();
 
-    // Dibuja el marco estático de la pantalla una sola vez
-    void dibujarInterfazEstatica() {
-        system("cls");
-        UI_ExplorarCursosAndEspecialidades(); // Asumiendo que esta es una función de UI_Ascii.h
+    // --- Métodos privados de renderizado ---
+    inline void _dibujarInterfazCompleta();
+    inline void _actualizarSeleccion();
 
-        gotoXY(_uiCoords.tituloCol, _uiCoords.tituloFila);
-        setConsoleColor(15, 0);
-        std::cout << "EXPLORAR CURSOS Y ESPECIALIDADES";
-    }
+    // --- Métodos de renderizado por sección ---
+    inline void _renderizarBuscador(bool seleccionado);
+    inline void _renderizarFiltroTipos();
+    inline void _renderizarFiltroCategorias();
+    inline void _renderizarResultados();
+    inline void _renderizarNavegacionPaginas();
 
-    // Función genérica para renderizar una lista de items (cursos o especialidades)
-    template <typename T>
-    void renderizarSeccion(const LinkedList<T*>& items, int seccionId, const std::string& tituloSeccion, int xTitulo, int yTitulo, int xLista, int yLista, int itemsPorPagina) {
-        // Limpiar área de la lista y los indicadores de paginación
-        for (int i = 0; i < itemsPorPagina; i++) {
-            gotoXY(xLista, yLista + i * 2);
-            std::cout << std::string(_uiCoords.anchoElemento + 30, ' ');
-        }
+    // --- Métodos de renderizado de elementos específicos ---
+    inline void _renderizarElementoFiltroTipo(int indice, bool seleccionado);
+    inline void _renderizarElementoCategoria(int indice, bool seleccionado);
+    inline void _renderizarElementoResultado(int indice, bool seleccionado);
+    inline void _renderizarElementoNavegacion(int indice, bool seleccionado);
 
-        // Título de la sección
-        gotoXY(xTitulo, yTitulo);
-        setConsoleColor(14, 0); // Amarillo
-        std::cout << tituloSeccion;
+    // --- Métodos de navegación ---
+    inline void _manejarNavegacion(int tecla);
+    inline void _manejarNavegacionVertical(int direccion);
+    inline void _manejarNavegacionHorizontal(int direccion);
 
-        // Dibujar lista de items
-        int totalItems = items.getTamano();
-        int& indiceInicio = _indicesInicio[seccionId];
-        int itemsAMostrar = (std::min)(itemsPorPagina, totalItems - indiceInicio);
+    // --- Métodos de entrada de texto ---
+    inline void _manejarEntradaTexto(int tecla);
+    inline void _manejarRetroceso();
 
-        for (int i = 0; i < itemsAMostrar; i++) {
-            int indiceAbsoluto = indiceInicio + i;
-            T* item = items.get(indiceAbsoluto + 1);
+    // --- Métodos utilitarios ---
+    inline int _obtenerMaxElementosEnSeccion(int seccion);
+    inline int _obtenerElementosVisiblesCategoria();
+    inline int _obtenerElementosVisiblesResultados();
 
-            gotoXY(xLista, yLista + i * 2);
-
-            bool estaSeleccionado = (_seccionActual == seccionId && _elementoActual == i);
-            setConsoleColor(estaSeleccionado ? 1 : 15, estaSeleccionado ? 13 : 1); // Color de selección o normal
-
-            std::string texto = std::to_string(item->getId()) + ": " + item->getTitulo();
-            if (texto.length() > _uiCoords.anchoElemento) {
-                texto = texto.substr(0, _uiCoords.anchoElemento - 3) + "...";
-            }
-            std::cout << texto;
-        }
-
-        // Indicadores de paginación
-        setConsoleColor(15, 0);
-        if (indiceInicio > 0) {
-            gotoXY(xLista + _uiCoords.anchoElemento + 5, yLista);
-            std::cout << "Mas arriba (ARRIBA)";
-        }
-        if (indiceInicio + itemsPorPagina < totalItems) {
-            gotoXY(xLista + _uiCoords.anchoElemento + 5, yLista + (itemsAMostrar - 1) * 2);
-            std::cout << "Mas abajo (ABAJO)";
-        }
-    }
-
-    // Función genérica para actualizar solo el item que cambió de estado (seleccionado/deseleccionado)
-    template<typename T>
-    void actualizarElemento(int indiceLocal, int seccionId, const LinkedList<T*>& items, int x, int y, bool seleccionado) {
-        int indiceAbsoluto = _indicesInicio[seccionId] + indiceLocal;
-        if (indiceLocal < 0 || indiceAbsoluto >= items.getTamano()) return;
-
-        T* item = items.get(indiceAbsoluto + 1);
-        gotoXY(x, y + indiceLocal * 2);
-
-        setConsoleColor(seleccionado ? 1 : 15, seleccionado ? 13 : 1);
-
-        std::string texto = std::to_string(item->getId()) + ": " + item->getTitulo();
-        if (texto.length() > _uiCoords.anchoElemento) {
-            texto = texto.substr(0, _uiCoords.anchoElemento - 3) + "...";
-        }
-        std::cout << texto;
-    }
-
-    void actualizarInterfaz() {
-        if (_necesitaRedibujarTodo) {
-            dibujarInterfazEstatica();
-            renderizarSeccion<Curso>(_controladora->getGestionadorCursos()->getCursos(), SECCION_CURSOS, "CURSOS DISPONIBLES", _uiCoords.cursosTituloCol, _uiCoords.cursosTituloFila, _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, _itemsPorPaginaCursos);
-            renderizarSeccion<Especializacion>(_controladora->getGestionadorCursos()->getEspecializaciones(), SECCION_ESPECIALIDADES, "ESPECIALIZACIONES DISPONIBLES", _uiCoords.espTituloCol, _uiCoords.espTituloFila, _uiCoords.espListaCol, _uiCoords.espListaFila, _itemsPorPaginaEspecialidades);
-            _necesitaRedibujarTodo = false;
-            return;
-        }
-
-        // Optimización: Solo redibuja los elementos que cambiaron
-        if (_seccionAnterior != -1 && (_seccionActual != _seccionAnterior || _elementoActual != _elementoAnterior)) {
-            if (_seccionAnterior == SECCION_CURSOS) {
-                actualizarElemento<Curso>(_elementoAnterior, SECCION_CURSOS, _controladora->getGestionadorCursos()->getCursos(), _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, false);
-            }
-            else {
-                actualizarElemento<Especializacion>(_elementoAnterior, SECCION_ESPECIALIDADES, _controladora->getGestionadorCursos()->getEspecializaciones(), _uiCoords.espListaCol, _uiCoords.espListaFila, false);
-            }
-        }
-
-        if (_seccionActual == SECCION_CURSOS) {
-            actualizarElemento<Curso>(_elementoActual, SECCION_CURSOS, _controladora->getGestionadorCursos()->getCursos(), _uiCoords.cursosListaCol, _uiCoords.cursosListaFila, true);
-        }
-        else {
-            actualizarElemento<Especializacion>(_elementoActual, SECCION_ESPECIALIDADES, _controladora->getGestionadorCursos()->getEspecializaciones(), _uiCoords.espListaCol, _uiCoords.espListaFila, true);
-        }
-    }
-
-
-    // --- Métodos Privados de Lógica ---
-
-    void manejarEntrada(int tecla) {
-        _seccionAnterior = _seccionActual;
-        _elementoAnterior = _elementoActual;
-        int* indiceInicio = &_indicesInicio[_seccionActual];
-        int totalItems, itemsPorPagina;
-        
-        GestionadorCursos* gestionador = _controladora->getGestionadorCursos();
-
-        if (_seccionActual == SECCION_CURSOS) {
-            totalItems = gestionador->getCursos().getTamano();
-            itemsPorPagina = _itemsPorPaginaCursos;
-        }
-        else {
-            totalItems = gestionador->getEspecializaciones().getTamano();
-            itemsPorPagina = _itemsPorPaginaEspecialidades;
-        }
-        int itemsEnPantalla = (std::min)(itemsPorPagina, totalItems - *indiceInicio);
-
-        switch (tecla) {
-        case KEY_UP:
-            if (_elementoActual > 0) _elementoActual--;
-            else if (*indiceInicio > 0) { // Scroll hacia arriba
-                (*indiceInicio)--;
-                _necesitaRedibujarTodo = true;
-            }
-            else if (_seccionActual == SECCION_ESPECIALIDADES) { // Cambiar a sección de cursos
-                _seccionActual = SECCION_CURSOS;
-                int totalCursos = gestionador->getCursos().getTamano();
-                _elementoActual = (std::min)(_itemsPorPaginaCursos, totalCursos - _indicesInicio[SECCION_CURSOS]) - 1;
-                _necesitaRedibujarTodo = true;
-            }
-            break;
-
-        case KEY_DOWN:
-            if (_elementoActual < itemsEnPantalla - 1) _elementoActual++;
-            else if (*indiceInicio + itemsPorPagina < totalItems) { // Scroll hacia abajo
-                (*indiceInicio)++;
-                _necesitaRedibujarTodo = true;
-            }
-            else if (_seccionActual == SECCION_CURSOS) { // Cambiar a sección de especialidades
-                _seccionActual = SECCION_ESPECIALIDADES;
-                _elementoActual = 0;
-                _necesitaRedibujarTodo = true;
-            }
-            break;
-        }
-    }
-
-    ResultadoPantalla procesarSeleccion() {
-        GestionadorCursos* gestionador = _controladora->getGestionadorCursos();
-        if (_seccionActual == SECCION_CURSOS) {
-            int indiceAbsoluto = _indicesInicio[SECCION_CURSOS] + _elementoActual;
-            auto& cursos = gestionador->getCursos();
-            if (indiceAbsoluto < cursos.getTamano()) {
-                auto resultado = crearResultado(AccionPantalla::IR_A_MOSTRAR_CURSO, _tipoUsuario);
-                resultado.idCursoSeleccionado = cursos.get(indiceAbsoluto + 1)->getId();
-                return resultado;
-            }
-        }
-        else { // SECCION_ESPECIALIDADES
-            int indiceAbsoluto = _indicesInicio[SECCION_ESPECIALIDADES] + _elementoActual;
-            auto& especializaciones = gestionador->getEspecializaciones();
-
-            if (indiceAbsoluto < especializaciones.getTamano()) 
-            {
-                auto resultado = crearResultado(AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION, _tipoUsuario);
-                resultado.idEspecializacionSeleccionada = especializaciones.get(indiceAbsoluto + 1)->getId();
-                return resultado;
-            }
-        }
-        return crearResultado(AccionPantalla::NINGUNA, _tipoUsuario); 
-    }
-
+    // --- Métodos de procesamiento ---
+    inline ResultadoPantalla _procesarSeleccion();
 
 public:
-    // Constructor corregido para evitar shadowing de parámetros
-    ExplorarContenidoScreen(Controladora* controladora, TipoUsuario tipoUsuario, int idUsuario, const std::string& nombreUsuario)
-        : PantallaBase(controladora),
-        _controladora(controladora),
-        _tipoUsuario(tipoUsuario),
-        _idUsuario(idUsuario),
-        _nombreUsuario(nombreUsuario),
-        _seccionActual(SECCION_CURSOS),
-        _elementoActual(0),
-        _seccionAnterior(-1),
-        _elementoAnterior(-1),
-        _necesitaRedibujarTodo(true)
+    inline ExplorarContenidoScreen();
+    inline ~ExplorarContenidoScreen() = default;
+    
+    inline ResultadoPantalla ejecutar() override;
+};
+
+// --- IMPLEMENTACIONES INLINE ---
+
+// Constructor
+inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
+    _seccionActual(0), _elementoActual(0), _seccionAnterior(0), _elementoAnterior(0),
+    _primeraRenderizacion(true), _tipoSeleccionado(0), _categoriaSeleccionada(0),
+    _paginaCategoriaActual(0), _paginaResultadosActual(0), _totalPaginas(3)
+{
+    _inicializarDatos();
+}
+
+// Inicializar datos de ejemplo
+inline void ExplorarContenidoScreen::_inicializarDatos()
+{
+    _cargarCategorias();
+    _cargarResultadosEjemplo();
+    
+    _textosFiltroTipos = {
+        " TODOS ",
+        " CURSOS ",
+        " ESPECIALIDADES "
+    };
+}
+
+// Cargar categorías desde el enum
+inline void ExplorarContenidoScreen::_cargarCategorias()
+{
+    _nombresCategorias = {
+        "TODAS",
+        "PROGRAMACION",
+        "DESARROLLO_WEB", 
+        "DESARROLLO_MOVIL",
+        "INTELIGENCIA_ARTIFICIAL",
+        "CIENCIA_DE_DATOS",
+        "SEGURIDAD_INFORMATICA",
+        "CLOUD_COMPUTING",
+        "DEVOPS",
+        "UX_UI",
+        "DISENO_GRAFICO",
+        "MARKETING_DIGITAL",
+        "NEGOCIOS",
+        "FINANZAS",
+        "GESTION_PROYECTOS",
+        "FOTOGRAFIA",
+        "VIDEO_ANIMACION",
+        "EDUCACION",
+        "IDIOMAS",
+        "OTROS"
+    };
+}
+
+// Cargar resultados de ejemplo
+inline void ExplorarContenidoScreen::_cargarResultadosEjemplo()
+{
+    _textosResultadosEjemplo = {
+        "Introduccion a Python",
+        "Desarrollo Web con React",
+        "Machine Learning Basico",
+        "Especializacion en Data Science",
+        "Curso de JavaScript Avanzado",
+        "Diseno UX/UI Completo"
+    };
+}
+
+// Limpiar estado
+inline void ExplorarContenidoScreen::_limpiarEstado()
+{
+    _seccionActual = 0;
+    _elementoActual = 0;
+    _seccionAnterior = 0;
+    _elementoAnterior = 0;
+    _primeraRenderizacion = true;
+    _textoBusqueda.clear();
+}
+
+// Mostrar cursor
+inline void ExplorarContenidoScreen::_mostrarCursor()
+{
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    cursorInfo.bVisible = TRUE;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
+// Ocultar cursor
+inline void ExplorarContenidoScreen::_ocultarCursor()
+{
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    cursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
+// Dibujar interfaz completa
+inline void ExplorarContenidoScreen::_dibujarInterfazCompleta()
+{
+    system("cls");
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    UI_ExplorarContenido();
+
+    // Renderizar todas las secciones
+    _renderizarBuscador(_seccionActual == SECCION_BUSCADOR);
+    _renderizarFiltroTipos();
+    _renderizarFiltroCategorias();
+    _renderizarResultados();
+    _renderizarNavegacionPaginas();
+
+    // Configurar cursor inicial
+    if (_seccionActual == SECCION_BUSCADOR) {
+        _mostrarCursor();
+    } else {
+        _ocultarCursor();
+    }
+
+    resetColor();
+}
+
+// Actualizar selección
+inline void ExplorarContenidoScreen::_actualizarSeleccion()
+{
+    if (_seccionAnterior != _seccionActual || _elementoAnterior != _elementoActual)
     {
-        for (int i = 0; i < TOTAL_SECCIONES; i++) {
-            _indicesInicio[i] = 0;
+        // Manejar cursor
+        if (_seccionActual == SECCION_BUSCADOR) {
+            _mostrarCursor();
+        } else {
+            _ocultarCursor();
+        }
+
+        // Actualizar sección anterior
+        switch (_seccionAnterior) {
+        case SECCION_BUSCADOR:
+            _renderizarBuscador(false);
+            break;
+        case SECCION_FILTRO_TIPOS:
+            _renderizarElementoFiltroTipo(_elementoAnterior, false);
+            break;
+        case SECCION_FILTRO_CATEGORIAS:
+            _renderizarElementoCategoria(_elementoAnterior, false);
+            break;
+        case SECCION_RESULTADOS:
+            _renderizarElementoResultado(_elementoAnterior, false);
+            break;
+        case SECCION_NAVEGACION_PAGINAS:
+            _renderizarElementoNavegacion(_elementoAnterior, false);
+            break;
+        }
+
+        // Actualizar sección actual
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+            _renderizarBuscador(true);
+            break;
+        case SECCION_FILTRO_TIPOS:
+            _renderizarElementoFiltroTipo(_elementoActual, true);
+            break;
+        case SECCION_FILTRO_CATEGORIAS:
+            _renderizarElementoCategoria(_elementoActual, true);
+            break;
+        case SECCION_RESULTADOS:
+            _renderizarElementoResultado(_elementoActual, true);
+            break;
+        case SECCION_NAVEGACION_PAGINAS:
+            _renderizarElementoNavegacion(_elementoActual, true);
+            break;
+        }
+
+        _seccionAnterior = _seccionActual;
+        _elementoAnterior = _elementoActual;
+    }
+}
+
+// Renderizar buscador
+inline void ExplorarContenidoScreen::_renderizarBuscador(bool seleccionado)
+{
+    gotoXY(_coordBuscador.X, _coordBuscador.Y);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BORDES_SUTILES);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    std::string texto = _textoBusqueda;
+    if (texto.length() > 60) texto = texto.substr(0, 60);
+    
+    // Rellenar con espacios hasta el ancho total
+    std::string textoCompleto = texto;
+    textoCompleto.resize(66, ' ');
+    
+    std::cout << textoCompleto;
+    
+    // Si está seleccionado, posicionar el cursor al final del texto
+    if (seleccionado) {
+        gotoXY(_coordBuscador.X + texto.length(), _coordBuscador.Y);
+        _mostrarCursor();
+    }
+    
+    resetColor();
+}
+
+// Renderizar filtro de tipos
+inline void ExplorarContenidoScreen::_renderizarFiltroTipos()
+{
+    for (int i = 0; i < _textosFiltroTipos.size(); ++i) {
+        _renderizarElementoFiltroTipo(i, _seccionActual == SECCION_FILTRO_TIPOS && _elementoActual == i);
+    }
+}
+
+// Renderizar elemento de filtro tipo
+inline void ExplorarContenidoScreen::_renderizarElementoFiltroTipo(int indice, bool seleccionado)
+{
+    if (indice < 0 || indice >= _textosFiltroTipos.size()) return;
+    
+    gotoXY(_coordFiltroTipos.X, _coordFiltroTipos.Y + indice);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    } else if (indice == _tipoSeleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    std::cout << _textosFiltroTipos[indice];
+    resetColor();
+}
+
+// Renderizar filtro de categorías
+inline void ExplorarContenidoScreen::_renderizarFiltroCategorias()
+{
+    int elementosVisibles = _obtenerElementosVisiblesCategoria();
+    int inicioIndice = _paginaCategoriaActual * MAX_CATEGORIAS_VISIBLES;
+    
+    for (int i = 0; i < elementosVisibles; ++i) {
+        int indiceReal = inicioIndice + i;
+        _renderizarElementoCategoria(i, _seccionActual == SECCION_FILTRO_CATEGORIAS && _elementoActual == i);
+    }
+}
+
+// Renderizar elemento de categoría
+inline void ExplorarContenidoScreen::_renderizarElementoCategoria(int indice, bool seleccionado)
+{
+    int inicioIndice = _paginaCategoriaActual * MAX_CATEGORIAS_VISIBLES;
+    int indiceReal = inicioIndice + indice;
+    
+    if (indiceReal >= _nombresCategorias.size()) return;
+    
+    gotoXY(_coordFiltroCategorias.X, _coordFiltroCategorias.Y + indice);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    } else if (indiceReal == _categoriaSeleccionada) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    std::string texto = " " + _nombresCategorias[indiceReal] + " ";
+    if (texto.length() > 19) texto = texto.substr(0, 19);
+    std::cout << texto;
+    resetColor();
+}
+
+// Renderizar resultados
+inline void ExplorarContenidoScreen::_renderizarResultados()
+{
+    int elementosVisibles = _obtenerElementosVisiblesResultados();
+    
+    for (int i = 0; i < elementosVisibles; ++i) {
+        _renderizarElementoResultado(i, _seccionActual == SECCION_RESULTADOS && _elementoActual == i);
+    }
+}
+
+// Renderizar elemento de resultado
+inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bool seleccionado)
+{
+    if (indice >= _textosResultadosEjemplo.size()) return;
+    
+    gotoXY(_coordResultados.X, _coordResultados.Y + indice);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    std::string texto = "- " + _textosResultadosEjemplo[indice];
+    std::cout << texto;
+    resetColor();
+}
+
+// Renderizar navegación de páginas
+inline void ExplorarContenidoScreen::_renderizarNavegacionPaginas()
+{
+    std::vector<std::string> elementos = {"< ANTERIOR", "SIGUIENTE >"};
+    
+    for (int i = 0; i < elementos.size(); ++i) {
+        _renderizarElementoNavegacion(i, _seccionActual == SECCION_NAVEGACION_PAGINAS && _elementoActual == i);
+    }
+}
+
+// Renderizar elemento de navegación
+inline void ExplorarContenidoScreen::_renderizarElementoNavegacion(int indice, bool seleccionado)
+{
+    std::vector<std::string> elementos = {" < ANTERIOR ", " SIGUIENTE > "};
+    if (indice >= elementos.size()) return;
+    
+    int offsetX = (indice == 0) ? -10 : 3;
+    gotoXY(_coordNavegacionPaginas.X + offsetX, _coordNavegacionPaginas.Y);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    std::cout << elementos[indice];
+    resetColor();
+}
+
+// Obtener máximo de elementos en una sección
+inline int ExplorarContenidoScreen::_obtenerMaxElementosEnSeccion(int seccion)
+{
+    switch (seccion) {
+    case SECCION_BUSCADOR:
+        return 1;
+    case SECCION_FILTRO_TIPOS:
+        return _textosFiltroTipos.size();
+    case SECCION_FILTRO_CATEGORIAS:
+        return _obtenerElementosVisiblesCategoria();
+    case SECCION_RESULTADOS:
+        return _obtenerElementosVisiblesResultados();
+    case SECCION_NAVEGACION_PAGINAS:
+        return 2;
+    default:
+        return 0;
+    }
+}
+
+// Obtener elementos visibles de categoría
+inline int ExplorarContenidoScreen::_obtenerElementosVisiblesCategoria()
+{
+    int inicioIndice = _paginaCategoriaActual * MAX_CATEGORIAS_VISIBLES;
+    int restantes = _nombresCategorias.size() - inicioIndice;
+    return (restantes > MAX_CATEGORIAS_VISIBLES) ? MAX_CATEGORIAS_VISIBLES : restantes;
+}
+
+// Obtener elementos visibles de resultados
+inline int ExplorarContenidoScreen::_obtenerElementosVisiblesResultados()
+{
+    return (_textosResultadosEjemplo.size() > MAX_RESULTADOS_VISIBLES) ? 
+           MAX_RESULTADOS_VISIBLES : _textosResultadosEjemplo.size();
+}
+
+// Manejar navegación
+inline void ExplorarContenidoScreen::_manejarNavegacion(int tecla)
+{
+    switch (tecla) {
+    case KEY_UP:
+        _manejarNavegacionVertical(-1);
+        break;
+    case KEY_DOWN:
+        _manejarNavegacionVertical(1);
+        break;
+    case KEY_LEFT:
+        _manejarNavegacionHorizontal(-1);
+        break;
+    case KEY_RIGHT:
+        _manejarNavegacionHorizontal(1);
+        break;
+    }
+}
+
+// Manejar navegación vertical
+inline void ExplorarContenidoScreen::_manejarNavegacionVertical(int direccion)
+{
+    if (direccion > 0) { // ABAJO
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+            // Desde buscador -> Resultados
+            _seccionActual = SECCION_RESULTADOS;
+            _elementoActual = 0;
+            break;
+            
+        case SECCION_RESULTADOS:
+        {   // Navegar dentro de resultados
+            int maxResultados = _obtenerMaxElementosEnSeccion(SECCION_RESULTADOS);
+            if (_elementoActual < maxResultados - 1) {
+                _elementoActual++;
+            }
+            else {
+                // Al final de resultados -> Navegación de páginas
+                _seccionActual = SECCION_NAVEGACION_PAGINAS;
+                _elementoActual = 0;
+            }
+            break;
+        }
+        case SECCION_NAVEGACION_PAGINAS:
+            // Ciclar dentro de navegación de páginas
+            _elementoActual = (_elementoActual == 0) ? 1 : 0;
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+        {   // Navegar dentro de filtro tipos
+            int maxTipos = _obtenerMaxElementosEnSeccion(SECCION_FILTRO_TIPOS);
+            if (_elementoActual < maxTipos - 1) {
+                _elementoActual++;
+            }
+            else {
+                // Al final de tipos -> Categorías
+                _seccionActual = SECCION_FILTRO_CATEGORIAS;
+                _elementoActual = 0;
+            }
+            break;
+        }
+        case SECCION_FILTRO_CATEGORIAS:
+        {    // Navegar dentro de categorías
+            int maxCategorias = _obtenerMaxElementosEnSeccion(SECCION_FILTRO_CATEGORIAS);
+            if (_elementoActual < maxCategorias - 1) {
+                _elementoActual++;
+            }
+            break;
+        }
+        }
+    } else { // ARRIBA
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+            // No hay nada arriba del buscador
+            break;
+            
+        case SECCION_RESULTADOS:
+            if (_elementoActual > 0) {
+                _elementoActual--;
+            } else {
+                // Al inicio de resultados -> Buscador
+                _seccionActual = SECCION_BUSCADOR;
+                _elementoActual = 0;
+            }
+            break;
+            
+        case SECCION_NAVEGACION_PAGINAS:
+            // Desde navegación -> Último resultado
+            _seccionActual = SECCION_RESULTADOS;
+            _elementoActual = _obtenerMaxElementosEnSeccion(SECCION_RESULTADOS) - 1;
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+            // No hay nada arriba de tipos
+            break;
+            
+        case SECCION_FILTRO_CATEGORIAS:
+            if (_elementoActual > 0) {
+                _elementoActual--;
+            } else {
+                // Al inicio de categorías -> Tipos
+                _seccionActual = SECCION_FILTRO_TIPOS;
+                _elementoActual = _obtenerMaxElementosEnSeccion(SECCION_FILTRO_TIPOS) - 1;
+            }
+            break;
         }
     }
+}
 
-    ResultadoPantalla ejecutar() override {
-        while (true) {
-            actualizarInterfaz();
-            _seccionAnterior = -1; // Reset para evitar redibujo innecesario
-
-            int tecla = _getch();
-
-            if (tecla == KEY_EXTEND || tecla == KEY_NULL) {
-                tecla = _getch();
-                manejarEntrada(tecla);
+// Manejar navegación horizontal
+inline void ExplorarContenidoScreen::_manejarNavegacionHorizontal(int direccion)
+{
+    if (direccion > 0) { // DERECHA
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+        case SECCION_RESULTADOS:
+            // Desde buscador o resultados -> Filtros (tipos)
+            _seccionActual = SECCION_FILTRO_TIPOS;
+            _elementoActual = 0;
+            break;
+            
+        case SECCION_NAVEGACION_PAGINAS:
+            if (_elementoActual == 0) {
+                // Primer botón -> Segundo botón
+                _elementoActual = 1;
+            } else {
+                // Segundo botón -> Filtros (DERECHA x2)
+                _seccionActual = SECCION_FILTRO_TIPOS;
+                _elementoActual = 0;
             }
-            else if (tecla == KEY_ENTER) {
-                return procesarSeleccion();
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+        case SECCION_FILTRO_CATEGORIAS:
+            // Dentro de filtros, no hacer nada o ciclar
+            break;
+        }
+    } else { // IZQUIERDA
+        switch (_seccionActual) {
+        case SECCION_BUSCADOR:
+        case SECCION_RESULTADOS:
+            // No hay nada a la izquierda
+            break;
+            
+        case SECCION_NAVEGACION_PAGINAS:
+            if (_elementoActual == 1) {
+                // Segundo botón -> Primer botón
+                _elementoActual = 0;
             }
-            else if (tecla == KEY_ESCAPE) {
-                AccionPantalla accionDestino = (_tipoUsuario == TipoUsuario::ESTUDIANTE)
-                    ? AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE
-                    : AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
-                return crearResultado(accionDestino, _tipoUsuario);
-            }        }
+            // Si ya está en el primer botón, no hacer nada
+            break;
+            
+        case SECCION_FILTRO_TIPOS:
+        case SECCION_FILTRO_CATEGORIAS:
+            // Desde filtros -> Regresar a resultados
+            _seccionActual = SECCION_RESULTADOS;
+            _elementoActual = 0;
+            break;
+        }
     }
-};
+}
+
+// Manejar entrada de texto
+inline void ExplorarContenidoScreen::_manejarEntradaTexto(int tecla)
+{
+    if (_seccionActual == SECCION_BUSCADOR && tecla >= 32 && tecla <= 126) {
+        if (_textoBusqueda.length() < 60) {
+            _textoBusqueda.push_back(static_cast<char>(tecla));
+            _renderizarBuscador(true);
+        }
+    }
+}
+
+// Manejar retroceso
+inline void ExplorarContenidoScreen::_manejarRetroceso()
+{
+    if (_seccionActual == SECCION_BUSCADOR && !_textoBusqueda.empty()) {
+        _textoBusqueda.pop_back();
+        _renderizarBuscador(true);
+    }
+}
+
+// Procesar selección
+inline ResultadoPantalla ExplorarContenidoScreen::_procesarSeleccion()
+{
+    ResultadoPantalla res;
+
+    switch (_seccionActual) {
+    case SECCION_FILTRO_TIPOS:
+        _tipoSeleccionado = _elementoActual;
+        _renderizarFiltroTipos(); // Actualizar visual
+        break;
+    case SECCION_FILTRO_CATEGORIAS:
+        {
+            int inicioIndice = _paginaCategoriaActual * MAX_CATEGORIAS_VISIBLES;
+            _categoriaSeleccionada = inicioIndice + _elementoActual;
+            _renderizarFiltroCategorias(); // Actualizar visual
+        }
+        break;
+    case SECCION_RESULTADOS:
+        // Aquí podrías abrir el detalle del curso/especialización seleccionado
+        gotoXY(30, 25);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+        std::cout << "Abriendo: " << _textosResultadosEjemplo[_elementoActual];
+        resetColor();
+        Sleep(1000);
+        gotoXY(30, 25);
+        std::cout << "                                            ";
+        break;
+    case SECCION_NAVEGACION_PAGINAS:
+        // Cambiar página
+        if (_elementoActual == 0 && _paginaResultadosActual > 0) {
+            _paginaResultadosActual--;
+        } else if (_elementoActual == 1 && _paginaResultadosActual < _totalPaginas - 1) {
+            _paginaResultadosActual++;
+        }
+        break;
+    }
+    
+    res.accion = AccionPantalla::NINGUNA;
+    return res;
+}
+
+// Método principal de ejecución
+inline ResultadoPantalla ExplorarContenidoScreen::ejecutar()
+{
+    ResultadoPantalla res;
+    _limpiarEstado();
+
+    while (true) {
+        if (_primeraRenderizacion) {
+            _dibujarInterfazCompleta();
+            _primeraRenderizacion = false;
+        } else {
+            _actualizarSeleccion();
+        }
+
+        int tecla = _getch();
+
+        switch (tecla) {
+        case 0:
+        case 224: // Teclas especiales
+        {
+            int segundaTecla = _getch();
+            _manejarNavegacion(segundaTecla);
+        }
+        break;
+
+        case KEY_UP:
+        case KEY_DOWN:
+        case KEY_LEFT:
+        case KEY_RIGHT:
+            _manejarNavegacion(tecla);
+            break;        case KEY_ESCAPE: // ESC - Regresar
+            _ocultarCursor(); // Ocultar cursor antes de salir
+            res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+            return res;        case KEY_ENTER: // Enter - Procesar selección
+            res = _procesarSeleccion();
+            if (res.accion != AccionPantalla::NINGUNA) {
+                _ocultarCursor(); // Ocultar cursor antes de salir
+                return res;
+            }
+            break;
+
+        case KEY_BACKSPACE: // Backspace
+            _manejarRetroceso();
+            break;
+
+        default:
+            _manejarEntradaTexto(tecla);
+            break;
+        }
+    }
+}
 
 #endif // COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP

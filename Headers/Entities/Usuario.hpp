@@ -23,6 +23,7 @@ protected:
     std::string _nombreCompleto;
     std::string _username;
     std::string _contrasenaHash;
+	std::string _fechaRegistro; // Fecha de registro del usuario
 
 private:
     // Convierte un objeto Usuario a struct UsuarioBinario
