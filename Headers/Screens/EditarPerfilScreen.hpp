@@ -4,20 +4,19 @@
 // Headers de librería estándar
 #include <iostream>
 #include <string>
+#include <conio.h>
 
 // Headers propios
-//#include "../Entities/Empresa.hpp"
-//#include "../Entities/Estudiante.hpp"
-//#include "../Entities/Usuario.hpp"
-//#include "../Utils/SystemUtils.hpp"
-//#include "../Utils/ScreenSystem.hpp"
-//#include "../Utils/UI_Ascii.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/UI_Ascii.hpp"
+#include "../Types/UsuarioTypes.hpp"
 
 /// Pantalla para editar perfil de usuario
 class EditarPerfilScreen : public PantallaBase
 {
 private:
-    // Constantes para campos de entrada
+    /// @brief Constantes para campos de entrada
     static const int CAMPO_NOMBRE = 0;
     static const int CAMPO_EMAIL = 1;
     static const int CAMPO_PASSWORD = 2;
@@ -25,302 +24,414 @@ private:
     static const int CAMPO_GUARDAR = 4;    
     static const int TOTAL_CAMPOS = 5;
 
-    // Datos del usuario
+    /// @brief Datos del usuario
     int idUsuario;
     TipoUsuario tipoUsuario;
     std::string nombreOriginal;
     std::string emailOriginal;
     std::string passwordOriginal;
 
-    // Datos modificables
+    /// @brief Datos modificables
     std::string nombre;
     std::string email;
     std::string password;
     std::string confirmarPassword;
 
-    // Estado actual
+    /// @brief Estado actual
     int campoActual;
     int campoAnterior;
     bool primeraRenderizacion;
     bool error;
-    std::string mensajeError;
-
-    // Coordenadas para dibujar
+    std::string mensajeError;    
+    
+    /// @brief Coordenadas para dibujar
     const COORD coordsCampos[TOTAL_CAMPOS] = {
-        {11, 15}, // Nombre
-        {11, 20}, // Email (sin @gmail.com)
-        {11, 25}, // Password
-        {63, 25}, // Confirmar Password
-        {52, 29}  // Botón Guardar
+        {26, 11}, // Nombre
+        {26, 15}, // Email
+        {26, 19}, // Password
+        {26, 23}, // Confirmar Password
+        {51, 27}  // Botón Guardar
     };
+    
+    // ---- MÉTODOS PRIVADOS ----
+    
+    /// @brief Métodos de inicialización
+    inline void _limpiarEstado();
+    inline void _cargarDatosDummy();
 
-    void mostrarCursor(bool mostrar) {
-        CONSOLE_CURSOR_INFO cursorInfo;
-        GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-        cursorInfo.bVisible = mostrar;
-        SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    /// @brief Métodos de renderizado
+    inline void dibujarInterfazCompleta();
+    inline void _renderizarCampo(const std::string& valor, int indice, bool seleccionado);
+    inline void renderizarBotonGuardar(bool seleccionado);
+    inline void actualizarSeleccion();
+
+    /// @brief Métodos de navegación y entrada
+    inline void _manejarNavegacion(int tecla);
+    inline void _manejarEntradaTexto(int tecla);
+    inline void _manejarRetroceso();
+
+    /// @brief Métodos de validación y guardado
+    inline bool validarCampos();
+    inline void _mostrarError(const std::string& mensaje);
+    inline void guardarCambios();
+    inline ResultadoPantalla _procesarGuardado();
+
+public:
+    inline EditarPerfilScreen();
+    
+    inline ResultadoPantalla ejecutar() override;
+};
+
+// --- IMPLEMENTACIONES INLINE ---
+
+// Constructor
+inline EditarPerfilScreen::EditarPerfilScreen() : PantallaBase(),
+    idUsuario(1), tipoUsuario(TipoUsuario::ESTUDIANTE),
+    nombreOriginal("Juan Carlos Pérez"), emailOriginal("juan.perez@upc.edu.pe"), passwordOriginal("123456"),
+    campoActual(0), campoAnterior(-1), primeraRenderizacion(true), error(false)
+{
+    _cargarDatosDummy();
+}
+
+// Limpiar estado
+inline void EditarPerfilScreen::_limpiarEstado()
+{
+    campoActual = 0;
+    campoAnterior = -1;
+    primeraRenderizacion = true;
+    error = false;
+    mensajeError.clear();
+}
+
+// Cargar datos de ejemplo
+inline void EditarPerfilScreen::_cargarDatosDummy()
+{
+    // Cargar datos actuales para edición
+    nombre = nombreOriginal;
+    email = emailOriginal;
+    password = ""; // Por seguridad, no prellenar password
+    confirmarPassword = "";
+}
+
+// Dibujar interfaz completa
+inline void EditarPerfilScreen::dibujarInterfazCompleta()
+{
+    system("cls");
+    UI_UserUpdateData();
+
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+
+    // Renderizar campos de entrada
+    _renderizarCampo(nombre, CAMPO_NOMBRE, campoActual == CAMPO_NOMBRE);
+    _renderizarCampo(email, CAMPO_EMAIL, campoActual == CAMPO_EMAIL);
+    _renderizarCampo(password, CAMPO_PASSWORD, campoActual == CAMPO_PASSWORD);
+    _renderizarCampo(confirmarPassword, CAMPO_CONFIRMAR_PASSWORD, campoActual == CAMPO_CONFIRMAR_PASSWORD);
+
+    // Renderizar botón guardar
+    renderizarBotonGuardar(campoActual == CAMPO_GUARDAR);
+
+    resetColor();
+}
+
+// Renderizar campo de entrada
+inline void EditarPerfilScreen::_renderizarCampo(const std::string& valor, int indice, bool seleccionado)
+{
+    gotoXY(coordsCampos[indice].X, coordsCampos[indice].Y);
+
+    if (seleccionado)
+    {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BORDES_SUTILES);
+        _configurarCursor(true);
+    }
+    else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+        _configurarCursor(false);
     }
 
-    void dibujarInterfazCompleta() {
-        system("cls");
-        UI_UserUpdateData();        // Mostrar valores actuales
-        renderizarCampo(CAMPO_NOMBRE, nombre, campoActual == CAMPO_NOMBRE);
-        renderizarCampo(CAMPO_EMAIL, email, campoActual == CAMPO_EMAIL);
-        renderizarCampo(CAMPO_PASSWORD, std::string(password.length(), '*'), campoActual == CAMPO_PASSWORD);
-        renderizarCampo(CAMPO_CONFIRMAR_PASSWORD, std::string(confirmarPassword.length(), '*'), campoActual == CAMPO_CONFIRMAR_PASSWORD);
-        renderizarBotonGuardar(campoActual == CAMPO_GUARDAR);
+    // Mostrar el valor con padding para limpiar caracteres residuales
+    std::string display = valor;
+    display.resize(66, ' '); // Asegurar que el campo tenga tamaño fijo
+    std::cout << display;
 
-        if (error) {
-            gotoXY(coordsCampos[CAMPO_GUARDAR].X - 200, coordsCampos[CAMPO_GUARDAR].Y + 40);
-            setConsoleColor(1, 4);
-            std::cout << mensajeError;
-            setConsoleColor(15, 0);
-        }
-    }    void renderizarCampo(int campo, const std::string& valor, bool seleccionado) {
-        gotoXY(coordsCampos[campo].X, coordsCampos[campo].Y);
-
-        // Limpiar el área
-        if (campo == CAMPO_NOMBRE) {
-            std::cout << std::string(60, ' ');
-            gotoXY(coordsCampos[campo].X, coordsCampos[campo].Y);
-        }
-
-        if (seleccionado) {
-            setConsoleColor(1, 13);
-            mostrarCursor(true);
-        }
-        else {
-            setConsoleColor(15, 0);
-            mostrarCursor(false);
-        }
-
-        std::cout << valor;
-        setConsoleColor(15, 0);
+    // Posicionar cursor al final del texto real
+    if (seleccionado) 
+    {
+        gotoXY(coordsCampos[indice].X + valor.length(), coordsCampos[indice].Y);
     }
 
-    void renderizarBotonGuardar(bool seleccionado) {
-        gotoXY(coordsCampos[CAMPO_GUARDAR].X, coordsCampos[CAMPO_GUARDAR].Y);
+    resetColor();
+}
 
-        if (seleccionado) {
-            setConsoleColor(1, 13);
-        }
-        else {
-            setConsoleColor(15, 0);
-        }        std::cout << "GUARDAR CAMBIOS";
-        setConsoleColor(15, 0);
+// Renderizar botón guardar
+inline void EditarPerfilScreen::renderizarBotonGuardar(bool seleccionado)
+{
+    _configurarCursor(false);
+    gotoXY(coordsCampos[CAMPO_GUARDAR].X, coordsCampos[CAMPO_GUARDAR].Y);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
+    
+    std::cout << " GUARDAR CAMBIOS ";
+    resetColor();
+}
 
-    void actualizarSeleccion() {
-        if (campoAnterior >= 0 && campoAnterior < TOTAL_CAMPOS) {
+// Actualizar selección
+inline void EditarPerfilScreen::actualizarSeleccion()
+{
+    if (campoAnterior != campoActual)
+    {
+        // Actualizar campo anterior
+        if (campoAnterior >= 0)
+        {
             if (campoAnterior == CAMPO_GUARDAR) {
                 renderizarBotonGuardar(false);
-            }
-            else {
-                std::string valor;
-                switch (campoAnterior) {
-                case CAMPO_NOMBRE: valor = nombre; break;
-                case CAMPO_EMAIL: valor = email; break;
-                case CAMPO_PASSWORD: valor = std::string(password.length(), '*'); break;
-                case CAMPO_CONFIRMAR_PASSWORD: valor = std::string(confirmarPassword.length(), '*'); break;
+            } else {
+                std::string* valor = nullptr;
+                switch (campoAnterior)
+                {
+                case CAMPO_NOMBRE: valor = &nombre; break;
+                case CAMPO_EMAIL: valor = &email; break;
+                case CAMPO_PASSWORD: valor = &password; break;
+                case CAMPO_CONFIRMAR_PASSWORD: valor = &confirmarPassword; break;
                 }
-                renderizarCampo(campoAnterior, valor, false);
+                if (valor != nullptr) {
+                    _renderizarCampo(*valor, campoAnterior, false);
+                }
             }
         }
 
-        if (campoActual >= 0 && campoActual < TOTAL_CAMPOS) {
-            if (campoActual == CAMPO_GUARDAR) {
-                renderizarBotonGuardar(true);
+        // Actualizar campo actual
+        if (campoActual == CAMPO_GUARDAR) {
+            renderizarBotonGuardar(true);
+        } else {
+            std::string* valor = nullptr;
+            switch (campoActual)
+            {
+            case CAMPO_NOMBRE: valor = &nombre; break;
+            case CAMPO_EMAIL: valor = &email; break;
+            case CAMPO_PASSWORD: valor = &password; break;
+            case CAMPO_CONFIRMAR_PASSWORD: valor = &confirmarPassword; break;
             }
-            else {
-                std::string valor;
-                switch (campoActual) {
-                case CAMPO_NOMBRE: valor = nombre; break;
-                case CAMPO_EMAIL: valor = email; break;
-                case CAMPO_PASSWORD: valor = std::string(password.length(), '*'); break;
-                case CAMPO_CONFIRMAR_PASSWORD: valor = std::string(confirmarPassword.length(), '*'); break;
-                }
-                renderizarCampo(campoActual, valor, true);
+            if (valor != nullptr) {
+                _renderizarCampo(*valor, campoActual, true);
             }
         }
 
         campoAnterior = campoActual;
     }
+}
 
-    bool validarCampos() {
-        // Validar que los campos no están vacíos
-        if (nombre.empty() || email.empty()) {
-            error = true;
-            mensajeError = "El nombre y el email son obligatorios";
+// Manejar navegación
+inline void EditarPerfilScreen::_manejarNavegacion(int tecla)
+{
+    switch (tecla) {
+    case 72: // Flecha arriba
+        campoActual = (campoActual > 0) ? campoActual - 1 : TOTAL_CAMPOS - 1;
+        break;
+    case 80: // Flecha abajo
+        campoActual = (campoActual < TOTAL_CAMPOS - 1) ? campoActual + 1 : 0;
+        break;
+    }
+}
+
+// Manejar entrada de texto
+inline void EditarPerfilScreen::_manejarEntradaTexto(int tecla)
+{
+    // Solo procesar entrada de texto si estamos en un campo de entrada (no en el botón)
+    if (campoActual < CAMPO_GUARDAR && tecla >= 32 && tecla <= 126)
+    {
+        std::string* campoActivo = nullptr;
+        switch (campoActual)
+        {
+        case CAMPO_NOMBRE: campoActivo = &nombre; break;
+        case CAMPO_EMAIL: campoActivo = &email; break;
+        case CAMPO_PASSWORD: campoActivo = &password; break;
+        case CAMPO_CONFIRMAR_PASSWORD: campoActivo = &confirmarPassword; break;
+        }
+
+        if (campoActivo != nullptr && campoActivo->length() < 48)
+        {
+            *campoActivo += static_cast<char>(tecla);
+            _renderizarCampo(*campoActivo, campoActual, true);
+        }
+    }
+}
+
+// Manejar retroceso
+inline void EditarPerfilScreen::_manejarRetroceso()
+{
+    if (campoActual < CAMPO_GUARDAR)
+    {
+        std::string* campoActivo = nullptr;
+        switch (campoActual)
+        {
+        case CAMPO_NOMBRE: campoActivo = &nombre; break;
+        case CAMPO_EMAIL: campoActivo = &email; break;
+        case CAMPO_PASSWORD: campoActivo = &password; break;
+        case CAMPO_CONFIRMAR_PASSWORD: campoActivo = &confirmarPassword; break;
+        }
+
+        if (campoActivo != nullptr && !campoActivo->empty())
+        {
+            campoActivo->pop_back();
+            _renderizarCampo(*campoActivo, campoActual, true);
+        }
+    }
+}
+
+// Mostrar error
+inline void EditarPerfilScreen::_mostrarError(const std::string& mensaje)
+{
+    gotoXY(25, 30);
+    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::ERROR_COLOR);
+    std::cout << "[ERROR]: " << mensaje;
+    resetColor();
+
+    // Pausa para mostrar el error
+    _getch();
+
+    // Limpia el mensaje de error
+    gotoXY(25, 30);
+    for (int i = 0; i < mensaje.length() + 9; ++i)
+    {
+        std::cout << " ";
+    }
+}
+
+// Validar campos
+inline bool EditarPerfilScreen::validarCampos()
+{
+    if (nombre.empty())
+    {
+        _mostrarError("El nombre es obligatorio");
+        return false;
+    }
+    
+    if (email.empty())
+    {
+        _mostrarError("El email es obligatorio");
+        return false;
+    }
+
+    // Solo validar password si se está cambiando
+    if (!password.empty())
+    {
+        if (password.length() < 6)
+        {
+            _mostrarError("La contraseña debe tener al menos 6 caracteres");
             return false;
         }
-
-        // Validar que las contraseñas coincidan si se están modificando
-        if (!password.empty() && password != confirmarPassword) {
-            error = true;
-            mensajeError = "Las contraseñas no coinciden";
+        
+        if (password != confirmarPassword)
+        {
+            _mostrarError("Las contraseñas no coinciden");
             return false;
-        }
-
-        // Validar longitud mínima de contraseña si se está modificando
-        if (!password.empty() && password.length() < 6) {
-            error = true;
-            mensajeError = "La contraseña debe tener al menos 6 caracteres";
-            return false;
-        }
-
-        // Validar que el email no está ya en uso (excepto si es el mismo usuario)
-        if (email != emailOriginal) {
-            Usuario temp;
-            int index = temp.buscarIndexUsuario(email, tipoUsuario);
-            if (index != -1 && index != idUsuario) {
-                error = true;
-                mensajeError = "Este email ya está en uso por otro usuario";
-                return false;
-            }
-        }
-
-        return true;
-    }    void guardarCambios() {
-        // Acceso a través de la controladora
-        if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
-            // Lógica para actualizar estudiante a través de la controladora
-            // _controladora->actualizarEstudiante(idUsuario, nombre, email, password);
-        }
-        else if (tipoUsuario == TipoUsuario::EMPRESA) {
-            // Lógica para actualizar empresa a través de la controladora
-            // _controladora->actualizarEmpresa(idUsuario, nombre, email, password);
         }
     }
 
-public:
-    EditarPerfilScreen(Controladora* _controladora, int _idUsuario, TipoUsuario _tipoUsuario, 
-        const std::string& _nombre, const std::string& _email)
-        : PantallaBase(_controladora),
-        idUsuario(_idUsuario),
-        tipoUsuario(_tipoUsuario),
-        nombreOriginal(_nombre),
-        emailOriginal(_email),
-        nombre(_nombre),
-        email(_email),
-        password(""),
-        confirmarPassword(""),
-        campoActual(0),
-        campoAnterior(-1),
-        primeraRenderizacion(true),
-        error(false) {
-    }    ResultadoPantalla ejecutar() override {
-        while (true) {
-            if (primeraRenderizacion) {
-                dibujarInterfazCompleta();
-                primeraRenderizacion = false;
-                mostrarCursor(true);
-            }
-            else {
-                actualizarSeleccion();
-            }
+    return true;
+}
 
-            int tecla = _getch();
-            switch (tecla) {
-            case 72: // Flecha arriba
-                if (campoActual > 0) {
-                    // Navegación especial entre campos
-                    if (campoActual == CAMPO_GUARDAR) {
-                        campoActual = CAMPO_CONFIRMAR_PASSWORD;
-                    }
-                    else if (campoActual == CAMPO_PASSWORD || campoActual == CAMPO_CONFIRMAR_PASSWORD) {
-                        campoActual = CAMPO_EMAIL;
-                    }
-                    else {
-                        campoActual--;
-                    }
-                }
-                break;
+// Guardar cambios (dummy)
+inline void EditarPerfilScreen::guardarCambios()
+{
+    // Aquí iría la lógica real de guardado
+    // Por ahora solo simulamos el guardado
+    
+    gotoXY(25, 30);
+    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+    std::cout << "[ÉXITO]: Perfil actualizado correctamente";
+    resetColor();
+    _configurarCursor(false);
+    
+    // Pausa para mostrar el mensaje
+    _getch();
+}
 
-            case 80: // Flecha abajo
-                if (campoActual < TOTAL_CAMPOS - 1) {
-                    // Navegación especial entre campos
-                    if (campoActual == CAMPO_EMAIL) {
-                        campoActual = CAMPO_PASSWORD;
-                    }
-                    else if (campoActual == CAMPO_PASSWORD || campoActual == CAMPO_CONFIRMAR_PASSWORD) {
-                        campoActual = CAMPO_GUARDAR;
-                    }
-                    else {
-                        campoActual++;
-                    }
-                }
-                break;
+// Procesar guardado
+inline ResultadoPantalla EditarPerfilScreen::_procesarGuardado()
+{
+    if (!validarCampos())
+    {
+        return ResultadoPantalla(AccionPantalla::NINGUNA);
+    }
 
-            case 75: // Flecha izquierda
-                if (campoActual == CAMPO_CONFIRMAR_PASSWORD) {
-                    campoActual = CAMPO_PASSWORD;
-                }
-                break;
+    guardarCambios();
+    
+    // Determinar a dónde regresar según el tipo de usuario
+    if (tipoUsuario == TipoUsuario::ESTUDIANTE)
+    {
+        return ResultadoPantalla(AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
+    }
+    else
+    {
+        return ResultadoPantalla(AccionPantalla::IR_A_PERFIL_ORGANIZACION);
+    }
+}
 
-            case 77: // Flecha derecha
-                if (campoActual == CAMPO_PASSWORD) {
-                    campoActual = CAMPO_CONFIRMAR_PASSWORD;
-                }
-                break;
+// Método principal de ejecución
+inline ResultadoPantalla EditarPerfilScreen::ejecutar()
+{
+    _limpiarEstado();
+    
+    if (primeraRenderizacion)
+    {
+        dibujarInterfazCompleta();
+        primeraRenderizacion = false;
+    }
 
+    while (true)
+    {
+        actualizarSeleccion();
+
+        int tecla = _getch();
+
+        // Verificar si es una tecla especial
+        if (tecla == 224 || tecla == 0)
+        {
+            int codigoExtendido = _getch();
+            _manejarNavegacion(codigoExtendido);
+        }
+        else
+        {
+            switch (tecla)
+            {
             case 13: // Enter
-                if (campoActual == CAMPO_GUARDAR) {
-                    if (validarCampos()) {
-                        guardarCambios();
-                        // Redirigir al perfil correspondiente usando helpers del ScreenSystem
-                        return crearResultado((tipoUsuario == TipoUsuario::ESTUDIANTE) ?
-                            AccionPantalla::IR_A_PERFIL_ESTUDIANTE :
-                            AccionPantalla::IR_A_PERFIL_ORGANIZACION);
-                    }
-                    else {
-                        dibujarInterfazCompleta();
+                if (campoActual == CAMPO_GUARDAR)
+                {
+                    ResultadoPantalla resultado = _procesarGuardado();
+                    if (resultado.accion != AccionPantalla::NINGUNA)
+                    {
+                        return resultado;
                     }
                 }
-                break;
-
-            case 27: // ESC
-                return crearResultado((tipoUsuario == TipoUsuario::ESTUDIANTE) ?
-                    AccionPantalla::IR_A_PERFIL_ESTUDIANTE :
-                    AccionPantalla::IR_A_PERFIL_ORGANIZACION);
-
-            case 9: // Tab
-                campoActual = (campoActual + 1) % TOTAL_CAMPOS;
                 break;
 
             case 8: // Backspace
-                if (campoActual >= 0 && campoActual < CAMPO_GUARDAR) {
-                    std::string* campo = nullptr;
-                    switch (campoActual) {
-                    case CAMPO_NOMBRE: campo = &nombre; break;
-                    case CAMPO_EMAIL: campo = &email; break;
-                    case CAMPO_PASSWORD: campo = &password; break;
-                    case CAMPO_CONFIRMAR_PASSWORD: campo = &confirmarPassword; break;
-                    }
-                    if (campo && !campo->empty()) {
-                        campo->pop_back();
-                        dibujarInterfazCompleta();
-                    }
-                }
+                _manejarRetroceso();
                 break;
 
-            default:
-                if (tecla >= 32 && tecla <= 126) { // Caracteres imprimibles
-                    std::string* campo = nullptr;
-                    switch (campoActual) {
-                    case CAMPO_NOMBRE: campo = &nombre; break;
-                    case CAMPO_EMAIL: campo = &email; break;
-                    case CAMPO_PASSWORD: campo = &password; break;
-                    case CAMPO_CONFIRMAR_PASSWORD: campo = &confirmarPassword; break;
-                    }
-                    if (campo) {
-                        campo->push_back(static_cast<char>(tecla));
-                        dibujarInterfazCompleta();
-                    }
+            case 27: // ESC - Regresar sin guardar
+                _configurarCursor(false);
+                // Regresar según el tipo de usuario
+                if (tipoUsuario == TipoUsuario::ESTUDIANTE)
+                {
+                    return ResultadoPantalla(AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
                 }
-                break;        }
-            error = false;
+                else
+                {
+                    return ResultadoPantalla(AccionPantalla::IR_A_PERFIL_ORGANIZACION);
+                }
+
+            default:
+                _manejarEntradaTexto(tecla);
+                break;
+            }
         }
     }
-};
+}
 
 #endif // COURSERACLONE_SCREENS_EDITARPERFILSCREEN_HPP
