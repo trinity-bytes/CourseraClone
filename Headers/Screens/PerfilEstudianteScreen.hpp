@@ -3,161 +3,305 @@
 
 // Headers estándar
 #include <string>
+#include <conio.h>
 
 // Headers propios
-//#include "../Entities/Estudiante.hpp"
-//#include "../Utils/SystemUtils.hpp"
-//#include "../Utils/ScreenSystem.hpp"
-//#include "../Utils/UI_Ascii.hpp"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/UI_Ascii.hpp"
 
 /// Pantalla para mostrar perfil de estudiante
 class PerfilEstudianteScreen : public PantallaBase
 {
 private:
-    // Constantes para secciones
+    /// @brief Constantes para secciones
     static const int SECCION_BOTONES = 0;
     static const int TOTAL_SECCIONES = 1;
 
-    // Constantes para botones
+    /// @brief Constantes para botones
     static const int BOTON_CERTIFICADOS = 0;
     static const int BOTON_BOLETAS = 1;
     static const int BOTON_EDITAR = 2;
-    static const int TOTAL_BOTONES = 3;
-
-    // Datos del usuario
+    static const int TOTAL_BOTONES = 3;    
+    
+    /// @brief Datos del usuario
     int _idEstudiante;
     std::string _nombreEstudiante;
     std::string _emailEstudiante;
+    std::string _fechaRegistroEstudiante;
 
-    // Estado actual
+    /// @brief Estadísticas del estudiante
+    int _cursosCompletados;
+    int _certificadosObtenidos;
+    int _horasEstudio;
+
+    /// @brief Estado actual
     int _seccionActual;
     int _botonActual;
+    int _botonAnterior;
     bool _primeraRenderizacion;
 
-    // Coordenadas para botones
+    /// @brief Elementos de botones
+    std::vector<std::string> _elementosHeader = {
+        " MIS CERTIFICADOS ",
+        " MIS BOLETAS ",
+        " EDITAR PERFIL "
+    };    
+    
+    /// @brief Coordenadas para botones
     COORD coordsBotones[TOTAL_BOTONES] = {
-        {58, 12}, // MIS CERTIFICADOS
-        {78, 12}, // MIS BOLETAS
-        {93, 12}  // EDITAR PERFIL
+        {49, 10}, // MIS CERTIFICADOS
+        {69, 10}, // MIS BOLETAS  
+        {84, 10}  // EDITAR PERFIL
     };
 
-    void dibujarInterfazCompleta() {
-        system("cls");
-        UI_UserProfile();        // Mostrar datos del perfil
-        setConsoleColor(15, 0);
-        gotoXY(26, 16);
-        std::cout << _idEstudiante;
+    /// @brief Coordenadas para datos del perfil
+    COORD coordsNombre = {34, 18};
+    COORD coordsEmail = {30, 22};
+    COORD coordsFechaRegistro = {49, 26};
 
-        gotoXY(34, 20);
-        std::cout << _nombreEstudiante;
+    /// @brief Coordenadas para estadísticas
+    COORD coordsEstadisticas[3] = {
+        {30, 14}, {55, 14}, {80, 14}  // Cursos, Certificados, Horas
+    };
+	// ---- METODOS PRIVADOS ----
 
-        gotoXY(30, 24);
-        std::cout << _emailEstudiante;
-        setConsoleColor(15, 0);        // Renderizar botones
-        for (int i = 0; i < TOTAL_BOTONES; i++) {
-            renderizarBoton(i, i == _botonActual && _seccionActual == SECCION_BOTONES);
-        }
-    }
+    /// @brief Métodos de inicialización
+    inline void _limpiarEstado();
+    inline void _cargarDatosDummy();
 
-    void renderizarBoton(int indice, bool seleccionado) {
-        gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
+    /// @brief Métodos de renderizado
+    inline void dibujarInterfazCompleta();
+    inline void renderizarDatosPerfil();
+    inline void renderizarEstadisticas();
+    inline void renderizarBoton(int indice, bool seleccionado);
+    inline void actualizarSeleccion();
 
-        if (seleccionado) {
-            setConsoleColor(1, 13); // Color para selección
-        }
-        else {
-            setConsoleColor(15, 0); // Color normal
-        }
-
-        switch (indice) {
-        case BOTON_CERTIFICADOS:
-            std::cout << "MIS CERTIFICADOS";
-            break;
-        case BOTON_BOLETAS:
-            std::cout << "MIS BOLETAS";
-            break;
-        case BOTON_EDITAR:
-            std::cout << "EDITAR PERFIL";
-            break;
-        }
-
-        setConsoleColor(15, 0); // Restaurar color
-    }
-
-    void actualizarSeleccion() {
-        for (int i = 0; i < TOTAL_BOTONES; i++) {
-            renderizarBoton(i, i == _botonActual && _seccionActual == SECCION_BOTONES);
-        }
-    }
+    /// @brief Métodos de navegación
+    inline void _manejarNavegacion(int tecla);
+    inline ResultadoPantalla _procesarSeleccion();
 
 public:
-    PerfilEstudianteScreen(int _idEstudiante, std::string _nombreEstudiante, std::string _emailEstudiante)
-        : PantallaBase(),
-        _idEstudiante(_idEstudiante),
-        _nombreEstudiante(_nombreEstudiante),
-        _emailEstudiante(_emailEstudiante),
-        _seccionActual(SECCION_BOTONES),
-        _botonActual(0),
-        _primeraRenderizacion(true) {
-    }    ~PerfilEstudianteScreen() = default;
 
-    ResultadoPantalla ejecutar() override {
-        ResultadoPantalla res;
+    inline PerfilEstudianteScreen();
 
+    inline ~PerfilEstudianteScreen() = default;
+
+    inline ResultadoPantalla ejecutar() override;
+};
+
+// --- IMPLEMENTACIONES INLINE ---
+
+// Constructor
+inline PerfilEstudianteScreen::PerfilEstudianteScreen() : PantallaBase(),
+    _idEstudiante(1), _nombreEstudiante("Juan Carlos Pérez"),
+    _emailEstudiante("juan.perez@upc.edu.pe"),
+    _fechaRegistroEstudiante("15 de Marzo, 2024"),
+    _cursosCompletados(8), _certificadosObtenidos(5), _horasEstudio(120),
+    _seccionActual(0), _botonActual(0), _botonAnterior(-1), _primeraRenderizacion(true)
+{
+    _cargarDatosDummy();
+}
+
+// Limpiar estado
+inline void PerfilEstudianteScreen::_limpiarEstado()
+{
+    _seccionActual = 0;
+    _botonActual = 0;
+    _botonAnterior = -1;
+    _primeraRenderizacion = true;
+}
+
+// Cargar datos de ejemplo
+inline void PerfilEstudianteScreen::_cargarDatosDummy()
+{
+    // Los datos ya se cargan en el constructor
+    // Este método está disponible para futuras cargas desde archivos
+}
+
+// Dibujar interfaz completa
+inline void PerfilEstudianteScreen::dibujarInterfazCompleta()
+{
+    system("cls");
+    UI_UserProfile();
+
+    renderizarDatosPerfil();
+    renderizarEstadisticas();
+    
+    // Renderizar todos los botones
+    for (int i = 0; i < TOTAL_BOTONES; ++i) {
+        renderizarBoton(i, _botonActual == i);
+    }
+
+    resetColor();
+}
+
+// Renderizar datos del perfil
+inline void PerfilEstudianteScreen::renderizarDatosPerfil()
+{
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    
+    // Nombre
+    gotoXY(coordsNombre.X, coordsNombre.Y);
+    std::cout << _nombreEstudiante;
+    
+    // Email
+    gotoXY(coordsEmail.X, coordsEmail.Y);
+    std::cout << _emailEstudiante;
+    
+    // Fecha de registro
+    gotoXY(coordsFechaRegistro.X, coordsFechaRegistro.Y);
+    std::cout << _fechaRegistroEstudiante;
+    
+    resetColor();
+}
+
+// Renderizar estadísticas
+inline void PerfilEstudianteScreen::renderizarEstadisticas()
+{
+    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+    
+    // Cursos completados
+    gotoXY(coordsEstadisticas[0].X, coordsEstadisticas[0].Y);
+    std::cout << _cursosCompletados;
+    
+    // Certificados obtenidos
+    gotoXY(coordsEstadisticas[1].X, coordsEstadisticas[1].Y);
+    std::cout << _certificadosObtenidos;
+    
+    // Horas de estudio
+    gotoXY(coordsEstadisticas[2].X, coordsEstadisticas[2].Y);
+    std::cout << _horasEstudio;
+    
+    resetColor();
+}
+
+// Renderizar botón
+inline void PerfilEstudianteScreen::renderizarBoton(int indice, bool seleccionado)
+{
+    if (indice < 0 || indice >= TOTAL_BOTONES) return;
+    
+    gotoXY(coordsBotones[indice].X, coordsBotones[indice].Y);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+    } else {
+        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    std::cout << _elementosHeader[indice];
+    resetColor();
+}
+
+// Actualizar selección
+inline void PerfilEstudianteScreen::actualizarSeleccion()
+{
+    if (_botonAnterior != _botonActual) {
+        // Actualizar botón anterior
+        if (_botonAnterior >= 0) {
+            renderizarBoton(_botonAnterior, false);
+        }
+        
+        // Actualizar botón actual
+        renderizarBoton(_botonActual, true);
+        
+        _botonAnterior = _botonActual;
+    }
+}
+
+// Manejar navegación
+inline void PerfilEstudianteScreen::_manejarNavegacion(int tecla)
+{
+    switch (tecla) {
+    case 75: // Flecha izquierda
+        if (_botonActual > 0) {
+            _botonActual--;
+        } else {
+            _botonActual = TOTAL_BOTONES - 1; // Ciclar al final
+        }
+        break;
+    case 77: // Flecha derecha
+        if (_botonActual < TOTAL_BOTONES - 1) {
+            _botonActual++;
+        } else {
+            _botonActual = 0; // Ciclar al inicio
+        }
+        break;
+    }
+}
+
+// Procesar selección
+inline ResultadoPantalla PerfilEstudianteScreen::_procesarSeleccion()
+{
+    ResultadoPantalla res;
+    
+    switch (_botonActual) {
+    case BOTON_CERTIFICADOS:
+        // Ir a pantalla de certificados
+        res.accion = AccionPantalla::NINGUNA; // Por implementar
+        break;
+    case BOTON_BOLETAS:
+        // Ir a pantalla de boletas
+        res.accion = AccionPantalla::IR_A_VER_BOLETAS;
+        break;
+    case BOTON_EDITAR:
+        // Ir a pantalla de editar perfil
+        res.accion = AccionPantalla::IR_A_EDITAR_PERFIL;
+        break;
+    default:
+        res.accion = AccionPantalla::NINGUNA;
+        break;
+    }
+    
+    return res;
+}
+
+// Método principal de ejecución
+inline ResultadoPantalla PerfilEstudianteScreen::ejecutar()
+{
+    ResultadoPantalla res;
+    _limpiarEstado();
+
+    while (true) {
         if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
             _primeraRenderizacion = false;
+        } else {
+            actualizarSeleccion();
         }
 
-        while (true) {
-            // Manejar entrada del usuario
-            int tecla = _getch();
+        int tecla = _getch();
 
-            switch (tecla) {
-            case 224: // Tecla extendida
-                tecla = _getch();
-                switch (tecla) {
-                case 75: // Flecha izquierda
-                    if (_botonActual > 0) {
-                        _botonActual--;
-                        actualizarSeleccion();
-                    }
-                    break;
-                case 77: // Flecha derecha
-                    if (_botonActual < TOTAL_BOTONES - 1) {
-                        _botonActual++;
-                        actualizarSeleccion();
-                    }
-                    break;
-                }
-                break;
+        switch (tecla) {
+        case 0:
+        case 224: // Teclas especiales
+        {
+            int segundaTecla = _getch();
+            _manejarNavegacion(segundaTecla);
+        }
+        break;
 
-            case 13: // Enter
-                if (_seccionActual == SECCION_BOTONES) {
-                    switch (_botonActual) {
-                    case BOTON_CERTIFICADOS:
-                        // Para una futura implementación
-                        break;
-                    case BOTON_BOLETAS:
-                        // Ir a la pantalla de Ver Boletas
-                        res.accion = AccionPantalla::IR_A_VER_BOLETAS;
-                        return res;
-                    case BOTON_EDITAR:
-                        // Ir a la pantalla de editar perfil
-                        res.accion = AccionPantalla::IR_A_EDITAR_PERFIL;
-                        return res;
-                    }
-                }
-                break;
+        case 75: // Flecha izquierda (por si acaso)
+        case 77: // Flecha derecha (por si acaso)
+            _manejarNavegacion(tecla);
+            break;
 
-            case 27: // ESC - Volver al dashboard
-                res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+        case 27: // ESC - Regresar al dashboard
+            res.accion = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+            return res;
+
+        case 13: // Enter - Procesar selección
+            res = _procesarSeleccion();
+            if (res.accion != AccionPantalla::NINGUNA) {
                 return res;
             }
-        }
+            break;
 
-        return res;
+        default:
+            // Ignorar otras teclas
+            break;
+        }
     }
-};
+}
 
 #endif // COURSERACLONE_SCREENS_PERFILESTUDIANTESCREEN_HPP

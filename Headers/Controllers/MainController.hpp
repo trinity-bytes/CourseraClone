@@ -14,6 +14,9 @@
 #include "../Screens/RegistroScreen.hpp"
 #include "../Screens/DashboardEstudianteScreen.hpp"
 #include "../Screens/DashboardOrganizacionScreen.hpp"
+#include "../Screens/PerfilEstudianteScreen.hpp"
+#include "../Screens/PerfilOrganizacionScreen.hpp"
+#include "../Screens/EditarPerfilScreen.hpp"
 #include "../Screens/ExplorarContenidoScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
@@ -21,13 +24,19 @@ class MainController
 {
 private:
     /// @brief Estado de la aplicación
-    bool _ejecutando;    /// @brief Métodos privados de navegación
-    std::unique_ptr<PantallaBase> crearPantallaLandingPage();
-    std::unique_ptr<PantallaBase> crearPantallaSobreNosotros();
-    std::unique_ptr<PantallaBase> crearPantallaLogin();    std::unique_ptr<PantallaBase> crearPantallaRegistro();
-    std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();
-    std::unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();
-    std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
+    bool _ejecutando;    
+    
+    /// @brief Métodos privados de navegación
+    inline std::unique_ptr<PantallaBase> crearPantallaLandingPage();
+    inline std::unique_ptr<PantallaBase> crearPantallaSobreNosotros();
+    inline std::unique_ptr<PantallaBase> crearPantallaLogin();    
+    inline std::unique_ptr<PantallaBase> crearPantallaRegistro();    
+    inline std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();    
+    inline std::unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();    
+    inline std::unique_ptr<PantallaBase> crearPantallaPerfilEstudiante();
+    inline std::unique_ptr<PantallaBase> crearPantallaPerfilOrganizacion();
+    inline std::unique_ptr<PantallaBase> crearPantallaEditarPerfil();
+    inline std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
 
 public:
     /// @brief Constructor y destructor
@@ -78,6 +87,24 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaDashboardOrgan
     return std::make_unique<DashboardOrganizacionScreen>();
 }
 
+/// @brief Crea una nueva instancia del perfil de estudiante
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaPerfilEstudiante()
+{
+    return std::make_unique<PerfilEstudianteScreen>();
+}
+
+/// @brief Crea una nueva instancia del perfil de organización
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaPerfilOrganizacion()
+{
+    return std::make_unique<PerfilOrganizacionScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla editar perfil
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaEditarPerfil()
+{
+    return std::make_unique<EditarPerfilScreen>();
+}
+
 /// @brief Crea una nueva instancia de la pantalla explorar contenido
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarContenido()
 {
@@ -88,7 +115,7 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarConten
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaDashboardOrganizacion();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaEditarPerfil();
     
     do
     {
@@ -106,12 +133,24 @@ inline void MainController::run()
         
         case AccionPantalla::IR_A_REGISTRO:
             _pantallaActual = crearPantallaRegistro();
-			break;        case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+			break;        
+        
+        case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
             _pantallaActual = crearPantallaDashboardEstudiante();
-            break;
-
+            break;        
+        
         case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
             _pantallaActual = crearPantallaDashboardOrganizacion();
+            break;        
+        
+        case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
+            _pantallaActual = crearPantallaPerfilEstudiante();
+            break;        case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
+            _pantallaActual = crearPantallaPerfilOrganizacion();
+            break;
+
+        case AccionPantalla::IR_A_EDITAR_PERFIL:
+            _pantallaActual = crearPantallaEditarPerfil();
             break;
 
 		case AccionPantalla::IR_A_SOBRE_NOSOTROS:

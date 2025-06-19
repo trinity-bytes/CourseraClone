@@ -5,85 +5,210 @@
 
 // Headers estándar
 #include <string>
+#include <conio.h>
 
 // Headers de consola
-//#include "../Entities/Empresa.h"
-//#include "../Utils/SystemUtils.h"
-//#include "../Utils/ScreenSystem.h"
-//#include "../Utils/UI_Ascii.h"
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/UI_Ascii.hpp"
 
 /// Pantalla para mostrar perfil de organización
 class PerfilOrganizacionScreen : public PantallaBase
 {
 private:
-    // Datos de la organización
+    /// @brief Constantes para secciones
+    static const int SECCION_BOTONES = 0;
+    static const int TOTAL_SECCIONES = 1;
+
+    /// @brief Constantes para botones
+    static const int BOTON_EDITAR_PERFIL = 0;
+    static const int TOTAL_BOTONES = 1;    // Datos de la organización
     int _idOrganizacion;
     std::string _nombreOrganizacion;
     std::string _correoOrganizacion;
+    std::string _fechaCreacionOrganizacion;
 
-    // Estado actual
+    /// @brief Estadísticas de la organización
+    int _cursosPublicados;
+    int _especialidadesPublicadas;
+    int _estudiantesInscritos;
+
+    /// @brief Estado actual
     bool _primeraRenderizacion;
+    bool _botonSeleccionado;
 
-    // Coordenadas para dibujar
-    const int COL_ETIQUETA = 22;
-    const int FILA_ID = 15;
-    const int FILA_NOMBRE = 19;
-    const int FILA_CORREO = 23;    void dibujarInterfazCompleta() {
-        system("cls");
-        // Dibujar marco y título
-        UI_OrganizationProfile();
+    /// @brief Elementos de botones
+    std::vector<std::string> _elementosHeader = {
+        " EDITAR PERFIL "
+    };    /// @brief Coordenadas para botones
+    COORD coordsBotones[TOTAL_BOTONES] = {
+        {84, 10}  // EDITAR PERFIL
+    };
 
-        // Datos de la organización
-        setConsoleColor(15, 0);
-        gotoXY(COL_ETIQUETA, FILA_ID);
-        std::cout << "ID: " << _idOrganizacion;
+    /// @brief Coordenadas para datos del perfil
+    COORD coordsNombre = {36, 18};
+    COORD coordsCorreo = {30, 22};
+    COORD coordsFechaCreacion = {47, 26};
 
-        gotoXY(COL_ETIQUETA, FILA_NOMBRE);
-        std::cout << "ORGANIZACION: " << _nombreOrganizacion;
+    /// @brief Coordenadas para estadísticas
+    COORD coordsEstadisticas[3] = {
+        {30, 14}, {55, 14}, {80, 14}  // Cursos, Especializaciones, Estudiantes
+    };
+    
+    // ---- MÉTODOS PRIVADOS ----
+    
+    /// @brief Métodos de inicialización
+    inline void _limpiarEstado();
+    inline void _cargarDatosDummy();
 
-        gotoXY(COL_ETIQUETA, FILA_CORREO);
-        std::cout << "CORREO: " << _correoOrganizacion << "@gmail.edu.com";
-        setConsoleColor(15, 0);
+    /// @brief Métodos de renderizado
+    inline void dibujarInterfazCompleta();
+    inline void renderizarDatosPerfil();
+    inline void renderizarEstadisticas();
+    inline void renderizarBoton(bool seleccionado);
 
-        // Botón de editar perfil
-        gotoXY(92, 12);
-        setConsoleColor(15, 0);
-        std::cout << " EDITAR PERFIL ";
-        setConsoleColor(15, 0);
-    }
+    /// @brief Métodos de navegación
+    inline ResultadoPantalla _procesarSeleccion();
 
 public:
-    PerfilOrganizacionScreen(int _idOrganizacion, std::string _nombreOrganizacion, std::string _correoOrganizacion)
-        : PantallaBase(),
-        _idOrganizacion(_idOrganizacion),
-        _nombreOrganizacion(_nombreOrganizacion),
-        _correoOrganizacion(_correoOrganizacion),
-        _primeraRenderizacion(true) {
+    inline PerfilOrganizacionScreen();
+
+    inline ~PerfilOrganizacionScreen() = default;
+
+    inline ResultadoPantalla ejecutar() override;
+};
+
+// --- IMPLEMENTACIONES INLINE ---
+
+// Constructor
+inline PerfilOrganizacionScreen::PerfilOrganizacionScreen() : PantallaBase(),
+    _idOrganizacion(1), 
+    _nombreOrganizacion("UPC - Universidad Peruana de Ciencias Aplicadas"),
+    _correoOrganizacion("admin@upc.edu.pe"),
+    _fechaCreacionOrganizacion("10 de Enero, 2020"),
+    _cursosPublicados(25), _especialidadesPublicadas(8), _estudiantesInscritos(1250),
+    _primeraRenderizacion(true), _botonSeleccionado(true)
+{
+    _cargarDatosDummy();
+}
+
+// Limpiar estado
+inline void PerfilOrganizacionScreen::_limpiarEstado()
+{
+    _primeraRenderizacion = true;
+    _botonSeleccionado = true; // El único botón siempre está seleccionado por defecto
+}
+
+// Cargar datos de ejemplo
+inline void PerfilOrganizacionScreen::_cargarDatosDummy()
+{
+    // Los datos ya se cargan en el constructor
+    // Este método está disponible para futuras cargas desde archivos
+}
+
+// Dibujar interfaz completa
+inline void PerfilOrganizacionScreen::dibujarInterfazCompleta()
+{
+    system("cls");
+    UI_OrganizationProfile();
+
+    renderizarDatosPerfil();
+    renderizarEstadisticas();
+    renderizarBoton(_botonSeleccionado);
+
+    resetColor();
+}
+
+// Renderizar datos del perfil
+inline void PerfilOrganizacionScreen::renderizarDatosPerfil()
+{
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    
+    // Nombre de la organización
+    gotoXY(coordsNombre.X, coordsNombre.Y);
+    std::cout << _nombreOrganizacion;
+    
+    // Correo
+    gotoXY(coordsCorreo.X, coordsCorreo.Y);
+    std::cout << _correoOrganizacion;
+    // Fecha de creación
+    gotoXY(coordsFechaCreacion.X, coordsFechaCreacion.Y);
+    std::cout << _fechaCreacionOrganizacion;
+    
+    resetColor();
+}
+
+// Renderizar estadísticas
+inline void PerfilOrganizacionScreen::renderizarEstadisticas()
+{
+    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+    
+    // Cursos publicados
+    gotoXY(coordsEstadisticas[0].X, coordsEstadisticas[0].Y);
+    std::cout << _cursosPublicados;
+    
+    // Especializaciones publicadas
+    gotoXY(coordsEstadisticas[1].X, coordsEstadisticas[1].Y);
+    std::cout << _especialidadesPublicadas;
+    
+    // Estudiantes inscritos
+    gotoXY(coordsEstadisticas[2].X, coordsEstadisticas[2].Y);
+    std::cout << _estudiantesInscritos;
+    
+    resetColor();
+}
+
+// Renderizar botón
+inline void PerfilOrganizacionScreen::renderizarBoton(bool seleccionado)
+{
+    gotoXY(coordsBotones[0].X, coordsBotones[0].Y);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    } else {
+        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
     }
+    
+    std::cout << _elementosHeader[0];
+    resetColor();
+}
 
-    ~PerfilOrganizacionScreen() = default;
+// Procesar selección
+inline ResultadoPantalla PerfilOrganizacionScreen::_procesarSeleccion()
+{
+    ResultadoPantalla res;
+    res.accion = AccionPantalla::IR_A_EDITAR_PERFIL;
+    return res;
+}
 
-    ResultadoPantalla ejecutar() override {
+// Método principal de ejecución
+inline ResultadoPantalla PerfilOrganizacionScreen::ejecutar()
+{
+    ResultadoPantalla res;
+    _limpiarEstado();
+
+    while (true) {
         if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
             _primeraRenderizacion = false;
         }
 
-        ResultadoPantalla res;
+        int tecla = _getch();
 
-        while (true) {
-            int tecla = _getch();
+        switch (tecla) {
+        case 27: // ESC - Regresar al dashboard
+            res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
+            return res;
 
-            if (tecla == 13) { // Enter para editar perfil
-                res.accion = AccionPantalla::IR_A_EDITAR_PERFIL;
-                return res;
-            }
-            if (tecla == 27) { // ESC para volver
-                res.accion = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
-                return res;
-            }
+        case 13: // Enter - Procesar selección (ir a editar perfil)
+            res = _procesarSeleccion();
+            return res;
+
+        default:
+            // Ignorar otras teclas ya que solo hay un botón
+            break;
         }
     }
-};
+}
 
 #endif // COURSERACLONE_SCREENS_PERFILORGANIZACIONSCREEN_HPP
