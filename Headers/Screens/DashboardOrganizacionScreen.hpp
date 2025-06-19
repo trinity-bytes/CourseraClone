@@ -217,7 +217,7 @@ inline void DashboardOrganizacionScreen::_renderizarHeader()
 // Renderizar estadísticas
 inline void DashboardOrganizacionScreen::_renderizarEstadisticas()
 {
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
+    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_AZUL_SUAVE);
     
     gotoXY(_coordsEstadisticas[0].X, _coordsEstadisticas[0].Y);
     std::cout << _cursosPublicados;
@@ -367,7 +367,7 @@ inline void DashboardOrganizacionScreen::_renderizarElementoCurso(int indice, bo
             if (seleccionado) {
                 // Resaltar el cuadro completo
                 setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-                gotoXY(_coordsTituloCursos[indice].X - 1, _coordsTituloCursos[indice].Y - 1);
+                gotoXY(_coordsTituloCursos[indice].X - 1, _coordsTituloCursos[indice].Y);
                 std::cout << ">";
             }
         }
@@ -402,7 +402,7 @@ inline void DashboardOrganizacionScreen::_renderizarElementoEspecializacion(int 
             if (seleccionado) {
                 // Resaltar el cuadro completo
                 setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-                gotoXY(_coordsTituloEspecializaciones[indice].X - 1, _coordsTituloEspecializaciones[indice].Y - 1);
+                gotoXY(_coordsTituloEspecializaciones[indice].X - 1, _coordsTituloEspecializaciones[indice].Y);
                 std::cout << ">";
             }
         }
