@@ -2,8 +2,7 @@
 #define COURSERACLONE_TYPES_FILESTYPES_HPP
 
 /// @brief Resultados de operaciones de archivo
-enum class FileOperationResult
-{
+enum class FileOperationResult{
     SUCCESS,
     FILE_NOT_FOUND,
     PERMISSION_DENIED,
@@ -11,6 +10,7 @@ enum class FileOperationResult
     UNKNOWN_ERROR,
     DUPLICATED_VALUE
 };
+
 inline std::string obtenerMensaje(FileOperationResult resultado) {
     switch (resultado) {
     case FileOperationResult::SUCCESS:

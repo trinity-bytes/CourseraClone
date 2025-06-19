@@ -3,8 +3,7 @@
 
 #include "ActividadTypes.hpp"
 
-struct RawInscripcionData
-{
+struct RawInscripcionData{
     int id;
     int idEstudiante;
     int idActividad;

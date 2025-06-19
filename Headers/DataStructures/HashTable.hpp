@@ -5,51 +5,40 @@
 #include "HashEntity.hpp"
 
 // Implementación de tabla hash con resolución de colisiones por prueba lineal
-template <typename V>
+#include <unordered_map>  
+
+template <typename T>
 class HashTable {
 private:
-    HashEntity<V>** _tabla;
-    int _tableSize;
-    int _numElementos;
+    std::unordered_map<int, T> table;
 
 public:
-    HashTable(int _size = 128) {
-        _tableSize = _size;
-        _tabla = new HashEntity<V>*[_tableSize];
-        for (int i = 0; i < _tableSize; ++i)
-            _tabla[i] = nullptr;
-        _numElementos = 0;
+    // Inserta un elemento en la tabla hash  
+    void insert(int key, const T& value) {
+        table[key] = value;
     }
 
-    ~HashTable() {
-        for (int i = 0; i < _tableSize; ++i)
-            if (_tabla[i] != nullptr)
-                delete _tabla[i];
-        delete[] _tabla;
-    }
-
-    int hash(int _key) const {
-        return _key % _tableSize;
-    }
-
-    void insertar(int _key, V _value) {
-        if (_numElementos == _tableSize) return;
-
-        int index = hash(_key);
-        int step = 0;
-
-        while (_tabla[index] != nullptr && _tabla[index]->getKey() != _key) {
-            index = (hash(_key) + ++step) % _tableSize;
+    // Busca un elemento por clave  
+    bool find(int key, T& value) const {
+		auto it = table.find(key);
+        if (it != table.end()) {
+            value = it->second;
+            return true;
         }
-
-        if (_tabla[index] != nullptr)
-            delete _tabla[index];
-
-        _tabla[index] = new HashEntity<V>(_key, _value);
-        _numElementos++;
+        return false;
     }
 
-    bool eliminar(int _key) {
+    // Limpia todos los elementos de la tabla hash  
+    void clear() {
+        table.clear();
+    }
+
+    // Devuelve el tamaño de la tabla hash  
+    size_t size() const {
+        return table.size();
+    }
+
+    bool erase(int _key) {
         int index = hash(_key);
         int step = 0;
 
@@ -65,7 +54,7 @@ public:
         return false;
     }
 
-    const V* buscar(int _key) const {
+    const T* buscar(int _key) const {
         int index = hash(_key);
         int step = 0;
 
