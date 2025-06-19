@@ -4,8 +4,7 @@
 #include "../Types/UsuarioTypes.hpp"
 
 /// @brief Acciones de navegación disponibles en el sistema
-enum class AccionPantalla
-{
+enum class AccionPantalla{
     NINGUNA,
     IR_A_LOGIN,
     IR_A_REGISTRO,
@@ -25,8 +24,7 @@ enum class AccionPantalla
 };
 
 /// @brief Identificadores de pantallas disponibles
-enum class Pantalla
-{
+enum class Pantalla{
     NONE,
     LANDING_PAGE,
     LOGIN,
@@ -48,8 +46,7 @@ enum class Pantalla
 };
 
 /// @brief Estructura que encapsula el resultado de la ejecución de una pantalla
-struct ResultadoPantalla
-{
+struct ResultadoPantalla{
     // Compatibilidad total con código existente
     AccionPantalla accion = AccionPantalla::NINGUNA;
     std::string email = "";
@@ -86,8 +83,7 @@ struct ResultadoPantalla
     inline bool tieneSeleccionCurso() const { return idCursoSeleccionado > 0; }
     inline bool tieneSeleccionEspecializacion() const { return idEspecializacionSeleccionada > 0; }
 
-    inline void limpiarDatosSesion()
-    {
+    inline void limpiarDatosSesion(){
         email.clear();
         password.clear();
         idUsuarioActual = -1;
@@ -96,11 +92,9 @@ struct ResultadoPantalla
 };
 
 // UTILIDADES DEL SISTEMA DE PANTALLAS
-namespace ScreenUtils
-{
+namespace ScreenUtils{
     /// @brief Convierte AccionPantalla a string para usarlo en el debugging
-    inline std::string accionToString(AccionPantalla _accion)
-    {
+    inline std::string accionToString(AccionPantalla _accion){
         switch (_accion)
         {
         case AccionPantalla::IR_A_LANDING_PAGE: return "IR_A_LANDING_PAGE";
@@ -114,8 +108,7 @@ namespace ScreenUtils
     }
 
     /// @brief Convierte Pantalla a string para debugging
-    inline std::string pantallaToString(Pantalla _pantalla)
-    {
+    inline std::string pantallaToString(Pantalla _pantalla){
         switch (_pantalla)
         {
         case Pantalla::LANDING_PAGE: return "LANDING_PAGE";

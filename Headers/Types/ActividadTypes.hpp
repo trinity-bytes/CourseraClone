@@ -9,8 +9,7 @@
 #include <vector>
 
 // Enumeraci�n para las categor�as de actividades
-enum class CategoriaActividad : int
-{
+enum class CategoriaActividad : int{
     DEFAULT, // Categor�a por defecto, no se usa en la pr�ctica
 
     // Tecnolog�a & Desarrollo
@@ -68,8 +67,7 @@ enum class CategoriaActividad : int
 };
 
 // Enum para representar los tipos de actividad
-enum class TipoActividad
-{
+enum class TipoActividad{
 	DEFAULT, // Tipo por defecto, no se usa en la pr�ctica
     CURSO,
 	ESPECIALIZACION
@@ -78,11 +76,9 @@ enum class TipoActividad
 // Forward declaration for FilesManager to use escribirDebugLog
 class FilesManager; 
 
-struct RawActividadData
-{
+struct RawActividadData{
     // Ahora es un método estático y completo
-    static CategoriaActividad stringToCategoria(const std::string& categoriaStr)
-    {
+    static CategoriaActividad stringToCategoria(const std::string& categoriaStr){
         if (categoriaStr == "PROGRAMACION") return CategoriaActividad::PROGRAMACION;
         if (categoriaStr == "DESARROLLO_WEB") return CategoriaActividad::DESARROLLO_WEB;
         if (categoriaStr == "DESARROLLO_MOVIL") return CategoriaActividad::DESARROLLO_MOVIL;
@@ -138,8 +134,7 @@ struct RawActividadData
 };
 
 // Datos crudos de un curso le�dos del archivo
-struct RawCursoData 
-{
+struct RawCursoData {
     // Datos generales del curso
     int id;
     int idEmpresa;
@@ -156,8 +151,7 @@ struct RawCursoData
 };
 
 // Datos crudos de una especializaci�n le�dos del archivo
-struct RawEspecializacionData 
-{
+struct RawEspecializacionData {
     int id;
     int idEmpresa;
     std::string nombreEmpresa;
@@ -170,8 +164,7 @@ struct RawEspecializacionData
 };
 
 // Estructura para agrupar los datos crudos de todas las actividades
-struct RawActividadesData 
-{
+struct RawActividadesData {
     std::vector<RawCursoData> cursos;
     std::vector<RawEspecializacionData> especializaciones;
 };

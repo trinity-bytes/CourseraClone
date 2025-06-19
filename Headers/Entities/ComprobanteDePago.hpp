@@ -16,8 +16,7 @@
 #include "../Controllers/FilesManager.hpp"
 
 // Clase que representa una boleta de pago
-class ComprobanteDePago
-{
+class ComprobanteDePago{
 private:
     int _id;
     int _idEstudiante;
@@ -79,8 +78,7 @@ ComprobanteDePago::ComprobanteDePago(
 {}
 
 // ---- Funciones privadas ----
-std::string ComprobanteDePago::obtenerFechaActual()
-{
+std::string ComprobanteDePago::obtenerFechaActual(){
     time_t t = time(nullptr);
     tm tm = localtime(&t)[0];
     std::string fecha;
@@ -97,8 +95,7 @@ std::string ComprobanteDePago::obtenerFechaActual()
     return fecha;
 }
 
-std::string ComprobanteDePago::obtenerHoraActual()
-{
+std::string ComprobanteDePago::obtenerHoraActual(){
     time_t t = time(nullptr);
     tm tm = localtime(&t)[0];
     std::string hora;
@@ -115,8 +112,7 @@ std::string ComprobanteDePago::obtenerHoraActual()
 }
 
 // ---- Funciones publicas ----
-inline void ComprobanteDePago::guardar()
-{
+inline void ComprobanteDePago::guardar(){
 	// ToDo: Implementar la logica para guardar el comprobante de pago en un archivo
     std::string datosComprobante =
         std::to_string(_id) + "|" +
@@ -138,8 +134,7 @@ inline void ComprobanteDePago::guardar()
 
 }
 
-inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante()
-{
+inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante(){
     RawComprobanteData data;
 
     data.id = _id;

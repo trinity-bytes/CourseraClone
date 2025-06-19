@@ -1,8 +1,7 @@
 #ifndef COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP
 #define COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP
 
-enum class MetodoDePago
-{
+enum class MetodoDePago{
     DEFAULT = 0,
     EFECTIVO = 1,
     TARJETA_CREDITO = 2,
@@ -11,8 +10,7 @@ enum class MetodoDePago
     BILLETERA_DIGITAL = 5
 };
 
-struct BoletaBinaria 
-{
+struct BoletaBinaria {
     int idEstudiante;
     int idActividad;
     char fecha[20];    // "dd/MM/yy HH:mm:ss\0"
@@ -21,8 +19,7 @@ struct BoletaBinaria
     BoletaBinaria() : idEstudiante(0), idActividad(0), fecha(), precio(0.0) {}
 };
 
-struct BoletaIndex 
-{
+struct BoletaIndex {
     int idEstudiante;
     int offset;
 
@@ -30,8 +27,7 @@ struct BoletaIndex
     BoletaIndex(int _idEstudiante, int _offset) : idEstudiante(_idEstudiante), offset(_offset) {}
 };
 
-struct RawComprobanteData 
-{
+struct RawComprobanteData {
     int id;
     int idEstudiante;
     int idActividad; // Curso o Especialidad
@@ -41,7 +37,4 @@ struct RawComprobanteData
     double montoPagado;
     MetodoDePago metodoPago;
 };
-
-
-
 #endif // !COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP

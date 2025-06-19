@@ -9,16 +9,14 @@
 static constexpr int MAX_FIELD_LEN = 60;
 
 // Tipos de usuario
-enum class TipoUsuario 
-{
-	DEFAULT = 0, // Tipo por defecto, no se usa directamente
+enum class TipoUsuario {
+	DEFAULT = 0, 
     ESTUDIANTE = 1,
     EMPRESA = 2
 };
 
 // Estado de resultado de login
-enum class LoginStatus 
-{
+enum class LoginStatus {
     SUCCESS = 0,          // Login exitoso
     USER_NOT_FOUND = 1,   // Usuario no encontrado
     WRONG_PASSWORD = 2,   // Contraseña incorrecta
@@ -26,8 +24,7 @@ enum class LoginStatus
 };
 
 // Estructura para almacenar un usuario en disco (.dat)
-struct UsuarioBinario 
-{
+struct UsuarioBinario {
     int id; // ID del usuario
     TipoUsuario tipoUsuario; // Tipo de usuario
     char nombreCompleto[MAX_FIELD_LEN];
@@ -52,7 +49,6 @@ struct UsuarioBinario
         nombreDeUsuario[MAX_FIELD_LEN - 1] = '\0';
         contrasenaHash[MAX_FIELD_LEN - 1] = '\0';
     }
-
     // Constructor desde objeto Usuario (requiere declaración previa de Usuario)
     // Se implementa fuera del struct para evitar dependencia circular
 };
@@ -63,14 +59,12 @@ struct UsuarioIndex {
     int  offset;  // byte offset en el archivo de datos
 
     // Constructor por defecto
-    UsuarioIndex() : offset(0) 
-    {
+    UsuarioIndex() : offset(0) {
         std::memset(nombreDeUsuario, 0, MAX_FIELD_LEN);
     }
 
     // Constructor parametrizado
-    UsuarioIndex(const std::string& usuario, int off) : offset(off) 
-    {
+    UsuarioIndex(const std::string& usuario, int off) : offset(off) {
         std::strncpy(nombreDeUsuario, usuario.c_str(), MAX_FIELD_LEN - 1);
         nombreDeUsuario[MAX_FIELD_LEN - 1] = '\0';
     }

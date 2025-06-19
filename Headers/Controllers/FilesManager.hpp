@@ -21,13 +21,15 @@
 #include "../Types/UsuarioTypes.hpp" 
 #include "../Types/InscripcionTypes.hpp"
 #include "../Types/ActividadTypes.hpp"
+#include "../Types/ComprobanteDePagoTypes.hpp"
 #include "../Types/FilesTypes.hpp"
 #include "../Utils/DataPaths.hpp"
 #include "../DataStructures/algoritmosBusqueda.hpp"
 #include "../Utils/Lambda.hpp"
+#include "../DataStructures/HashTable.hpp"
 
-class FilesManager 
-{
+
+class FilesManager {
 private:
     // ========== SINGLETON PATTERN ==========
     /// @brief La única instancia de la clase
@@ -42,12 +44,14 @@ private:
 
     /// @brief Constructor privado para evitar instanciación externa
     inline FilesManager();
-
+	HashTable<RawCursoData> indiceCursos;
+    HashTable<RawComprobanteData> indiceComprobantes;    
     // ========== MÉTODOS PRIVADOS ==========
     /// @brief Utilidades privadas para logging y validación
     bool validateFileIntegrity(const std::string& filePath, size_t expectedRecordSize);
     bool createDirectoryIfNotExists(const std::string& path);
     
+
     /// @brief Helpers para obtener rutas según el tipo de usuario
     std::string getDataFilePath(TipoUsuario tipo);
     std::string getIndexFilePath(TipoUsuario tipo);
@@ -289,6 +293,19 @@ public:
     /// @brief Escribe un mensaje de debug al archivo de logs
     /// @param mensaje Mensaje a escribir
     void escribirDebugLog(const std::string& mensaje);
+
+    /// @brief carga los cursos y los agrega a la tabla hash
+    void cargarCursos();
+
+    /// @brief Busca un curso por su ID en la tabla hash
+    bool buscarCursoPorIdHash(int id, RawCursoData& resultado);
+
+    /// @brief carga los comprobantes y los agrega a la tabla hash
+    void cargarComprobantes();
+
+	/// @brief Busca un comprobante por su ID en la tabla hash
+    bool buscarComprobantePorIdHash(int id, RawComprobanteData& resultado);
+	
 };
 
 // ========== INICIALIZACIÓN DE MIEMBROS ESTÁTICOS ==========
@@ -300,14 +317,12 @@ inline std::once_flag FilesManager::_onceFlag;
 
 // ========== IMPLEMENTACIONES INLINE ==========
 /// @brief Constructor privado
-inline FilesManager::FilesManager() : _sistemaInicializado(false) 
-{
+inline FilesManager::FilesManager() : _sistemaInicializado(false) {
     logInfo("Constructor", "FilesManager Singleton inicializado");
 }
 
 // Método getInstance del Singleton
-inline FilesManager& FilesManager::getInstance() 
-{
+inline FilesManager& FilesManager::getInstance() {
     std::call_once(_onceFlag, []() {
         _instance.reset(new FilesManager());
     });
@@ -567,10 +582,7 @@ inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id
     }
 }
 
-inline FileOperationResult FilesManager::guardarUsuarioBinario(
-    const UsuarioBinario& bin,
-    TipoUsuario tipo
-) {
+inline FileOperationResult FilesManager::guardarUsuarioBinario(const UsuarioBinario& bin,TipoUsuario tipo) {
     /*
     if (!_sistemaInicializado) {
         logError("Guardar usuario", "Sistema", "Sistema no inicializado");
@@ -770,10 +782,7 @@ inline FileOperationResult FilesManager::guardarIndiceUsuario(UsuarioIndex& indi
     }
 }
 
-inline FileOperationResult FilesManager::guardarInscripcionBinaria(
-    const InscripcionBinaria& bin,
-    int& offsetRegistro
-) {
+inline FileOperationResult FilesManager::guardarInscripcionBinaria(const InscripcionBinaria& bin,int& offsetRegistro) {
     /*
     if (!_sistemaInicializado) {
         logError("Guardar inscripción", "Sistema", "Sistema no inicializado");
@@ -1445,12 +1454,8 @@ inline bool FilesManager::existeEspecializacion(int id) {
 
 // ========== DOMINIO FINANCIAL ==========
 
-inline FileOperationResult FilesManager::registrarPago(
-    int idUsuario,
-    int idActividad,
-    double monto,
-    const std::string& metodoPago
-) {
+inline FileOperationResult FilesManager::registrarPago(int idUsuario,int idActividad,
+    double monto,const std::string& metodoPago) {
     if (!_sistemaInicializado) {
         logError("Registrar pago", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
@@ -1483,10 +1488,7 @@ inline FileOperationResult FilesManager::registrarPago(
     }
 }
 
-inline FileOperationResult FilesManager::generarComprobantePago(
-    int idPago,
-    const std::string& datosComprobante
-) {
+inline FileOperationResult FilesManager::generarComprobantePago(int idPago,const std::string& datosComprobante) {
     if (!_sistemaInicializado) {
         logError("Generar comprobante", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
@@ -1685,6 +1687,160 @@ inline std::string FilesManager::obtenerEstadisticasLogs() {
     stats << "==========================================\n";
     
     return stats.str();
+}
+
+// ========= BUSQUEDAS RAPIDAS CON HASH =========
+inline void FilesManager::cargarCursos() {
+    indiceCursos.clear(); // Limpia el hash antes de cargar
+
+    const std::string path = DataPaths::Content::DB_CURSOS;
+    std::ifstream archivo(path);
+
+    if (!archivo.is_open()) {
+        logError("Cargar cursos", path, "No se pudo abrir el archivo");
+        return;
+    }
+
+    std::string linea;
+    RawCursoData cursoData;
+    int clasesPorLeer = 0;
+    int clasesLeidasActual = 0;
+    bool leyendoClases = false;
+    bool enCurso = false;
+
+    while (std::getline(archivo, linea)) {
+        if (linea.empty()) continue;
+
+        if (linea == "%%%") {
+            if (enCurso && cursoData.id != -1 && !cursoData.titulo.empty() && cursoData.idEmpresa != -1) {
+                if (clasesLeidasActual == clasesPorLeer) {
+                    indiceCursos.insert(cursoData.id, cursoData);
+                }
+            }
+            cursoData = RawCursoData();
+            leyendoClases = false;
+            clasesPorLeer = 0;
+            clasesLeidasActual = 0;
+            enCurso = false;
+            continue;
+        }
+
+        if (!enCurso) {
+            try {
+                cursoData.id = std::stoi(linea);
+                enCurso = true;
+
+                if (!std::getline(archivo, linea)) break;
+                cursoData.idEmpresa = std::stoi(linea);
+
+                if (!std::getline(archivo, cursoData.nombreEmpresa)) break;
+                if (!std::getline(archivo, cursoData.titulo)) break;
+                if (!std::getline(archivo, cursoData.descripcion)) break;
+
+                if (!std::getline(archivo, linea)) break;
+                linea.erase(std::remove_if(linea.begin(), linea.end(), ::isspace), linea.end());
+                try {
+                    cursoData.categoria = RawActividadData::stringToCategoria(linea);
+                }
+                catch (...) {
+                    cursoData.categoria = CategoriaActividad::OTROS;
+                }
+
+                if (!std::getline(archivo, cursoData.instructor)) break;
+                if (!std::getline(archivo, linea)) break;
+                clasesPorLeer = std::stoi(linea);
+                cursoData.cantidadClases = clasesPorLeer;
+                cursoData.titulosClases.clear();
+                cursoData.descripcionesClases.clear();
+                clasesLeidasActual = 0;
+                leyendoClases = clasesPorLeer > 0;
+            }
+            catch (...) {
+                enCurso = false;
+                continue;
+            }
+        }
+        else if (leyendoClases && clasesLeidasActual < clasesPorLeer) {
+            std::string tituloClase = linea;
+            std::string descripcionClase;
+            if (!std::getline(archivo, descripcionClase)) {
+                enCurso = false;
+                continue;
+            }
+            cursoData.titulosClases.push_back(tituloClase);
+            cursoData.descripcionesClases.push_back(descripcionClase);
+            clasesLeidasActual++;
+            if (clasesLeidasActual >= clasesPorLeer) {
+                leyendoClases = false;
+            }
+        }
+    }
+
+    // Agrega el último curso si el archivo no termina con %%%
+    if (enCurso && cursoData.id != -1 && !cursoData.titulo.empty() && cursoData.idEmpresa != -1) {
+        if (clasesLeidasActual == clasesPorLeer) {
+            indiceCursos.insert(cursoData.id, cursoData);
+        }
+    }
+
+    archivo.close();
+    logInfo("Cargar cursos", path + " (Total: " + std::to_string(indiceCursos.size()) + " cursos indexados)");
+}
+
+inline void FilesManager::cargarComprobantes() {
+    indiceComprobantes.clear();
+
+    const std::string path = DataPaths::Financial::DB_COMPROBANTES;
+    std::ifstream archivo(path);
+
+    if (!archivo.is_open()) {
+        logError("Cargar comprobantes", path, "No se pudo abrir el archivo");
+        return;
+    }
+
+    std::string linea;
+    while (std::getline(archivo, linea)) {
+        if (linea.empty()) continue;
+
+        std::stringstream ss(linea);
+        std::string campo;
+        RawComprobanteData comprobante;
+
+        // Asumiendo el orden: id|idEstudiante|idActividad|tipoActividad|fecha|hora|monto|metodoPago
+        std::getline(ss, campo, '|');
+        comprobante.id = std::stoi(campo);
+
+        std::getline(ss, campo, '|');
+        comprobante.idEstudiante = std::stoi(campo);
+
+        std::getline(ss, campo, '|');
+        comprobante.idActividad = std::stoi(campo);
+
+        std::getline(ss, campo, '|');
+        comprobante.tipoActividad = static_cast<TipoActividad>(std::stoi(campo));
+
+        std::getline(ss, comprobante.fechaEmision, '|');
+        std::getline(ss, comprobante.horaEmision, '|');
+
+        std::getline(ss, campo, '|');
+        comprobante.montoPagado = std::stod(campo);
+
+        std::getline(ss, campo, '|');
+        comprobante.metodoPago = static_cast<MetodoDePago>(std::stoi(campo));
+
+        indiceComprobantes.insert(comprobante.id, comprobante);
+    }
+
+    archivo.close();
+    logInfo("Cargar comprobantes", path + " (Total: " + std::to_string(indiceComprobantes.size()) + " comprobantes indexados)");
+}
+
+inline bool FilesManager::buscarCursoPorIdHash(int id, RawCursoData& resultado) {
+	return indiceCursos.find(id, resultado);
+}
+
+inline bool FilesManager::buscarComprobantePorIdHash(int id, RawComprobanteData& resultado) {
+    return indiceComprobantes.find(id, resultado);
 }
 
 #endif // COURSERACLONE_PERSISTENCE_FILESMANAGER_HPP
