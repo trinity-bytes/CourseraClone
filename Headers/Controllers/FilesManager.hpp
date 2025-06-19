@@ -105,18 +105,23 @@ public:
     /// @param tipo Tipo de usuario (ESTUDIANTE/EMPRESA)
     /// @param offset Posición donde se guardó (salida)
     ///  @return Resultado de la operación
-    FileOperationResult guardarUsuarioBinario(const UsuarioBinario& bin, TipoUsuario tipo, long& offset);
+    FileOperationResult guardarUsuarioBinario(const UsuarioBinario& bin, TipoUsuario tipo);
 
     /// @brief Carga los índices de usuarios de un tipo específico
     /// @param tipo Tipo de usuario
     /// @return Vector con los índices cargados
     std::vector<UsuarioIndex> cargarIndicesUsuario(TipoUsuario tipo);
 
+	/// @brief Busca el índice de un usuario por su email
+	/// @param _email Email del usuario a buscar
+	/// @param tipo Tipo de usuario (ESTUDIANTE/EMPRESA)
+	int buscarIndexUsuario(std::string _email, int _tipoUsuario);
+
     /// @brief Guarda un índice de usuario
     /// @param indice Índice a guardar
     /// @param tipo Tipo de usuario
     /// @return Resultado de la operación
-    FileOperationResult guardarIndiceUsuario(const UsuarioIndex& indice, TipoUsuario tipo);
+    FileOperationResult guardarIndiceUsuario(UsuarioIndex& indice, TipoUsuario tipo);
  
     /// @brief Carga un usuario por su offset en el archivo
     /// @param tipo Tipo de usuario
@@ -138,6 +143,11 @@ public:
 	/// @brief Devuelve la cantidad de inscripciones registradas en el sistema
     /// @return Cantidad de inscripciones
     int cantidadInscripciones();
+
+	/// @brief Devuelve la cantidad de usuarios de un tipo específico
+	/// @param _tipoUsuario Tipo de usuario a contar
+	/// @return Cantidad de usuarios del tipo especificado
+    int cantidadUsuarios(TipoUsuario _tipoUsuario);
 
     /// @brief Actualiza el estado de pago de una inscripción
     /// @param posicion Posición del registro en el archivo
@@ -559,8 +569,7 @@ inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id
 
 inline FileOperationResult FilesManager::guardarUsuarioBinario(
     const UsuarioBinario& bin,
-    TipoUsuario tipo,
-    long& offset
+    TipoUsuario tipo
 ) {
     /*
     if (!_sistemaInicializado) {
@@ -578,8 +587,6 @@ inline FileOperationResult FilesManager::guardarUsuarioBinario(
             return FileOperationResult::FILE_NOT_FOUND;
         }
         
-        os.seekp(0, std::ios::end);
-        offset = os.tellp();
         os.write(reinterpret_cast<const char*>(&bin), sizeof(bin));
         
         if (!os.good()) {
@@ -674,6 +681,95 @@ inline std::vector<UsuarioIndex> FilesManager::cargarIndicesUsuario(TipoUsuario 
     return indices;
 }
 
+inline int FilesManager::buscarIndexUsuario(std::string _email, int _tipoUsuario) {
+    TipoUsuario tipoUsuario = static_cast<TipoUsuario>(_tipoUsuario);
+	/*
+	if (!_sistemaInicializado) {
+		logError("Buscar índice de usuario", "Sistema", "Sistema no inicializado");
+		return -1; // Indica error
+	}
+	*/
+	std::string indexPath = getIndexFilePath(tipoUsuario);
+	std::ifstream is(indexPath, std::ios::in | std::ios::binary);
+	if (!is.is_open()) {
+		logError("Buscar índice de usuario", indexPath, "No se pudo abrir el archivo");
+		return -1; // Indica error
+	}
+
+    is.seekg(0, std::ios::end);
+    int cantidad = static_cast<int>(is.tellg() / sizeof(UsuarioIndex));
+    if (cantidad == 0) {
+		logInfo("Buscar índice de usuario", indexPath + " (No hay registros)");
+		is.close();
+		return -1; // No encontrado
+    }
+
+	auto busqueda = crearPredicadoBusquedaUsuario(is, _email);
+	int pos = busquedaBinaria(0, cantidad - 1, busqueda);
+
+    // Verificar la coincidencia exacta
+    if (pos < cantidad) {
+        UsuarioIndex encontrado;
+        is.seekg(pos * sizeof(UsuarioIndex), std::ios::beg);
+        is.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
+        if (std::strncmp(encontrado.nombreDeUsuario, _email.c_str(), MAX_FIELD_LEN) == 0) {
+			logInfo("Buscar índice de usuario", "Usuario encontrado: " + _email + " en posición " + std::to_string(pos));
+            return pos;
+        }
+    }
+	logInfo("Buscar índice de usuario", "Usuario no encontrado: " + _email);
+    return -1;
+}
+
+inline FileOperationResult FilesManager::guardarIndiceUsuario(UsuarioIndex& indice, TipoUsuario tipo) {
+	auto path = getIndexFilePath(tipo);
+    std::fstream archivoOrden(path, std::ios::binary | std::ios::in | std::ios::out);
+
+    if (!archivoOrden.is_open()) {
+		logError("Guardar índice de usuario", path, "No se pudo abrir el archivo");
+		return FileOperationResult::FILE_NOT_FOUND;
+	}
+    try {
+        archivoOrden.seekg(0, std::ios::end);
+        int cantidad = static_cast<int>(archivoOrden.tellg() / sizeof(UsuarioIndex));
+
+		
+
+        if (cantidad == 0) {
+            archivoOrden.seekp(0, std::ios::beg); // Si es el primer registro, ir al inicio
+            archivoOrden.write(reinterpret_cast<char*>(&indice), sizeof(UsuarioIndex));
+            archivoOrden.close();
+            logInfo("Guardar índice de usuarios", path + " (1 registro)");
+            return FileOperationResult::SUCCESS;
+        }
+
+        archivoOrden.seekg(0, std::ios::beg);
+        auto busqueda = crearPredicadoBusquedaUsuarioLecEsc(archivoOrden, std::string(indice.nombreDeUsuario));
+        int pos = busquedaBinaria(0, cantidad - 1, busqueda);
+
+        for (int i = cantidad - 1; i >= pos; i--) {
+            UsuarioIndex tmp;
+            archivoOrden.seekg(i * sizeof(UsuarioIndex), std::ios::beg);
+            archivoOrden.read(reinterpret_cast<char*>(&tmp), sizeof(UsuarioIndex));
+            archivoOrden.seekp((i + 1) * sizeof(UsuarioIndex), std::ios::beg);
+            archivoOrden.write(reinterpret_cast<char*>(&tmp), sizeof(UsuarioIndex));
+        }
+
+        archivoOrden.seekp(pos * sizeof(UsuarioIndex), std::ios::beg);
+        archivoOrden.write(reinterpret_cast<char*>(&indice), sizeof(UsuarioIndex));
+        archivoOrden.close();
+
+        logInfo("Guardar índice de usuarios", path + " (Busqueda binaria)");
+        return FileOperationResult::SUCCESS;
+
+
+    }
+    catch (const std::exception& e) {
+        logError("Guardar índice de usuarios", "Sistema", e.what());
+        return FileOperationResult::UNKNOWN_ERROR;
+    }
+}
+
 inline FileOperationResult FilesManager::guardarInscripcionBinaria(
     const InscripcionBinaria& bin,
     int& offsetRegistro
@@ -730,6 +826,20 @@ inline int FilesManager::cantidadInscripciones() {
     archivo.close();
     logInfo("Cantidad de inscripciones", DataPaths::Core::DB_INSCRIPCIONES + " (" + std::to_string(cantidad) + " registros)");
     return cantidad;
+}
+
+inline int FilesManager::cantidadUsuarios(TipoUsuario _tipoUsuario) {
+	auto path = getDataFilePath(_tipoUsuario);
+    std::ifstream archivo(path, std::ios::binary);
+	if (!archivo.is_open()) {
+		logError("Cantidad de usuarios", path, "No se pudo abrir el archivo");
+		return -1; // Indica error
+	}
+	archivo.seekg(0, std::ios::end);
+	int cantidad = static_cast<int>(archivo.tellg() / sizeof(UsuarioBinario));
+	archivo.close();
+	logInfo("Cantidad de usuarios", path + " (" + std::to_string(cantidad) + " registros)");
+	return cantidad;
 }
 
 inline FileOperationResult FilesManager::actualizarPagoInscripcion(int posicion, bool estado) {

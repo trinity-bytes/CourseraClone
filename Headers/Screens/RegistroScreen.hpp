@@ -396,9 +396,20 @@ inline bool RegistroScreen::_validarCamposLlenos()
         _mostrarError("Todos los campos son obligatorios");
         return false;
     }
+	if (!esEmailValido(_email))
+	{
+		_mostrarError("Email no válido");
+		return false;
+	}
     if (_tipoUsuarioActual == TipoUsuario::DEFAULT)
     {
         _mostrarError("Debe seleccionar un tipo de usuario");
+        return false;
+    }
+    // Hola
+    if (emailRepetido(_email, static_cast<int>(_tipoUsuarioActual)))
+    {
+        _mostrarError("El email ya está registrado");
         return false;
     }
     if (_password != _confirmarPassword)
@@ -406,6 +417,11 @@ inline bool RegistroScreen::_validarCamposLlenos()
         _mostrarError("Las contrasenyas no coinciden");
         return false;
     }
+    if (_password.length() < 6) {
+		_mostrarError("La contrasenya debe tener al menos 6 caracteres");
+        return false;
+    }
+
     return true;
 }
 
@@ -414,10 +430,16 @@ inline ResultadoPantalla RegistroScreen::_procesarRegistro()
     if (!_validarCamposLlenos())
     {
         return ResultadoPantalla(AccionPantalla::NINGUNA);
+        // return ResultadoPantalla(AccionPantalla::IR_A_REGISTRO);
     }
 
     /// @TODO: Aquí iría la lógica de guardado del usuario
+    // Simulamos la creación de un nuevo usuario
+	int cantidadAhora = FilesManager::getInstance().cantidadUsuarios(_tipoUsuarioActual);
+	Usuario nuevoUsuario(cantidadAhora, _tipoUsuarioActual, _nombre, _email, _password);
+    nuevoUsuario.guardar();
     // Por ahora, simulamos éxito y regresamos al login
+
     
     gotoXY(11, 11);
     setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);

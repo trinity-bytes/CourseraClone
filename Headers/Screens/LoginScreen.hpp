@@ -13,6 +13,7 @@
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/UI_Ascii.hpp"
+#include "../Controllers/InscripcionesController.hpp" // ELiminar luego de prueba
 
 class LoginScreen : public PantallaBase
 {
