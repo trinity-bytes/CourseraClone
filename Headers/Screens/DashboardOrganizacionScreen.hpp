@@ -353,7 +353,7 @@ inline void DashboardOrganizacionScreen::_renderizarElementoCurso(int indice, bo
         if (seleccionado) {
             setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
         } else {
-            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+            setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
         }
         
         std::cout << " VER TODOS ";
@@ -361,15 +361,25 @@ inline void DashboardOrganizacionScreen::_renderizarElementoCurso(int indice, bo
         // Curso individual
         int cursoIndex = indice - 1;
         if (cursoIndex < _cursos.size()) {
-            _mostrarTituloFormateado(_coordsTituloCursos[indice], _cursos[cursoIndex].titulo);
-            _mostrarDescripcionFormateada(_coordsDescCursos[indice], _cursos[cursoIndex].descripcion);
-            
+            // Renderizar título con colores según selección
+            gotoXY(_coordsTituloCursos[indice].X, _coordsTituloCursos[indice].Y);
             if (seleccionado) {
-                // Resaltar el cuadro completo
                 setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-                gotoXY(_coordsTituloCursos[indice].X - 1, _coordsTituloCursos[indice].Y);
-                std::cout << ">";
+            } else {
+                setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
             }
+            std::string tituloTruncado = _truncarTitulo(_cursos[cursoIndex].titulo, MAX_ANCHO_CARACTERES_CUADRO);
+            std::cout << tituloTruncado;
+            
+            // Renderizar descripción
+            gotoXY(_coordsDescCursos[indice].X, _coordsDescCursos[indice].Y);
+            if (seleccionado) {
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+            } else {
+                setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+            }
+            std::string descFormateada = _formatearDescripcion(_cursos[cursoIndex].descripcion, MAX_ANCHO_CARACTERES_CUADRO, MAX_ALTO_CARACTERES_CUADRO);
+            std::cout << descFormateada;
         }
     }
     
@@ -388,7 +398,7 @@ inline void DashboardOrganizacionScreen::_renderizarElementoEspecializacion(int 
         if (seleccionado) {
             setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
         } else {
-            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+            setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
         }
         
         std::cout << " VER TODAS ";
@@ -396,15 +406,25 @@ inline void DashboardOrganizacionScreen::_renderizarElementoEspecializacion(int 
         // Especialización individual
         int espIndex = indice - 1;
         if (espIndex < _especializaciones.size()) {
-            _mostrarTituloFormateado(_coordsTituloEspecializaciones[indice], _especializaciones[espIndex].titulo);
-            _mostrarDescripcionFormateada(_coordsDescEspecializaciones[indice], _especializaciones[espIndex].descripcion);
-            
+            // Renderizar título con colores según selección
+            gotoXY(_coordsTituloEspecializaciones[indice].X, _coordsTituloEspecializaciones[indice].Y);
             if (seleccionado) {
-                // Resaltar el cuadro completo
                 setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-                gotoXY(_coordsTituloEspecializaciones[indice].X - 1, _coordsTituloEspecializaciones[indice].Y);
-                std::cout << ">";
+            } else {
+                setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
             }
+            std::string tituloTruncado = _truncarTitulo(_especializaciones[espIndex].titulo, MAX_ANCHO_CARACTERES_CUADRO);
+            std::cout << tituloTruncado;
+            
+            // Renderizar descripción
+            gotoXY(_coordsDescEspecializaciones[indice].X, _coordsDescEspecializaciones[indice].Y);
+            if (seleccionado) {
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+            } else {
+                setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+            }
+            std::string descFormateada = _formatearDescripcion(_especializaciones[espIndex].descripcion, MAX_ANCHO_CARACTERES_CUADRO, MAX_ALTO_CARACTERES_CUADRO);
+            std::cout << descFormateada;
         }
     }
     
@@ -433,23 +453,53 @@ inline void DashboardOrganizacionScreen::_manejarNavegacion(int tecla)
 // Manejar navegación vertical
 inline void DashboardOrganizacionScreen::_manejarNavegacionVertical(int direccion)
 {
-    if (direccion > 0) { // ABAJO
-        if (_seccionActual < TOTAL_SECCIONES - 1) {
-            _seccionActual++;
-            _elementoActual = 0;
-        } else {
-            // Desde la última sección, volver a la primera
-            _seccionActual = 0;
-            _elementoActual = 0;
+    if (_seccionActual == SECCION_CURSOS || _seccionActual == SECCION_ESPECIALIZACIONES) {
+        // En secciones de cursos/especialidades, ARRIBA/ABAJO navega entre "Ver todos" y elementos individuales
+        if (direccion > 0) { // ABAJO
+            if (_elementoActual == 0) {
+                _elementoActual = 1; // De "Ver todos" al primer elemento
+            } else {
+                // Ir a la siguiente sección
+                if (_seccionActual < TOTAL_SECCIONES - 1) {
+                    _seccionActual++;
+                    _elementoActual = 0;
+                } else {
+                    _seccionActual = 0;
+                    _elementoActual = 0;
+                }
+            }
+        } else { // ARRIBA
+            if (_elementoActual == 0) {
+                // Ir a la sección anterior
+                if (_seccionActual > 0) {
+                    _seccionActual--;
+                    _elementoActual = 0;
+                } else {
+                    _seccionActual = TOTAL_SECCIONES - 1;
+                    _elementoActual = 0;
+                }
+            } else {
+                _elementoActual = 0; // De elementos individuales a "Ver todos"
+            }
         }
-    } else { // ARRIBA
-        if (_seccionActual > 0) {
-            _seccionActual--;
-            _elementoActual = 0;
-        } else {
-            // Desde la primera sección, ir a la última
-            _seccionActual = TOTAL_SECCIONES - 1;
-            _elementoActual = 0;
+    } else {
+        // Navegación normal entre secciones para header y menú
+        if (direccion > 0) { // ABAJO
+            if (_seccionActual < TOTAL_SECCIONES - 1) {
+                _seccionActual++;
+                _elementoActual = 0;
+            } else {
+                _seccionActual = 0;
+                _elementoActual = 0;
+            }
+        } else { // ARRIBA
+            if (_seccionActual > 0) {
+                _seccionActual--;
+                _elementoActual = 0;
+            } else {
+                _seccionActual = TOTAL_SECCIONES - 1;
+                _elementoActual = 0;
+            }
         }
     }
 }
@@ -457,19 +507,41 @@ inline void DashboardOrganizacionScreen::_manejarNavegacionVertical(int direccio
 // Manejar navegación horizontal
 inline void DashboardOrganizacionScreen::_manejarNavegacionHorizontal(int direccion)
 {
-    int maxElementos = _obtenerMaxElementosEnSeccion(_seccionActual);
-    
-    if (direccion > 0) { // DERECHA
-        if (_elementoActual < maxElementos - 1) {
-            _elementoActual++;
-        } else {
-            _elementoActual = 0; // Ciclar al inicio
-        }
-    } else { // IZQUIERDA
+    if (_seccionActual == SECCION_CURSOS || _seccionActual == SECCION_ESPECIALIZACIONES) {
+        // Solo navegar horizontalmente entre elementos individuales (no "Ver todos")
         if (_elementoActual > 0) {
-            _elementoActual--;
-        } else {
-            _elementoActual = maxElementos - 1; // Ciclar al final
+            int maxElementos = _obtenerMaxElementosEnSeccion(_seccionActual);
+            
+            if (direccion > 0) { // DERECHA
+                if (_elementoActual < maxElementos - 1) {
+                    _elementoActual++;
+                } else {
+                    _elementoActual = 1; // Ciclar al primer elemento individual
+                }
+            } else { // IZQUIERDA
+                if (_elementoActual > 1) {
+                    _elementoActual--;
+                } else {
+                    _elementoActual = maxElementos - 1; // Ciclar al último elemento
+                }
+            }
+        }
+    } else {
+        // Navegación horizontal normal para header y menú
+        int maxElementos = _obtenerMaxElementosEnSeccion(_seccionActual);
+        
+        if (direccion > 0) { // DERECHA
+            if (_elementoActual < maxElementos - 1) {
+                _elementoActual++;
+            } else {
+                _elementoActual = 0; // Ciclar al inicio
+            }
+        } else { // IZQUIERDA
+            if (_elementoActual > 0) {
+                _elementoActual--;
+            } else {
+                _elementoActual = maxElementos - 1; // Ciclar al final
+            }
         }
     }
 }
