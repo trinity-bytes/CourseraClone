@@ -46,7 +46,9 @@ private:
         " MIS CERTIFICADOS ",
         " MIS BOLETAS ",
         " EDITAR PERFIL "
-    };    /// @brief Coordenadas para botones
+    };    
+    
+    /// @brief Coordenadas para botones
     COORD coordsBotones[TOTAL_BOTONES] = {
         {49, 10}, // MIS CERTIFICADOS
         {69, 10}, // MIS BOLETAS  
