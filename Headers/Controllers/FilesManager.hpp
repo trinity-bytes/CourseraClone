@@ -44,8 +44,8 @@ private:
 
     /// @brief Constructor privado para evitar instanciación externa
     inline FilesManager();
-	HashTable<RawCursoData> indiceCursos;
-    HashTable<RawComprobanteData> indiceComprobantes;    
+	HashTable<std::string,RawCursoData> indiceCursos;
+    HashTable<int,RawComprobanteData> indiceComprobantes;    
     // ========== MÉTODOS PRIVADOS ==========
     /// @brief Utilidades privadas para logging y validación
     bool validateFileIntegrity(const std::string& filePath, size_t expectedRecordSize);
@@ -290,17 +290,22 @@ public:
     /// @param mensaje Mensaje a escribir
     void escribirDebugLog(const std::string& mensaje);
 
-    /// @brief carga los cursos y los agrega a la tabla hash
-    void cargarCursos();
+    /// @brief Busca un curso por su nombre
+/// @param nombreCurso Nombre del curso a buscar
+/// @return Datos del curso encontrado, o estructura vacía si no se encuentra
+    bool buscarCursoPorNombreHash(const std::string& nombre, RawCursoData& resultado);
+
+    void FilesManager::cargarCursos();
 
     /// @brief Busca un curso por su ID en la tabla hash
-    bool buscarCursoPorIdHash(int id, RawCursoData& resultado);
+    int obtenerIdCursoPorNombre(const std::string& nombreCurso);
 
     /// @brief carga los comprobantes y los agrega a la tabla hash
     void cargarComprobantes();
 
 	/// @brief Busca un comprobante por su ID en la tabla hash
     bool buscarComprobantePorIdHash(int id, RawComprobanteData& resultado);
+
 	
 };
 
@@ -1706,102 +1711,39 @@ inline std::string FilesManager::obtenerEstadisticasLogs() {
 
 // ========= BUSQUEDAS RAPIDAS CON HASH =========
 inline void FilesManager::cargarCursos() {
-    indiceCursos.clear(); // Limpia el hash antes de cargar
+    indiceCursos.clear(); // Limpia el hash table antes de cargar
 
-    const std::string path = DataPaths::Content::DB_CURSOS;
-    std::ifstream archivo(path);
+    std::vector<RawCursoData> cursos;
+    leerDatoCurso(cursos); // Lee todos los cursos del archivo
 
-    if (!archivo.is_open()) {
-        logError("Cargar cursos", path, "No se pudo abrir el archivo");
-        return;
+    for (const auto& curso : cursos) {
+        indiceCursos.insert(curso.titulo, curso); // Agrega cada curso al hash table usando el ID como clave
     }
 
-    std::string linea;
-    RawCursoData cursoData;
-    int clasesPorLeer = 0;
-    int clasesLeidasActual = 0;
-    bool leyendoClases = false;
-    bool enCurso = false;
-
-    while (std::getline(archivo, linea)) {
-        if (linea.empty()) continue;
-
-        if (linea == "%%%") {
-            if (enCurso && cursoData.id != -1 && !cursoData.titulo.empty() && cursoData.idEmpresa != -1) {
-                if (clasesLeidasActual == clasesPorLeer) {
-                    indiceCursos.insert(cursoData.id, cursoData);
-                }
-            }
-            cursoData = RawCursoData();
-            leyendoClases = false;
-            clasesPorLeer = 0;
-            clasesLeidasActual = 0;
-            enCurso = false;
-            continue;
-        }
-
-        if (!enCurso) {
-            try {
-                cursoData.id = std::stoi(linea);
-                enCurso = true;
-
-                if (!std::getline(archivo, linea)) break;
-                cursoData.idEmpresa = std::stoi(linea);
-
-                if (!std::getline(archivo, cursoData.nombreEmpresa)) break;
-                if (!std::getline(archivo, cursoData.titulo)) break;
-                if (!std::getline(archivo, cursoData.descripcion)) break;
-
-                if (!std::getline(archivo, linea)) break;
-                linea.erase(std::remove_if(linea.begin(), linea.end(), ::isspace), linea.end());
-                try {
-                    cursoData.categoria = RawActividadData::stringToCategoria(linea);
-                }
-                catch (...) {
-                    cursoData.categoria = CategoriaActividad::OTROS;
-                }
-
-                if (!std::getline(archivo, cursoData.instructor)) break;
-                if (!std::getline(archivo, linea)) break;
-                clasesPorLeer = std::stoi(linea);
-                cursoData.cantidadClases = clasesPorLeer;
-                cursoData.titulosClases.clear();
-                cursoData.descripcionesClases.clear();
-                clasesLeidasActual = 0;
-                leyendoClases = clasesPorLeer > 0;
-            }
-            catch (...) {
-                enCurso = false;
-                continue;
-            }
-        }
-        else if (leyendoClases && clasesLeidasActual < clasesPorLeer) {
-            std::string tituloClase = linea;
-            std::string descripcionClase;
-            if (!std::getline(archivo, descripcionClase)) {
-                enCurso = false;
-                continue;
-            }
-            cursoData.titulosClases.push_back(tituloClase);
-            cursoData.descripcionesClases.push_back(descripcionClase);
-            clasesLeidasActual++;
-            if (clasesLeidasActual >= clasesPorLeer) {
-                leyendoClases = false;
-            }
-        }
-    }
-
-    // Agrega el último curso si el archivo no termina con %%%
-    if (enCurso && cursoData.id != -1 && !cursoData.titulo.empty() && cursoData.idEmpresa != -1) {
-        if (clasesLeidasActual == clasesPorLeer) {
-            indiceCursos.insert(cursoData.id, cursoData);
-        }
-    }
-
-    archivo.close();
-    logInfo("Cargar cursos", path + " (Total: " + std::to_string(indiceCursos.size()) + " cursos indexados)");
+    logInfo("Cargar cursos", "Se cargaron " + std::to_string(cursos.size()) + " cursos al hash table");
 }
 
+inline bool FilesManager::buscarCursoPorNombreHash(const std::string& nombre, RawCursoData& resultado) {
+	if (indiceCursos.find(nombre, resultado)) {
+		logInfo("Buscar curso por nombre", "Curso encontrado: " + nombre);
+		return true;
+	}
+	else {
+		logInfo("Buscar curso por nombre", "Curso no encontrado: " + nombre);
+		return false;
+	}
+}
+
+inline int FilesManager::obtenerIdCursoPorNombre(const std::string& nombreCurso) {
+    std::vector<RawCursoData> cursos;
+    leerDatoCurso(cursos);
+    for (const auto& curso : cursos) {
+        if (curso.titulo == nombreCurso) {
+            return curso.id;
+        }
+    }
+    return -1; // No encontrado
+}
 inline void FilesManager::cargarComprobantes() {
     indiceComprobantes.clear();
 
@@ -1814,45 +1756,59 @@ inline void FilesManager::cargarComprobantes() {
     }
 
     std::string linea;
+    int lineNumber = 0;
     while (std::getline(archivo, linea)) {
+        lineNumber++;
         if (linea.empty()) continue;
 
         std::stringstream ss(linea);
         std::string campo;
         RawComprobanteData comprobante;
 
-        // Asumiendo el orden: id|idEstudiante|idActividad|tipoActividad|fecha|hora|monto|metodoPago
-        std::getline(ss, campo, '|');
-        comprobante.id = std::stoi(campo);
+        try {
+            // id
+            if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo id faltante");
+            comprobante.id = std::stoi(campo);
 
-        std::getline(ss, campo, '|');
-        comprobante.idEstudiante = std::stoi(campo);
+            // idEstudiante
+            if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo idEstudiante faltante");
+            comprobante.idEstudiante = std::stoi(campo);
 
-        std::getline(ss, campo, '|');
-        comprobante.idActividad = std::stoi(campo);
+            // idActividad
+            if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo idActividad faltante");
+            comprobante.idActividad = std::stoi(campo);
 
-        std::getline(ss, campo, '|');
-        comprobante.tipoActividad = static_cast<TipoActividad>(std::stoi(campo));
+            // tipoActividad
+            if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo tipoActividad faltante");
+            comprobante.tipoActividad = static_cast<TipoActividad>(std::stoi(campo));
 
-        std::getline(ss, comprobante.fechaEmision, '|');
-        std::getline(ss, comprobante.horaEmision, '|');
+            // fechaEmision
+            if (!std::getline(ss, comprobante.fechaEmision, '|')) throw std::runtime_error("Campo fechaEmision faltante");
 
-        std::getline(ss, campo, '|');
-        comprobante.montoPagado = std::stod(campo);
+            // horaEmision
+            if (!std::getline(ss, comprobante.horaEmision, '|')) throw std::runtime_error("Campo horaEmision faltante");
 
-        std::getline(ss, campo, '|');
-        comprobante.metodoPago = static_cast<MetodoDePago>(std::stoi(campo));
+            // montoPagado
+            if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo montoPagado faltante");
+            comprobante.montoPagado = std::stod(campo);
 
-        indiceComprobantes.insert(comprobante.id, comprobante);
+            // metodoPago
+            if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo metodoPago faltante");
+            comprobante.metodoPago = static_cast<MetodoDePago>(std::stoi(campo));
+
+            // Insertar en la tabla hash
+            indiceComprobantes.insert(comprobante.id, comprobante);
+        }
+        catch (const std::exception& e) {
+            logError("Cargar comprobantes", path, "Error en línea " + std::to_string(lineNumber) + ": " + e.what());
+            continue; // Salta a la siguiente línea
+        }
     }
 
     archivo.close();
     logInfo("Cargar comprobantes", path + " (Total: " + std::to_string(indiceComprobantes.size()) + " comprobantes indexados)");
 }
 
-inline bool FilesManager::buscarCursoPorIdHash(int id, RawCursoData& resultado) {
-	return indiceCursos.find(id, resultado);
-}
 
 inline bool FilesManager::buscarComprobantePorIdHash(int id, RawComprobanteData& resultado) {
     return indiceComprobantes.find(id, resultado);

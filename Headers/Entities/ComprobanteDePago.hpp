@@ -45,8 +45,7 @@ public:
 
     void guardar();
     RawComprobanteData obtenerDatosCrudosComprobante();
-    void mostrarComprobantePorId(int id);
-
+    void mostrarComprobantePorNombreCurso(const std::string& nombreCurso);
 };
 
 ComprobanteDePago::ComprobanteDePago() : 
@@ -116,16 +115,20 @@ std::string ComprobanteDePago::obtenerHoraActual(){
 // ---- Funciones publicas ----
 inline void ComprobanteDePago::guardar(){
 	// ToDo: Implementar la logica para guardar el comprobante de pago en un archivo
-    std::string datosComprobante =
-        std::to_string(_id) + "|" +
-        std::to_string(_idEstudiante) + "|" +
-        std::to_string(_idActividad) + "|" +
-        std::to_string(static_cast<int>(_tipoActividad)) + "|" +
-        _fechaEmision + "|" +
-        _horaEmision + "|" +
-        std::to_string(_montoPagado) + "|" +
-        std::to_string(static_cast<int>(_metodoPago));
+    RawComprobanteData datosCrudos = obtenerDatosCrudosComprobante();
 
+    // Convert RawComprobanteData to a string format suitable for FilesManager::generarComprobantePago  
+    std::stringstream ss;
+    ss << datosCrudos.id << "|"
+        << datosCrudos.idEstudiante << "|"
+        << datosCrudos.idActividad << "|"
+        << static_cast<int>(datosCrudos.tipoActividad) << "|"
+        << datosCrudos.fechaEmision << "|"
+        << datosCrudos.horaEmision << "|"
+        << datosCrudos.montoPagado << "|"
+        << static_cast<int>(datosCrudos.metodoPago);
+
+    std::string datosComprobante = ss.str();
     auto resultado = FilesManager::getInstance().generarComprobantePago(_id, datosComprobante);
     if (resultado == FileOperationResult::SUCCESS) {
         std::cout << "Comprobante guardado correctamente." << std::endl;
@@ -151,21 +154,26 @@ inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante(){
     return data;
 }
 
-inline void mostrarComprobantePorId(int id) {
-	RawComprobanteData comprobante;
-	if (FilesManager::getInstance().buscarComprobantePorIdHash(id, comprobante)) {
-		std::cout << "Comprobante ID: " << comprobante.id << std::endl;
-		std::cout << "Estudiante ID: " << comprobante.idEstudiante << std::endl;
-		std::cout << "Actividad ID: " << comprobante.idActividad << std::endl;
-		std::cout << "Tipo de Actividad: " << static_cast<int>(comprobante.tipoActividad) << std::endl;
-		std::cout << "Fecha de Emisión: " << comprobante.fechaEmision << std::endl;
-		std::cout << "Hora de Emisión: " << comprobante.horaEmision << std::endl;
-		std::cout << "Monto Pagado: " << comprobante.montoPagado << std::endl;
-		std::cout << "Método de Pago: " << static_cast<int>(comprobante.metodoPago) << std::endl;
-	}
-	else {
-		std::cerr << "No se encontró el comprobante con ID: " << id << std::endl;
-	}
+inline void ComprobanteDePago::mostrarComprobantePorNombreCurso(const std::string& nombreCurso) {
+    int idCurso = FilesManager::getInstance().obtenerIdCursoPorNombre(nombreCurso);
+    if (idCurso == -1) {
+        std::cerr << "No se encontró un curso con el nombre: " << nombreCurso << std::endl;
+        return;
+    }
+    RawComprobanteData comprobante;
+    if (FilesManager::getInstance().buscarComprobantePorIdHash(idCurso, comprobante)) {
+        std::cout << "Comprobante ID: " << comprobante.id << std::endl;
+        std::cout << "Estudiante ID: " << comprobante.idEstudiante << std::endl;
+        std::cout << "Actividad ID: " << comprobante.idActividad << std::endl;
+        std::cout << "Tipo de Actividad: " << static_cast<int>(comprobante.tipoActividad) << std::endl;
+        std::cout << "Fecha de Emisión: " << comprobante.fechaEmision << std::endl;
+        std::cout << "Hora de Emisión: " << comprobante.horaEmision << std::endl;
+        std::cout << "Monto Pagado: " << comprobante.montoPagado << std::endl;
+        std::cout << "Método de Pago: " << static_cast<int>(comprobante.metodoPago) << std::endl;
+    }
+    else {
+        std::cerr << "No se encontró comprobante para el curso: " << nombreCurso << std::endl;
+    }
 }
 
 #endif // COURSERACLONE_ENTITIES_BOLETA_HPP

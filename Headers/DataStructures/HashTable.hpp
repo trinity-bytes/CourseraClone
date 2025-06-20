@@ -7,19 +7,19 @@
 // Implementación de tabla hash con resolución de colisiones por prueba lineal
 #include <unordered_map>  
 
-template <typename T>
+template <typename K,typename T>
 class HashTable {
 private:
-    std::unordered_map<int, T> table;
+    std::unordered_map<K, T> table;
 
 public:
     // Inserta un elemento en la tabla hash  
-    void insert(int key, const T& value) {
+    void insert(K key, const T& value) {
         table[key] = value;
     }
 
     // Busca un elemento por clave  
-    bool find(int key, T& value) const {
+    bool find(K key, T& value) const {
 		auto it = table.find(key);
         if (it != table.end()) {
             value = it->second;
