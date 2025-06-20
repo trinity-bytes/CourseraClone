@@ -713,12 +713,12 @@ inline std::vector<UsuarioIndex> FilesManager::cargarIndicesUsuario(TipoUsuario 
 
 inline int FilesManager::buscarIndexUsuario(std::string _email, int _tipoUsuario) {
     TipoUsuario tipoUsuario = static_cast<TipoUsuario>(_tipoUsuario);
-	/*
+
 	if (!_sistemaInicializado) {
 		logError("Buscar índice de usuario", "Sistema", "Sistema no inicializado");
 		return -1; // Indica error
 	}
-	*/
+	
 	std::string indexPath = getIndexFilePath(tipoUsuario);
 	std::ifstream is(indexPath, std::ios::in | std::ios::binary);
 	if (!is.is_open()) {
@@ -803,12 +803,12 @@ inline FileOperationResult FilesManager::guardarIndiceUsuario(UsuarioIndex& indi
 }
 
 inline FileOperationResult FilesManager::guardarInscripcionBinaria(const InscripcionBinaria& bin,int& offsetRegistro) {
-    /*
+    
     if (!_sistemaInicializado) {
         logError("Guardar inscripción", "Sistema", "Sistema no inicializado");
         return FileOperationResult::UNKNOWN_ERROR;
     }
-    */
+    
     
     try {
         std::ofstream os(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary | std::ios::app);

@@ -17,6 +17,7 @@ class PantallaBase
 protected:
     bool _esPrimeraVez = true;
 
+
 	// FUNCIONES DE UTILIDAD
 
     inline void marcarComoVisitada() 

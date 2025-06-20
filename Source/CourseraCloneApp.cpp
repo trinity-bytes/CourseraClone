@@ -7,6 +7,8 @@
 // Cabeceras propias
 #include "../Headers/Utils/SystemUtils.hpp"
 #include "../Headers/Controllers/MainController.hpp"
+#include "../Headers/Controllers/FilesManager.hpp"
+#include "../Headers/Controllers/ContentManager.hpp"
 
 // maquetación de funciones
 void SecuenciaInicializacion();
@@ -18,6 +20,9 @@ int main()
 
 	try
 	{
+		ContentManager::getInstance().inicializarSistema();
+		FilesManager::getInstance().inicializarSistemaArchivos();
+
 		MainController app;
 		app.run();
 	}
