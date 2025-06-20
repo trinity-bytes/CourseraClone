@@ -9,6 +9,7 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.hpp"
+#include "../Controllers/ContentManager.hpp"
 
 /// Pantalla para mostrar perfil de estudiante
 class PerfilEstudianteScreen : public PantallaBase
@@ -68,6 +69,7 @@ private:
 
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
+    inline void cargarDatos();
     inline void _cargarDatosDummy();
 
     /// @brief Métodos de renderizado
@@ -103,6 +105,8 @@ inline PerfilEstudianteScreen::PerfilEstudianteScreen() : PantallaBase(),
     _cargarDatosDummy();
 }
 
+
+
 // Limpiar estado
 inline void PerfilEstudianteScreen::_limpiarEstado()
 {
@@ -110,11 +114,19 @@ inline void PerfilEstudianteScreen::_limpiarEstado()
     _botonActual = 0;
     _botonAnterior = -1;
     _primeraRenderizacion = true;
+    _cargarDatosDummy();
 }
 
 // Cargar datos de ejemplo
 inline void PerfilEstudianteScreen::_cargarDatosDummy()
 {
+    SessionManager& sm = SessionManager::getInstance();
+    bool sesionIniciada = sm.isLoggedIn();
+    if (sesionIniciada) {
+        _idEstudiante = sm.getCurrentUser().getId();
+        _emailEstudiante = sm.getCurrentUser().getUsername();
+        _nombreEstudiante = sm.getCurrentUser().getNombreCompleto();
+    }
     // Los datos ya se cargan en el constructor
     // Este método está disponible para futuras cargas desde archivos
 }

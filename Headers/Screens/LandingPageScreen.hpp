@@ -19,6 +19,7 @@
 #include "../Controllers/ContentManager.hpp"
 #include "../Controllers/FilesManager.hpp"
 #include "../Types/ActividadTypes.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// @brief Pantalla principal del sistema con navegación por secciones
 /// @details Implementa la landing page con navegación entre cabecera, especialidades y cursos
@@ -112,6 +113,10 @@ private:
     // MÉTODOS PRIVADOS - INTERFAZ DE USUARIO
     /// @brief Renderiza todos los interactivos elementos de menú
     inline void renderizarElementos();
+
+    // ---- METODOS PRIVADOS ----
+    /// @brief Cierra sesion al identificar si hay un usuario activo
+    inline void _limpiarEstado();
 
     // MÉTODOS PRIVADOS - ACTUALIZACIÓN DE SELECCIÓN
     /// @brief Actualiza la selección visual de elementos en la pantalla
@@ -324,6 +329,12 @@ inline void LandingPageScreen::renderizarElementos()
     {
         actualizarElementoCurso(i, _seccionActual == SECCION_CURSOS && _elementoActual == i);
     }
+}
+
+// ---- METODOS PRIVADOS ----
+inline void LandingPageScreen::_limpiarEstado() {
+	bool sesionIniciada = SessionManager::getInstance().isLoggedIn();
+    if (sesionIniciada) SessionManager::getInstance().logout();
 }
 
 // MÉTODOS PRIVADOS - ACTUALIZACIÓN DE SELECCIÓN
@@ -792,7 +803,7 @@ inline void LandingPageScreen::manejarInput(int tecla)
 inline ResultadoPantalla LandingPageScreen::ejecutar()
 {
     ResultadoPantalla resultado;
-	
+    _limpiarEstado();
     renderizar();
 
     int tecla;

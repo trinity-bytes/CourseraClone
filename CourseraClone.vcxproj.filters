@@ -216,7 +216,7 @@
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Controllers\SessionManager.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Controller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
