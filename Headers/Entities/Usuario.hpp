@@ -53,6 +53,10 @@ public:
         const std::string& username,
         const std::string& contrasenaHash
     );
+    inline Usuario(
+        int id,
+        TipoUsuario tipo
+    );
 
     // Getters
     inline int getId();
@@ -74,7 +78,7 @@ public:
     inline void establecerDatosBase(Usuario otroUsuario);
 
     // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
-    inline LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, std::string passInput, int pos);
+    inline LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, std::string passInput);
 
     inline int buscarIndexUsuario();
 
@@ -101,8 +105,18 @@ inline Usuario::Usuario(
     _tipoUsuario(tipoUsuario),
     _nombreCompleto(nombreCompleto),
     _username(correoCorrecto(username)),
-    _contrasenaHash(contrasenaHash) 
+    _contrasenaHash(hashContrasena(contrasenaHash)) 
 {}
+
+// Constructor con index
+inline Usuario::Usuario(int id, TipoUsuario tipo) {
+	UsuarioBinario usuarioBinario = FilesManager::getInstance().getUsuarioBinario(id, tipo);
+	this->_id = usuarioBinario.id;
+	this->_tipoUsuario = usuarioBinario.tipoUsuario;
+	this->_nombreCompleto = std::string(usuarioBinario.nombreCompleto, strnlen(usuarioBinario.nombreCompleto, MAX_FIELD_LEN));
+	this->_username = std::string(usuarioBinario.nombreDeUsuario, strnlen(usuarioBinario.nombreDeUsuario, MAX_FIELD_LEN));
+	this->_contrasenaHash = std::string(usuarioBinario.contrasenaHash, strnlen(usuarioBinario.contrasenaHash, MAX_FIELD_LEN));
+}
 
 // IMPLEMENTACION DE FUNCIONES PRIVADAS
 
@@ -202,12 +216,14 @@ inline void Usuario::guardar()
 inline LoginStatus Usuario::login(
     Usuario& usuarioLogueado,
     TipoUsuario tipoUsuario,
-    std::string passInput,
-    int pos
+    std::string passInput
 ) {
-	// ToDo: Implementar la lógica de autenticación.
-	// Usaremos las funciones de la clase FilesManager para manejar los archivos.
-	return LoginStatus::SUCCESS; // Retorna un código de estado de error por defecto
+
+	std::string nuevaContrasena = hashContrasena(passInput);
+	if (nuevaContrasena == usuarioLogueado.getContrasenaHash()) {
+        return LoginStatus::SUCCESS;
+	}
+    return LoginStatus::WRONG_PASSWORD;
 }
 
 inline int Usuario::buscarIndexUsuario() {

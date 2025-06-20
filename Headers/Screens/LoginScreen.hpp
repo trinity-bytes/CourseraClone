@@ -13,7 +13,7 @@
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/UI_Ascii.hpp"
-#include "../Controllers/InscripcionesController.hpp" // ELiminar luego de prueba
+#include "../Controllers/FilesManager.hpp"
 
 class LoginScreen : public PantallaBase
 {
@@ -354,7 +354,14 @@ inline bool LoginScreen::_validarCamposLlenos()
 inline LoginStatus LoginScreen::_autenticarUsuario()
 {
     /// @todo Implementar la lógica de autenticación del usuario
-    return LoginStatus::SUCCESS; // Dato por defecto, debe ser implementado
+    int index = FilesManager::getInstance().buscarIndexUsuario(_email, static_cast<int>(_tipoUsuarioActual));
+    if (index == -1) return LoginStatus::USER_NOT_FOUND;
+
+	Usuario usuarioLogueado = Usuario(index, _tipoUsuarioActual);
+	if (usuarioLogueado.getId() == -1) return LoginStatus::USER_NOT_FOUND;
+	LoginStatus respuesta = usuarioLogueado.login(usuarioLogueado, _tipoUsuarioActual, _password);
+
+    return respuesta;
 }
 
 inline UsuarioRawData LoginScreen::_configurarSesionUsuario(int index)

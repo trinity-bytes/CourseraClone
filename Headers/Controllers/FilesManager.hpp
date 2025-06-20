@@ -111,6 +111,8 @@ public:
     ///  @return Resultado de la operación
     FileOperationResult guardarUsuarioBinario(const UsuarioBinario& bin, TipoUsuario tipo);
 
+    UsuarioBinario getUsuarioBinario(int offset, TipoUsuario tipo);
+
     /// @brief Carga los índices de usuarios de un tipo específico
     /// @param tipo Tipo de usuario
     /// @return Vector con los índices cargados
@@ -126,12 +128,6 @@ public:
     /// @param tipo Tipo de usuario
     /// @return Resultado de la operación
     FileOperationResult guardarIndiceUsuario(UsuarioIndex& indice, TipoUsuario tipo);
- 
-    /// @brief Carga un usuario por su offset en el archivo
-    /// @param tipo Tipo de usuario
-    /// @param offset Posición en el archivo
-    /// @return Datos binarios del usuario
-    UsuarioBinario cargarUsuarioPorOffset(TipoUsuario tipo, long offset);
 
     /// @brief Carga todas las inscripciones del estudiante
     /// @param id Id del estudiante
@@ -582,6 +578,23 @@ inline FileOperationResult FilesManager::cargarInscripcionesPorEstudiante(int id
     }
 }
 
+inline UsuarioBinario FilesManager::getUsuarioBinario(int offset, TipoUsuario tipo) {
+    try {
+        auto path = getDataFilePath(tipo);
+        std::ifstream is(path, std::ios::binary | std::ios::in);
+        UsuarioBinario tmp;
+        is.seekg(offset * sizeof(UsuarioBinario), std::ios::beg);
+        is.read(reinterpret_cast<char*> (&tmp), sizeof(UsuarioBinario));
+		logInfo("Cargar Usuario por index", path + " (Offset: " + std::to_string(offset) + ")");
+		return tmp;
+
+    }
+    catch (const std::exception& e) {
+        logError("Cargar Usuario por index", "Sistema", e.what());
+        return UsuarioBinario();
+    }
+}
+
 inline FileOperationResult FilesManager::guardarUsuarioBinario(const UsuarioBinario& bin,TipoUsuario tipo) {
     /*
     if (!_sistemaInicializado) {
@@ -732,6 +745,8 @@ inline int FilesManager::buscarIndexUsuario(std::string _email, int _tipoUsuario
 	logInfo("Buscar índice de usuario", "Usuario no encontrado: " + _email);
     return -1;
 }
+
+
 
 inline FileOperationResult FilesManager::guardarIndiceUsuario(UsuarioIndex& indice, TipoUsuario tipo) {
 	auto path = getIndexFilePath(tipo);

@@ -32,7 +32,7 @@ struct UsuarioBinario {
     char contrasenaHash[MAX_FIELD_LEN];
 
     // Constructor por defecto (inicializa todo a '\0')
-    UsuarioBinario() : id(0), tipoUsuario(TipoUsuario::DEFAULT) {
+    UsuarioBinario() : id(-1), tipoUsuario(TipoUsuario::DEFAULT) {
         std::memset(nombreCompleto, 0, MAX_FIELD_LEN);
         std::memset(nombreDeUsuario, 0, MAX_FIELD_LEN);
         std::memset(contrasenaHash, 0, MAX_FIELD_LEN);
