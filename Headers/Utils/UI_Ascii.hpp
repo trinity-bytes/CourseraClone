@@ -538,14 +538,14 @@ inline void UI_VistaEspecialidad()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                                                                               
 
                                                                                                                     
-   Especialidad en 
+    Especialidad en 
    
-   Descripcion:                            ┌────────────────────<< CURSOS DE LA ESPECIALIDAD  >>────────────────────┐
-                                           │ ╔════════════════════════════════╗  ╔════════════════════════════════╗ |
+                                           ┌────────────────────<< CURSOS DE LA ESPECIALIDAD  >>────────────────────┐
+    Por:                                   │ ╔════════════════════════════════╗  ╔════════════════════════════════╗ │
                                            │ ║                                ║  ║                                ║ │
                                            │ ╠════════════════════════════════╣  ╠════════════════════════════════╣ │
                                            │ ║                                ║  ║                                ║ │
-                                           │ ║                                ║  ║                                ║ │
+    Descripcion:                           │ ║                                ║  ║                                ║ │
                                            │ ║                                ║  ║                                ║ │
                                            │ ║                                ║  ║                                ║ │ 
                                            │ ║                                ║  ║                                ║ │
@@ -567,7 +567,27 @@ inline void UI_VistaEspecialidad()
  Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief/ Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    resetColor();
 }
 
 /// UI Vista de los cursos

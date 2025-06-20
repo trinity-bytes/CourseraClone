@@ -46,7 +46,6 @@ private:
     COORD _coordsElementosHeader[MAX_ELEMENTOS_HEADER] = { 
         {87, 1}, {103, 1} 
     }; // Perfil, Cerrar sesión
-    
 
     /// @brief Coordenadas para las estadísticas
     COORD _coordsEstadisticas[3] = {

@@ -17,6 +17,7 @@
 #include "../Screens/PerfilEstudianteScreen.hpp"
 #include "../Screens/PerfilOrganizacionScreen.hpp"
 #include "../Screens/EditarPerfilScreen.hpp"
+#include "../Screens/MostrarEspecialidadScreen.hpp"
 #include "../Screens/ExplorarContenidoScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
@@ -33,9 +34,9 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaRegistro();    
     inline std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();    
     inline std::unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();    
-    inline std::unique_ptr<PantallaBase> crearPantallaPerfilEstudiante();
-    inline std::unique_ptr<PantallaBase> crearPantallaPerfilOrganizacion();
+    inline std::unique_ptr<PantallaBase> crearPantallaPerfilEstudiante();    inline std::unique_ptr<PantallaBase> crearPantallaPerfilOrganizacion();
     inline std::unique_ptr<PantallaBase> crearPantallaEditarPerfil();
+    inline std::unique_ptr<PantallaBase> crearPantallaMostrarEspecializacion();
     inline std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
 
 public:
@@ -105,6 +106,12 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaEditarPerfil()
     return std::make_unique<EditarPerfilScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla mostrar especialización
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaMostrarEspecializacion()
+{
+    return std::make_unique<MostrarEspecialidadScreen>();
+}
+
 /// @brief Crea una nueva instancia de la pantalla explorar contenido
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarContenido()
 {
@@ -115,7 +122,7 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarConten
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaEditarPerfil();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaMostrarEspecializacion();
     
     do
     {
@@ -147,10 +154,12 @@ inline void MainController::run()
             _pantallaActual = crearPantallaPerfilEstudiante();
             break;        case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
             _pantallaActual = crearPantallaPerfilOrganizacion();
+            break;        case AccionPantalla::IR_A_EDITAR_PERFIL:
+            _pantallaActual = crearPantallaEditarPerfil();
             break;
 
-        case AccionPantalla::IR_A_EDITAR_PERFIL:
-            _pantallaActual = crearPantallaEditarPerfil();
+        case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
+            _pantallaActual = crearPantallaMostrarEspecializacion();
             break;
 
 		case AccionPantalla::IR_A_SOBRE_NOSOTROS:
