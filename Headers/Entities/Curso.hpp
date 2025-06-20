@@ -61,28 +61,34 @@ public:
 
     // Método para persistencia
     bool guardar() override{
-		// ToDo: Implementar la lógica para guardar el curso en un archivo
-
+		// ToDo: Implementar la lógica para guardar el curso en un archivo del filemanger
+		RawCursoData datosCurso = obtenerDatosCrudosCurso();
+		auto resultado = FilesManager::getInstance().guardarCurso(datosCurso);
+		if (resultado != FileOperationResult::SUCCESS) {
+			std::cerr << "Error al guardar el curso: " << obtenerMensaje(resultado) << std::endl;
+			return false;
+		}
+		std::cout << "Curso guardado correctamente." << std::endl;
         return true;
     }
 
 	// ToDo: Implementar el método para cargar el curso desde un archivo
-
-    void mostrarCursoPorId(int id) {
+   
+    void mostrarCurso(std::string nombreCurso) {
         RawCursoData curso;
-		if (FilesManager::getInstance().buscarCursoPorIdHash(this->getId(), curso)) {
-			std::cout << "Curso ID: " << curso.id << std::endl;
-			std::cout << "Empresa ID: " << curso.idEmpresa << std::endl;
-			std::cout << "Nombre Empresa: " << curso.nombreEmpresa << std::endl;
-			std::cout << "Título: " << curso.titulo << std::endl;
-			std::cout << "Descripción: " << curso.descripcion << std::endl;
-			std::cout << "Instructor: " << curso.instructor << std::endl;
-			std::cout << "Categoría: " << static_cast<int>(curso.categoria) << std::endl;
-			std::cout << "Cantidad de Clases: " << curso.cantidadClases << std::endl;
-		}
-		else {
-			std::cerr << "Curso no encontrado." << std::endl;
-		}
+        if (FilesManager::getInstance().buscarCursoPorNombreHash(nombreCurso, curso)) {
+            std::cout << "Curso encontrado:\n";
+            std::cout << "ID: " << curso.id << "\n";
+            std::cout << "Título: " << curso.titulo << "\n";
+            std::cout << "Descripción: " << curso.descripcion << "\n";
+            std::cout << "Instructor: " << curso.instructor << "\n";
+			std::cout << "Categoría: " << static_cast<int>(curso.categoria) << "\n";
+			std::cout << "Cantidad de Clases: " << curso.cantidadClases << "\n";
+			std::cout << "Empresa: " << curso.nombreEmpresa << " (ID: " << curso.idEmpresa << ")\n";
+        }
+        else {
+            std::cout << "No se encontró un curso con ese nombre.\n";
+        }
     }
 };
 
