@@ -1378,6 +1378,47 @@ inline RawActividadesData FilesManager::leerDatosActividades() {
     }
 }
 
+inline FileOperationResult FilesManager::guardarCurso(const RawCursoData& curso) {
+	try {
+		std::ofstream archivo(DataPaths::Content::DB_CURSOS, std::ios::app);
+
+		if (!archivo.is_open()) {
+			logError("Guardar curso", DataPaths::Content::DB_CURSOS, "No se pudo abrir el archivo");
+			return FileOperationResult::FILE_NOT_FOUND;
+		}
+
+		// Formato: id|idEmpresa|nombreEmpresa|titulo|descripcion|categoria|instructor|cantidadClases
+		archivo << curso.id << "\n"
+			<< curso.idEmpresa << "\n"
+			<< curso.nombreEmpresa << "\n"
+			<< curso.titulo << "\n"
+			<< curso.descripcion << "\n"
+			<< RawActividadData::categoriaToString(curso.categoria) << "\n"
+			<< curso.instructor << "\n"
+			<< curso.cantidadClases << "\n";
+
+		for (int i = 0; i < static_cast<int>(curso.titulosClases.size()); i++) {
+			archivo << curso.titulosClases[i] << "\n" 
+                << curso.descripcionesClases[i] << "\n";
+		}
+
+		archivo << "%%%\n"; // Delimitador de fin de curso
+
+		if (!archivo.good()) {
+			logError("Guardar curso", DataPaths::Content::DB_CURSOS, "Error al escribir");
+			return FileOperationResult::UNKNOWN_ERROR;
+		}
+
+		logInfo("Guardar curso", DataPaths::Content::DB_CURSOS);
+		return FileOperationResult::SUCCESS;
+
+	}
+	catch (const std::exception& e) {
+		logError("Guardar curso", "Sistema", e.what());
+		return FileOperationResult::UNKNOWN_ERROR;
+	}
+}
+
 // ========== MÉTODOS ADICIONALES DE CONTENIDO ==========
 
 inline RawCursoData FilesManager::buscarCursoPorId(int id) {

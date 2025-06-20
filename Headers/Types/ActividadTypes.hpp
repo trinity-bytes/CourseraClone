@@ -131,6 +131,55 @@ struct RawActividadData{
         // Consider logging in FilesManager after this call if the category is OTROS and original string wasn't "OTROS"
         return CategoriaActividad::OTROS; // Default for unknown strings
     }
+
+    static std::string categoriaToString(CategoriaActividad categoria) {
+        switch (categoria) {
+        case CategoriaActividad::PROGRAMACION: return "PROGRAMACION";
+        case CategoriaActividad::DESARROLLO_WEB: return "DESARROLLO_WEB";
+        case CategoriaActividad::DESARROLLO_MOVIL: return "DESARROLLO_MOVIL";
+        case CategoriaActividad::DESARROLLO_JUEGOS: return "DESARROLLO_JUEGOS";
+        case CategoriaActividad::SISTEMAS_EMBEBIDOS: return "SISTEMAS_EMBEBIDOS";
+        case CategoriaActividad::DEVOPS: return "DEVOPS";
+        case CategoriaActividad::CLOUD_COMPUTING: return "CLOUD_COMPUTING";
+        case CategoriaActividad::REDES: return "REDES";
+        case CategoriaActividad::BASES_DE_DATOS: return "BASES_DE_DATOS";
+        case CategoriaActividad::SEGURIDAD_INFORMATICA: return "SEGURIDAD_INFORMATICA";
+        case CategoriaActividad::INTELIGENCIA_ARTIFICIAL: return "INTELIGENCIA_ARTIFICIAL";
+        case CategoriaActividad::CIENCIA_DE_DATOS: return "CIENCIA_DE_DATOS";
+        case CategoriaActividad::BLOCKCHAIN: return "BLOCKCHAIN";
+        case CategoriaActividad::IOT: return "IOT";
+        case CategoriaActividad::REALIDAD_VIRTUAL: return "REALIDAD_VIRTUAL";
+        case CategoriaActividad::ROBOTICA: return "ROBOTICA";
+        case CategoriaActividad::UX_UI: return "UX_UI";
+        case CategoriaActividad::DISENO: return "DISENO";
+        case CategoriaActividad::DISENO_GRAFICO: return "DISENO_GRAFICO";
+        case CategoriaActividad::DISENO_INDUSTRIAL: return "DISENO_INDUSTRIAL";
+        case CategoriaActividad::ARTE_DIGITAL: return "ARTE_DIGITAL";
+        case CategoriaActividad::FOTOGRAFIA: return "FOTOGRAFIA";
+        case CategoriaActividad::VIDEO_ANIMACION: return "VIDEO_ANIMACION";
+        case CategoriaActividad::MUSICA_SONIDO: return "MUSICA_SONIDO";
+        case CategoriaActividad::ESCRITURA_CREATIVA: return "ESCRITURA_CREATIVA";
+        case CategoriaActividad::NEGOCIOS: return "NEGOCIOS";
+        case CategoriaActividad::MARKETING_DIGITAL: return "MARKETING_DIGITAL";
+        case CategoriaActividad::FINANZAS: return "FINANZAS";
+        case CategoriaActividad::EMPRENDIMIENTO: return "EMPRENDIMIENTO";
+        case CategoriaActividad::GESTION_PROYECTOS: return "GESTION_PROYECTOS";
+        case CategoriaActividad::RECURSOS_HUMANOS: return "RECURSOS_HUMANOS";
+        case CategoriaActividad::CONSULTORIA: return "CONSULTORIA";
+        case CategoriaActividad::ECOMMERCE: return "ECOMMERCE";
+        case CategoriaActividad::ANALISIS_NEGOCIOS: return "ANALISIS_NEGOCIOS";
+        case CategoriaActividad::INVESTIGACION: return "INVESTIGACION";
+        case CategoriaActividad::BIOTECNOLOGIA: return "BIOTECNOLOGIA";
+        case CategoriaActividad::INGENIERIA: return "INGENIERIA";
+        case CategoriaActividad::MATEMATICAS: return "MATEMATICAS";
+        case CategoriaActividad::FISICA: return "FISICA";
+        case CategoriaActividad::EDUCACION: return "EDUCACION";
+        case CategoriaActividad::IDIOMAS: return "IDIOMAS";
+        case CategoriaActividad::PSICOLOGIA: return "PSICOLOGIA";
+        case CategoriaActividad::OTROS: return "OTROS";
+        default: return "OTROS"; // Default case for unknown categories
+        }
+    }
 };
 
 // Datos crudos de un curso le�dos del archivo
