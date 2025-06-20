@@ -77,11 +77,6 @@ public:
 
     inline void establecerDatosBase(Usuario otroUsuario);
 
-    // Retorna un codigo de estado y, si es exitoso, carga los datos del usuario en usuarioLogueado
-    inline LoginStatus login(Usuario& usuarioLogueado, TipoUsuario tipoUsuario, std::string passInput);
-
-    inline int buscarIndexUsuario();
-
     inline bool actualizarUsuario(const std::string& _nuevoNombre, const std::string& _nuevoUsername, const std::string& _nuevaContrasena);
 };
 
@@ -210,24 +205,6 @@ inline void Usuario::guardar()
     // Usaremos las funciones de la clase FilesManager para manejar los archivos.
 	FilesManager::getInstance().guardarUsuarioBinario(toUsuarioBinario(), _tipoUsuario);
     FilesManager::getInstance().guardarIndiceUsuario(toUsuarioIndex(), _tipoUsuario);
-}
-
-/// --- Método estático para manejar el login ---
-inline LoginStatus Usuario::login(
-    Usuario& usuarioLogueado,
-    TipoUsuario tipoUsuario,
-    std::string passInput
-) {
-
-	std::string nuevaContrasena = hashContrasena(passInput);
-	if (nuevaContrasena == usuarioLogueado.getContrasenaHash()) {
-        return LoginStatus::SUCCESS;
-	}
-    return LoginStatus::WRONG_PASSWORD;
-}
-
-inline int Usuario::buscarIndexUsuario() {
-	return FilesManager::getInstance().buscarIndexUsuario(_nombreCompleto, static_cast<int>(_tipoUsuario));
 }
 
 inline bool Usuario::actualizarUsuario(

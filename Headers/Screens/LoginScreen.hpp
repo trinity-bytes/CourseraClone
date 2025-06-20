@@ -14,6 +14,7 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/UI_Ascii.hpp"
 #include "../Controllers/FilesManager.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 class LoginScreen : public PantallaBase
 {
@@ -354,14 +355,9 @@ inline bool LoginScreen::_validarCamposLlenos()
 inline LoginStatus LoginScreen::_autenticarUsuario()
 {
     /// @todo Implementar la lógica de autenticación del usuario
-    int index = FilesManager::getInstance().buscarIndexUsuario(_email, static_cast<int>(_tipoUsuarioActual));
-    if (index == -1) return LoginStatus::USER_NOT_FOUND;
 
-	Usuario usuarioLogueado = Usuario(index, _tipoUsuarioActual);
-	if (usuarioLogueado.getId() == -1) return LoginStatus::USER_NOT_FOUND;
-	LoginStatus respuesta = usuarioLogueado.login(usuarioLogueado, _tipoUsuarioActual, _password);
-
-    return respuesta;
+	LoginStatus res = SessionManager::getInstance().login(_email, _password, _tipoUsuarioActual);
+    return res;
 }
 
 inline UsuarioRawData LoginScreen::_configurarSesionUsuario(int index)

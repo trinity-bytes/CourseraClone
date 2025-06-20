@@ -345,11 +345,6 @@ inline bool ContentManager::inicializarSistema()
 {
 	FilesManager* fileManager = &FilesManager::getInstance();
 
-	if (!fileManager->inicializarSistemaArchivos()) {
-		//logError("Inicialización", "ContentManager", "Error al inicializar el sistema de archivos");
-		return false;
-	}
-
 	RawActividadesData dataActividades = fileManager->leerDatosActividades();
 	std::vector<InscripcionBinaria> dataInscripciones = fileManager->leerDatosInscripciones();
 
@@ -360,10 +355,11 @@ inline bool ContentManager::inicializarSistema()
     ContentOperationResult result = cargarDesdeDatos(dataActividades, dataInscripciones);
 
 	if (result != ContentOperationResult::SUCCESS) {
-		//logError("Inicialización", "ContentManager", "Error al cargar datos: " + std::to_string(static_cast<int>(result)));
+		logError("Inicialización", "Error al cargar datos: " + std::to_string(static_cast<int>(result)));
         return false;
 	}
-	//logOperation("Inicialización", "ContentManager completada con éxito");
+	logOperation("Inicialización", "ContentManager completada con éxito");
+    
 	return true;
 }
 

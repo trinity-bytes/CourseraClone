@@ -9,6 +9,7 @@
 #include "../Headers/Controllers/MainController.hpp"
 #include "../Headers/Controllers/FilesManager.hpp"
 #include "../Headers/Controllers/ContentManager.hpp"
+#include "../Headers/Controllers/SessionManager.hpp"
 
 // maquetación de funciones
 void SecuenciaInicializacion();
@@ -20,8 +21,9 @@ int main()
 
 	try
 	{
-		ContentManager::getInstance().inicializarSistema();
-		FilesManager::getInstance().inicializarSistemaArchivos();
+		FilesManager::getInstance();
+		ContentManager::getInstance();
+		SessionManager::getInstance();
 
 		MainController app;
 		app.run();

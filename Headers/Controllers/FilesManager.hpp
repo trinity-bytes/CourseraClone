@@ -320,6 +320,7 @@ inline std::once_flag FilesManager::_onceFlag;
 /// @brief Constructor privado
 inline FilesManager::FilesManager() : _sistemaInicializado(false) {
     logInfo("Constructor", "FilesManager Singleton inicializado");
+    inicializarSistemaArchivos();
 }
 
 // Método getInstance del Singleton

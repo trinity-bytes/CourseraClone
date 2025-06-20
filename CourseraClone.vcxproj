@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\InscripcionesController.hpp" />
+    <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
     <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp" />

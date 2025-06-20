@@ -215,5 +215,8 @@
     <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Controllers\SessionManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
