@@ -49,6 +49,9 @@ private:
     // El mutex para asegurar la inicialización segura en entornos multi-hilo
     static std::once_flag _onceFlag;
 
+    int idCursoMostrar;
+    int idEspecializacionMostrar;
+
     // Constructor privado para evitar instanciación externa
     ContentManager();
 
@@ -234,6 +237,8 @@ public:
      */
     Curso* obtenerCurso(int id);
 
+	RawCursoData obtenerCursoDatos(int id);
+
     /**
      * @brief Obtiene una especialización por su ID
      * @param id ID de la especialización
@@ -323,6 +328,10 @@ public:
 
     int getTotalCursos() const { return _cursos.size(); }
     int getTotalEspecializaciones() const { return _especializaciones.size(); }
+	int getCursoIdMostrar() { return idCursoMostrar; }
+
+    void setCursoIdMostrar(int _idNuevo) { idCursoMostrar = _idNuevo; }
+    void setEspecializacionMostar(int _idNuevo) { idEspecializacionMostrar = _idNuevo; }
 
     double obtenerProgreso(int idEstudiante, int idActividad) const;
 };
@@ -364,7 +373,7 @@ inline bool ContentManager::inicializarSistema()
 }
 
 inline ContentManager::ContentManager()
-    : _nextCursoId(1), _nextEspecializacionId(1) {
+    : _nextCursoId(1), _nextEspecializacionId(1), idCursoMostrar(-1), idEspecializacionMostrar(-1) {
 
     logOperation("Constructor", "ContentManager inicializado (Singleton)");
     inicializarSistema();
@@ -410,6 +419,10 @@ inline Curso* ContentManager::obtenerCurso(int id) {
 		return nullptr; // ID inválido
 	}
     return _cursos[id].get();
+}
+
+inline RawCursoData ContentManager::obtenerCursoDatos(int id) {
+	return _cursos[id]->obtenerDatosCrudosCurso();
 }
 
 inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
@@ -461,7 +474,8 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 cursoData.titulo,
                 cursoData.descripcion,
                 cursoData.instructor,
-                cursoData.cantidadClases
+                cursoData.cantidadClases,
+                cursoData.descripcionClases
             );
             
             _cursos.push_back(std::move(curso));

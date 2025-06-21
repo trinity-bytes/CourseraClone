@@ -698,6 +698,7 @@ inline void LandingPageScreen::procesarSeleccionCurso(ResultadoPantalla& resulta
 {
     if (_elementoActual < _cursos.size()) {
         int idCursoSeleccionado = obtenerIdCurso(_elementoActual);
+        ContentManager::getInstance().setCursoIdMostrar(idCursoSeleccionado);
         resultado.idCursoSeleccionado = idCursoSeleccionado;
         resultado.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
         resultado.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;

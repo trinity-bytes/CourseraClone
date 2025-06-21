@@ -1139,8 +1139,7 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
                     if (clasesPorLeer > 0) {
                         leyendoClases = true;
                         clasesLeidasActual = 0;
-                        cursoData.titulosClases.clear();
-                        cursoData.descripcionesClases.clear();
+                 
                     }
                     else {
                         escribirDebugLog("Advertencia: El curso no tiene clases definidas");
@@ -1176,8 +1175,8 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
                 }
                 
                 // Add class data to the course
-                cursoData.titulosClases.push_back(tituloClase);
-                cursoData.descripcionesClases.push_back(descripcionClase);
+                cursoData.descripcionClases.push_back({ tituloClase, descripcionClase });
+
                 clasesLeidasActual++;
                 
                 escribirDebugLog("  Clase #" + std::to_string(clasesLeidasActual) + 
@@ -1484,9 +1483,9 @@ inline FileOperationResult FilesManager::guardarCurso(const RawCursoData& curso)
 			<< curso.instructor << "\n"
 			<< curso.cantidadClases << "\n";
 
-		for (int i = 0; i < static_cast<int>(curso.titulosClases.size()); i++) {
-			archivo << curso.titulosClases[i] << "\n" 
-                << curso.descripcionesClases[i] << "\n";
+		for (int i = 0; i < static_cast<int>(curso.descripcionClases.size()); i++) {
+			archivo << curso.descripcionClases[i].first << "\n" 
+                << curso.descripcionClases[i].second << "\n";
 		}
 
 		archivo << "%%%\n"; // Delimitador de fin de curso

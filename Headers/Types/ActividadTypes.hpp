@@ -194,8 +194,6 @@ struct RawCursoData {
     CategoriaActividad categoria;
 	std::vector<std::pair<std::string, std::string>> descripcionClases;
     int cantidadClases;
-	std::vector<std::string> titulosClases;
-	std::vector<std::string> descripcionesClases;
 	int duracionEstimada; // Duraci�n en minutos
 };
 

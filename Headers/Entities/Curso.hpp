@@ -7,6 +7,7 @@
 // Headers del sistema
 #include <iostream> // Para std::cout, std::endl
 #include <string>   // Para std::string
+#include <vector>
 
 // Headers propios
 #include "Actividad.hpp"                     // Clase base Actividad
@@ -17,6 +18,7 @@ class Curso : public Actividad {
 private:
     std::string _instructor;
     int _cantidadClases;
+    std::vector<std::pair<std::string, std::string>> contenidoCurso;
 	// ToDo: Implementar lista de clases relacionadas al curso
 public:
     Curso() : Actividad(0, 0, "", CategoriaActividad::DEFAULT, "", ""), _instructor(""), _cantidadClases(0) {}
@@ -25,15 +27,20 @@ public:
         int id,
         int idEmpresa,
         const std::string& nombreEmpresa,
-		CategoriaActividad categoria,
+        CategoriaActividad categoria,
         const std::string& titulo,
         const std::string& descripcion,
         const std::string& instructor,
-        int cantidadClases
+        int cantidadClases,
+        std::vector<std::pair<std::string, std::string>> descripcionClase
     ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion),
         _instructor(instructor),
         _cantidadClases(cantidadClases) 
-    {}
+    {
+        for (int i = 0; i < cantidadClases; i++) {
+            contenidoCurso.push_back({descripcionClase[i].first, descripcionClase[i].second});
+        }
+    }
 
     // Getters
     const std::string& getInstructor() const { return _instructor; }
@@ -55,6 +62,9 @@ public:
         datos.instructor = this->_instructor;
         datos.categoria = this->_categoria;
         datos.cantidadClases = this->_cantidadClases;
+        for (int i = 0; i < _cantidadClases; i++) {
+            datos.descripcionClases.push_back({ contenidoCurso[i].first , contenidoCurso[i].second });
+        }
 
         return datos;
 	}

@@ -4,20 +4,20 @@
 #define COURSERACLONE_SCREENS_DASHBOARDESTUDIANTESCREEN_HPP
 
 // Headers de librería estándar
-#include <vector>
-#include <string>
-#include <sstream>    // Para std::stringstream
 #include <conio.h>    // Para _getch()
+#include <sstream>    // Para std::stringstream
+#include <string>
+#include <vector>
 
 // Headers propios del proyecto
 #include "../Controllers/ContentManager.hpp"
 #include "../Controllers/FilesManager.hpp"
+#include "../Types/UsuarioTypes.hpp"
+#include "../Utils/ConsoleTypes.hpp"
+#include "../Utils/DataPaths.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/SystemUtils.hpp"
-#include "../Utils/DataPaths.hpp"
 #include "../Utils/UI_Ascii.hpp"
-#include "../Utils/ConsoleTypes.hpp"
-#include "../Types/UsuarioTypes.hpp"
 
 // Pantalla principal del dashboard del estudiante
 class DashboardEstudianteScreen : public PantallaBase
