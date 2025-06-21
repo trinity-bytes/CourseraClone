@@ -565,6 +565,8 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
         // Ir al curso seleccionado
         int indiceCurso = _obtenerIndiceCursoActual();
         if (indiceCurso >= 0 && indiceCurso < _cursos.size()) {
+            int idCursoSeleccionado = _cursos[indiceCurso].id;
+            ContentManager::getInstance().setCursoIdMostrar(idCursoSeleccionado);
             res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
             res.idCursoSeleccionado = _cursos[indiceCurso].id;
         }
