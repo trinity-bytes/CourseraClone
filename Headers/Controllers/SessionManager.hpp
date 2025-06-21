@@ -48,6 +48,8 @@ public:
      */
     LoginStatus login(const std::string& username, const std::string& password, TipoUsuario tipoUsuario);
 
+    LoginStatus update(const std::string& nombre, const std::string email, const std::string password);
+
 	/**
 	 * @brief Inicializa el sistema de archivos y carga los datos necesarios.
 	 * @return true si la inicialización fue exitosa; false en caso contrario.
@@ -121,6 +123,27 @@ inline LoginStatus SessionManager::login(const std::string& username, const std:
     return LoginStatus::SUCCESS;
 }
 
+inline LoginStatus SessionManager::update(const std::string& nombre, const std::string email, const std::string password) {
+    if (!isLoggedIn()) {
+        logError("Update User", "No hay usuario activo para actualizar");
+        return LoginStatus::USER_NOT_FOUND;
+    }
+    // Actualizar los datos del usuario actual
+    _currentUser->setUsername(email);
+    _currentUser->setNombreCompleto(nombre);
+    _currentUser->setContrasena(password);
+
+    // Se actualiza el usuario en el sistema de archivos
+    FilesManager::getInstance().updateUsuarioBinario(_currentUser->toUsuarioBinario());
+    // Se elimina el anterior indice
+    FilesManager::getInstance().eliminarIndiceUsuario(_currentUser->getUsername(), _currentUser->getTipoUsuario());
+    // Se crea un nuevo indice con los datos actualizados
+    FilesManager::getInstance().guardarIndiceUsuario(_currentUser->toUsuarioIndex(), _currentUser->getTipoUsuario());
+
+    logOperation("Update User", "Usuario actualizado exitosamente");
+    return LoginStatus::SUCCESS;
+}
+
 inline bool SessionManager::inicializarSistema() {
 	FilesManager& fileManager = FilesManager::getInstance();
 	if (!fileManager.inicializarSistemaArchivos()) {
@@ -132,6 +155,10 @@ inline bool SessionManager::inicializarSistema() {
 }
 
 inline void SessionManager::logout() {
+	if (!isLoggedIn()) {
+		logError("Cierre de Sesion", "No hay ningun usuario activo para cerrar sesion");
+		return;
+	}
     _inscripcionesCtrl.reset();
     _currentUser.reset();
     logOperation("Cierre de Sesion", "Exitoso");

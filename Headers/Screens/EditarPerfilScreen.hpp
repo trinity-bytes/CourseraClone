@@ -87,7 +87,7 @@ public:
 // Constructor
 inline EditarPerfilScreen::EditarPerfilScreen() : PantallaBase(),
     idUsuario(1), tipoUsuario(TipoUsuario::ESTUDIANTE),
-    nombreOriginal("Juan Carlos Pérez"), emailOriginal("juan.perez@upc.edu.pe"), passwordOriginal("123456"),
+    nombreOriginal(""), emailOriginal(""), passwordOriginal(""),
     campoActual(0), campoAnterior(-1), primeraRenderizacion(true), error(false)
 {
     _cargarDatosDummy();
@@ -338,8 +338,7 @@ inline bool EditarPerfilScreen::validarCampos()
 // Guardar cambios (dummy)
 inline void EditarPerfilScreen::guardarCambios()
 {
-    // Aquí iría la lógica real de guardado
-    // Por ahora solo simulamos el guardado
+    SessionManager::getInstance().update(nombre, email, password);
     
     gotoXY(25, 30);
     setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);

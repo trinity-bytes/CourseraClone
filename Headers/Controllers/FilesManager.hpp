@@ -123,6 +123,14 @@ public:
 	/// @param tipo Tipo de usuario (ESTUDIANTE/EMPRESA)
 	int buscarIndexUsuario(std::string _email, int _tipoUsuario);
 
+	/// @brief Elimina un índice de usuario por ID
+	/// @param idUsuario ID del usuario a eliminar
+	/// @param tipo Tipo de usuario
+	/// @return Resultado de la operación
+	FileOperationResult eliminarIndiceUsuario(std::string _email, TipoUsuario tipo);
+
+    FileOperationResult updateUsuarioBinario(const UsuarioBinario& usuario);
+
     /// @brief Guarda un índice de usuario
     /// @param indice Índice a guardar
     /// @param tipo Tipo de usuario
@@ -745,14 +753,92 @@ inline int FilesManager::buscarIndexUsuario(std::string _email, int _tipoUsuario
         is.read(reinterpret_cast<char*>(&encontrado), sizeof(encontrado));
         if (std::strncmp(encontrado.nombreDeUsuario, _email.c_str(), MAX_FIELD_LEN) == 0) {
 			logInfo("Buscar índice de usuario", "Usuario encontrado: " + _email + " en posición " + std::to_string(pos));
+			is.close();
             return pos;
         }
     }
 	logInfo("Buscar índice de usuario", "Usuario no encontrado: " + _email);
+	is.close();
     return -1;
 }
 
+inline FileOperationResult FilesManager::eliminarIndiceUsuario(std::string _email, TipoUsuario tipo) {
+    if (!_sistemaInicializado) {
+        logError("Buscar índice de usuario", "Sistema", "Sistema no inicializado");
+        return FileOperationResult::FILE_NOT_FOUND; // Indica error
+    }
+    try {
+		int idUsuario = buscarIndexUsuario(_email, static_cast<int>(tipo));
+		auto path = getIndexFilePath(tipo);
+		std::fstream archivoOrden(path, std::ios::binary | std::ios::in | std::ios::out);
+		archivoOrden.seekg(0, std::ios::end);
+		int cantidad = static_cast<int>(archivoOrden.tellg() / sizeof(UsuarioIndex));
+        for (int i = idUsuario; i < cantidad - 1; i++) {
+			UsuarioIndex tmp;
+			archivoOrden.seekg((i + 1) * sizeof(UsuarioIndex), std::ios::beg);
+			archivoOrden.read(reinterpret_cast<char*>(&tmp), sizeof(UsuarioIndex));
+			archivoOrden.seekp(i * sizeof(UsuarioIndex), std::ios::beg);
+			archivoOrden.write(reinterpret_cast<char*>(&tmp), sizeof(UsuarioIndex));
+        }
+        archivoOrden.close();
+        try {
+			/// Truncar el archivo para eliminar el último registro. Utilizamos 'uinmax_t'
+            std::filesystem::resize_file(path, static_cast<std::uintmax_t>((cantidad - 1) * sizeof(UsuarioIndex)));
+			logInfo("Eliminar índice de usuario", "Archivo truncado a " + std::to_string((cantidad - 1) * sizeof(UsuarioIndex)) + " bytes");
+        }
+        catch (const std::exception& e) {
+            logError("Eliminar índice de usuario", path, "Error al truncar archivo: " + std::string(e.what()));
+            return FileOperationResult::UNKNOWN_ERROR;
+        }
 
+        logInfo("Eliminar indice usuario", "Indice eliminado en la posicion " + std::to_string(idUsuario));
+		return FileOperationResult::SUCCESS;
+    }
+	catch (const std::exception& e) {
+		logError("Eliminar índice de usuario", "Sistema", e.what());
+		return FileOperationResult::UNKNOWN_ERROR;
+	}
+}
+
+inline FileOperationResult FilesManager::updateUsuarioBinario(const UsuarioBinario& usuario) {
+    if (!_sistemaInicializado) {
+        logError("Buscar índice de usuario", "Sistema", "Sistema no inicializado");
+        return FileOperationResult::FILE_NOT_FOUND; // Indica error
+    }
+    try {
+		auto path = getDataFilePath(usuario.tipoUsuario);
+		std::fstream archivo(path, std::ios::binary | std::ios::in | std::ios::out);
+        if (!archivo.is_open()) {
+            logError("Actualizar usuario binario", path, "No se pudo abrir el archivo");
+            return FileOperationResult::FILE_NOT_FOUND;
+        }
+        
+		int id = usuario.id;
+        archivo.seekg((id) * sizeof(UsuarioBinario), std::ios::beg);
+		if (archivo.eof()) {
+			logError("Actualizar usuario binario", path, "Posición fuera de rango");
+			archivo.close();
+			return FileOperationResult::FILE_NOT_FOUND;
+		}
+		archivo.write(reinterpret_cast<const char*>(&usuario), sizeof(UsuarioBinario));
+
+		if (!archivo.good()) {
+			logError("Actualizar usuario binario", path, "Error al escribir datos");
+			archivo.close();
+			return FileOperationResult::UNKNOWN_ERROR;
+		}
+
+		archivo.close();
+		logInfo("Actualizar usuario binario", path + " (ID: " + std::to_string(usuario.id) + ")");
+		return FileOperationResult::SUCCESS;
+		
+
+    }
+	catch (const std::exception& e) {
+		logError("Actualizar usuario binario", "Sistema", e.what());
+		return FileOperationResult::UNKNOWN_ERROR;
+	}
+}
 
 inline FileOperationResult FilesManager::guardarIndiceUsuario(UsuarioIndex& indice, TipoUsuario tipo) {
 	auto path = getIndexFilePath(tipo);

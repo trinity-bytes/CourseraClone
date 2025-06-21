@@ -27,14 +27,9 @@ protected:
 	std::string _fechaRegistro; // Fecha de registro del usuario
 
 private:
-    // Convierte un objeto Usuario a struct UsuarioBinario
-    inline UsuarioBinario toUsuarioBinario();
 
     // Convierte un UsuarioBinario a Usuario
     inline Usuario fromUsuarioBinario(const UsuarioBinario& bin);
-
-    // Convierte un objeto Usuario a UsuarioIndex
-    inline UsuarioIndex toUsuarioIndex();
 
     // Convierte struct UsuarioIndex a string de nombre de usuario
     inline std::string getUsernameFromIndex(const UsuarioIndex& index);
@@ -75,9 +70,14 @@ public:
     inline void reset();
     inline void guardar();
 
+    // Convertir
+    // Convierte un objeto Usuario a struct UsuarioBinario
+    inline UsuarioBinario toUsuarioBinario();
+    // Convierte un objeto Usuario a UsuarioIndex
+    inline UsuarioIndex toUsuarioIndex();
+
     inline void establecerDatosBase(Usuario otroUsuario);
 
-    inline bool actualizarUsuario(const std::string& _nuevoNombre, const std::string& _nuevoUsername, const std::string& _nuevaContrasena);
 };
 
 // IMPLEMENTACION DE CONSTCTORES Y DESTRUCTORES
@@ -115,17 +115,6 @@ inline Usuario::Usuario(int id, TipoUsuario tipo) {
 
 // IMPLEMENTACION DE FUNCIONES PRIVADAS
 
-// Convierte objeto Usuario a struct UsuarioBinario
-inline UsuarioBinario Usuario::toUsuarioBinario() 
-{
-    return UsuarioBinario(
-        _id,
-        _tipoUsuario,
-        _nombreCompleto,
-        _username,
-        _contrasenaHash
-    );
-}
 
 // Convierte struct UsuarioBinario a objeto Usuario
 // Necesita el ID y tipo de usuario, que no están en UsuarioBinario
@@ -138,12 +127,6 @@ inline Usuario Usuario::fromUsuarioBinario(const UsuarioBinario& binario)
         std::string(binario.nombreDeUsuario),
         std::string(binario.contrasenaHash)
     );
-}
-
-// Convierte objeto Usuario a struct UsuarioIndex
-inline UsuarioIndex Usuario::toUsuarioIndex()
-{
-    return UsuarioIndex(_username, _id);
 }
 
 // Convierte struct UsuarioIndex a string de nombre de usuario
@@ -179,7 +162,7 @@ inline std::string Usuario::getContrasenaHash() { return _contrasenaHash; }
 inline void Usuario::setId(int id) { _id = id; }
 inline void Usuario::setTipoUsuario(TipoUsuario tipo) { _tipoUsuario = tipo; }
 inline void Usuario::setNombreCompleto(const std::string& nombre) { _nombreCompleto = nombre; }
-inline void Usuario::setUsername(const std::string& username) { _username = username; }
+inline void Usuario::setUsername(const std::string& username) { _username = correoCorrecto(username); }
 inline void Usuario::setContrasena(std::string _contrasena) { _contrasenaHash = hashContrasena(_contrasena); }
 
 inline void Usuario::reset()
@@ -199,21 +182,31 @@ inline void Usuario::establecerDatosBase(Usuario otroUsuario)
     _contrasenaHash = otroUsuario.getContrasenaHash();
 }
 
+// Convierte objeto Usuario a struct UsuarioBinario
+inline UsuarioBinario Usuario::toUsuarioBinario()
+{
+    return UsuarioBinario(
+        _id,
+        _tipoUsuario,
+        _nombreCompleto,
+        _username,
+        _contrasenaHash
+    );
+}
+
+// Convierte objeto Usuario a struct UsuarioIndex
+inline UsuarioIndex Usuario::toUsuarioIndex()
+{
+    return UsuarioIndex(_username, _id);
+}
+
+
 inline void Usuario::guardar()
 {
     // Todo: Implementar la lógica para guardar el usuario en el archivo correspondiente.
     // Usaremos las funciones de la clase FilesManager para manejar los archivos.
 	FilesManager::getInstance().guardarUsuarioBinario(toUsuarioBinario(), _tipoUsuario);
     FilesManager::getInstance().guardarIndiceUsuario(toUsuarioIndex(), _tipoUsuario);
-}
-
-inline bool Usuario::actualizarUsuario(
-    const std::string& _nuevoNombre,
-    const std::string& _nuevoUsername,
-    const std::string& _nuevaContrasena
-) {
-	// ToDo: Implementar la lógica para actualizar el usuario en el archivo correspondiente.
-	// Usaremos las funciones de la clase FilesManager para manejar los archivos.
 }
 
 #endif // COURSERACLONE_ENTITIES_USUARIO_HPP
