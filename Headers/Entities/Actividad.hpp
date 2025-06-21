@@ -49,6 +49,11 @@ public:
 
     virtual ~Actividad() = default;
 
+    // Metodo para elemento menu
+    ElementoMenu obtenerDatosCrudosMenu() {
+		return ElementoMenu(_id, _titulo, _descripcion);
+    }
+
     // Getters
     int getId() const { return _id; }
     int getIdEmpresa() const { return _idEmpresa; }

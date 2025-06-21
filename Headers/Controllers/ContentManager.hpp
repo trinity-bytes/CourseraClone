@@ -239,6 +239,10 @@ public:
 
 	RawCursoData obtenerCursoDatos(int id);
 
+    ElementoMenu obtenerRawCursoMenu(int id);
+
+
+    RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id);
     /**
      * @brief Obtiene una especialización por su ID
      * @param id ID de la especialización
@@ -329,9 +333,10 @@ public:
     int getTotalCursos() const { return _cursos.size(); }
     int getTotalEspecializaciones() const { return _especializaciones.size(); }
 	int getCursoIdMostrar() { return idCursoMostrar; }
+    int getEspecializacionIdMostrar() { return idEspecializacionMostrar; }
 
     void setCursoIdMostrar(int _idNuevo) { idCursoMostrar = _idNuevo; }
-    void setEspecializacionMostar(int _idNuevo) { idEspecializacionMostrar = _idNuevo; }
+    void setEspecializacionIdMostar(int _idNuevo) { idEspecializacionMostrar = _idNuevo; }
 
     double obtenerProgreso(int idEstudiante, int idActividad) const;
 };
@@ -423,6 +428,14 @@ inline Curso* ContentManager::obtenerCurso(int id) {
 
 inline RawCursoData ContentManager::obtenerCursoDatos(int id) {
 	return _cursos[id]->obtenerDatosCrudosCurso();
+}
+
+inline ElementoMenu ContentManager::obtenerRawCursoMenu(int id) {
+	return _cursos[id]->obtenerDatosCrudosMenu();
+}
+
+inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
+	return _especializaciones[id]->obtenerDatosCrudosEspecialidad();
 }
 
 inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {

@@ -61,7 +61,8 @@ public:
         datos.categoria = this->getCategoria();
         datos.titulo = this->getTitulo();
         datos.descripcion = this->getDescripcion();
-        datos.idsCursos = this->_idsCursos;
+        //datos.idsCursos = this->_idsCursos;
+		for (int i = 0; i < 4; i++) datos.idsCursos.push_back(this->_idsCursos[i]);
         datos.duracionEstimada = this->_duracionEstimada;
         
         return datos;

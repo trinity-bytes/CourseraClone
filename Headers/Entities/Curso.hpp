@@ -8,6 +8,7 @@
 #include <iostream> // Para std::cout, std::endl
 #include <string>   // Para std::string
 #include <vector>
+#include "../Utils/ConsoleTypes.hpp"
 
 // Headers propios
 #include "Actividad.hpp"                     // Clase base Actividad
