@@ -142,6 +142,8 @@ inline void LoginScreen::_limpiarEstado()
     _campoActual = 0;
     _campoAnterior = -1;
     _primeraRenderizacion = true;
+
+    SessionManager::getInstance().logout();
 }
 
 inline void LoginScreen::_mostrarError(const std::string& mensaje)

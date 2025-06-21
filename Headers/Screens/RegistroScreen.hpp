@@ -13,6 +13,7 @@
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/UI_Ascii.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// Pantalla de registro de usuarios
 class RegistroScreen : public PantallaBase 
@@ -142,6 +143,8 @@ inline void RegistroScreen::_limpiarEstado()
     _error = false;
     _mensajeError.clear();
     _primeraRenderizacion = true;
+
+    SessionManager::getInstance().logout();
 }
 
 inline void RegistroScreen::_mostrarError(const std::string& mensaje)

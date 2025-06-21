@@ -333,8 +333,7 @@ inline void LandingPageScreen::renderizarElementos()
 
 // ---- METODOS PRIVADOS ----
 inline void LandingPageScreen::_limpiarEstado() {
-	bool sesionIniciada = SessionManager::getInstance().isLoggedIn();
-    if (sesionIniciada) SessionManager::getInstance().logout();
+	SessionManager::getInstance().logout();
 }
 
 // MÉTODOS PRIVADOS - ACTUALIZACIÓN DE SELECCIÓN
