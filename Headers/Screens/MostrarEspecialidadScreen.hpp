@@ -27,7 +27,8 @@ private:
     AccionPantalla _pantallaAnterior;
     bool _primeraRenderizacion;
     bool _yaInscrito; // Estado de inscripción
-      // Navegación
+      
+    // Navegación
     int _elementoActual;
     int _elementoAnterior;
     int _totalElementos; // Cursos + botón inscribirse (si es estudiante)

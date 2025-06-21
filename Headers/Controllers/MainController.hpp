@@ -18,6 +18,7 @@
 #include "../Screens/PerfilOrganizacionScreen.hpp"
 #include "../Screens/EditarPerfilScreen.hpp"
 #include "../Screens/MostrarEspecialidadScreen.hpp"
+#include "../Screens/MostrarCursoScreen.hpp"
 #include "../Screens/ExplorarContenidoScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
@@ -34,9 +35,9 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaRegistro();    
     inline std::unique_ptr<PantallaBase> crearPantallaDashboardEstudiante();    
     inline std::unique_ptr<PantallaBase> crearPantallaDashboardOrganizacion();    
-    inline std::unique_ptr<PantallaBase> crearPantallaPerfilEstudiante();    inline std::unique_ptr<PantallaBase> crearPantallaPerfilOrganizacion();
-    inline std::unique_ptr<PantallaBase> crearPantallaEditarPerfil();
+    inline std::unique_ptr<PantallaBase> crearPantallaPerfilEstudiante();    inline std::unique_ptr<PantallaBase> crearPantallaPerfilOrganizacion();    inline std::unique_ptr<PantallaBase> crearPantallaEditarPerfil();
     inline std::unique_ptr<PantallaBase> crearPantallaMostrarEspecializacion();
+    inline std::unique_ptr<PantallaBase> crearPantallaMostrarCurso();
     inline std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
 
 public:
@@ -112,6 +113,12 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaMostrarEspecia
     return std::make_unique<MostrarEspecialidadScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla mostrar curso
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaMostrarCurso()
+{
+    return std::make_unique<MostrarCursoScreen>();
+}
+
 /// @brief Crea una nueva instancia de la pantalla explorar contenido
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarContenido()
 {
@@ -122,7 +129,7 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarConten
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaMostrarEspecializacion();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaMostrarCurso();
     
     do
     {
@@ -152,14 +159,22 @@ inline void MainController::run()
         
         case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
             _pantallaActual = crearPantallaPerfilEstudiante();
-            break;        case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
+            break;        
+        
+        case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
             _pantallaActual = crearPantallaPerfilOrganizacion();
-            break;        case AccionPantalla::IR_A_EDITAR_PERFIL:
+            break;        
+        
+        case AccionPantalla::IR_A_EDITAR_PERFIL:
             _pantallaActual = crearPantallaEditarPerfil();
-            break;
-
+            break;        
+        
         case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
             _pantallaActual = crearPantallaMostrarEspecializacion();
+            break;
+
+        case AccionPantalla::IR_A_MOSTRAR_CURSO:
+            _pantallaActual = crearPantallaMostrarCurso();
             break;
 
 		case AccionPantalla::IR_A_SOBRE_NOSOTROS:
