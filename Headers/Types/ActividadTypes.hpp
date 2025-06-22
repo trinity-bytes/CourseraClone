@@ -216,6 +216,13 @@ struct RawActividadesData {
     std::vector<RawEspecializacionData> especializaciones;
 };
 
+// Escructura para el explorador
+struct RawExploradorData {
+	TipoActividad tipo;
+    int id;
+	std::string titulo;
+	CategoriaActividad categoria;
+};
 
 
 #endif // !COURSERACLONE_TYPES_ACTIVIDADTYPES_HPP

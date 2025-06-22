@@ -22,7 +22,7 @@ private:
     std::vector<std::pair<std::string, std::string>> contenidoCurso;
 	// ToDo: Implementar lista de clases relacionadas al curso
 public:
-    Curso() : Actividad(0, 0, "", CategoriaActividad::DEFAULT, "", ""), _instructor(""), _cantidadClases(0) {}
+    Curso() : Actividad(0, 0, "", CategoriaActividad::DEFAULT, "", "", TipoActividad::CURSO), _instructor(""), _cantidadClases(0) {}
 
     Curso(
         int id,
@@ -34,7 +34,8 @@ public:
         const std::string& instructor,
         int cantidadClases,
         std::vector<std::pair<std::string, std::string>> descripcionClase
-    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion),
+
+    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion, TipoActividad::CURSO),
         _instructor(instructor),
         _cantidadClases(cantidadClases) 
     {

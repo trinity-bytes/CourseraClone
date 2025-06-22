@@ -325,6 +325,8 @@ public:
      */
     RawActividadesData obtenerDatosCrudos(int maxCursos = -1, int maxEspecializaciones = -1) const;
 
+    std::vector<RawExploradorData> obtenerExploradorDatos() const;
+
     // ========== GETTERS ==========
 
     const std::vector<std::unique_ptr<Curso>>& getCursos() const { return _cursos; }
@@ -417,6 +419,24 @@ inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int 
     
     return datos;
 }
+
+inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() const {
+	std::vector<RawExploradorData> datosExplorador;
+	// Recorrer cursos
+	for (const auto& curso : _cursos) {
+		if (curso) {
+			datosExplorador.push_back(curso->obtenerDatosCrudosExplorador());
+		}
+	}
+	// Recorrer especializaciones
+	for (const auto& especializacion : _especializaciones) {
+		if (especializacion) {
+			datosExplorador.push_back(especializacion->obtenerDatosCrudosExplorador());
+		}
+	}
+	return datosExplorador;
+}
+
 
 inline Curso* ContentManager::obtenerCurso(int id) {
 	if (id < 0 || id >= _nextCursoId) {
