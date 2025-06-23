@@ -299,8 +299,8 @@ public:
     void escribirDebugLog(const std::string& mensaje);
 
     /// @brief Busca un curso por su nombre
-/// @param nombreCurso Nombre del curso a buscar
-/// @return Datos del curso encontrado, o estructura vacía si no se encuentra
+    /// @param nombreCurso Nombre del curso a buscar
+    /// @return Datos del curso encontrado, o estructura vacía si no se encuentra
     bool buscarCursoPorNombreHash(const std::string& nombre, RawCursoData& resultado);
 
     void FilesManager::cargarCursos();
@@ -313,8 +313,6 @@ public:
 
 	/// @brief Busca un comprobante por su ID en la tabla hash
     bool buscarComprobantePorIdHash(int id, RawComprobanteData& resultado);
-
-	
 };
 
 // ========== INICIALIZACIÓN DE MIEMBROS ESTÁTICOS ==========
@@ -1871,6 +1869,7 @@ inline int FilesManager::obtenerIdCursoPorNombre(const std::string& nombreCurso)
     }
     return -1; // No encontrado
 }
+
 inline void FilesManager::cargarComprobantes() {
     indiceComprobantes.clear();
 

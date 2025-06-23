@@ -52,6 +52,8 @@ private:
     int idCursoMostrar;
     int idEspecializacionMostrar;
 
+    std::vector<std::unique_ptr<Curso>> _cursos;
+
     // Constructor privado para evitar instanciación externa
     ContentManager();
 
@@ -82,7 +84,7 @@ public:
     ContentManager(const ContentManager&) = delete;
     ContentManager& operator=(const ContentManager&) = delete;
 
-    // Método estático para obtener la única instancia de la clase
+    /// Método estático para obtener la única instancia de la clase
     static ContentManager& getInstance();
 
     // El destructor puede ser público si unique_ptr lo maneja, o privado si la gestión es más estricta.
@@ -328,6 +330,15 @@ public:
     RawActividadesData obtenerDatosCrudos(int maxCursos = -1, int maxEspecializaciones = -1) const;
 
     std::vector<RawExploradorData> obtenerExploradorDatos() const;
+
+    /**
+ * @brief Busca cursos cuyos títulos comienzan con el texto dado (case-insensitive).
+ * @param texto Texto a buscar como prefijo.
+ * @param limite Máximo de resultados a retornar (-1 para sin límite).
+ * @return Vector de títulos de cursos que coinciden.
+ */
+    std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
+
 
     // ========== GETTERS ==========
 
@@ -626,6 +637,32 @@ inline void ContentManager::limpiarCaches() {
     _cacheIdEspecializaciones.clear();
 }
 
+inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite){
+
+    std::vector<std::string> sugerencias;
+    if (texto.empty()) return sugerencias;
+
+    // Convertir texto de búsqueda a minúsculas
+    std::string textoLower = texto;
+    std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+    std::vector<std::unique_ptr<Curso>> _cursos;
+
+    for (const auto& cursoPtr : _cursos) {
+        if (!cursoPtr) continue;
+        std::string titulo = cursoPtr->obtenerDatosCrudosCurso().titulo;
+        // Convertir título a minúsculas
+        std::string tituloLower = titulo;
+        std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+        // Buscar si el título comienza con el texto
+        if (tituloLower.find(textoLower) == 0) {
+            sugerencias.push_back(titulo);
+            if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;
+        }
+    }
+    return sugerencias;
+}
 // ========== UTILIDADES ==========
 
 #endif // COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP
