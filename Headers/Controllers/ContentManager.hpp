@@ -52,8 +52,6 @@ private:
     int idCursoMostrar;
     int idEspecializacionMostrar;
 
-    std::vector<std::unique_ptr<Curso>> _cursos;
-
     // Constructor privado para evitar instanciación externa
     ContentManager();
 

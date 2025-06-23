@@ -752,7 +752,7 @@ inline int FilesManager::buscarIndexUsuario(std::string _email, int _tipoUsuario
         if (std::strncmp(encontrado.nombreDeUsuario, _email.c_str(), MAX_FIELD_LEN) == 0) {
 			logInfo("Buscar índice de usuario", "Usuario encontrado: " + _email + " en posición " + std::to_string(pos));
 			is.close();
-            return pos;
+            return encontrado.offset;
         }
     }
 	logInfo("Buscar índice de usuario", "Usuario no encontrado: " + _email);
