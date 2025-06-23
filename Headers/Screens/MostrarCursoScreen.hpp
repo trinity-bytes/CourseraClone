@@ -13,6 +13,7 @@
 #include "../Utils/UI_Ascii.hpp"
 #include "../Types/UsuarioTypes.hpp"
 #include "../Controllers/ContentManager.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// Pantalla para mostrar curso con detalles y clases asociadas
 class MostrarCursoScreen : public PantallaBase
@@ -114,6 +115,15 @@ inline MostrarCursoScreen::MostrarCursoScreen(int idCurso,
     _primeraRenderizacion(true), _elementoActual(0), _enBotonInscribirse(false), _yaInscrito(false)
 {
     _idCurso = ContentManager::getInstance().getCursoIdMostrar();
+    if (SessionManager::getInstance().isLoggedIn()) {
+        _yaInscrito = SessionManager::getInstance().getInscripcionesController().verificarCurso(_idCurso);
+        _tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+    }
+    else {
+        _yaInscrito = false;
+        _tipoUsuario = TipoUsuario::DEFAULT;
+    }
+
     if (_idCurso == -1) {
         _cargarDatosDummy(101);
     }
@@ -511,16 +521,18 @@ inline std::vector<std::string> MostrarCursoScreen::dividirEnLineas(const std::s
     return lineas;
 }
 
+
+
 // Procesar selección
 inline ResultadoPantalla MostrarCursoScreen::_procesarSeleccion()
 {
     ResultadoPantalla res;
     
     if (_esBotonInscribirse()) {
-        if (!_yaInscrito) {
-            // Procesar inscripción (simulado)
+        if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
             _yaInscrito = true;
-            
+			SessionManager::getInstance().getInscripcionesController().inscribirCurso(_idCurso);
+
             // Actualizar el botón inmediatamente
             _renderizarBotonInscribirse(true);
             
@@ -533,7 +545,18 @@ inline ResultadoPantalla MostrarCursoScreen::_procesarSeleccion()
             // Limpiar mensaje
             gotoXY(30, 29);
             std::cout << "                                  ";
-        }
+		}
+		else {
+			gotoXY(30, 29);
+			setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::ERROR_COLOR);
+			std::cout << "[ERROR]: Curso ya inscrito";
+			resetColor();
+			_getch(); // Pausa para mostrar mensaje
+
+			// Limpiar mensaje
+			gotoXY(30, 29);
+			std::cout << "                                  ";
+		}
         // Si ya está inscrito, no hacer nada
     } else {
         // Ir a la clase seleccionada (simulado)

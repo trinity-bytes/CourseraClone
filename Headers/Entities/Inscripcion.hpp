@@ -48,6 +48,7 @@ public:
     inline void marcarComoPagada();
 
     inline RawInscripcionData obtenerDatosCrudos() const;
+    inline RawInscripcionElementoDash obtenerElementoDash() const;
 
     /*
     NOTA IMPORTANTE:
@@ -124,6 +125,10 @@ inline RawInscripcionData Inscripcion::obtenerDatosCrudos() const {
 	datos.pagado = this->estadoPago;
 	datos.tipo = this->tipo;
 	return datos;
+}
+
+inline RawInscripcionElementoDash Inscripcion::obtenerElementoDash() const {
+    return RawInscripcionElementoDash{ idActividad, id, tipo };
 }
 
 

@@ -45,4 +45,6 @@ struct ElementoMenu {
         : id(_id), titulo(_titulo), descripcion(_descripcion) {}
 };
 
+
+
 #endif // COURSERACLONE_UTILS_CONSOLETYPES_HPP

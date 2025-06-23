@@ -147,6 +147,8 @@ public:
      */
     ContentOperationResult eliminarCurso(int idCurso);
 
+    ElementoInscripcion cargarDatosInscripcionDash(RawInscripcionElementoDash data);
+
     // ========== GESTIÓN DE ESPECIALIZACIONES ==========
 
     /**
@@ -553,6 +555,17 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
         logError("CargarDesdeDatos", e.what());
         return ContentOperationResult::UNKNOWN_ERROR;
     }
+}
+
+inline ElementoInscripcion ContentManager::cargarDatosInscripcionDash(RawInscripcionElementoDash data) {
+	ElementoInscripcion inscripcion;
+    int idAhora = data.idActividad;
+    inscripcion.idInscripcion = data.idInscripcion;
+    inscripcion.idActividad = idAhora;
+	inscripcion.titulo = _cursos[idAhora]->getTitulo();
+    inscripcion.descripcion = _cursos[idAhora]->getDescripcion();
+	inscripcion.tipo = data.tipo;
+	return inscripcion;
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========
