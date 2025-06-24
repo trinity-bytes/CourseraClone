@@ -24,7 +24,7 @@ private:
 	int _duracionEstimada; // Duración estimada en semanas
 
 public:
-    Especializacion() : Actividad(0, 0, "", CategoriaActividad::DEFAULT, "", ""), 
+    Especializacion() : Actividad(0, 0, "", CategoriaActividad::DEFAULT, "", "", TipoActividad::ESPECIALIZACION), 
 		_idsCursos(),
         _duracionEstimada(0)
     {}
@@ -38,7 +38,7 @@ public:
         const std::string& descripcion,
 		const std::vector<int>& idsCursos,
         int duracionEstimada
-    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion), 
+    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion, TipoActividad::ESPECIALIZACION), 
         _idsCursos(idsCursos), 
         _duracionEstimada(duracionEstimada) 
     {}
@@ -61,7 +61,8 @@ public:
         datos.categoria = this->getCategoria();
         datos.titulo = this->getTitulo();
         datos.descripcion = this->getDescripcion();
-        datos.idsCursos = this->_idsCursos;
+        //datos.idsCursos = this->_idsCursos;
+		for (int i = 0; i < 4; i++) datos.idsCursos.push_back(this->_idsCursos[i]);
         datos.duracionEstimada = this->_duracionEstimada;
         
         return datos;

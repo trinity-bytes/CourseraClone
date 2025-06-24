@@ -49,6 +49,9 @@ private:
     // El mutex para asegurar la inicialización segura en entornos multi-hilo
     static std::once_flag _onceFlag;
 
+    int idCursoMostrar;
+    int idEspecializacionMostrar;
+
     // Constructor privado para evitar instanciación externa
     ContentManager();
 
@@ -79,7 +82,7 @@ public:
     ContentManager(const ContentManager&) = delete;
     ContentManager& operator=(const ContentManager&) = delete;
 
-    // Método estático para obtener la única instancia de la clase
+    /// Método estático para obtener la única instancia de la clase
     static ContentManager& getInstance();
 
     // El destructor puede ser público si unique_ptr lo maneja, o privado si la gestión es más estricta.
@@ -143,6 +146,8 @@ public:
      * @return ContentOperationResult resultado de la operación
      */
     ContentOperationResult eliminarCurso(int idCurso);
+
+    ElementoInscripcion cargarDatosInscripcionDash(RawInscripcionElementoDash data);
 
     // ========== GESTIÓN DE ESPECIALIZACIONES ==========
 
@@ -234,6 +239,12 @@ public:
      */
     Curso* obtenerCurso(int id);
 
+	RawCursoData obtenerCursoDatos(int id);
+
+    ElementoMenu obtenerRawCursoMenu(int id);
+
+
+    RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id);
     /**
      * @brief Obtiene una especialización por su ID
      * @param id ID de la especialización
@@ -316,6 +327,17 @@ public:
      */
     RawActividadesData obtenerDatosCrudos(int maxCursos = -1, int maxEspecializaciones = -1) const;
 
+    std::vector<RawExploradorData> obtenerExploradorDatos() const;
+
+    /**
+ * @brief Busca cursos cuyos títulos comienzan con el texto dado (case-insensitive).
+ * @param texto Texto a buscar como prefijo.
+ * @param limite Máximo de resultados a retornar (-1 para sin límite).
+ * @return Vector de títulos de cursos que coinciden.
+ */
+    std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
+
+
     // ========== GETTERS ==========
 
     const std::vector<std::unique_ptr<Curso>>& getCursos() const { return _cursos; }
@@ -323,6 +345,11 @@ public:
 
     int getTotalCursos() const { return _cursos.size(); }
     int getTotalEspecializaciones() const { return _especializaciones.size(); }
+	int getCursoIdMostrar() { return idCursoMostrar; }
+    int getEspecializacionIdMostrar() { return idEspecializacionMostrar; }
+
+    void setCursoIdMostrar(int _idNuevo) { idCursoMostrar = _idNuevo; }
+    void setEspecializacionIdMostar(int _idNuevo) { idEspecializacionMostrar = _idNuevo; }
 
     double obtenerProgreso(int idEstudiante, int idActividad) const;
 };
@@ -364,7 +391,7 @@ inline bool ContentManager::inicializarSistema()
 }
 
 inline ContentManager::ContentManager()
-    : _nextCursoId(1), _nextEspecializacionId(1) {
+    : _nextCursoId(1), _nextEspecializacionId(1), idCursoMostrar(-1), idEspecializacionMostrar(-1) {
 
     logOperation("Constructor", "ContentManager inicializado (Singleton)");
     inicializarSistema();
@@ -404,12 +431,42 @@ inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int 
     return datos;
 }
 
+inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() const {
+	std::vector<RawExploradorData> datosExplorador;
+	// Recorrer cursos
+	for (const auto& curso : _cursos) {
+		if (curso) {
+			datosExplorador.push_back(curso->obtenerDatosCrudosExplorador());
+		}
+	}
+	// Recorrer especializaciones
+	for (const auto& especializacion : _especializaciones) {
+		if (especializacion) {
+			datosExplorador.push_back(especializacion->obtenerDatosCrudosExplorador());
+		}
+	}
+	return datosExplorador;
+}
+
+
 inline Curso* ContentManager::obtenerCurso(int id) {
 	if (id < 0 || id >= _nextCursoId) {
 		logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
 		return nullptr; // ID inválido
 	}
     return _cursos[id].get();
+}
+
+inline RawCursoData ContentManager::obtenerCursoDatos(int id) {
+	return _cursos[id]->obtenerDatosCrudosCurso();
+}
+
+inline ElementoMenu ContentManager::obtenerRawCursoMenu(int id) {
+	return _cursos[id]->obtenerDatosCrudosMenu();
+}
+
+inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
+	return _especializaciones[id]->obtenerDatosCrudosEspecialidad();
 }
 
 inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
@@ -461,7 +518,8 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 cursoData.titulo,
                 cursoData.descripcion,
                 cursoData.instructor,
-                cursoData.cantidadClases
+                cursoData.cantidadClases,
+                cursoData.descripcionClases
             );
             
             _cursos.push_back(std::move(curso));
@@ -506,6 +564,17 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
         logError("CargarDesdeDatos", e.what());
         return ContentOperationResult::UNKNOWN_ERROR;
     }
+}
+
+inline ElementoInscripcion ContentManager::cargarDatosInscripcionDash(RawInscripcionElementoDash data) {
+	ElementoInscripcion inscripcion;
+    int idAhora = data.idActividad;
+    inscripcion.idInscripcion = data.idInscripcion;
+    inscripcion.idActividad = idAhora;
+	inscripcion.titulo = _cursos[idAhora]->getTitulo();
+    inscripcion.descripcion = _cursos[idAhora]->getDescripcion();
+	inscripcion.tipo = data.tipo;
+	return inscripcion;
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========
@@ -566,6 +635,32 @@ inline void ContentManager::limpiarCaches() {
     _cacheIdEspecializaciones.clear();
 }
 
+inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite){
+
+    std::vector<std::string> sugerencias;
+    if (texto.empty()) return sugerencias;
+
+    // Convertir texto de búsqueda a minúsculas
+    std::string textoLower = texto;
+    std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+    std::vector<std::unique_ptr<Curso>> _cursos;
+
+    for (const auto& cursoPtr : _cursos) {
+        if (!cursoPtr) continue;
+        std::string titulo = cursoPtr->obtenerDatosCrudosCurso().titulo;
+        // Convertir título a minúsculas
+        std::string tituloLower = titulo;
+        std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+        // Buscar si el título comienza con el texto
+        if (tituloLower.find(textoLower) == 0) {
+            sugerencias.push_back(titulo);
+            if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;
+        }
+    }
+    return sugerencias;
+}
 // ========== UTILIDADES ==========
 
 #endif // COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP

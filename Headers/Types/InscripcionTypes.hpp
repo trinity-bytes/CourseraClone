@@ -13,6 +13,27 @@ struct RawInscripcionData{
     bool pagado;
 };
 
+struct RawInscripcionElementoDash {
+    int idActividad;
+    int idInscripcion;
+    TipoActividad tipo;
+};
+
+struct ElementoInscripcion {
+    int idActividad = -1; // ID de la actividad (curso o especialización)
+    int idInscripcion = -1;
+    std::string titulo; // Título de la actividad
+    std::string descripcion; // Descripción de la actividad
+    bool activo = true; // Indica si el elemento está activo
+    TipoActividad tipo;
+
+    ElementoInscripcion() = default;
+
+    ElementoInscripcion(const std::string& _titulo, const std::string& _descripcion, int _idActividad = -1, int _idInscripcion = -1, TipoActividad _tipo = TipoActividad::DEFAULT)
+        : titulo(_titulo), descripcion(_descripcion), idActividad(_idActividad), idInscripcion(_idInscripcion), tipo(_tipo) {
+    }
+};
+
 // Estructura para índice de inscripciones en disco (.dat)
 struct InscripcionIndex {
     int idUsuario;

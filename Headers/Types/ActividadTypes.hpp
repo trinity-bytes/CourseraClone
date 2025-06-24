@@ -194,8 +194,6 @@ struct RawCursoData {
     CategoriaActividad categoria;
 	std::vector<std::pair<std::string, std::string>> descripcionClases;
     int cantidadClases;
-	std::vector<std::string> titulosClases;
-	std::vector<std::string> descripcionesClases;
 	int duracionEstimada; // Duraci�n en minutos
 };
 
@@ -218,6 +216,13 @@ struct RawActividadesData {
     std::vector<RawEspecializacionData> especializaciones;
 };
 
+// Escructura para el explorador
+struct RawExploradorData {
+	TipoActividad tipo;
+    int id;
+	std::string titulo;
+	CategoriaActividad categoria;
+};
 
 
 #endif // !COURSERACLONE_TYPES_ACTIVIDADTYPES_HPP

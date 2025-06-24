@@ -698,6 +698,7 @@ inline void LandingPageScreen::procesarSeleccionCurso(ResultadoPantalla& resulta
 {
     if (_elementoActual < _cursos.size()) {
         int idCursoSeleccionado = obtenerIdCurso(_elementoActual);
+        ContentManager::getInstance().setCursoIdMostrar(idCursoSeleccionado);
         resultado.idCursoSeleccionado = idCursoSeleccionado;
         resultado.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
         resultado.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;
@@ -707,7 +708,8 @@ inline void LandingPageScreen::procesarSeleccionCurso(ResultadoPantalla& resulta
 inline void LandingPageScreen::procesarSeleccionEspecialidad(ResultadoPantalla& resultado)
 {
     if (_elementoActual < _especialidades.size()) {
-        int idEspecializacionSeleccionada = _especialidades[_elementoActual].id;
+        int idEspecializacionSeleccionada = obtenerIdCurso(_elementoActual);
+		ContentManager::getInstance().setEspecializacionIdMostar(idEspecializacionSeleccionada);
         resultado.idCursoSeleccionado = idEspecializacionSeleccionada;
         resultado.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
         resultado.accionAnterior = AccionPantalla::IR_A_LANDING_PAGE;

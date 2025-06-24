@@ -7,6 +7,7 @@
 #include "../DataStructures/ArbolAVL.hpp"
 #include "../DataStructures/Stack.hpp"
 #include "../Entities/Inscripcion.hpp"
+#include "../Controllers/ContentManager.hpp"
 
 class InscripcionesController
 {
@@ -31,7 +32,11 @@ public:
 	inline void guardarCursoInscripcion(Inscripcion inscripcion);
 	inline void guardarEspecializacionInscripcion(Inscripcion inscripcion);
 	inline FileOperationResult inscribirCurso(int idCurso);
+	inline bool verificarCurso(int idCurso);
 	inline void mostrarCursos();
+
+	// Métodos para visualizar inscripciones
+	inline std::vector<ElementoInscripcion> getElementosInscripcionesDash() const;
 };
 
 // Constructores
@@ -117,11 +122,26 @@ inline FileOperationResult InscripcionesController::inscribirCurso(int idCurso) 
 	return FileOperationResult::SUCCESS;
 }
 
+inline bool InscripcionesController::verificarCurso(int idCurso) {
+	return idCursos->Buscar(idCurso);
+}
+
 inline void InscripcionesController::mostrarCursos() {
 	idCursos.get()->inOrden();
 	
 }
 
+inline std::vector<ElementoInscripcion> InscripcionesController::getElementosInscripcionesDash() const {
+	std::vector<ElementoInscripcion> elementos;
+	int cantidad = inscripcionesCursos.getTamano();
+	int minimo = (cantidad > 3) ? 3 : cantidad;
+	for (int i = 0; i < minimo; i++) {
+		RawInscripcionElementoDash inscripcion = inscripcionesCursos.get(i).obtenerElementoDash();
+		ElementoInscripcion nuevoElemento = ContentManager::getInstance().cargarDatosInscripcionDash(inscripcion);
+		elementos.push_back(nuevoElemento);
+	}
+	return elementos;
+}
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========
 inline void InscripcionesController::logError(const std::string& operation, const std::string& error) {

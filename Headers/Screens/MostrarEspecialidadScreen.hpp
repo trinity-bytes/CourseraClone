@@ -12,6 +12,7 @@
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.hpp"
 #include "../Types/UsuarioTypes.hpp"
+#include "../Controllers/ContentManager.hpp"
 
 /// Pantalla para mostrar especialización con detalles y cursos asociados
 class MostrarEspecialidadScreen : public PantallaBase
@@ -81,6 +82,7 @@ private:
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
     inline void _cargarDatosDummy();
+    inline void _cargarDatosEspecializacion();
 
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
@@ -123,7 +125,13 @@ inline MostrarEspecialidadScreen::MostrarEspecialidadScreen(int idEspecializacio
     _primeraRenderizacion(true), _elementoActual(0), _elementoAnterior(-1),
     _filaActual(0), _columnaActual(0), _enBotonInscribirse(false), _yaInscrito(false)
 {
-    _cargarDatosDummy();
+	_idEspecializacion = ContentManager::getInstance().getEspecializacionIdMostrar();
+	if (_idEspecializacion == -1) {
+		_cargarDatosDummy();
+	}
+	else {
+		_cargarDatosEspecializacion();
+	}
     
     // Calcular total de elementos navegables
     _totalElementos = _cursos.size();
@@ -162,6 +170,19 @@ inline void MostrarEspecialidadScreen::_cargarDatosDummy()
     _idCursos.clear();
     for (const auto& curso : _cursos) {
         _idCursos.push_back(curso.id);
+    }
+}
+
+inline void MostrarEspecialidadScreen::_cargarDatosEspecializacion() {
+	RawEspecializacionData datosEspecializacion = ContentManager::getInstance().obtenerEspecializacionDatos(_idEspecializacion);
+	_tituloEspecializacion = datosEspecializacion.titulo;
+	_descripcionEspecializacion = datosEspecializacion.descripcion;
+	_organizacionEspecializacion = datosEspecializacion.nombreEmpresa;
+	_cursos.clear();
+    for (int i = 0; i < 4; i++) {
+		int idCurso = datosEspecializacion.idsCursos[i];
+        ElementoMenu nuevoCurso = ContentManager::getInstance().obtenerRawCursoMenu(idCurso);
+        _cursos.push_back(nuevoCurso);
     }
 }
 
@@ -544,6 +565,8 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
         // Ir al curso seleccionado
         int indiceCurso = _obtenerIndiceCursoActual();
         if (indiceCurso >= 0 && indiceCurso < _cursos.size()) {
+            int idCursoSeleccionado = _cursos[indiceCurso].id;
+            ContentManager::getInstance().setCursoIdMostrar(idCursoSeleccionado);
             res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
             res.idCursoSeleccionado = _cursos[indiceCurso].id;
         }

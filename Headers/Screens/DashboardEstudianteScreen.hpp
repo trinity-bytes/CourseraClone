@@ -4,20 +4,20 @@
 #define COURSERACLONE_SCREENS_DASHBOARDESTUDIANTESCREEN_HPP
 
 // Headers de librería estándar
-#include <vector>
-#include <string>
-#include <sstream>    // Para std::stringstream
 #include <conio.h>    // Para _getch()
+#include <sstream>    // Para std::stringstream
+#include <string>
+#include <vector>
 
 // Headers propios del proyecto
 #include "../Controllers/ContentManager.hpp"
 #include "../Controllers/FilesManager.hpp"
+#include "../Types/UsuarioTypes.hpp"
+#include "../Utils/ConsoleTypes.hpp"
+#include "../Utils/DataPaths.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/SystemUtils.hpp"
-#include "../Utils/DataPaths.hpp"
 #include "../Utils/UI_Ascii.hpp"
-#include "../Utils/ConsoleTypes.hpp"
-#include "../Types/UsuarioTypes.hpp"
 
 // Pantalla principal del dashboard del estudiante
 class DashboardEstudianteScreen : public PantallaBase
@@ -81,8 +81,8 @@ private:
     };
 
 	/// @brief Listas de cursos y especializaciones inscritas
-    std::vector<ElementoMenu> _cursosInscritos;
-    std::vector<ElementoMenu> _especializacionesInscritas;
+    std::vector<ElementoInscripcion> _cursosInscritos;
+    std::vector<ElementoInscripcion> _especializacionesInscritas;
 
 	/// @brief Elementos de botones
     std::vector<std::string> _elementosHeader = {
@@ -152,17 +152,27 @@ inline void DashboardEstudianteScreen::_cargarDatosDummy()
 {
     // Cargar datos dummy para los cursos
     _cursosInscritos.clear();
-    _cursosInscritos.push_back(ElementoMenu("Introducción a Python", "Fundamentos de programación en Python", 1));
-    _cursosInscritos.push_back(ElementoMenu("Estructuras de Datos", "Arrays, listas, pilas y colas", 2));
-    _cursosInscritos.push_back(ElementoMenu("Algoritmos Avanzados", "Ordenamiento y búsqueda eficiente", 3));
-    _cursosInscritos.push_back(ElementoMenu("Desarrollo Web", "HTML, CSS y JavaScript moderno", 4));
+    if (SessionManager::getInstance().isLoggedIn()) {
+		_cursosInscritos = SessionManager::getInstance().getInscripcionesController().getElementosInscripcionesDash();
+    }
+    else {
+        /*
+        _cursosInscritos.push_back(ElementoMenu("Introducción a Python", "Fundamentos de programación en Python", 1));
+        _cursosInscritos.push_back(ElementoMenu("Estructuras de Datos", "Arrays, listas, pilas y colas", 2));
+        _cursosInscritos.push_back(ElementoMenu("Algoritmos Avanzados", "Ordenamiento y búsqueda eficiente", 3));
+        _cursosInscritos.push_back(ElementoMenu("Desarrollo Web", "HTML, CSS y JavaScript moderno", 4));
+        */
+    }
+    
 
     // Cargar datos dummy para las especializaciones
     _especializacionesInscritas.clear();
+    /*
     _especializacionesInscritas.push_back(ElementoMenu("Ciencia de Datos", "Machine Learning y análisis estadístico", 1));
     _especializacionesInscritas.push_back(ElementoMenu("Desarrollo Full Stack", "Frontend y backend completo", 2));
     _especializacionesInscritas.push_back(ElementoMenu("Ciberseguridad", "Protección de sistemas y redes", 3));
     _especializacionesInscritas.push_back(ElementoMenu("Inteligencia Artificial", "Deep Learning y redes neuronales", 4));
+    */
 }
 
 inline void DashboardEstudianteScreen::_dibujarInterfazCompleta()

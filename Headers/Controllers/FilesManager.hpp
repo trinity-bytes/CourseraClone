@@ -299,8 +299,8 @@ public:
     void escribirDebugLog(const std::string& mensaje);
 
     /// @brief Busca un curso por su nombre
-/// @param nombreCurso Nombre del curso a buscar
-/// @return Datos del curso encontrado, o estructura vacía si no se encuentra
+    /// @param nombreCurso Nombre del curso a buscar
+    /// @return Datos del curso encontrado, o estructura vacía si no se encuentra
     bool buscarCursoPorNombreHash(const std::string& nombre, RawCursoData& resultado);
 
     void FilesManager::cargarCursos();
@@ -313,8 +313,6 @@ public:
 
 	/// @brief Busca un comprobante por su ID en la tabla hash
     bool buscarComprobantePorIdHash(int id, RawComprobanteData& resultado);
-
-	
 };
 
 // ========== INICIALIZACIÓN DE MIEMBROS ESTÁTICOS ==========
@@ -754,7 +752,7 @@ inline int FilesManager::buscarIndexUsuario(std::string _email, int _tipoUsuario
         if (std::strncmp(encontrado.nombreDeUsuario, _email.c_str(), MAX_FIELD_LEN) == 0) {
 			logInfo("Buscar índice de usuario", "Usuario encontrado: " + _email + " en posición " + std::to_string(pos));
 			is.close();
-            return pos;
+            return encontrado.offset;
         }
     }
 	logInfo("Buscar índice de usuario", "Usuario no encontrado: " + _email);
@@ -1139,8 +1137,7 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
                     if (clasesPorLeer > 0) {
                         leyendoClases = true;
                         clasesLeidasActual = 0;
-                        cursoData.titulosClases.clear();
-                        cursoData.descripcionesClases.clear();
+                 
                     }
                     else {
                         escribirDebugLog("Advertencia: El curso no tiene clases definidas");
@@ -1176,8 +1173,8 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
                 }
                 
                 // Add class data to the course
-                cursoData.titulosClases.push_back(tituloClase);
-                cursoData.descripcionesClases.push_back(descripcionClase);
+                cursoData.descripcionClases.push_back({ tituloClase, descripcionClase });
+
                 clasesLeidasActual++;
                 
                 escribirDebugLog("  Clase #" + std::to_string(clasesLeidasActual) + 
@@ -1484,9 +1481,9 @@ inline FileOperationResult FilesManager::guardarCurso(const RawCursoData& curso)
 			<< curso.instructor << "\n"
 			<< curso.cantidadClases << "\n";
 
-		for (int i = 0; i < static_cast<int>(curso.titulosClases.size()); i++) {
-			archivo << curso.titulosClases[i] << "\n" 
-                << curso.descripcionesClases[i] << "\n";
+		for (int i = 0; i < static_cast<int>(curso.descripcionClases.size()); i++) {
+			archivo << curso.descripcionClases[i].first << "\n" 
+                << curso.descripcionClases[i].second << "\n";
 		}
 
 		archivo << "%%%\n"; // Delimitador de fin de curso
@@ -1872,6 +1869,7 @@ inline int FilesManager::obtenerIdCursoPorNombre(const std::string& nombreCurso)
     }
     return -1; // No encontrado
 }
+
 inline void FilesManager::cargarComprobantes() {
     indiceComprobantes.clear();
 

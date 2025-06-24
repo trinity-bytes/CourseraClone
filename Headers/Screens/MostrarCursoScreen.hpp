@@ -12,6 +12,8 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/UI_Ascii.hpp"
 #include "../Types/UsuarioTypes.hpp"
+#include "../Controllers/ContentManager.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// Pantalla para mostrar curso con detalles y clases asociadas
 class MostrarCursoScreen : public PantallaBase
@@ -53,7 +55,7 @@ private:
     /// @brief Coordenadas para información del curso
     COORD _coordTituloCurso = {14, 5};
     COORD _coordDescripcionCurso = {4, 12};
-    COORD _coordOrganizacion = {4, 4};
+    COORD _coordOrganizacion = {4, 8};
     
     /// @brief Coordenadas para el botón inscribirme
     COORD _coordBotonInscribirse = {20, 26};
@@ -67,7 +69,8 @@ private:
     
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
-    inline void _cargarDatosDummy();
+    inline void _cargarDatosDummy(int _idProvisional);
+    inline void _cargarDatosCurso();
 
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
@@ -111,7 +114,23 @@ inline MostrarCursoScreen::MostrarCursoScreen(int idCurso,
     _idCurso(idCurso), _tipoUsuario(tipoUsuario), _pantallaAnterior(pantallaAnterior),
     _primeraRenderizacion(true), _elementoActual(0), _enBotonInscribirse(false), _yaInscrito(false)
 {
-    _cargarDatosDummy();
+    _idCurso = ContentManager::getInstance().getCursoIdMostrar();
+    if (SessionManager::getInstance().isLoggedIn()) {
+        _yaInscrito = SessionManager::getInstance().getInscripcionesController().verificarCurso(_idCurso);
+        _tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+    }
+    else {
+        _yaInscrito = false;
+        _tipoUsuario = TipoUsuario::DEFAULT;
+    }
+
+    if (_idCurso == -1) {
+        _cargarDatosDummy(101);
+    }
+    else {
+        _cargarDatosCurso();
+    }
+    
     
     // Calcular total de elementos navegables
     _totalElementos = _clases.size();
@@ -129,10 +148,10 @@ inline void MostrarCursoScreen::_limpiarEstado()
 }
 
 // Cargar datos de ejemplo
-inline void MostrarCursoScreen::_cargarDatosDummy()
+inline void MostrarCursoScreen::_cargarDatosDummy(int _idProvisional = 101)
 {
     // Datos del curso basados en el ID
-    switch (_idCurso) {
+    switch (_idProvisional) {
     case 101:
         _tituloCurso = "Fundamentos de Programación";
         _descripcionCurso = "Aprende los conceptos básicos de programación usando Python, incluyendo variables, estructuras de control, funciones y programación orientada a objetos.";
@@ -195,6 +214,18 @@ inline void MostrarCursoScreen::_cargarDatosDummy()
     }
 }
 
+inline void MostrarCursoScreen::_cargarDatosCurso() {
+    RawCursoData datosCurso = ContentManager::getInstance().obtenerCursoDatos(_idCurso);
+    _tituloCurso = datosCurso.titulo;
+    _descripcionCurso = datosCurso.descripcion;
+    _organizacionCurso = datosCurso.nombreEmpresa;
+    _clases.clear();
+   
+    for (int i = 0; i < datosCurso.cantidadClases; i++) {
+        _clases.push_back(ElementoMenu(datosCurso.descripcionClases[i].first, datosCurso.descripcionClases[i].second));
+    }
+}
+
 // Dibujar interfaz completa
 inline void MostrarCursoScreen::dibujarInterfazCompleta()
 {
@@ -223,7 +254,7 @@ inline void MostrarCursoScreen::_renderizarInformacionCurso()
 
     // Organización (con salto de línea automático)
     std::vector<std::string> lineasOrganizacion = formatearTextoMultilinea(_organizacionCurso, LONGITUD_ORGANIZACION_CURSO);
-    for (int i = 0; i < lineasOrganizacion.size() && i < 1; ++i) {
+    for (int i = 0; i < lineasOrganizacion.size() && i < 2; ++i) {
         gotoXY(_coordOrganizacion.X, _coordOrganizacion.Y + i);
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         std::cout << lineasOrganizacion[i];
@@ -490,16 +521,18 @@ inline std::vector<std::string> MostrarCursoScreen::dividirEnLineas(const std::s
     return lineas;
 }
 
+
+
 // Procesar selección
 inline ResultadoPantalla MostrarCursoScreen::_procesarSeleccion()
 {
     ResultadoPantalla res;
     
     if (_esBotonInscribirse()) {
-        if (!_yaInscrito) {
-            // Procesar inscripción (simulado)
+        if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
             _yaInscrito = true;
-            
+			SessionManager::getInstance().getInscripcionesController().inscribirCurso(_idCurso);
+
             // Actualizar el botón inmediatamente
             _renderizarBotonInscribirse(true);
             
@@ -512,7 +545,18 @@ inline ResultadoPantalla MostrarCursoScreen::_procesarSeleccion()
             // Limpiar mensaje
             gotoXY(30, 29);
             std::cout << "                                  ";
-        }
+		}
+		else {
+			gotoXY(30, 29);
+			setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::ERROR_COLOR);
+			std::cout << "[ERROR]: Curso ya inscrito";
+			resetColor();
+			_getch(); // Pausa para mostrar mensaje
+
+			// Limpiar mensaje
+			gotoXY(30, 29);
+			std::cout << "                                  ";
+		}
         // Si ya está inscrito, no hacer nada
     } else {
         // Ir a la clase seleccionada (simulado)

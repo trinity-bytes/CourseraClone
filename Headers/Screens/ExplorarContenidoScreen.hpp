@@ -43,7 +43,7 @@ private:
 
     // Límites por sección
     static const int MAX_CATEGORIAS_VISIBLES = 15;
-    static const int MAX_RESULTADOS_VISIBLES = 6;
+    int MAX_RESULTADOS_VISIBLES = 10;
 
     // --- Coordenadas de la interfaz ---
     COORD _coordBuscador = {16, 6};
@@ -73,12 +73,14 @@ private:
 
     // --- Vectores de datos ---
     std::vector<std::string> _nombresCategorias;
-    std::vector<std::string> _textosResultadosEjemplo;
+    std::vector<RawExploradorData> _resultados;
     std::vector<std::string> _textosFiltroTipos;
 
     // --- Métodos privados de inicialización ---
     inline void _inicializarDatos();
     inline void _cargarCategorias();
+    inline void _cargarDatosSinRecomendacion(); // No hay sesion activa o el usuario no tiene inscripciones
+	inline void _cargarDatosRecomendados(); // Cargar datos de recomendación si hay sesión activa e inscripciones
     inline void _cargarResultadosEjemplo();    // --- Métodos privados de estado ---
     inline void _limpiarEstado();
     inline void _mostrarCursor();
@@ -110,6 +112,8 @@ private:
     inline void _manejarEntradaTexto(int tecla);
     inline void _manejarRetroceso();
 
+
+
     // --- Métodos utilitarios ---
     inline int _obtenerMaxElementosEnSeccion(int seccion);
     inline int _obtenerElementosVisiblesCategoria();
@@ -117,6 +121,7 @@ private:
 
     // --- Métodos de procesamiento ---
     inline ResultadoPantalla _procesarSeleccion();
+    inline void procesarSeleccionCursoEspecialidad(ResultadoPantalla& resultado);
 
 public:
     inline ExplorarContenidoScreen();
@@ -140,7 +145,7 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
-    _cargarResultadosEjemplo();
+    _cargarDatosSinRecomendacion();
     
     _textosFiltroTipos = {
         " TODOS ",
@@ -176,16 +181,28 @@ inline void ExplorarContenidoScreen::_cargarCategorias()
     };
 }
 
+inline void ExplorarContenidoScreen::_cargarDatosSinRecomendacion()
+{
+    _resultados.clear();
+	_resultados = ContentManager::getInstance().obtenerExploradorDatos();
+    if (_resultados.empty()) {
+        _cargarResultadosEjemplo(); // Cargar datos de ejemplo si no hay resultados
+    }
+    int totalCargados = static_cast<int>(_resultados.size());
+	MAX_RESULTADOS_VISIBLES = (totalCargados > 15) ? 15 : totalCargados;
+	_totalPaginas = (totalCargados + MAX_RESULTADOS_VISIBLES - 1) / MAX_RESULTADOS_VISIBLES; // Calcular total de páginas
+}
+
 // Cargar resultados de ejemplo
 inline void ExplorarContenidoScreen::_cargarResultadosEjemplo()
 {
-    _textosResultadosEjemplo = {
-        "Introduccion a Python",
-        "Desarrollo Web con React",
-        "Machine Learning Basico",
-        "Especializacion en Data Science",
-        "Curso de JavaScript Avanzado",
-        "Diseno UX/UI Completo"
+    _resultados = {
+        {TipoActividad::CURSO, 1, "Introduccion a Python", CategoriaActividad::PROGRAMACION},
+        {TipoActividad::CURSO, 1, "Desarrollo Web con React", CategoriaActividad::DESARROLLO_WEB},
+        {TipoActividad::CURSO, 1, "Machine Learning Basico", CategoriaActividad::CIENCIA_DE_DATOS},
+        {TipoActividad::CURSO, 1, "Especializacion en Data Science", CategoriaActividad::CIENCIA_DE_DATOS},
+        {TipoActividad::CURSO, 1, "Curso de JavaScript Avanzado", CategoriaActividad::DESARROLLO_WEB},
+		{TipoActividad::ESPECIALIZACION, 2, "Diseno UX / UI Completo", CategoriaActividad::DISENO},
     };
 }
 
@@ -402,7 +419,7 @@ inline void ExplorarContenidoScreen::_renderizarResultados()
 // Renderizar elemento de resultado
 inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bool seleccionado)
 {
-    if (indice >= _textosResultadosEjemplo.size()) return;
+    if (indice >= _resultados.size()) return;
     
     gotoXY(_coordResultados.X, _coordResultados.Y + indice);
     
@@ -412,7 +429,7 @@ inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bo
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
     
-    std::string texto = "- " + _textosResultadosEjemplo[indice];
+    std::string texto = "- " + _resultados[indice].titulo;
     std::cout << texto;
     resetColor();
 }
@@ -476,8 +493,8 @@ inline int ExplorarContenidoScreen::_obtenerElementosVisiblesCategoria()
 // Obtener elementos visibles de resultados
 inline int ExplorarContenidoScreen::_obtenerElementosVisiblesResultados()
 {
-    return (_textosResultadosEjemplo.size() > MAX_RESULTADOS_VISIBLES) ? 
-           MAX_RESULTADOS_VISIBLES : _textosResultadosEjemplo.size();
+    return (_resultados.size() > MAX_RESULTADOS_VISIBLES) ? 
+           MAX_RESULTADOS_VISIBLES : _resultados.size();
 }
 
 // Manejar navegación
@@ -662,6 +679,20 @@ inline void ExplorarContenidoScreen::_manejarRetroceso()
     }
 }
 
+inline void ExplorarContenidoScreen::procesarSeleccionCursoEspecialidad(ResultadoPantalla& resultado)
+{
+	int idSeleccionado = _resultados[_elementoActual].id;
+	if (_resultados[_elementoActual].tipo == TipoActividad::CURSO) {
+        ContentManager::getInstance().setCursoIdMostrar(idSeleccionado);
+        resultado.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
+	}
+	else if (_resultados[_elementoActual].tipo == TipoActividad::ESPECIALIZACION) {
+		ContentManager::getInstance().setEspecializacionIdMostar(idSeleccionado);
+		resultado.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
+	}
+    resultado.accionAnterior = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+}
+
 // Procesar selección
 inline ResultadoPantalla ExplorarContenidoScreen::_procesarSeleccion()
 {
@@ -683,11 +714,13 @@ inline ResultadoPantalla ExplorarContenidoScreen::_procesarSeleccion()
         // Aquí podrías abrir el detalle del curso/especialización seleccionado
         gotoXY(30, 25);
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Abriendo: " << _textosResultadosEjemplo[_elementoActual];
+        std::cout << "Abriendo: " << _resultados[_elementoActual].titulo;
         resetColor();
         Sleep(1000);
         gotoXY(30, 25);
         std::cout << "                                            ";
+        procesarSeleccionCursoEspecialidad(res);
+        return res;
         break;
     case SECCION_NAVEGACION_PAGINAS:
         // Cambiar página

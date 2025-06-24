@@ -20,6 +20,7 @@ protected:
     int _idEmpresa;
     std::string _nombreEmpresa;
     CategoriaActividad _categoria;
+    TipoActividad _tipo;
     std::string _titulo;
     std::string _descripcion;
 
@@ -28,6 +29,7 @@ public:
                   _idEmpresa(0), 
                   _nombreEmpresa(""), 
 		          _categoria(CategoriaActividad::DEFAULT),
+                  _tipo(TipoActividad::DEFAULT),
                   _titulo(""), 
                   _descripcion("") 
     {}
@@ -38,16 +40,27 @@ public:
         const std::string& nombreEmpresa,
         CategoriaActividad categoria,
         const std::string& titulo,
-        const std::string& descripcion
+        const std::string& descripcion,
+        TipoActividad tipo
     ) : _id(id),
         _idEmpresa(idEmpresa),
         _nombreEmpresa(nombreEmpresa),
         _categoria(categoria),
         _titulo(titulo),
-        _descripcion(descripcion)		
+        _descripcion(descripcion),
+        _tipo(tipo)
     {}
 
     virtual ~Actividad() = default;
+
+    // Metodo para elemento menu
+    ElementoMenu obtenerDatosCrudosMenu() {
+		return ElementoMenu(_id, _titulo, _descripcion);
+    }
+
+	RawExploradorData obtenerDatosCrudosExplorador() {
+		return RawExploradorData{ _tipo, _id, _titulo, _categoria};
+	}
 
     // Getters
     int getId() const { return _id; }
@@ -56,6 +69,7 @@ public:
     const CategoriaActividad getCategoria() const { return _categoria; }
     const std::string& getTitulo() const { return _titulo; }
     const std::string& getDescripcion() const { return _descripcion; }	
+	const TipoActividad getTipo() const { return _tipo; }
 
 	// Setters
     void setId(int id) { _id = id; }
@@ -64,6 +78,7 @@ public:
     void setCategoria(const CategoriaActividad categoria) { _categoria = categoria; }
     void setTitulo(const std::string& titulo) { _titulo = titulo; }
     void setDescripcion(const std::string& descripcion) { _descripcion = descripcion; }	
+	void setTipo(const TipoActividad tipo) { _tipo = tipo; }
 
 	virtual bool guardar() = 0; // Método virtual puro para guardar la actividad
 };
