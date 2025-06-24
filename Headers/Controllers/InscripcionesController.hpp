@@ -15,8 +15,10 @@ private:
 	// Estructuras de datos principales
 	Stack<Inscripcion> inscripcionesCursos;
 	Stack<Inscripcion> inscripcionesEspecialidades;
-	std::unique_ptr<ArbolAVL<int>> idCursos, idEspecialidades;
+	std::unique_ptr<ArbolAVL<int>> idCursos;
+	std::unique_ptr<ArbolAVL<int>> idEspecialidades;
 	int idEstudiante;
+
 
 	// Utilidades privadas
 	void logOperation(const std::string& operation, const std::string& details);
@@ -32,11 +34,14 @@ public:
 	inline void guardarCursoInscripcion(Inscripcion inscripcion);
 	inline void guardarEspecializacionInscripcion(Inscripcion inscripcion);
 	inline FileOperationResult inscribirCurso(int idCurso);
+	inline FileOperationResult inscribirEspecializacion(int idEspecializacion);
 	inline bool verificarCurso(int idCurso);
+	inline bool verificarEspecializacion(int idEspecializacion);
 	inline void mostrarCursos();
 
 	// Métodos para visualizar inscripciones
-	inline std::vector<ElementoInscripcion> getElementosInscripcionesDash() const;
+	inline std::vector<ElementoInscripcion> getElementosInscripcionesDash(Stack<Inscripcion>& inscripciones);
+	inline std::vector<ElementoInscripcion> getElementosInscripcionesDashTodos(TipoActividad tipo);
 };
 
 // Constructores
@@ -122,25 +127,51 @@ inline FileOperationResult InscripcionesController::inscribirCurso(int idCurso) 
 	return FileOperationResult::SUCCESS;
 }
 
+inline FileOperationResult InscripcionesController::inscribirEspecializacion(int idEspecializacion) {
+	if (!idEspecialidades->Insertar(idEspecializacion)) {
+		logError("Inscribir especializacion", 
+			"ID duplicado, no se agrega: especializacion " + std::to_string(idEspecializacion) + 
+			" para estudiante " + std::to_string(idEstudiante));
+		return FileOperationResult::DUPLICATED_VALUE;
+	}
+	// 2) Crea la nueva Inscripcion y la persiste en disco
+	int idActual = FilesManager::getInstance().cantidadInscripciones();
+	Inscripcion nueva(idEstudiante, idEspecializacion, idActual, TipoActividad::ESPECIALIZACION);
+	nueva.guardar();
+	inscripcionesEspecialidades.push(nueva);
+	logOperation("Inscribir especializacion",
+		"Éxito: especializacon " + std::to_string(idEspecializacion) +
+		" para estudiante " + std::to_string(idEstudiante));
+	return FileOperationResult::SUCCESS;
+}
+
 inline bool InscripcionesController::verificarCurso(int idCurso) {
 	return idCursos->Buscar(idCurso);
 }
 
-inline void InscripcionesController::mostrarCursos() {
-	idCursos.get()->inOrden();
-	
+inline bool InscripcionesController::verificarEspecializacion(int idEspecializacion) {
+	return idEspecialidades->Buscar(idEspecializacion);
 }
 
-inline std::vector<ElementoInscripcion> InscripcionesController::getElementosInscripcionesDash() const {
+inline void InscripcionesController::mostrarCursos() {
+	idCursos.get()->inOrden();
+}
+
+inline std::vector<ElementoInscripcion> InscripcionesController::getElementosInscripcionesDash(Stack<Inscripcion>& inscripciones) {
 	std::vector<ElementoInscripcion> elementos;
-	int cantidad = inscripcionesCursos.getTamano();
+	int cantidad = inscripciones.getTamano();
 	int minimo = (cantidad > 3) ? 3 : cantidad;
 	for (int i = 0; i < minimo; i++) {
-		RawInscripcionElementoDash inscripcion = inscripcionesCursos.get(i).obtenerElementoDash();
+		RawInscripcionElementoDash inscripcion = inscripciones.get(i).obtenerElementoDash();
 		ElementoInscripcion nuevoElemento = ContentManager::getInstance().cargarDatosInscripcionDash(inscripcion);
 		elementos.push_back(nuevoElemento);
 	}
 	return elementos;
+}
+
+inline std::vector<ElementoInscripcion> InscripcionesController::getElementosInscripcionesDashTodos(TipoActividad tipo) {
+	if (tipo == TipoActividad::CURSO) return getElementosInscripcionesDash(inscripcionesCursos);
+	return getElementosInscripcionesDash(inscripcionesEspecialidades);
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========

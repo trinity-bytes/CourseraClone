@@ -11,8 +11,9 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.hpp"
-#include "../Types/UsuarioTypes.hpp"
+#include "../Types/UsuarioTypes.hpp""
 #include "../Controllers/ContentManager.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// Pantalla para mostrar especialización con detalles y cursos asociados
 class MostrarEspecialidadScreen : public PantallaBase
@@ -126,6 +127,16 @@ inline MostrarEspecialidadScreen::MostrarEspecialidadScreen(int idEspecializacio
     _filaActual(0), _columnaActual(0), _enBotonInscribirse(false), _yaInscrito(false)
 {
 	_idEspecializacion = ContentManager::getInstance().getEspecializacionIdMostrar();
+	if (SessionManager::getInstance().isLoggedIn()) {
+		_yaInscrito = SessionManager::getInstance().getInscripcionesController().verificarEspecializacion(_idEspecializacion);
+		_tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+	}
+	else {
+		_yaInscrito = false;
+		_tipoUsuario = TipoUsuario::DEFAULT;
+	}
+
+
 	if (_idEspecializacion == -1) {
 		_cargarDatosDummy();
 	}
@@ -543,9 +554,9 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
     ResultadoPantalla res;
     
     if (_esBotonInscribirse()) {
-        if (!_yaInscrito) {
-            // Procesar inscripción (simulado)
+        if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
             _yaInscrito = true;
+			SessionManager::getInstance().getInscripcionesController().inscribirEspecializacion(_idEspecializacion);
             
             // Actualizar el botón inmediatamente
             _renderizarBotonInscribirse(true);
@@ -559,6 +570,17 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
             // Limpiar mensaje
             gotoXY(8, 28);
             std::cout << "                                                ";
+        }
+        else {
+            gotoXY(30, 29);
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::ERROR_COLOR);
+            std::cout << "[ERROR]: Especializacion ya inscrita";
+            resetColor();
+            _getch(); // Pausa para mostrar mensaje
+
+            // Limpiar mensaje
+            gotoXY(30, 29);
+            std::cout << "                                  ";
         }
         // Si ya está inscrito, no hacer nada
     } else {
