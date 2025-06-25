@@ -152,8 +152,10 @@ inline void DashboardEstudianteScreen::_cargarDatosDummy()
 {
     // Cargar datos dummy para los cursos
     _cursosInscritos.clear();
+    _especializacionesInscritas.clear();
     if (SessionManager::getInstance().isLoggedIn()) {
-		_cursosInscritos = SessionManager::getInstance().getInscripcionesController().getElementosInscripcionesDash();
+		_cursosInscritos = SessionManager::getInstance().getInscripcionesController().getElementosInscripcionesDashTodos(TipoActividad::CURSO);
+		_especializacionesInscritas = SessionManager::getInstance().getInscripcionesController().getElementosInscripcionesDashTodos(TipoActividad::ESPECIALIZACION);
     }
     else {
         /*
@@ -166,7 +168,6 @@ inline void DashboardEstudianteScreen::_cargarDatosDummy()
     
 
     // Cargar datos dummy para las especializaciones
-    _especializacionesInscritas.clear();
     /*
     _especializacionesInscritas.push_back(ElementoMenu("Ciencia de Datos", "Machine Learning y análisis estadístico", 1));
     _especializacionesInscritas.push_back(ElementoMenu("Desarrollo Full Stack", "Frontend y backend completo", 2));

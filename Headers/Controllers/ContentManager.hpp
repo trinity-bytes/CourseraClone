@@ -432,22 +432,22 @@ inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int 
 }
 
 inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() const {
-	std::vector<RawExploradorData> datosExplorador;
-	// Recorrer cursos
-	for (const auto& curso : _cursos) {
-		if (curso) {
-			datosExplorador.push_back(curso->obtenerDatosCrudosExplorador());
-		}
-	}
-	// Recorrer especializaciones
-	for (const auto& especializacion : _especializaciones) {
-		if (especializacion) {
-			datosExplorador.push_back(especializacion->obtenerDatosCrudosExplorador());
-		}
-	}
-	return datosExplorador;
-}
+    std::vector<RawExploradorData> datosExplorador;
 
+    // Generic lambda que procesa un contenedor de punteros a objetos con obtenerDatosCrudosExplorador()
+    auto procesar = [&](const auto& contenedor) {
+        for (const auto& ptr : contenedor) {
+            if (ptr) {
+                datosExplorador.push_back(ptr->obtenerDatosCrudosExplorador());
+            }
+        }
+        };
+
+    procesar(_cursos);            // procesa el vector de cursos
+    procesar(_especializaciones); // procesa el vector de especializaciones
+
+    return datosExplorador;
+}
 
 inline Curso* ContentManager::obtenerCurso(int id) {
 	if (id < 0 || id >= _nextCursoId) {
@@ -570,10 +570,17 @@ inline ElementoInscripcion ContentManager::cargarDatosInscripcionDash(RawInscrip
 	ElementoInscripcion inscripcion;
     int idAhora = data.idActividad;
     inscripcion.idInscripcion = data.idInscripcion;
+    inscripcion.tipo = data.tipo;
     inscripcion.idActividad = idAhora;
-	inscripcion.titulo = _cursos[idAhora]->getTitulo();
-    inscripcion.descripcion = _cursos[idAhora]->getDescripcion();
-	inscripcion.tipo = data.tipo;
+    if (data.tipo == TipoActividad::CURSO) {
+        inscripcion.titulo = _cursos[idAhora]->getTitulo();
+        inscripcion.descripcion = _cursos[idAhora]->getDescripcion();
+    }
+    else {
+		inscripcion.titulo = _especializaciones[idAhora]->getTitulo();
+		inscripcion.descripcion = _especializaciones[idAhora]->getDescripcion();
+    }
+	
 	return inscripcion;
 }
 
