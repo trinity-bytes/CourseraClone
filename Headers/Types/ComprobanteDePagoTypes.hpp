@@ -3,11 +3,9 @@
 
 enum class MetodoDePago{
     DEFAULT = 0,
-    EFECTIVO = 1,
-    TARJETA_CREDITO = 2,
-    TARJETA_DEBITO = 3,
-    TRANSFERENCIA_BANCARIA = 4,
-    BILLETERA_DIGITAL = 5
+    TARJETA_CREDITO = 1,
+    TARJETA_DEBITO = 2,
+    BILLETERA_DIGITAL = 3
 };
 
 struct BoletaBinaria {
