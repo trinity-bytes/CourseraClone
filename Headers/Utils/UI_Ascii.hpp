@@ -857,30 +857,30 @@ inline void UI_CrearOferta()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                   CREAR NUEVA OFERTA PROMOCIONAL                            
+                                             CREAR NUEVA OFERTA PROMOCIONAL                            
+
 
     ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    ║                                                                                                              ║
     ║  Seleccionar contenido a promocionar:                                                                        ║
-    ║  ┌─ Tipo: ──────────┐  ┌─ Contenido disponible: ──────────────────────────────────────────────────────────┐ ║
-    ║  │ ( ) CURSO        │  │ [ Seleccionar de la lista... ]                                                  │ ║
-    ║  │ ( ) ESPECIALIDAD │  └──────────────────────────────────────────────────────────────────────────────────┘ ║
-    ║  └──────────────────┘                                                                                        ║
+    ║                                                                                                              ║
+    ║  ┌─ ID: ────────────┐  ┌─ Nombre del contenido: ──────────────────────────────────────────────────────────┐  ║
+    ║  │                  │  │                                                                                  │  ║
+    ║  └──────────────────┘  └──────────────────────────────────────────────────────────────────────────────────┘  ║
     ║                                                                                                              ║
     ║  Detalles de la oferta:                                                                                      ║
-    ║  ┌─ Código promocional: ──────────┐  ┌─ Descuento (%): ────┐  ┌─ Fecha vencimiento: ──────────────┐        ║
-    ║  │                              │  │                    │  │ DD/MM/AAAA                       │        ║
-    ║  └──────────────────────────────┘  └────────────────────┘  └──────────────────────────────────┘        ║
     ║                                                                                                              ║
-    ║  Precio original (S/):  [ -------- ]     Precio con descuento (S/):  [ -------- ]                          ║
+    ║  ┌─ Código promocional: ──────────┐  ┌─ Descuento (%): ────┐  ┌─ Fecha vencimiento: ──────────────┐          ║
+    ║  │                                │  │                     │  │ DD/MM/AAAA                        │          ║
+    ║  └────────────────────────────────┘  └─────────────────────┘  └───────────────────────────────────┘          ║
     ║                                                                                                              ║
-    ║  Descripción de la oferta:                                                                                   ║
-    ║  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐  ║
-    ║  │ Ej: "¡Oferta especial por tiempo limitado! Aprende..."                                                │  ║
-    ║  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
+    ║  Precio original (S/):  [          ]     Precio con descuento (S/):  [          ]                            ║
+    ║                                                                                                              ║
     ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-                              CREAR OFERTA        PREVISUALIZAR        CANCELAR
-                              ¯¯¯¯¯¯¯¯¯¯¯¯        ¯¯¯¯¯¯¯¯¯¯¯¯¯        ¯¯¯¯¯¯¯¯
+                                                    CREAR OFERTA
+                                                    ¯¯¯¯¯¯¯¯¯¯¯¯
+
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
  Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
@@ -913,7 +913,7 @@ inline void UI_CrearOferta()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(35, 5); std::cout << "🎯 CREAR NUEVA OFERTA PROMOCIONAL 🎯";
+    gotoXY(35, 5); std::cout << "CREAR NUEVA OFERTA PROMOCIONAL";
 
     /// @brief Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
@@ -1112,6 +1112,8 @@ inline void UI_Ofertas()
 
     resetColor();
 }
+
+/// @TODO: implementar pantalla para agregar metodos de pago (max 32 caracteres de alto)
 
 /*
 ┌──┬───────┐
