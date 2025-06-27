@@ -7,6 +7,7 @@
 
 // Maxima longitud para campos de texto en binarios
 static constexpr int MAX_FIELD_LEN = 60;
+static constexpr int MAX_DATE_LEN = 28;
 
 // Tipos de usuario
 enum class TipoUsuario {
@@ -30,24 +31,28 @@ struct UsuarioBinario {
     char nombreCompleto[MAX_FIELD_LEN];
     char nombreDeUsuario[MAX_FIELD_LEN];
     char contrasenaHash[MAX_FIELD_LEN];
+    char fechaRegistro[MAX_DATE_LEN];
 
     // Constructor por defecto (inicializa todo a '\0')
     UsuarioBinario() : id(-1), tipoUsuario(TipoUsuario::DEFAULT) {
         std::memset(nombreCompleto, 0, MAX_FIELD_LEN);
         std::memset(nombreDeUsuario, 0, MAX_FIELD_LEN);
         std::memset(contrasenaHash, 0, MAX_FIELD_LEN);
+        std::memset(fechaRegistro, 0, MAX_DATE_LEN);
     }
 
     // Constructor parametrizado
     UsuarioBinario(int id_, TipoUsuario tipo_, const std::string& nombreFull,
-                   const std::string& usuario, const std::string& hash)
+                   const std::string& usuario, const std::string& hash, const std::string& fecha)
         : id(id_), tipoUsuario(tipo_) {
         std::strncpy(nombreCompleto, nombreFull.c_str(), MAX_FIELD_LEN - 1);
         std::strncpy(nombreDeUsuario, usuario.c_str(), MAX_FIELD_LEN - 1);
         std::strncpy(contrasenaHash, hash.c_str(), MAX_FIELD_LEN - 1);
+        std::strncpy(fechaRegistro, fecha.c_str(), MAX_DATE_LEN - 1);
         nombreCompleto[MAX_FIELD_LEN - 1] = '\0';
         nombreDeUsuario[MAX_FIELD_LEN - 1] = '\0';
         contrasenaHash[MAX_FIELD_LEN - 1] = '\0';
+        fechaRegistro[MAX_DATE_LEN - 1] = '\0';
     }
     // Constructor desde objeto Usuario (requiere declaración previa de Usuario)
     // Se implementa fuera del struct para evitar dependencia circular
@@ -84,11 +89,14 @@ struct UsuarioRawData {
     char nombreCompleto[MAX_FIELD_LEN];
     char nombreDeUsuario[MAX_FIELD_LEN];
     char contrasenaHash[MAX_FIELD_LEN];
+    char fechaRegistro[MAX_DATE_LEN];
+
     // Constructor por defecto
     UsuarioRawData() : id(0), tipoUsuario(TipoUsuario::DEFAULT) {
         std::memset(nombreCompleto, 0, MAX_FIELD_LEN);
         std::memset(nombreDeUsuario, 0, MAX_FIELD_LEN);
         std::memset(contrasenaHash, 0, MAX_FIELD_LEN);
+        std::memset(fechaRegistro, 0, MAX_DATE_LEN);
     }
 };
 

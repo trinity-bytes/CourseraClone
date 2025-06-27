@@ -218,5 +218,8 @@
     <ClInclude Include="Headers\Controllers\SessionManager.hpp">
       <Filter>Header Files\Controller</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Entities\DateTime.hpp">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

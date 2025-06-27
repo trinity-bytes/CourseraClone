@@ -1,0 +1,81 @@
+#pragma once
+
+#include <ctime>
+#include <string>
+
+std::string meses[12] = {
+            "enero","febrero","marzo","abril","mayo","junio",
+            "julio","agosto","setiembre","octubre","noviembre","diciembre"
+};
+
+// --- Clase única DateTime: obtiene y formatea fecha y hora ---
+class DateTime {
+public:
+    // Captura fecha y hora actuales del sistema
+    static DateTime now() {
+        std::time_t t = std::time(nullptr);
+        std::tm tm{};
+
+        localtime_s(&tm, &t);
+        return DateTime(
+            tm.tm_year + 1900,
+            tm.tm_mon + 1,
+            tm.tm_mday,
+            tm.tm_hour,
+            tm.tm_min,
+            tm.tm_sec
+        );
+    }
+
+    // Constructor
+    DateTime(int year, int month, int day,
+        int hour, int minute, int second)
+        : _year(year), _month(month), _day(day),
+        _hour(hour), _minute(minute), _second(second) {
+    }
+
+    // Fecha en formato "DD de <mes>, YYYY"
+    std::string toLongDateString() const {
+        
+        std::string s;
+        if (_day < 10) s += '0';
+        s += std::to_string(_day);
+        s += " de ";
+        s += meses[_month - 1];
+        s += ", ";
+        s += std::to_string(_year);
+        return s;
+    }
+
+    // Fecha ISO "YYYY-MM-DD"
+    std::string toIsoDateString() const {
+        std::string s;
+        s += std::to_string(_year);
+        s += '-';
+        if (_month < 10) s += '0';
+        s += std::to_string(_month);
+        s += '-';
+        if (_day < 10) s += '0';
+        s += std::to_string(_day);
+        return s;
+    }
+
+    // Hora "HH:MM:SS"
+    std::string toTimeString() const {
+        std::string s;
+        if (_hour < 10) s += '0';
+        s += std::to_string(_hour);
+        s += ':';
+        if (_minute < 10) s += '0';
+        s += std::to_string(_minute);
+        s += ':';
+        if (_second < 10) s += '0';
+        s += std::to_string(_second);
+        return s;
+    }
+
+private:
+    int _year, _month, _day;
+    int _hour, _minute, _second;
+};
+

@@ -144,6 +144,7 @@
     <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
+    <ClInclude Include="Headers\Entities\DateTime.hpp" />
     <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp" />
     <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
     <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />

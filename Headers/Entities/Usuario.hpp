@@ -11,6 +11,7 @@
 
 // Headers propios
 #include "../Types/UsuarioTypes.hpp"
+#include "../Entities/DateTime.hpp"
 
 /// @brief Clase que representa un usuario en el sistema, con métodos para autenticación 
 ///        y manejo de archivos binarios.
@@ -59,6 +60,7 @@ public:
     inline std::string getNombreCompleto();
     inline std::string getUsername();
     inline std::string getContrasenaHash();
+    inline std::string getFechaRegistro();
 
     // Setters
     inline void setId(int id);
@@ -100,7 +102,8 @@ inline Usuario::Usuario(
     _tipoUsuario(tipoUsuario),
     _nombreCompleto(nombreCompleto),
     _username(correoCorrecto(username)),
-    _contrasenaHash(hashContrasena(contrasenaHash)) 
+    _contrasenaHash(hashContrasena(contrasenaHash)),
+    _fechaRegistro(DateTime::now().toLongDateString())
 {}
 
 // Constructor con index
@@ -111,6 +114,7 @@ inline Usuario::Usuario(int id, TipoUsuario tipo) {
 	this->_nombreCompleto = std::string(usuarioBinario.nombreCompleto, strnlen(usuarioBinario.nombreCompleto, MAX_FIELD_LEN));
 	this->_username = std::string(usuarioBinario.nombreDeUsuario, strnlen(usuarioBinario.nombreDeUsuario, MAX_FIELD_LEN));
 	this->_contrasenaHash = std::string(usuarioBinario.contrasenaHash, strnlen(usuarioBinario.contrasenaHash, MAX_FIELD_LEN));
+    this->_fechaRegistro = std::string(usuarioBinario.fechaRegistro, strnlen(usuarioBinario.fechaRegistro, MAX_DATE_LEN));
 }
 
 // IMPLEMENTACION DE FUNCIONES PRIVADAS
@@ -157,6 +161,7 @@ inline TipoUsuario Usuario::getTipoUsuario() { return _tipoUsuario; }
 inline std::string Usuario::getNombreCompleto() { return _nombreCompleto; }
 inline std::string Usuario::getUsername() { return _username; }
 inline std::string Usuario::getContrasenaHash() { return _contrasenaHash; }
+inline std::string Usuario::getFechaRegistro() { return _fechaRegistro; }
 
 // Setters
 inline void Usuario::setId(int id) { _id = id; }
@@ -190,7 +195,8 @@ inline UsuarioBinario Usuario::toUsuarioBinario()
         _tipoUsuario,
         _nombreCompleto,
         _username,
-        _contrasenaHash
+        _contrasenaHash,
+        _fechaRegistro
     );
 }
 

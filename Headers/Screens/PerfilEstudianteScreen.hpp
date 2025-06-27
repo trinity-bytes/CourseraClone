@@ -126,6 +126,7 @@ inline void PerfilEstudianteScreen::_cargarDatosDummy()
         _idEstudiante = sm.getCurrentUser().getId();
         _emailEstudiante = sm.getCurrentUser().getUsername();
         _nombreEstudiante = sm.getCurrentUser().getNombreCompleto();
+        _fechaRegistroEstudiante = sm.getCurrentUser().getFechaRegistro();
     }
     // Los datos ya se cargan en el constructor
     // Este método está disponible para futuras cargas desde archivos

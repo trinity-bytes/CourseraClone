@@ -193,6 +193,7 @@ inline void MostrarEspecialidadScreen::_cargarDatosEspecializacion() {
     for (int i = 0; i < 4; i++) {
 		int idCurso = datosEspecializacion.idsCursos[i];
         ElementoMenu nuevoCurso = ContentManager::getInstance().obtenerRawCursoMenu(idCurso);
+        _idCursos.push_back(idCurso);
         _cursos.push_back(nuevoCurso);
     }
 }
@@ -557,7 +558,8 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
         if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
             _yaInscrito = true;
 			SessionManager::getInstance().getInscripcionesController().inscribirEspecializacion(_idEspecializacion);
-            
+            for (int _idCurso : _idCursos) SessionManager::getInstance().getInscripcionesController().inscribirCurso(_idCurso);
+                
             // Actualizar el botón inmediatamente
             _renderizarBotonInscribirse(true);
             

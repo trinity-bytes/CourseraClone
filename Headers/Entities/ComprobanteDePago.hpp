@@ -14,6 +14,7 @@
 #include "../Types/ComprobanteDePagoTypes.hpp"
 #include "../Types/ActividadTypes.hpp"
 #include "../Controllers/FilesManager.hpp"
+#include "../Entities/DateTime.hpp"
 
 // Clase que representa una boleta de pago
 class ComprobanteDePago{
@@ -80,36 +81,11 @@ ComprobanteDePago::ComprobanteDePago(
 
 // ---- Funciones privadas ----
 std::string ComprobanteDePago::obtenerFechaActual(){
-    time_t t = time(nullptr);
-    tm tm = localtime(&t)[0];
-    std::string fecha;
-    auto agregar = [&](int _valor) {
-        if (_valor < 10) fecha += '0';
-        fecha += std::to_string(_valor);
-        };
-
-    agregar(tm.tm_year + 1900); // Años desde 1900
-    fecha += '-';
-    agregar(tm.tm_mon + 1); // Meses desde 0
-    fecha += '-';
-    agregar(tm.tm_mday);
-    return fecha;
+    return DateTime::now().toIsoDateString();
 }
 
 std::string ComprobanteDePago::obtenerHoraActual(){
-    time_t t = time(nullptr);
-    tm tm = localtime(&t)[0];
-    std::string hora;
-    auto agregar = [&](int _valor) {
-        if (_valor < 10) hora += '0';
-        hora += std::to_string(_valor);
-        };
-    agregar(tm.tm_hour);
-    hora += ':';
-    agregar(tm.tm_min);
-    hora += ':';
-    agregar(tm.tm_sec);
-    return hora;
+    return DateTime::now().toTimeString();
 }
 
 // ---- Funciones publicas ----
