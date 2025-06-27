@@ -153,24 +153,6 @@ mostrarProgreso(75); // barra de progreso al 75%
 
 ---
 
-## 📱 Compatibilidad con Código Existente
-
-Para mantener compatibilidad con el código anterior, se mantienen los aliases:
-
-```cpp
-namespace Colors {
-    constexpr int NORMAL = ColorIndex::TEXTO_PRIMARIO;
-    constexpr int FONDO = ColorIndex::FONDO_PRINCIPAL;
-    constexpr int SELECCION = ColorIndex::AZUL_MARCA;
-    constexpr int ERRORES = ColorIndex::ERROR_COLOR;
-    constexpr int EXITO = ColorIndex::EXITO_COLOR;
-    constexpr int LINK = ColorIndex::LINK_COLOR;
-    // ... más aliases
-}
-```
-
----
-
 ## 🎯 Mejores Prácticas
 
 ### ✅ Recomendado
@@ -189,32 +171,9 @@ namespace Colors {
 
 ---
 
-## 🔧 Configuración Inicial
-
-Para activar la nueva paleta en tu aplicación:
-
-```cpp
-#include "Headers/Utils/SystemUtils.hpp"
-
-int main() {
-    // Configuración completa de consola con nueva paleta
-    configurarConsola();
-
-    // Tu código aquí...
-
-    return 0;
-}
-```
-
----
-
 ## 📐 Especificaciones Técnicas
 
 - **Rango de colores**: 0-15 (limitación de consola Windows)
 - **Formato RGB**: Valores 0-255 por canal
 - **Compatibilidad**: Windows 10+ con soporte de color extendido
 - **Fuente recomendada**: Cascadia Code Semibold (22pt)
-
----
-
-_Esta paleta garantiza una experiencia visual profesional y coherente con la identidad de marca de Coursera, mejorando la usabilidad y la percepción de calidad del software._
