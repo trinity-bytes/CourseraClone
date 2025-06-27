@@ -13,7 +13,7 @@
 
 
 // Clase base que representa una actividad educativa
-class Actividad 
+class Actividad
 {
 protected:
     int _id;
@@ -23,16 +23,19 @@ protected:
     TipoActividad _tipo;
     std::string _titulo;
     std::string _descripcion;
+    int _cantidadAlumnos;
 
 public:
-    Actividad() : _id(0), 
-                  _idEmpresa(0), 
-                  _nombreEmpresa(""), 
-		          _categoria(CategoriaActividad::DEFAULT),
-                  _tipo(TipoActividad::DEFAULT),
-                  _titulo(""), 
-                  _descripcion("") 
-    {}
+    Actividad() : _id(0),
+        _idEmpresa(0),
+        _nombreEmpresa(""),
+        _categoria(CategoriaActividad::DEFAULT),
+        _tipo(TipoActividad::DEFAULT),
+        _titulo(""),
+        _descripcion(""),
+        _cantidadAlumnos(0)
+    {
+    }
 
     Actividad(
         int id,
@@ -48,19 +51,25 @@ public:
         _categoria(categoria),
         _titulo(titulo),
         _descripcion(descripcion),
-        _tipo(tipo)
-    {}
+        _tipo(tipo),
+        _cantidadAlumnos(0)
+    {
+    }
 
     virtual ~Actividad() = default;
 
     // Metodo para elemento menu
     ElementoMenu obtenerDatosCrudosMenu() {
-		return ElementoMenu(_id, _titulo, _descripcion);
+        return ElementoMenu(_id, _titulo, _descripcion);
     }
 
-	RawExploradorData obtenerDatosCrudosExplorador() {
-		return RawExploradorData{ _tipo, _id, _titulo, _categoria};
-	}
+    RawExploradorData obtenerDatosCrudosExplorador() {
+        return RawExploradorData{ _tipo, _id, _titulo, _categoria };
+    }
+
+    RawLandingData obtenerDatosLanding() {
+        return RawLandingData{ _id, _tipo, _cantidadAlumnos };
+    }
 
     // Getters
     int getId() const { return _id; }
@@ -68,19 +77,22 @@ public:
     const std::string& getNombreEmpresa() const { return _nombreEmpresa; }
     const CategoriaActividad getCategoria() const { return _categoria; }
     const std::string& getTitulo() const { return _titulo; }
-    const std::string& getDescripcion() const { return _descripcion; }	
-	const TipoActividad getTipo() const { return _tipo; }
+    const std::string& getDescripcion() const { return _descripcion; }
+    const int getCantidad() const { return _cantidadAlumnos; }
+    const TipoActividad getTipo() const { return _tipo; }
 
-	// Setters
+    // Setters
     void setId(int id) { _id = id; }
     void setIdEmpresa(int idEmpresa) { _idEmpresa = idEmpresa; }
     void setNombreEmpresa(const std::string& nombreEmpresa) { _nombreEmpresa = nombreEmpresa; }
     void setCategoria(const CategoriaActividad categoria) { _categoria = categoria; }
     void setTitulo(const std::string& titulo) { _titulo = titulo; }
-    void setDescripcion(const std::string& descripcion) { _descripcion = descripcion; }	
-	void setTipo(const TipoActividad tipo) { _tipo = tipo; }
+    void setDescripcion(const std::string& descripcion) { _descripcion = descripcion; }
+    void setTipo(const TipoActividad tipo) { _tipo = tipo; }
+    void aumentarAlumno() { _cantidadAlumnos++; }
 
-	virtual bool guardar() = 0; // Método virtual puro para guardar la actividad
+
+    virtual bool guardar() = 0; // Método virtual puro para guardar la actividad
 };
 
 #endif // COURSERACLONE_ENTITIES_ACTIVIDAD_HPP

@@ -8,11 +8,11 @@
 #include <string>
 #include <vector>
 
-// Enumeraci�n para las categor�as de actividades
-enum class CategoriaActividad : int{
-    DEFAULT, // Categor�a por defecto, no se usa en la pr�ctica
+// Enumeraci n para las categor as de actividades
+enum class CategoriaActividad : int {
+    DEFAULT, // Categor a por defecto, no se usa en la pr ctica
 
-    // Tecnolog�a & Desarrollo
+    // Tecnolog a & Desarrollo
     PROGRAMACION,
     DESARROLLO_WEB,
     DESARROLLO_MOVIL,
@@ -31,7 +31,7 @@ enum class CategoriaActividad : int{
     ROBOTICA,
     UX_UI,
 
-    // Dise�o & Creatividad
+    // Dise o & Creatividad
     DISENO,
     DISENO_GRAFICO,
     DISENO_INDUSTRIAL,
@@ -41,7 +41,7 @@ enum class CategoriaActividad : int{
     MUSICA_SONIDO,
     ESCRITURA_CREATIVA,
 
-    // Negocios & Gesti�n
+    // Negocios & Gesti n
     NEGOCIOS,
     MARKETING_DIGITAL,
     FINANZAS,
@@ -52,7 +52,7 @@ enum class CategoriaActividad : int{
     ECOMMERCE,
     ANALISIS_NEGOCIOS,
 
-    // Ciencias & Educaci�n
+    // Ciencias & Educaci n
     INVESTIGACION,
     BIOTECNOLOGIA,
     INGENIERIA,
@@ -62,23 +62,23 @@ enum class CategoriaActividad : int{
     IDIOMAS,
     PSICOLOGIA,
 
-    // Categor�a general
+    // Categor a general
     OTROS
 };
 
 // Enum para representar los tipos de actividad
-enum class TipoActividad{
-	DEFAULT, // Tipo por defecto, no se usa en la pr�ctica
+enum class TipoActividad {
+    DEFAULT, // Tipo por defecto, no se usa en la pr ctica
     CURSO,
-	ESPECIALIZACION
+    ESPECIALIZACION
 };
 
 // Forward declaration for FilesManager to use escribirDebugLog
-class FilesManager; 
+class FilesManager;
 
-struct RawActividadData{
+struct RawActividadData {
     // Ahora es un método estático y completo
-    static CategoriaActividad stringToCategoria(const std::string& categoriaStr){
+    static CategoriaActividad stringToCategoria(const std::string& categoriaStr) {
         if (categoriaStr == "PROGRAMACION") return CategoriaActividad::PROGRAMACION;
         if (categoriaStr == "DESARROLLO_WEB") return CategoriaActividad::DESARROLLO_WEB;
         if (categoriaStr == "DESARROLLO_MOVIL") return CategoriaActividad::DESARROLLO_MOVIL;
@@ -182,7 +182,7 @@ struct RawActividadData{
     }
 };
 
-// Datos crudos de un curso le�dos del archivo
+// Datos crudos de un curso le dos del archivo
 struct RawCursoData {
     // Datos generales del curso
     int id;
@@ -192,12 +192,12 @@ struct RawCursoData {
     std::string descripcion;
     std::string instructor;
     CategoriaActividad categoria;
-	std::vector<std::pair<std::string, std::string>> descripcionClases;
+    std::vector<std::pair<std::string, std::string>> descripcionClases;
     int cantidadClases;
-	int duracionEstimada; // Duraci�n en minutos
+    int duracionEstimada; // Duraci n en minutos
 };
 
-// Datos crudos de una especializaci�n le�dos del archivo
+// Datos crudos de una especializaci n le dos del archivo
 struct RawEspecializacionData {
     int id;
     int idEmpresa;
@@ -218,10 +218,16 @@ struct RawActividadesData {
 
 // Escructura para el explorador
 struct RawExploradorData {
-	TipoActividad tipo;
+    TipoActividad tipo;
     int id;
-	std::string titulo;
-	CategoriaActividad categoria;
+    std::string titulo;
+    CategoriaActividad categoria;
+};
+
+struct RawLandingData {
+    int id;
+    TipoActividad tipo;
+    int cantidad;
 };
 
 

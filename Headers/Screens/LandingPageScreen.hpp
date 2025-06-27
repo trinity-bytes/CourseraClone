@@ -101,8 +101,8 @@ private:
     bool _presionEnter;        
 
     /// @brief Datos dinámicos del menú usando estructuras crudas
-    std::vector<RawEspecializacionData> _especialidades;
-    std::vector<RawCursoData> _cursos;   
+    std::vector<ElementoMenu> _especialidades;
+    std::vector<ElementoMenu> _cursos;   
 
     // MÉTODOS PRIVADOS - CONFIGURACIÓN Y DATOS
     /// @brief Carga todos los datos necesarios para la landing page
@@ -283,16 +283,12 @@ inline void LandingPageScreen::cargarDatos(int maxEspecializaciones, int maxCurs
     /// @brief Obtener la instancia del ContentManager
     ContentManager& contentManager = ContentManager::getInstance();
     
-    /// @brief Obtener datos crudos desde ContentManager (respetando límites)
-    RawActividadesData datosActividades = contentManager.obtenerDatosCrudos(maxCursos, maxEspecializaciones);
-    
     /// @brief Limpiar contenedores existentes
     _especialidades.clear();
     _cursos.clear();
-    
     /// @brief Asignar datos directamente sin conversiones
-    _especialidades = datosActividades.especializaciones;    
-    _cursos = datosActividades.cursos;
+    _especialidades = contentManager.elegirObtenerActividadesPopulares(TipoActividad::ESPECIALIZACION, 3);
+	_cursos = contentManager.elegirObtenerActividadesPopulares(TipoActividad::CURSO, 3);
     
     /// DEBUG: Verificar cuántas especialidades se cargaron
     FilesManager& filesManager = FilesManager::getInstance();
@@ -300,6 +296,7 @@ inline void LandingPageScreen::cargarDatos(int maxEspecializaciones, int maxCurs
     for (size_t i = 0; i < _especialidades.size(); ++i) {
         filesManager.escribirDebugLog("  - " + std::to_string(i) + ": " + _especialidades[i].titulo);
     }
+
 }
 
 // MÉTODOS PRIVADOS - CONTENIDO DINÁMICO

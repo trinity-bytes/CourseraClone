@@ -21,6 +21,8 @@
 #include "../Entities/Inscripcion.hpp"
 #include "../DataStructures/LinkedList.hpp"
 #include "../Utils/DataPaths.hpp"
+#include "../DataStructures/PriorityQueue.hpp"
+#include "../DataStructures/LinkedList.hpp"
 
 // Enums para tipos y resultados
 enum class ActividadTipo : int {
@@ -31,8 +33,8 @@ enum class ActividadTipo : int {
 enum class ContentOperationResult {
     SUCCESS,
     CONTENT_NOT_FOUND,
-	COURSE_NOT_FOUND,
-	SPECIALIZATION_NOT_FOUND,
+    COURSE_NOT_FOUND,
+    SPECIALIZATION_NOT_FOUND,
     STUDENT_ALREADY_ENROLLED,
     INVALID_DATA,
     FILE_ERROR,
@@ -95,8 +97,8 @@ public:
      * @brief Inicializa el manager cargando datos desde archivos
      * @return true si la inicialización fue exitosa
      */
-    bool inicializarSistema();    
-    
+    bool inicializarSistema();
+
     /**
      * @brief Carga datos desde estructuras raw del FileManager
      * @param dataActividades Datos de cursos y especializaciones
@@ -107,6 +109,9 @@ public:
         const RawActividadesData& dataActividades,
         const std::vector<InscripcionBinaria>& dataInscripciones
     );
+
+    ContentOperationResult cargarCantidadInscripcionesActividad(
+        const std::vector<InscripcionBinaria>& dataInscripciones);
 
     // ========== GESTIÓN DE CURSOS ==========
 
@@ -239,7 +244,7 @@ public:
      */
     Curso* obtenerCurso(int id);
 
-	RawCursoData obtenerCursoDatos(int id);
+    RawCursoData obtenerCursoDatos(int id);
 
     ElementoMenu obtenerRawCursoMenu(int id);
 
@@ -250,7 +255,7 @@ public:
      * @param id ID de la especialización
      * @return Puntero a la especialización o nullptr si no existe
      */
-    Especializacion* obtenerEspecializacion(int id) const;
+    Especializacion* obtenerEspecializacion(int id);
 
     /**
      * @brief Busca cursos por categoría
@@ -289,18 +294,29 @@ public:
     std::map<std::string, int> obtenerEstadisticasGenerales() const;
 
     /**
+
+    */
+    std::vector<RawLandingData> obtenerActividadesPopulares(LinkedList<RawLandingData>& actividades, int limite = 3);
+
+    /*
+    *
+    *
+    */
+    std::vector<ElementoMenu> elegirObtenerActividadesPopulares(TipoActividad tipo, int limite = 3);
+
+    /**
      * @brief Obtiene los cursos más populares
      * @param limite Número máximo de cursos a retornar
      * @return Vector con los cursos más populares
      */
-    std::vector<Curso*> obtenerCursosMasPopulares(int limite = 10) const;
+    std::vector<Curso*> obtenerCursosMasPopulares(int limite = 3) const;
 
     /**
      * @brief Obtiene las especializaciones más populares
      * @param limite Número máximo de especializaciones a retornar
      * @return Vector con las especializaciones más populares
      */
-    std::vector<Especializacion*> obtenerEspecializacionesMasPopulares(int limite = 10) const;
+    std::vector<Especializacion*> obtenerEspecializacionesMasPopulares(int limite = 3) const;
 
     // ========== PERSISTENCIA ==========    
     /**
@@ -315,7 +331,7 @@ public:
      */
     ContentOperationResult recargarDatos();
 
-	//inline Especializacion* obtenerEspecializacion(int idCurso) const;
+    //inline Especializacion* obtenerEspecializacion(int idCurso) const;
 
     // ========== OBTENCIÓN DE DATOS CRUDOS ==========
 
@@ -345,7 +361,7 @@ public:
 
     int getTotalCursos() const { return _cursos.size(); }
     int getTotalEspecializaciones() const { return _especializaciones.size(); }
-	int getCursoIdMostrar() { return idCursoMostrar; }
+    int getCursoIdMostrar() { return idCursoMostrar; }
     int getEspecializacionIdMostrar() { return idEspecializacionMostrar; }
 
     void setCursoIdMostrar(int _idNuevo) { idCursoMostrar = _idNuevo; }
@@ -368,26 +384,33 @@ inline std::once_flag ContentManager::_onceFlag;
 
 // ========== IMPLEMENTACIONES INLINE ==========
 
-inline bool ContentManager::inicializarSistema() 
+inline bool ContentManager::inicializarSistema()
 {
-	FilesManager* fileManager = &FilesManager::getInstance();
+    FilesManager* fileManager = &FilesManager::getInstance();
 
-	RawActividadesData dataActividades = fileManager->leerDatosActividades();
-	std::vector<InscripcionBinaria> dataInscripciones = fileManager->leerDatosInscripciones();
+    RawActividadesData dataActividades = fileManager->leerDatosActividades();
+    std::vector<InscripcionBinaria> dataInscripciones = fileManager->leerDatosInscripciones();
 
-	// Para debugging: mostrar cantidad de datos cargados
-	int cantidad = dataActividades.cursos.size() + dataActividades.especializaciones.size();
+    // Para debugging: mostrar cantidad de datos cargados
+    int cantidad = dataActividades.cursos.size() + dataActividades.especializaciones.size();
     // throw std::runtime_error(std::to_string(cantidad));
-    
-    ContentOperationResult result = cargarDesdeDatos(dataActividades, dataInscripciones);
 
-	if (result != ContentOperationResult::SUCCESS) {
-		logError("Inicialización", "Error al cargar datos: " + std::to_string(static_cast<int>(result)));
+    ContentOperationResult result = cargarDesdeDatos(dataActividades, dataInscripciones);
+    if (result != ContentOperationResult::SUCCESS) {
+        logError("Inicialización", "Error al cargar datos: " + std::to_string(static_cast<int>(result)));
         return false;
-	}
-	logOperation("Inicialización", "ContentManager completada con éxito");
-    
-	return true;
+    }
+    logOperation("Inicialización", "ContentManager completada con éxito");
+
+    result = cargarCantidadInscripcionesActividad(dataInscripciones);
+    if (result != ContentOperationResult::SUCCESS) {
+        logError("Inicializacion", "No hay registros para cargar entidades");
+        return false;
+    }
+
+    logOperation("Inicializacion", "Carga de cursos y especializaciones exitosa");
+
+    return true;
 }
 
 inline ContentManager::ContentManager()
@@ -395,7 +418,7 @@ inline ContentManager::ContentManager()
 
     logOperation("Constructor", "ContentManager inicializado (Singleton)");
     inicializarSistema();
-    
+
 }
 
 inline ContentManager& ContentManager::getInstance() {
@@ -407,9 +430,72 @@ inline ContentManager& ContentManager::getInstance() {
     return *_instance;
 }
 
+
+inline std::vector<RawLandingData> ContentManager::obtenerActividadesPopulares(LinkedList<RawLandingData>& actividades, int limite) {
+    auto ordenadoActividades = [](RawLandingData a1, RawLandingData a2) {
+        return a1.cantidad > a2.cantidad;
+        };
+
+    PriorityQueue<RawLandingData, decltype(ordenadoActividades)> priorityActividades(limite, ordenadoActividades);
+    priorityActividades.llenarDesde(actividades);
+
+    std::vector<RawLandingData> respuesta;
+    respuesta = priorityActividades.getElementosOrdenados();
+	for (auto& actividad : respuesta) {
+        logOperation("Verificar Actividad en Priority Queue, de tipo " + std::to_string(static_cast<int>(actividad.tipo)), 
+            "Actividad " + std::to_string(actividad.id) + " con " + std::to_string(actividad.cantidad) + " inscripciones.");
+	}
+   
+    return respuesta;
+}
+
+inline std::vector<ElementoMenu> ContentManager::elegirObtenerActividadesPopulares(TipoActividad tipo, int limite) {
+    LinkedList<RawLandingData> datos;
+    if (tipo == TipoActividad::CURSO) {
+        
+		for (const auto& curso : _cursos) {
+			if (curso) {
+                datos.agregarAlFinal(curso->obtenerDatosLanding());
+			}
+		}
+
+    }
+    else {
+
+        for (const auto& especializacion : _especializaciones) {
+            if (especializacion) {
+				datos.agregarAlFinal(especializacion->obtenerDatosLanding());
+            }
+        }
+
+    }
+    std::vector<RawLandingData> actividadesOrdenadas = obtenerActividadesPopulares(datos, limite);
+    
+	std::vector<ElementoMenu> elementosMenu;
+    int cantidad = actividadesOrdenadas.size();
+    for (int i = cantidad - 1; i >= 0; i--) {
+        RawLandingData actividad = actividadesOrdenadas[i];
+        if (tipo == TipoActividad::CURSO) {
+            Curso* curso = obtenerCurso(actividad.id);
+            if (curso) {
+                elementosMenu.push_back(curso->obtenerDatosCrudosMenu());
+            }
+        }
+        else if (tipo == TipoActividad::ESPECIALIZACION) {
+            Especializacion* especializacion = obtenerEspecializacion(actividad.id);
+            if (especializacion) {
+                elementosMenu.push_back(especializacion->obtenerDatosCrudosMenu());
+            }
+        }
+    }
+
+	return elementosMenu;
+
+}
+
 inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int maxEspecializaciones) const {
     RawActividadesData datos;
-    
+
     // Obtener cursos
     int cursoCount = 0;
     for (auto it = _cursos.begin(); it != _cursos.end() && (maxCursos == -1 || cursoCount < maxCursos); ++it) {
@@ -418,7 +504,7 @@ inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int 
             cursoCount++;
         }
     }
-    
+
     // Obtener especializaciones
     int especializacionCount = 0;
     for (auto it = _especializaciones.begin(); it != _especializaciones.end() && (maxEspecializaciones == -1 || especializacionCount < maxEspecializaciones); ++it) {
@@ -427,7 +513,7 @@ inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int 
             especializacionCount++;
         }
     }
-    
+
     return datos;
 }
 
@@ -450,23 +536,31 @@ inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() c
 }
 
 inline Curso* ContentManager::obtenerCurso(int id) {
-	if (id < 0 || id >= _nextCursoId) {
-		logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
-		return nullptr; // ID inválido
-	}
+    if (id < 0 || id >= _nextCursoId) {
+        logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
+        return nullptr; // ID inválido
+    }
     return _cursos[id].get();
 }
 
 inline RawCursoData ContentManager::obtenerCursoDatos(int id) {
-	return _cursos[id]->obtenerDatosCrudosCurso();
+    return _cursos[id]->obtenerDatosCrudosCurso();
 }
 
 inline ElementoMenu ContentManager::obtenerRawCursoMenu(int id) {
-	return _cursos[id]->obtenerDatosCrudosMenu();
+    return _cursos[id]->obtenerDatosCrudosMenu();
+}
+
+inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
+    if (id < 0 || id >= _nextCursoId) {
+        logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
+        return nullptr; // ID inválido
+    }
+    return _especializaciones[id].get();
 }
 
 inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
-	return _especializaciones[id]->obtenerDatosCrudosEspecialidad();
+    return _especializaciones[id]->obtenerDatosCrudosEspecialidad();
 }
 
 inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
@@ -507,7 +601,7 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
         _cursos.clear();
         _especializaciones.clear();
         limpiarCaches();
-        
+
         // Cargar cursos desde datos crudos
         for (const auto& cursoData : dataActividades.cursos) {
             auto curso = std::make_unique<Curso>(
@@ -521,15 +615,15 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 cursoData.cantidadClases,
                 cursoData.descripcionClases
             );
-            
+
             _cursos.push_back(std::move(curso));
-            
+
             // Actualizar contador de IDs
             if (cursoData.id >= _nextCursoId) {
                 _nextCursoId = cursoData.id + 1;
             }
         }
-        
+
         // Cargar especializaciones desde datos crudos
         for (const auto& espData : dataActividades.especializaciones) {
             auto especializacion = std::make_unique<Especializacion>(
@@ -542,46 +636,78 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 espData.idsCursos,
                 espData.duracionEstimada
             );
-            
+
             _especializaciones.push_back(std::move(especializacion));
-            
+
             // Actualizar contador de IDs
             if (espData.id >= _nextEspecializacionId) {
                 _nextEspecializacionId = espData.id + 1;
             }
         }
-        
+
         // Actualizar caches para búsquedas rápidas
         actualizarCaches();
-        
-        logOperation("CargarDesdeDatos", 
-            "Cargados " + std::to_string(dataActividades.cursos.size()) + " cursos y " + 
+
+        logOperation("CargarDesdeDatos",
+            "Cargados " + std::to_string(dataActividades.cursos.size()) + " cursos y " +
             std::to_string(dataActividades.especializaciones.size()) + " especializaciones");
-        
+
         return ContentOperationResult::SUCCESS;
-        
-    } catch (const std::exception& e) {
+
+    }
+    catch (const std::exception& e) {
         logError("CargarDesdeDatos", e.what());
         return ContentOperationResult::UNKNOWN_ERROR;
     }
 }
 
+inline ContentOperationResult ContentManager::cargarCantidadInscripcionesActividad(
+    const std::vector<InscripcionBinaria>& dataInscripciones) {
+
+    if (static_cast<int>(dataInscripciones.size()) == 0) {
+        logOperation("Carga de cantidad inscripciones", "No hay inscripciones para anadir a los cursos");
+        return ContentOperationResult::SUCCESS;
+    }
+
+    for (InscripcionBinaria inscripcion : dataInscripciones) {
+        int idActividad = inscripcion.idActividad;
+        TipoActividad tipoActividad = static_cast<TipoActividad>(inscripcion.tipoActividad);
+
+        if (tipoActividad == TipoActividad::CURSO) _cursos[idActividad].get()->aumentarAlumno();
+        else _especializaciones[idActividad].get()->aumentarAlumno();
+    }
+
+    int cantidadCursos = _cursos.size();
+    for (int i = 0; i < cantidadCursos; i++) {
+        logOperation("Carga de curso", _cursos[i].get()->getTitulo() + ": " + std::to_string(_cursos[i].get()->getCantidad()));
+    }
+    int cantidadEspecializaciones = _especializaciones.size();
+    for (int i = 0; i < cantidadEspecializaciones; i++) {
+        logOperation("Carga de curso", _especializaciones[i].get()->getTitulo() + ": " + std::to_string(_especializaciones[i].get()->getCantidad()));
+    }
+
+    logOperation("Carga de cantidad inscripciones", "Se han cargado todos los datos de las inscripciones");
+    return ContentOperationResult::SUCCESS;
+}
+
+
 inline ElementoInscripcion ContentManager::cargarDatosInscripcionDash(RawInscripcionElementoDash data) {
-	ElementoInscripcion inscripcion;
+    ElementoInscripcion inscripcion;
     int idAhora = data.idActividad;
     inscripcion.idInscripcion = data.idInscripcion;
     inscripcion.tipo = data.tipo;
     inscripcion.idActividad = idAhora;
+
     if (data.tipo == TipoActividad::CURSO) {
         inscripcion.titulo = _cursos[idAhora]->getTitulo();
         inscripcion.descripcion = _cursos[idAhora]->getDescripcion();
     }
     else {
-		inscripcion.titulo = _especializaciones[idAhora]->getTitulo();
-		inscripcion.descripcion = _especializaciones[idAhora]->getDescripcion();
+        inscripcion.titulo = _especializaciones[idAhora]->getTitulo();
+        inscripcion.descripcion = _especializaciones[idAhora]->getDescripcion();
     }
-	
-	return inscripcion;
+
+    return inscripcion;
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========
@@ -600,8 +726,8 @@ inline void ContentManager::logError(const std::string& operation, const std::st
 inline void ContentManager::logOperation(const std::string& operation, const std::string& details) {
     // Implementación simple para logging de operaciones
     // En un proyecto más complejo esto iría a un archivo de log
-	FilesManager& fileManager = FilesManager::getInstance();
-	fileManager.logInfo(operation, "ContentManager");
+    FilesManager& fileManager = FilesManager::getInstance();
+    fileManager.logInfo(operation, "Content Manager", details);
 
     /*
     #ifdef _DEBUG
@@ -620,15 +746,15 @@ inline void ContentManager::logOperation(const std::string& operation, const std
 
 inline void ContentManager::actualizarCaches() {
     // Limpiar caches existentes
-	ContentManager::limpiarCaches();
-    
+    ContentManager::limpiarCaches();
+
     // Actualizar cache de cursos
     for (auto it = _cursos.begin(); it != _cursos.end(); ++it) {
         if (*it != nullptr) {
             _cacheIdCursos[(*it)->getId()] = (*it).get();
         }
     }
-    
+
     // Actualizar cache de especializaciones
     for (auto it = _especializaciones.begin(); it != _especializaciones.end(); ++it) {
         if (*it != nullptr) {
@@ -642,7 +768,7 @@ inline void ContentManager::limpiarCaches() {
     _cacheIdEspecializaciones.clear();
 }
 
-inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite){
+inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite) {
 
     std::vector<std::string> sugerencias;
     if (texto.empty()) return sugerencias;

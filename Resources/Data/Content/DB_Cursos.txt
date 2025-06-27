@@ -115,8 +115,8 @@ Técnicas para identificar términos relevantes para tu negocio
 Analítica web y SEO
 Medición y optimización de resultados con Google Analytics
 %%%
+7
 8
-9
 Meta Developers
 Diseño de Experiencia de Usuario (UX)
 Crea productos digitales centrados en las necesidades del usuario

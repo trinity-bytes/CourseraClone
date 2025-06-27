@@ -59,6 +59,16 @@ public:
         eliminarExceso();
     }
 
+    void llenarDesdeVector(std::vector<T>& vec) {
+        for (T item : vec) {
+            enqueue(item);
+            _tamano = static_cast<int>(vec.size());
+			if (_tamano > _tamanoMaximo) {
+				eliminarExceso();
+			}
+        }
+    }
+
     template <typename ValorTipo, typename MetodoConseguir>
     std::vector<ValorTipo> extraerDato(MetodoConseguir _requerido) const {
         const std::vector<T>& clasesBase = _monticulo.getElementos();
@@ -77,10 +87,14 @@ public:
         _monticulo.ordenar();
     }
 
-    std::vector<T> getElementosOrdenados() const {
-        std::vector<T> elementos = _monticulo.getElementos();
-        std::sort(elementos.begin(), elementos.end(), Comparator());
-        return elementos;
+    std::vector<T> getElementosOrdenados() {
+		if (estaVacio()) return std::vector<T>();
+
+		std::vector<T> elementosOrdenados;
+        while (!estaVacio()) {
+			elementosOrdenados.push_back(dequeue());
+        }
+        return elementosOrdenados;
     }
 
     int getTamano() const {

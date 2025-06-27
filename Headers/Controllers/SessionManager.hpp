@@ -196,7 +196,7 @@ inline void SessionManager::logOperation(const std::string& operation, const std
     // Implementación simple para logging de operaciones
     // En un proyecto más complejo esto iría a un archivo de log
     FilesManager& fileManager = FilesManager::getInstance();
-    fileManager.logInfo(operation, "SessionManager");
+    fileManager.logInfo(operation, "SessionManager", details);
 }
 
 #endif

@@ -120,6 +120,7 @@ inline FileOperationResult InscripcionesController::inscribirCurso(int idCurso) 
 	Inscripcion nueva(idEstudiante, idCurso, idActual, TipoActividad::CURSO);
 	nueva.guardar();
 	inscripcionesCursos.push(nueva);
+	ContentManager::getInstance().obtenerCurso(idCurso)->aumentarAlumno();
 
 	logOperation("Inscribir curso",
 		"Éxito: curso " + std::to_string(idCurso) +
@@ -139,6 +140,8 @@ inline FileOperationResult InscripcionesController::inscribirEspecializacion(int
 	Inscripcion nueva(idEstudiante, idEspecializacion, idActual, TipoActividad::ESPECIALIZACION);
 	nueva.guardar();
 	inscripcionesEspecialidades.push(nueva);
+	ContentManager::getInstance().obtenerEspecializacion(idEspecializacion)->aumentarAlumno();
+
 	logOperation("Inscribir especializacion",
 		"Éxito: especializacon " + std::to_string(idEspecializacion) +
 		" para estudiante " + std::to_string(idEstudiante));

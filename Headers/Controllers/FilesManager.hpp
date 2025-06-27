@@ -60,7 +60,7 @@ private:
 public:
     // ============== MENSAJES ==============
     void logError(const std::string& operation, const std::string& file, const std::string& error);
-    void logInfo(const std::string& operation, const std::string& file);
+    void logInfo(const std::string& operation, const std::string& file, std::string details = "");
 
     // ========== SINGLETON INTERFACE ==========
     /// @brief Eliminar constructor de copia y operador de asignación
@@ -359,7 +359,7 @@ inline void FilesManager::logError(const std::string& operation, const std::stri
     std::cerr << "[FilesManager ERROR] " << _ultimoError << std::endl;
 }
 
-inline void FilesManager::logInfo(const std::string& operation, const std::string& file) {
+inline void FilesManager::logInfo(const std::string& operation, const std::string& file, std::string details) {
     std::string infoMessage = operation + " exitoso";
     if (!file.empty()) {
         infoMessage += " en " + file;
@@ -376,6 +376,9 @@ inline void FilesManager::logInfo(const std::string& operation, const std::strin
         infoLogFile << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] "
                     << "[INFO] [" << operation << "] " 
                     << infoMessage << std::endl;
+		if (!details.empty()) {
+			infoLogFile << "Detalles: " << details << std::endl;
+		}
         infoLogFile.close();    }
     
 	/// @brief También mostrar en consola para feedback inmediato - Comentar y descomentar para depuración
