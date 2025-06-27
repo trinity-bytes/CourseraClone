@@ -14,7 +14,7 @@ class SobreNosotrosScreen : public PantallaBase
 {
 private:
 	// ---- ATRIBUTOS PRIVADOS ----
-	static const int CANT_BOTONES = 4;
+	static const int CANT_BOTONES = 5;
 
 	/// @brief Estado de la interfaz
 	int _campoActual;
@@ -22,25 +22,28 @@ private:
 	bool _primeraRenderizacion;
 	/// @brief Configuración de interfaz - Coordenadas de los botones
 	COORD _coordsBotones[CANT_BOTONES] = {
-		{39, 12}, // Repositorio GitHub del proyecto
-		{70, 15}, // Perfil GitHub Fabrizio  
-		{70, 16}, // Perfil GitHub Mauricio  
-		{70, 17}  // Perfil GitHub Jahat
+		{20, 16},  // Perfil GitHub Fabrizio
+		{20, 20},  // Perfil GitHub Mauricio
+		{20, 24},  // Perfil GitHub Jahat
+		{41, 28},  // Repositorio GitHub del proyecto
+		{65, 28}   // Carpeta de documentacion en el repositorio
 	};
 	/// @brief Textos de los botones
 	std::vector<std::string> _textosBotones = {
-		" IR AL REPOSITORIO DE GITHUB DEL PROYECTO ",
 		" Ver perfil de GitHub ",
 		" Ver perfil de GitHub ",
-		" Ver perfil de GitHub "
+		" Ver perfil de GitHub ",
+		" VER REPOSITORIO ",
+		" DOCUMENTACION "
 	};
 
 	/// @brief URLs correspondientes a cada botón (para futuro uso)
 	std::vector<std::string> _urlsBotones = {
-		"https://github.com/CourseraClone/proyecto",  /// @TODO URL del repositorio
-		"https://github.com/Santi2007939",            // GitHub Fabrizio
-		"https://github.com/mau-tz",                  // GitHub Mauricio
-		"https://github.com/trinity-bytes"            // GitHub Jahat
+		"https://github.com/Santi2007939",             // GitHub Fabrizio
+		"https://github.com/mau-tz",                   // GitHub Mauricio
+		"https://github.com/trinity-bytes",            // GitHub Jahat
+		"https://github.com/CourseraClone/proyecto",   /// @TODO URL del repositorio
+		"https://github.com/CourseraClone/proyecto"    /// @TODO URL de la crpeta de documentacion del repositorio
 	};
 
 	// ---- METODOS PRIVADOS ----

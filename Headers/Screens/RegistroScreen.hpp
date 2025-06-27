@@ -171,7 +171,7 @@ inline void RegistroScreen::_renderizarCampo(const std::string& valor, int indic
 
     if (seleccionado)
     {
-        setConsoleColor(ColorIndex::FONDO_PRINCIPAL, ColorIndex::BORDES_SUTILES);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BORDES_SUTILES);
         _configurarCursor(true);
     }
     else {
@@ -449,6 +449,7 @@ inline ResultadoPantalla RegistroScreen::_procesarRegistro()
     std::cout << "[EXITO]: Usuario registrado correctamente.";
     _configurarCursor(false);  // Asegurar que el cursor esté oculto
     _limpiarEstado();
+	resetColor();
     system("cls");
     return ResultadoPantalla(AccionPantalla::IR_A_LOGIN);
 }

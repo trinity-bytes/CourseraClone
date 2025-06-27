@@ -857,30 +857,30 @@ inline void UI_CrearOferta()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                   CREAR NUEVA OFERTA PROMOCIONAL                            
+                                             CREAR NUEVA OFERTA PROMOCIONAL                            
+
 
     ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    ║                                                                                                              ║
     ║  Seleccionar contenido a promocionar:                                                                        ║
-    ║  ┌─ Tipo: ──────────┐  ┌─ Contenido disponible: ──────────────────────────────────────────────────────────┐ ║
-    ║  │ ( ) CURSO        │  │ [ Seleccionar de la lista... ]                                                  │ ║
-    ║  │ ( ) ESPECIALIDAD │  └──────────────────────────────────────────────────────────────────────────────────┘ ║
-    ║  └──────────────────┘                                                                                        ║
+    ║                                                                                                              ║
+    ║  ┌─ ID: ────────────┐  ┌─ Nombre del contenido: ──────────────────────────────────────────────────────────┐  ║
+    ║  │                  │  │                                                                                  │  ║
+    ║  └──────────────────┘  └──────────────────────────────────────────────────────────────────────────────────┘  ║
     ║                                                                                                              ║
     ║  Detalles de la oferta:                                                                                      ║
-    ║  ┌─ Código promocional: ──────────┐  ┌─ Descuento (%): ────┐  ┌─ Fecha vencimiento: ──────────────┐        ║
-    ║  │                              │  │                    │  │ DD/MM/AAAA                       │        ║
-    ║  └──────────────────────────────┘  └────────────────────┘  └──────────────────────────────────┘        ║
     ║                                                                                                              ║
-    ║  Precio original (S/):  [ -------- ]     Precio con descuento (S/):  [ -------- ]                          ║
+    ║  ┌─ Código promocional: ──────────┐  ┌─ Descuento (%): ────┐  ┌─ Fecha vencimiento: ──────────────┐          ║
+    ║  │                                │  │                     │  │ DD/MM/AAAA                        │          ║
+    ║  └────────────────────────────────┘  └─────────────────────┘  └───────────────────────────────────┘          ║
     ║                                                                                                              ║
-    ║  Descripción de la oferta:                                                                                   ║
-    ║  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐  ║
-    ║  │ Ej: "¡Oferta especial por tiempo limitado! Aprende..."                                                │  ║
-    ║  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
+    ║  Precio original (S/):  [          ]     Precio con descuento (S/):  [          ]                            ║
+    ║                                                                                                              ║
     ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-                              CREAR OFERTA        PREVISUALIZAR        CANCELAR
-                              ¯¯¯¯¯¯¯¯¯¯¯¯        ¯¯¯¯¯¯¯¯¯¯¯¯¯        ¯¯¯¯¯¯¯¯
+                                                    CREAR OFERTA
+                                                    ¯¯¯¯¯¯¯¯¯¯¯¯
+
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
  Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
@@ -913,7 +913,7 @@ inline void UI_CrearOferta()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(35, 5); std::cout << "🎯 CREAR NUEVA OFERTA PROMOCIONAL 🎯";
+    gotoXY(35, 5); std::cout << "CREAR NUEVA OFERTA PROMOCIONAL";
 
     /// @brief Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
@@ -1103,6 +1103,166 @@ inline void UI_Ofertas()
             std::cout << " ";
         }
     }
+
+    /// @brief Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    resetColor();
+}
+
+/// UI Pantalla para agregar métodos de pago
+inline void UI_AgregarMetodoPago()
+{
+//----------------------------------------------------------------------------------------------------------------------
+    std::string ui = R"(
+   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
+   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
+   
+
+                                          AGREGAR MÉTODO DE PAGO                                        
+
+    ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    ║                                                                                                              ║
+    ║   Número de tarjeta:              CVV:        Vencimiento:                                                   ║
+    ║  ┌─────┬─────┬─────┬─────┐       ┌─────┐      ┌────┬────┐                                                    ║
+    ║  │     │     │     │     │       │     │      │ MM │ AA │                                                    ║
+    ║  └─────┴─────┴─────┴─────┘       └─────┘      └────┴────┘                                                    ║
+    ║                                                                                                              ║
+    ║  ┌ Nombre del titular (como aparece en la tarjeta): ──────────────────────────────────────────────────────┐  ║
+    ║  │                                                                                                        │  ║
+    ║  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
+    ║                                                                                                              ║
+    ║  ┌ Banco emisor: ──────────────┐   ┌ Dirección del titular: ─────────────────────────────────────────────┐   ║
+    ║  │ BCP, BBVA, Interbank, etc.  │   │                                                                     │   ║
+    ║  └─────────────────────────────┘   └─────────────────────────────────────────────────────────────────────┘   ║
+    ║                                                                                                              ║
+    ║  ☐ Guardar como método de pago predeterminado           ☐ Recibir notificaciones de transacciones           ║
+    ║  ☐ Habilitar pagos automáticos para suscripciones      ☐ Permitir compras internacionales                   ║
+    ║                                                                                                              ║
+    ║  � Tipo de cuenta:     ● Tarjeta de Crédito    ○ Tarjeta de Débito                                           ║
+    ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+                       GUARDAR MÉTODO                                      
+                       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
+ Pulsa ENTER para seleccionar, ESC para cancelar.)";   
+//----------------------------------------------------------------------------------------------------------------------
+
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Dibujar fondo de la sección de título
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 4; y < 7; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Mostrar título de la sección
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(40, 5); std::cout << "💳 AGREGAR MÉTODO DE PAGO 💳";
+
+    /// @brief Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    resetColor();
+}
+
+/// UI Pantalla para procesar pagos
+inline void UI_ProcesarPago()
+{
+//----------------------------------------------------------------------------------------------------------------------
+    std::string ui = R"(
+   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
+   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
+   
+
+                                        💰 PROCESAR PAGO SEGURO 💰                                        
+
+    ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    ║                                       📋 RESUMEN DE COMPRA                                                   ║
+    ╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                                                              ║
+    ║  🎓 Curso: Machine Learning con Python - Nivel Intermedio                                                   ║
+    ║  📚 Especialización: Data Science Avanzado (incluye 4 cursos)                                               ║
+    ║                                                                                                              ║
+    ║  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────┐ ║
+    ║  │ Sub Total:                                                                      S/ 448.00               │ ║
+    ║  │ Descuento aplicado (-15%):                                                      S/ -67.20               │ ║
+    ║  │ IGV (18%):                                                                      S/ 68.54                │ ║
+    ║  │ ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════╗ │ ║
+    ║  │ ║ TOTAL A PAGAR:                                                           S/ 449.34                  ║ │ ║
+    ║  │ ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝ │ ║
+    ║  └─────────────────────────────────────────────────────────────────────────────────────────────────────────┘ ║
+    ║                                                                                                              ║
+    ║  💳 Método de pago seleccionado:    Visa **** **** **** 4567 (Juan Pérez)                                  ║
+    ║                                     🔄 [ Cambiar método de pago ]                                           ║
+    ║                                                                                                              ║
+    ║  📧 Recibo será enviado a: estudiante@email.com                                                             ║
+    ║                                                                                                              ║
+    ║  ☐ Acepto los términos y condiciones de CourseraClone    ☐ Deseo recibir ofertas por email                 ║
+    ║                                                                                                              ║
+    ║  🔒 Tu información está protegida con encriptación SSL de 256 bits                                          ║
+    ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+                          💎 CONFIRMAR PAGO       🔄 MODIFICAR ORDEN       ❌ CANCELAR COMPRA                          
+                          ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. ENTER para confirmar, ESC para cancelar.)";   
+//----------------------------------------------------------------------------------------------------------------------
+
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Dibujar fondo de la sección de título
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 4; y < 7; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Mostrar título de la sección
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(40, 5); std::cout << "💰 PROCESAR PAGO SEGURO 💰";
 
     /// @brief Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);

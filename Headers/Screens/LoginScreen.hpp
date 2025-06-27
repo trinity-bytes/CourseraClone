@@ -219,7 +219,7 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
         }
         else if (esTipoSeleccionado) {
             // Tipo de usuario seleccionado pero sin foco - resaltado activo
-            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::TEXTO_IMPORTANTE);
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
         }
         else {
             // Estado normal sin selección
@@ -443,7 +443,9 @@ inline ResultadoPantalla LoginScreen::ejecutar()
 
         case 27: // ESC
             res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-            return res;        case 13: // Enter
+            return res;        
+        
+        case 13: // Enter
             if (_campoActual == ELEMENTOS_INPUT)
             { // Botón Estudiante
                 _tipoUsuarioActual = TipoUsuario::ESTUDIANTE;
