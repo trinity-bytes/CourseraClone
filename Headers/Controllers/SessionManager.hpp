@@ -8,6 +8,7 @@
 
 #include "../Entities/Usuario.hpp"
 #include "InscripcionesController.hpp"
+#include "ActividadesController.hpp"
 #include "FilesManager.hpp"
 
 
@@ -21,6 +22,8 @@ private:
     static std::once_flag _onceFlag;  ///< Flag para asegurar la inicialización única.
     std::unique_ptr<Usuario> _currentUser;                    /// Usuario en sesión.
     std::unique_ptr<InscripcionesController> _inscripcionesCtrl;  /// Controlador de inscripciones.
+    std::unique_ptr<ActividadesController> _actividadesCtrl;
+    
 
     // Utilidades privadas
     void logOperation(const std::string& operation, const std::string& details);
@@ -81,6 +84,8 @@ public:
      */
     InscripcionesController& getInscripcionesController();
 
+    ActividadesController& getActividadesController();
+
     
 };
 
@@ -119,7 +124,13 @@ inline LoginStatus SessionManager::login(const std::string& username, const std:
 
     // Mantener sesión activa
     _currentUser = std::move(userPtr);
-    _inscripcionesCtrl = std::make_unique<InscripcionesController>(_currentUser->getId());
+    if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+        _inscripcionesCtrl = std::make_unique<InscripcionesController>(_currentUser->getId());
+    }
+    else {
+        _actividadesCtrl = std::make_unique<ActividadesController>(_currentUser->getId());
+    }
+    
     return LoginStatus::SUCCESS;
 }
 
@@ -182,6 +193,10 @@ inline Usuario& SessionManager::getCurrentUser() {
 
 inline InscripcionesController& SessionManager::getInscripcionesController() {
     return *_inscripcionesCtrl;
+}
+
+inline ActividadesController& SessionManager::getActividadesController() {
+    return *_actividadesCtrl;
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========

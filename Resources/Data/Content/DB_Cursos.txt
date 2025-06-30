@@ -1,6 +1,6 @@
 0
 1
-Microsoft Learning
+Coursera
 Introducción a la Programación en C++
 Curso fundamental para aprender programación orientada a objetos con C++
 PROGRAMACION
@@ -18,8 +18,8 @@ Manejo de excepciones y archivos
 Técnicas para manejar errores y trabajar con archivos externos
 %%%
 1
-2
-Google Academy
+1
+Coursera
 Python para Ciencia de Datos
 Curso práctico para análisis de datos y machine learning con Python
 CIENCIA_DE_DATOS

@@ -11,7 +11,7 @@
 
 // Headers propios
 #include "../Types/UsuarioTypes.hpp"
-#include "../Entities/DateTime.hpp"
+#include "../Utils/DateTime.hpp"
 
 /// @brief Clase que representa un usuario en el sistema, con métodos para autenticación 
 ///        y manejo de archivos binarios.

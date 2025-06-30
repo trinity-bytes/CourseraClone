@@ -14,7 +14,7 @@
 #include "../Types/ComprobanteDePagoTypes.hpp"
 #include "../Types/ActividadTypes.hpp"
 #include "../Controllers/FilesManager.hpp"
-#include "../Entities/DateTime.hpp"
+#include "../Utils/DateTime.hpp"
 
 // Clase que representa una boleta de pago
 class ComprobanteDePago{

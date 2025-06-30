@@ -163,6 +163,21 @@ public:
         return resultado;
     }
 
+    template<typename Key, typename Comp, typename Convert, typename NuevoT>
+    void filtrarTransformar(Key clave, Comp comparador, Convert convertidor, LinkedList<NuevoT>& salida) const {
+        salida.clear();
+        Nodo<T>* actual = _head;
+
+        while (actual != nullptr) {
+            if (comparador(actual->data, clave)) {
+                NuevoT nuevoData = convertidor(actual->data);
+                salida.agregarAlFinal(nuevoData);
+            }
+            actual = actual->next;
+        }
+    }
+
+
     // Extraer datos usando una función de transformación
     template <typename ResultType>
     std::vector<ResultType> extraerDato(std::function<ResultType(const T&)> _transformacion) const
@@ -337,7 +352,7 @@ public:
     }
 
     T& getElemento(int pos) {
-        if (_head == nullptr) return T();
+        //if (_head == nullptr) return T();
         Nodo<T>* current = _head;
         int contador = 0;
         while (current != nullptr) {
@@ -347,7 +362,7 @@ public:
             contador++;
             current = current->next;
         }
-        return T(); // Elemento no encontrado
+        //return T(); // Elemento no encontrado
     }
 
     template <typename KeyType, typename Predicado>

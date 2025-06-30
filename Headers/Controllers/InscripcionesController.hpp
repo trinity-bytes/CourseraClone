@@ -181,7 +181,7 @@ inline std::vector<ElementoInscripcion> InscripcionesController::getElementosIns
 inline void InscripcionesController::logError(const std::string& operation, const std::string& error) {
     // Implementación simple para logging de errores
     FilesManager& fileManager = FilesManager::getInstance();
-    fileManager.logError(operation, "ContentManager", error);
+    fileManager.logError(operation, "InscripcionesController", error);
 }
 
 

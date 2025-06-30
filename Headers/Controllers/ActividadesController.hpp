@@ -2,11 +2,12 @@
 #define COURSERACLONE_CONTROLLERS_ACTIVIDADESCONTROLLER_HPP
 
 #include "../DataStructures/LinkedList.hpp"
+#include "../Controllers/ContentManager.hpp"
 
 class ActividadesController {
 private:
-	std::unique_ptr<LinkedList<int>> idCursos;
-	std::unique_ptr<LinkedList<int>>  idEspecializaciones;
+	LinkedList<int> idCursos;
+	LinkedList<int>  idEspecializaciones;
 	int idOrganizacion;
 
 
@@ -19,48 +20,84 @@ public:
 	// Constructor con id del alumno para cargar datos
 	inline ActividadesController(int _idOrganizacion);
 
+	inline std::vector<ElementoMenu> getElementosDashboard(TipoActividad _tipo);
+
+	inline int getCantidadCursos();
+	inline int getCantidadEspecializaciones();
 
 };
 
 // Constructores
 inline ActividadesController::ActividadesController()
 {
-	idCursos = std::make_unique<LinkedList<int>>();
-	idEspecializaciones = std::make_unique<LinkedList<int>>();
+	idCursos = LinkedList<int>();
+	idEspecializaciones = LinkedList<int>();
 	idOrganizacion = -1;
 }
 
 inline ActividadesController::ActividadesController(int _idOrganizacion) {
 	// Inicializar estructuras de datos
-	idCursos = std::make_unique<LinkedList<int>>();
-	idEspecializaciones = std::make_unique<LinkedList<int>>();
 	idOrganizacion = _idOrganizacion;
+	ContentManager& cm = ContentManager::getInstance();
 
-	/*
+	auto comparador = [](Actividad& c, int llave) {
+		return c.getIdEmpresa() == llave;
+		};
+	auto convertidor = [](Actividad& c) {
+		return c.getId();
+		};
 
-	std::vector<RawInscripcionData> inscripcionesCursosRaw;
-	// Cargar inscripciones desde disco
-	FileOperationResult resultado = FilesManager::getInstance().cargarInscripcionesPorEstudiante(_idEstudiante, inscripcionesCursosRaw);
-	// throw std::runtime_error(std::to_string(inscripcionesCursosRaw.size()));
+	cm.getCursos().filtrarTransformar<int, decltype(comparador), decltype(convertidor), int>(idOrganizacion, comparador, convertidor, idCursos);
+	cm.getEspecializaciones().filtrarTransformar<int, decltype(comparador), decltype(convertidor), int>(idOrganizacion, comparador, convertidor, idEspecializaciones);
+}
 
-	if (resultado == FileOperationResult::SUCCESS) {
+inline std::vector<ElementoMenu> ActividadesController::getElementosDashboard(TipoActividad _tipo) {
+	std::vector<ElementoMenu> resultado;
 
-		for (RawInscripcionData& rawInscripcion : inscripcionesCursosRaw) {
-			Inscripcion inscripcion(rawInscripcion);
-			if (inscripcion.getTipo() == TipoActividad::CURSO) {
-				guardarCursoInscripcion(inscripcion);
-			}
-			else if (inscripcion.getTipo() == TipoActividad::ESPECIALIZACION) {
-				guardarEspecializacionInscripcion(inscripcion);
-			}
+	
+	if (_tipo == TipoActividad::CURSO) {
+		for (int i = 0; i < 3 && i < idCursos.getTamano(); i++) {
+			int id = idCursos.getElemento(i);
+			std::cout << id << " ";
+			
+			ElementoMenu nuevo = ContentManager::getInstance().obtenerCurso(id)->obtenerDatosCrudosMenu();
+			resultado.push_back(nuevo);
 		}
-		logOperation("Cargar inscripciones", "Se han cargado " + std::to_string(inscripcionesCursosRaw.size()) + " inscripciones para el ID: " + std::to_string(_idEstudiante));
-
 	}
 	else {
-		logError("Cargar inscripciones", "Fallo en el resultado de inscripciones RAW");
+		for (int i = 0; i < 3 && i < idEspecializaciones.getTamano(); i++) {
+			int id = idEspecializaciones.getElemento(i);
+			ElementoMenu nuevo = ContentManager::getInstance().obtenerEspecializacion(id)->obtenerDatosCrudosMenu();
+			resultado.push_back(nuevo);
+		}
 	}
-	*/
+	
+
+	return resultado;
+}
+
+inline int ActividadesController::getCantidadCursos() {
+	return idCursos.getTamano();
+}
+
+inline int ActividadesController::getCantidadEspecializaciones() {
+	return idEspecializaciones.getTamano();
+}
+
+// ========== MÉTODOS PRIVADOS - LOGGING ==========
+inline void ActividadesController::logError(const std::string& operation, const std::string& error) {
+	// Implementación simple para logging de errores
+	FilesManager& fileManager = FilesManager::getInstance();
+	fileManager.logError(operation, "ActividadesController", error);
+}
+
+
+inline void ActividadesController::logOperation(const std::string& operation, const std::string& details) {
+	// Implementación simple para logging de operaciones
+	// En un proyecto más complejo esto iría a un archivo de log
+	FilesManager& fileManager = FilesManager::getInstance();
+	fileManager.logInfo(operation, "ActividadesController");
+
 }
 
 #endif // COURSERACLONE_CONTROLLERS_ACTIVIDADESCONTROLLER_HPP

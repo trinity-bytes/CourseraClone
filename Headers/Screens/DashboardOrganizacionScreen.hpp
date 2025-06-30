@@ -11,6 +11,7 @@
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.hpp"
 #include "../Utils/ConsoleTypes.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// Pantalla dashboard para organizaciones
 class DashboardOrganizacionScreen : public PantallaBase
@@ -168,7 +169,15 @@ inline void DashboardOrganizacionScreen::_limpiarEstado()
 // Cargar datos
 inline void DashboardOrganizacionScreen::_cargarDatos()
 {
-    _cargarDatosDummy();
+    //_cargarDatosDummy();
+    _cursos.clear();
+    _especializaciones.clear();
+    SessionManager& sm = SessionManager::getInstance();
+
+    _cursos = sm.getActividadesController().getElementosDashboard(TipoActividad::CURSO);
+    _especializaciones = sm.getActividadesController().getElementosDashboard(TipoActividad::ESPECIALIZACION);
+    _cursosPublicados = sm.getActividadesController().getCantidadCursos();
+    _especialidadesPublicadas = sm.getActividadesController().getCantidadEspecializaciones();
 }
 
 // Cargar datos de ejemplo
