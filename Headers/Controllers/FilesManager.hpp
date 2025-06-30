@@ -313,6 +313,10 @@ public:
 
 	/// @brief Busca un comprobante por su ID en la tabla hash
     bool buscarComprobantePorIdHash(int id, RawComprobanteData& resultado);
+
+	/// @brief Obtiene el índice de cursos
+    HashTable<std::string, RawCursoData>& getIndiceCursos();
+
 };
 
 // ========== INICIALIZACIÓN DE MIEMBROS ESTÁTICOS ==========
@@ -1941,6 +1945,10 @@ inline void FilesManager::cargarComprobantes() {
 
 inline bool FilesManager::buscarComprobantePorIdHash(int id, RawComprobanteData& resultado) {
     return indiceComprobantes.find(id, resultado);
+}
+
+inline HashTable<std::string, RawCursoData>& FilesManager::getIndiceCursos() {
+	return indiceCursos;
 }
 
 #endif // COURSERACLONE_PERSISTENCE_FILESMANAGER_HPP
