@@ -58,24 +58,19 @@ private:
     ContentManager();
 
     // Estructuras de datos principales
-    std::vector<std::unique_ptr<Curso>> _cursos;
-    std::vector<std::unique_ptr<Especializacion>> _especializaciones;
+    LinkedList<Curso> _cursos;
+    LinkedList<Especializacion> _especializaciones;
 
     // Mapas para seguimiento de progreso y calificaciones
     std::map<int, std::map<int, double>> _progresoEstudiantes; // [idEstudiante][idActividad] -> progreso
     std::map<int, std::map<int, std::pair<int, std::string>>> _calificacionesActividades; // [idActividad][idEstudiante] -> (calificacion, comentario)
-
-    // Cachés para búsquedas rápidas
-    std::map<int, Curso*> _cacheIdCursos;
-    std::map<int, Especializacion*> _cacheIdEspecializaciones;
 
     // Contadores para IDs autoincrementales
     int _nextCursoId;
     int _nextEspecializacionId;
 
     // Utilidades privadas
-    void actualizarCaches();
-    void limpiarCaches();
+
     void logOperation(const std::string& operation, const std::string& details);
     void logError(const std::string& operation, const std::string& error);
 
@@ -299,17 +294,10 @@ public:
     std::vector<RawLandingData> obtenerActividadesPopulares(LinkedList<RawLandingData>& actividades, int limite = 3);
 
     /*
-    *
-    *
+    * @brief Se cargan los datos de los cursos más populares
+    * @param tipo Se carga los datos de acuerdo al tipo de actividad
     */
     std::vector<ElementoMenu> elegirObtenerActividadesPopulares(TipoActividad tipo, int limite = 3);
-
-    /**
-     * @brief Obtiene los cursos más populares
-     * @param limite Número máximo de cursos a retornar
-     * @return Vector con los cursos más populares
-     */
-    std::vector<Curso*> obtenerCursosMasPopulares(int limite = 3) const;
 
     /**
      * @brief Obtiene las especializaciones más populares
@@ -356,11 +344,11 @@ public:
 
     // ========== GETTERS ==========
 
-    const std::vector<std::unique_ptr<Curso>>& getCursos() const { return _cursos; }
-    const std::vector<std::unique_ptr<Especializacion>>& getEspecializaciones() const { return _especializaciones; }
+    const LinkedList<Curso>& getCursos() const { return _cursos; }
+    const LinkedList<Especializacion>& getEspecializaciones() const { return _especializaciones; }
 
-    int getTotalCursos() const { return _cursos.size(); }
-    int getTotalEspecializaciones() const { return _especializaciones.size(); }
+    int getTotalCursos() const { return _cursos.getTamano(); }
+    int getTotalEspecializaciones() const { return _especializaciones.getTamano(); }
     int getCursoIdMostrar() { return idCursoMostrar; }
     int getEspecializacionIdMostrar() { return idEspecializacionMostrar; }
 
@@ -453,25 +441,21 @@ inline std::vector<ElementoMenu> ContentManager::elegirObtenerActividadesPopular
     LinkedList<RawLandingData> datos;
     if (tipo == TipoActividad::CURSO) {
         
-		for (const auto& curso : _cursos) {
-			if (curso) {
-                datos.agregarAlFinal(curso->obtenerDatosLanding());
-			}
-		}
+        for (auto it = _cursos.begin(); it != _cursos.end(); ++it) {
+            datos.agregarAlFinal((*it).obtenerDatosLanding());
+        }
 
     }
     else {
 
-        for (const auto& especializacion : _especializaciones) {
-            if (especializacion) {
-				datos.agregarAlFinal(especializacion->obtenerDatosLanding());
-            }
+        for (auto it = _especializaciones.begin(); it != _especializaciones.end(); ++it) {
+            datos.agregarAlFinal((*it).obtenerDatosLanding());
         }
 
     }
+
     std::vector<RawLandingData> actividadesOrdenadas = obtenerActividadesPopulares(datos, limite);
-    
-	std::vector<ElementoMenu> elementosMenu;
+    std::vector<ElementoMenu> elementosMenu;
     int cantidad = actividadesOrdenadas.size();
     for (int i = cantidad - 1; i >= 0; i--) {
         RawLandingData actividad = actividadesOrdenadas[i];
@@ -489,32 +473,7 @@ inline std::vector<ElementoMenu> ContentManager::elegirObtenerActividadesPopular
         }
     }
 
-	return elementosMenu;
-
-}
-
-inline RawActividadesData ContentManager::obtenerDatosCrudos(int maxCursos, int maxEspecializaciones) const {
-    RawActividadesData datos;
-
-    // Obtener cursos
-    int cursoCount = 0;
-    for (auto it = _cursos.begin(); it != _cursos.end() && (maxCursos == -1 || cursoCount < maxCursos); ++it) {
-        if (*it != nullptr) {
-            datos.cursos.push_back((*it)->obtenerDatosCrudosCurso());
-            cursoCount++;
-        }
-    }
-
-    // Obtener especializaciones
-    int especializacionCount = 0;
-    for (auto it = _especializaciones.begin(); it != _especializaciones.end() && (maxEspecializaciones == -1 || especializacionCount < maxEspecializaciones); ++it) {
-        if (*it != nullptr) {
-            datos.especializaciones.push_back((*it)->obtenerDatosCrudosEspecialidad());
-            especializacionCount++;
-        }
-    }
-
-    return datos;
+    return elementosMenu;
 }
 
 inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() const {
@@ -522,10 +481,8 @@ inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() c
 
     // Generic lambda que procesa un contenedor de punteros a objetos con obtenerDatosCrudosExplorador()
     auto procesar = [&](const auto& contenedor) {
-        for (const auto& ptr : contenedor) {
-            if (ptr) {
-                datosExplorador.push_back(ptr->obtenerDatosCrudosExplorador());
-            }
+        for (auto& ptr : contenedor) {
+            datosExplorador.push_back(ptr.obtenerDatosCrudosExplorador());
         }
         };
 
@@ -540,15 +497,15 @@ inline Curso* ContentManager::obtenerCurso(int id) {
         logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
         return nullptr; // ID inválido
     }
-    return _cursos[id].get();
+    return &_cursos.getElemento(id);
 }
 
 inline RawCursoData ContentManager::obtenerCursoDatos(int id) {
-    return _cursos[id]->obtenerDatosCrudosCurso();
+    return _cursos.getElemento(id).obtenerDatosCrudosCurso();
 }
 
 inline ElementoMenu ContentManager::obtenerRawCursoMenu(int id) {
-    return _cursos[id]->obtenerDatosCrudosMenu();
+    return _cursos.getElemento(id).obtenerDatosCrudosMenu();
 }
 
 inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
@@ -556,11 +513,11 @@ inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
         logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
         return nullptr; // ID inválido
     }
-    return _especializaciones[id].get();
+    return &_especializaciones.getElemento(id);
 }
 
 inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
-    return _especializaciones[id]->obtenerDatosCrudosEspecialidad();
+    return _especializaciones.getElemento(id).obtenerDatosCrudosEspecialidad();
 }
 
 inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
@@ -600,11 +557,10 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
         // Limpiar datos existentes
         _cursos.clear();
         _especializaciones.clear();
-        limpiarCaches();
 
         // Cargar cursos desde datos crudos
         for (const auto& cursoData : dataActividades.cursos) {
-            auto curso = std::make_unique<Curso>(
+            auto curso = Curso(
                 cursoData.id,
                 cursoData.idEmpresa,
                 cursoData.nombreEmpresa,
@@ -616,7 +572,7 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 cursoData.descripcionClases
             );
 
-            _cursos.push_back(std::move(curso));
+            _cursos.agregarAlFinal(curso);
 
             // Actualizar contador de IDs
             if (cursoData.id >= _nextCursoId) {
@@ -626,7 +582,7 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
 
         // Cargar especializaciones desde datos crudos
         for (const auto& espData : dataActividades.especializaciones) {
-            auto especializacion = std::make_unique<Especializacion>(
+            auto especializacion = Especializacion(
                 espData.id,
                 espData.idEmpresa,
                 espData.nombreEmpresa,
@@ -637,7 +593,7 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 espData.duracionEstimada
             );
 
-            _especializaciones.push_back(std::move(especializacion));
+            _especializaciones.agregarAlFinal(std::move(especializacion));
 
             // Actualizar contador de IDs
             if (espData.id >= _nextEspecializacionId) {
@@ -645,8 +601,6 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
             }
         }
 
-        // Actualizar caches para búsquedas rápidas
-        actualizarCaches();
 
         logOperation("CargarDesdeDatos",
             "Cargados " + std::to_string(dataActividades.cursos.size()) + " cursos y " +
@@ -673,17 +627,17 @@ inline ContentOperationResult ContentManager::cargarCantidadInscripcionesActivid
         int idActividad = inscripcion.idActividad;
         TipoActividad tipoActividad = static_cast<TipoActividad>(inscripcion.tipoActividad);
 
-        if (tipoActividad == TipoActividad::CURSO) _cursos[idActividad].get()->aumentarAlumno();
-        else _especializaciones[idActividad].get()->aumentarAlumno();
+        if (tipoActividad == TipoActividad::CURSO) _cursos.getElemento(idActividad).aumentarAlumno();
+        else _especializaciones.getElemento(idActividad).aumentarAlumno();
     }
 
-    int cantidadCursos = _cursos.size();
+    int cantidadCursos = _cursos.getTamano();
     for (int i = 0; i < cantidadCursos; i++) {
-        logOperation("Carga de curso", _cursos[i].get()->getTitulo() + ": " + std::to_string(_cursos[i].get()->getCantidad()));
+        logOperation("Carga de curso", _cursos.getElemento(i).getTitulo() + ": " + std::to_string(_cursos.getElemento(i).getCantidad()));
     }
-    int cantidadEspecializaciones = _especializaciones.size();
+    int cantidadEspecializaciones = _especializaciones.getTamano();
     for (int i = 0; i < cantidadEspecializaciones; i++) {
-        logOperation("Carga de curso", _especializaciones[i].get()->getTitulo() + ": " + std::to_string(_especializaciones[i].get()->getCantidad()));
+        logOperation("Carga de curso", _especializaciones.getElemento(i).getTitulo() + ": " + std::to_string(_especializaciones.getElemento(i).getCantidad()));
     }
 
     logOperation("Carga de cantidad inscripciones", "Se han cargado todos los datos de las inscripciones");
@@ -699,12 +653,12 @@ inline ElementoInscripcion ContentManager::cargarDatosInscripcionDash(RawInscrip
     inscripcion.idActividad = idAhora;
 
     if (data.tipo == TipoActividad::CURSO) {
-        inscripcion.titulo = _cursos[idAhora]->getTitulo();
-        inscripcion.descripcion = _cursos[idAhora]->getDescripcion();
+        inscripcion.titulo = _cursos.getElemento(idAhora).getTitulo();
+        inscripcion.descripcion = _cursos.getElemento(idAhora).getDescripcion();
     }
     else {
-        inscripcion.titulo = _especializaciones[idAhora]->getTitulo();
-        inscripcion.descripcion = _especializaciones[idAhora]->getDescripcion();
+        inscripcion.titulo = _especializaciones.getElemento(idAhora).getTitulo();
+        inscripcion.descripcion = _especializaciones.getElemento(idAhora).getDescripcion();
     }
 
     return inscripcion;
@@ -738,34 +692,6 @@ inline void ContentManager::logOperation(const std::string& operation, const std
     std::cout << std::endl;
     #endif
     */
-}
-
-
-
-// ========== MÉTODOS PRIVADOS - GESTIÓN DE CACHE ==========
-
-inline void ContentManager::actualizarCaches() {
-    // Limpiar caches existentes
-    ContentManager::limpiarCaches();
-
-    // Actualizar cache de cursos
-    for (auto it = _cursos.begin(); it != _cursos.end(); ++it) {
-        if (*it != nullptr) {
-            _cacheIdCursos[(*it)->getId()] = (*it).get();
-        }
-    }
-
-    // Actualizar cache de especializaciones
-    for (auto it = _especializaciones.begin(); it != _especializaciones.end(); ++it) {
-        if (*it != nullptr) {
-            _cacheIdEspecializaciones[(*it)->getId()] = (*it).get();
-        }
-    }
-}
-
-inline void ContentManager::limpiarCaches() {
-    _cacheIdCursos.clear();
-    _cacheIdEspecializaciones.clear();
 }
 
 inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite) {

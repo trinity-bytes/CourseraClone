@@ -11,6 +11,7 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// Pantalla para mostrar perfil de organización
 class PerfilOrganizacionScreen : public PantallaBase
@@ -102,6 +103,14 @@ inline void PerfilOrganizacionScreen::_limpiarEstado()
 // Cargar datos de ejemplo
 inline void PerfilOrganizacionScreen::_cargarDatosDummy()
 {
+    SessionManager& sm = SessionManager::getInstance();
+    bool sesionIniciada = sm.isLoggedIn();
+    if (sesionIniciada) {
+        _idOrganizacion = sm.getCurrentUser().getId();
+        _correoOrganizacion = sm.getCurrentUser().getUsername();
+        _nombreOrganizacion = sm.getCurrentUser().getNombreCompleto();
+        _fechaCreacionOrganizacion = sm.getCurrentUser().getFechaRegistro();
+    }
     // Los datos ya se cargan en el constructor
     // Este método está disponible para futuras cargas desde archivos
 }

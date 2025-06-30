@@ -221,5 +221,8 @@
     <ClInclude Include="Headers\Entities\DateTime.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Controllers\ActividadesController.hpp">
+      <Filter>Header Files\Controller</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

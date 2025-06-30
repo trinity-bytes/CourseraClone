@@ -42,7 +42,7 @@ public:
         explicit Iterator(Nodo<T>* _ptr) : _current(_ptr) {}
 
         // Operadores de iterador
-        T& operator*() const
+        T& operator*()
         {
             if (_current == nullptr)
             {
@@ -51,7 +51,7 @@ public:
             return _current->data;
         }
 
-        T* operator->() const
+        T* operator->() 
         {
             if (_current == nullptr)
             {
@@ -336,32 +336,25 @@ public:
         return end();
     }
 
-    T get(int _posicion) const
-    {
-        if (_head == nullptr || _posicion < 1 || _posicion > _tamano)
-        {
-            return T();
-        }
-        
-        Nodo<T>* actual = _head;
-        int contador = 1;
-        while (actual != nullptr)
-        {
-            if (contador == _posicion)
-            {
-                return actual->data;
+    T& getElemento(int pos) {
+        if (_head == nullptr) return T();
+        Nodo<T>* current = _head;
+        int contador = 0;
+        while (current != nullptr) {
+            if (contador == pos) {
+                return current->data;
             }
             contador++;
-            actual = actual->next;
+            current = current->next;
         }
-        return T();
+        return T(); // Elemento no encontrado
     }
 
     template <typename KeyType, typename Predicado>
     int buscarPorClave(KeyType _clave, Predicado _predicado) const
     {
         Nodo<T>* actual = _head;
-        int indice = 1;
+        int indice = 0;
 
         while (actual)
         {
@@ -375,6 +368,7 @@ public:
 
         return -1;
     }
+
     void modificar(int _posicion, const T& _datos)
     {
         if (_head == nullptr) return;

@@ -63,7 +63,7 @@ public:
         return ElementoMenu(_id, _titulo, _descripcion);
     }
 
-    RawExploradorData obtenerDatosCrudosExplorador() {
+    RawExploradorData obtenerDatosCrudosExplorador() const {
         return RawExploradorData{ _tipo, _id, _titulo, _categoria };
     }
 

@@ -140,6 +140,7 @@
     <None Include="Resources\Documentation\Plan de implementacion.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Controllers\ActividadesController.hpp" />
     <ClInclude Include="Headers\Controllers\InscripcionesController.hpp" />
     <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
