@@ -145,9 +145,16 @@
     <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
-    <ClInclude Include="Headers\Entities\DateTime.hpp" />
+    <ClInclude Include="Headers\Utils\DateTime.hpp" />
+    <ClInclude Include="Headers\Screens\AgregarMetodoPagoScreen.hpp" />
+    <ClInclude Include="Headers\Screens\CrearContenidoScreen.hpp" />
+    <ClInclude Include="Headers\Screens\CrearOfertaScreen.hpp" />
     <ClInclude Include="Headers\Screens\EstadisticasEmpresaScreen.hpp" />
+    <ClInclude Include="Headers\Screens\ListarContenidoScreen.hpp" />
+    <ClInclude Include="Headers\Screens\ProcesarPagoScreen.hpp" />
     <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp" />
+    <ClInclude Include="Headers\Screens\VerCertificadosScreen.hpp" />
+    <ClInclude Include="Headers\Screens\VerOfertasScreen.hpp" />
     <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
     <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />
     <ClInclude Include="Headers\Controllers\FilesManager.hpp" />

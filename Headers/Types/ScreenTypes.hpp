@@ -27,6 +27,7 @@ enum class AccionPantalla{
     IR_A_AGREGAR_METODO_PAGO,
     IR_A_PROCESAR_PAGO,
     IR_A_VER_CERTIFICADOS,
+    IR_A_LISTAR_CONTENIDO,
     SALIR
 };
 
