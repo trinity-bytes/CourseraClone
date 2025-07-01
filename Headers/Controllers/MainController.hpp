@@ -22,6 +22,11 @@
 #include "../Screens/EstadisticasEmpresaScreen.hpp"
 #include "../Screens/ExplorarContenidoScreen.hpp"
 #include "../Screens/VerBoletasScreen.hpp"
+#include "../Screens/CrearContenidoScreen.hpp"
+#include "../Screens/CrearOfertaScreen.hpp"
+#include "../Screens/VerOfertasScreen.hpp"
+#include "../Screens/AgregarMetodoPagoScreen.hpp"
+#include "../Screens/ProcesarPagoScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
@@ -45,6 +50,11 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaEstadisticasEmpresa();
     inline std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
     inline std::unique_ptr<PantallaBase> crearPantallaVerBoletas();
+    inline std::unique_ptr<PantallaBase> crearPantallaCrearContenido();
+    inline std::unique_ptr<PantallaBase> crearPantallaCrearOferta();
+    inline std::unique_ptr<PantallaBase> crearPantallaVerOfertas();
+    inline std::unique_ptr<PantallaBase> crearPantallaAgregarMetodoPago();
+    inline std::unique_ptr<PantallaBase> crearPantallaProcesarPago();
 
 public:
     /// @brief Constructor y destructor
@@ -143,11 +153,41 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaVerBoletas()
     return std::make_unique<VerBoletasScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla crear contenido
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaCrearContenido()
+{
+    return std::make_unique<CrearContenidoScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla crear oferta
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaCrearOferta()
+{
+    return std::make_unique<CrearOfertaScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla ver ofertas
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaVerOfertas()
+{
+    return std::make_unique<VerOfertasScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla agregar método de pago
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaAgregarMetodoPago()
+{
+    return std::make_unique<AgregarMetodoPagoScreen>();
+}
+
+/// @brief Crea una nueva instancia de la pantalla procesar pago
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaProcesarPago()
+{
+    return std::make_unique<ProcesarPagoScreen>();
+}
+
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaVerBoletas();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaProcesarPago();
     
     do
     {
@@ -209,6 +249,26 @@ inline void MainController::run()
 
         case AccionPantalla::IR_A_VER_BOLETAS:
             _pantallaActual = crearPantallaVerBoletas();
+            break;
+
+        case AccionPantalla::IR_A_CREAR_CONTENIDO:
+            _pantallaActual = crearPantallaCrearContenido();
+            break;
+
+        case AccionPantalla::IR_A_CREAR_OFERTA:
+            _pantallaActual = crearPantallaCrearOferta();
+            break;
+
+        case AccionPantalla::IR_A_VER_OFERTAS:
+            _pantallaActual = crearPantallaVerOfertas();
+            break;
+
+        case AccionPantalla::IR_A_AGREGAR_METODO_PAGO:
+            _pantallaActual = crearPantallaAgregarMetodoPago();
+            break;
+
+        case AccionPantalla::IR_A_PROCESAR_PAGO:
+            _pantallaActual = crearPantallaProcesarPago();
             break;
 
         case AccionPantalla::SALIR:
