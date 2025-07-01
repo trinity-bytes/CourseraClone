@@ -9,6 +9,7 @@ private:
 	LinkedList<int> idCursos;
 	LinkedList<int>  idEspecializaciones;
 	int idOrganizacion;
+	int totalInscritos;
 
 
 	void logOperation(const std::string& operation, const std::string& details);
@@ -22,8 +23,11 @@ public:
 
 	inline std::vector<ElementoMenu> getElementosDashboard(TipoActividad _tipo);
 
+	inline int calcularCantidad();
+
 	inline int getCantidadCursos();
 	inline int getCantidadEspecializaciones();
+	inline int getCantidadInscritos();
 
 };
 
@@ -34,6 +38,7 @@ inline ActividadesController::ActividadesController()
 	idEspecializaciones = LinkedList<int>();
 	idOrganizacion = -1;
 }
+
 
 inline ActividadesController::ActividadesController(int _idOrganizacion) {
 	// Inicializar estructuras de datos
@@ -49,6 +54,23 @@ inline ActividadesController::ActividadesController(int _idOrganizacion) {
 
 	cm.getCursos().filtrarTransformar<int, decltype(comparador), decltype(convertidor), int>(idOrganizacion, comparador, convertidor, idCursos);
 	cm.getEspecializaciones().filtrarTransformar<int, decltype(comparador), decltype(convertidor), int>(idOrganizacion, comparador, convertidor, idEspecializaciones);
+	totalInscritos = calcularCantidad();
+}
+
+inline int ActividadesController::calcularCantidad() {
+	int total = 0;
+
+	for (auto it = idCursos.begin(); it != idCursos.end(); it++) {
+		int adicionar = ContentManager::getInstance().obtenerCurso(*it)->getCantidad();
+		total += adicionar;
+	}
+
+	for (auto it = idEspecializaciones.begin(); it != idEspecializaciones.end(); it++) {
+		int adicionar = ContentManager::getInstance().obtenerEspecializacion(*it)->getCantidad();
+		total += adicionar;
+	}
+
+	return total;
 }
 
 inline std::vector<ElementoMenu> ActividadesController::getElementosDashboard(TipoActividad _tipo) {
@@ -80,8 +102,14 @@ inline int ActividadesController::getCantidadCursos() {
 	return idCursos.getTamano();
 }
 
+
+
 inline int ActividadesController::getCantidadEspecializaciones() {
 	return idEspecializaciones.getTamano();
+}
+
+inline int ActividadesController::getCantidadInscritos() {
+	return totalInscritos;
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========

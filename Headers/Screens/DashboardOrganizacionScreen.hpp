@@ -178,6 +178,7 @@ inline void DashboardOrganizacionScreen::_cargarDatos()
     _especializaciones = sm.getActividadesController().getElementosDashboard(TipoActividad::ESPECIALIZACION);
     _cursosPublicados = sm.getActividadesController().getCantidadCursos();
     _especialidadesPublicadas = sm.getActividadesController().getCantidadEspecializaciones();
+    _estudiantesInscritos = sm.getActividadesController().getCantidadInscritos();
 }
 
 // Cargar datos de ejemplo
