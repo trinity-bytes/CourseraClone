@@ -27,6 +27,7 @@
 #include "../Screens/VerOfertasScreen.hpp"
 #include "../Screens/AgregarMetodoPagoScreen.hpp"
 #include "../Screens/ProcesarPagoScreen.hpp"
+#include "../Screens/VerCertificadosScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
@@ -55,6 +56,7 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaVerOfertas();
     inline std::unique_ptr<PantallaBase> crearPantallaAgregarMetodoPago();
     inline std::unique_ptr<PantallaBase> crearPantallaProcesarPago();
+    inline std::unique_ptr<PantallaBase> crearPantallaVerCertificados();
 
 public:
     /// @brief Constructor y destructor
@@ -183,11 +185,17 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaProcesarPago()
     return std::make_unique<ProcesarPagoScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla ver certificados
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaVerCertificados()
+{
+    return std::make_unique<VerCertificadosScreen>();
+}
+
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaProcesarPago();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaVerCertificados();
     
     do
     {
@@ -269,6 +277,10 @@ inline void MainController::run()
 
         case AccionPantalla::IR_A_PROCESAR_PAGO:
             _pantallaActual = crearPantallaProcesarPago();
+            break;
+
+        case AccionPantalla::IR_A_VER_CERTIFICADOS:
+            _pantallaActual = crearPantallaVerCertificados();
             break;
 
         case AccionPantalla::SALIR:

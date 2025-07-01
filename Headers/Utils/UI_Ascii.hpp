@@ -1265,4 +1265,83 @@ inline void UI_ProcesarPago()
 └──┴───────┘
 */
 
+/// UI Vista de certificados obtenidos
+inline void UI_Certificados()
+{
+//----------------------------------------------------------------------------------------------------------------------
+    std::string ui = R"(
+   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
+   █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
+   
+
+                                            MIS CERTIFICADOS OBTENIDOS
+
+
+    ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    ║                                                                                                              ║
+    ║  ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════╗  ║
+    ║  ║                                   CERTIFICADO DE FINALIZACIÓN                                         ║  ║
+    ║  ║                                                                                                       ║  ║
+    ║  ║  COURSERA CLONE                                                                                       ║  ║
+    ║  ║                                                                                                       ║  ║
+    ║  ║  Por la presente certifica que:                                                                       ║  ║
+    ║  ║                                                                                                       ║  ║
+    ║  ║                               [NOMBRE DEL ESTUDIANTE]                                                 ║  ║
+    ║  ║                                                                                                       ║  ║
+    ║  ║  Ha completado satisfactoriamente el curso:                                                          ║  ║
+    ║  ║                                                                                                       ║  ║
+    ║  ║                               [NOMBRE DEL CURSO]                                                      ║  ║
+    ║  ║                                                                                                       ║  ║
+    ║  ║  Instructor: [NOMBRE INSTRUCTOR]                   Fecha: [DD/MM/AAAA]                               ║  ║
+    ║  ║  Calificación: [NOTA]                              ID Certificado: [ID]                             ║  ║
+    ║  ║                                                                                                       ║  ║
+    ║  ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝  ║
+    ║                                                                                                              ║
+    ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+                              < ANTERIOR     [1/5]     SIGUIENTE >       VER DETALLES     DESCARGAR PDF
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Usa las flechas de direccion (IZQUIERDA/DERECHA) para navegar por certificados.
+ Pulsa ENTER para ver detalles o ESC para regresar al menu anterior.)";   
+//----------------------------------------------------------------------------------------------------------------------
+
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << ui;
+
+    /// @brief Dibujar fondo de la cabecera
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Dibujar fondo de la sección de título
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 4; y < 7; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Mostrar título de la sección
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(35, 5); std::cout << "MIS CERTIFICADOS OBTENIDOS";
+
+    /// @brief Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    resetColor();
+}
+
 #endif // COURSERACLONE_UTILS_UI_ASCII_HPP
