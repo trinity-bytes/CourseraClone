@@ -29,6 +29,11 @@ private:
     int _seccionActual; // 0: Cursos, 1: Estudiantes, 2: Ingresos
     int _totalSecciones;
     
+    // Variables para recordar lo que se escribió antes ("limpiar solo lo que ensucias")
+    std::string _tituloAnterior;
+    std::vector<std::string> _nombresAnteriores;
+    std::vector<std::string> _numerosAnteriores;
+    
     // Estadísticas generales
     struct EstadisticasGenerales {
         int totalCursos;
@@ -110,6 +115,10 @@ inline EstadisticasEmpresaScreen::EstadisticasEmpresaScreen(AccionPantalla panta
     _pantallaAnterior(pantallaAnterior), _primeraRenderizacion(true), _seccionActual(0), _totalSecciones(3)
 {
     _cargarDatosDummy();
+    
+    // Inicializar vectores para recordar lo escrito anteriormente
+    _nombresAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
+    _numerosAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
 }
 
 // Limpiar estado
@@ -117,6 +126,15 @@ inline void EstadisticasEmpresaScreen::_limpiarEstado()
 {
     _seccionActual = 0;
     _primeraRenderizacion = true;
+    
+    // Limpiar memoria de lo escrito anteriormente
+    _tituloAnterior.clear();
+    for (auto& nombre : _nombresAnteriores) {
+        nombre.clear();
+    }
+    for (auto& numero : _numerosAnteriores) {
+        numero.clear();
+    }
 }
 
 // Cargar datos de ejemplo
@@ -247,41 +265,60 @@ inline void EstadisticasEmpresaScreen::_renderizarSeccionCursos()
 {
     int fila = _coordSeccionCursos.Y;
     
-    // Borrar y escribir título de la sección
+    // Limpiar título anterior (solo lo que ensuciamos antes) y escribir nuevo
     gotoXY(_coordSeccionCursos.X, fila);
-    std::cout << std::string(25, ' '); // Borrar título anterior
+    if (!_tituloAnterior.empty()) {
+        std::cout << std::string(_tituloAnterior.length(), ' '); // Borrar exactamente lo anterior
+    }
     gotoXY(_coordSeccionCursos.X, fila);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
     std::cout << "CURSOS MAS POPULARES";
+    _tituloAnterior = "CURSOS MAS POPULARES"; // Recordar lo que escribimos
     
     fila += 4;
+    
+    // Redimensionar vectores si es necesario
+    _nombresAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
+    _numerosAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
     
     // Mostrar top 5 cursos
     for (int i = 0; i < _datosCursos.size() && i < MAX_ELEMENTOS_GRAFICO; ++i) 
     {
-        // Borrar y escribir nombre del curso
+        // Limpiar nombre anterior y escribir nuevo
         gotoXY(_coordSeccionCursos.X + 3, fila + i);
-        std::cout << std::string(LONGITUD_NOMBRE_ITEM, ' '); // Borrar solo el espacio del nombre
+        if (!_nombresAnteriores[i].empty()) {
+            std::cout << std::string(_nombresAnteriores[i].length(), ' '); // Borrar exactamente lo anterior
+        }
         gotoXY(_coordSeccionCursos.X + 3, fila + i);
         setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         std::string nombreTruncado = truncarTexto(_datosCursos[i].first, LONGITUD_NOMBRE_ITEM);
         std::cout << nombreTruncado;
+        _nombresAnteriores[i] = nombreTruncado; // Recordar lo que escribimos
         
-        // Borrar y escribir número de inscripciones
-        std::string numeroFormateado = formatearNumero(_datosCursos[i].second);
+        // Limpiar número anterior y escribir nuevo
         gotoXY(_coordSeccionCursos.X + 50, fila + i);
-        std::cout << std::string(numeroFormateado.length(), ' '); // Borrar solo el espacio del número
+        if (!_numerosAnteriores[i].empty()) {
+            std::cout << std::string(_numerosAnteriores[i].length(), ' '); // Borrar exactamente lo anterior
+        }
         gotoXY(_coordSeccionCursos.X + 50, fila + i);
         setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+        std::string numeroFormateado = formatearNumero(_datosCursos[i].second);
         std::cout << numeroFormateado;
+        _numerosAnteriores[i] = numeroFormateado; // Recordar lo que escribimos
     }
     
-    // Limpiar líneas que ya no se usan (si había más elementos antes)
+    // Limpiar líneas que ya no se usan (elementos que había antes pero ya no)
     for (int i = _datosCursos.size(); i < MAX_ELEMENTOS_GRAFICO; ++i) {
-        gotoXY(_coordSeccionCursos.X + 3, fila + i);
-        std::cout << std::string(LONGITUD_NOMBRE_ITEM, ' '); // Solo el nombre
-        gotoXY(_coordSeccionCursos.X + 50, fila + i);
-        std::cout << std::string(10, ' '); // Solo el área del número
+        if (!_nombresAnteriores[i].empty()) {
+            gotoXY(_coordSeccionCursos.X + 3, fila + i);
+            std::cout << std::string(_nombresAnteriores[i].length(), ' ');
+            _nombresAnteriores[i].clear();
+        }
+        if (!_numerosAnteriores[i].empty()) {
+            gotoXY(_coordSeccionCursos.X + 50, fila + i);
+            std::cout << std::string(_numerosAnteriores[i].length(), ' ');
+            _numerosAnteriores[i].clear();
+        }
     }
     
     resetColor();
@@ -292,40 +329,59 @@ inline void EstadisticasEmpresaScreen::_renderizarSeccionEstudiantes()
 {
     int fila = _coordSeccionEstudiantes.Y;
     
-    // Borrar y escribir título de la sección
+    // Limpiar título anterior (solo lo que ensuciamos antes) y escribir nuevo
     gotoXY(_coordSeccionEstudiantes.X, fila);
-    std::cout << std::string(30, ' '); // Borrar título anterior
+    if (!_tituloAnterior.empty()) {
+        std::cout << std::string(_tituloAnterior.length(), ' '); // Borrar exactamente lo anterior
+    }
     gotoXY(_coordSeccionEstudiantes.X, fila);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
     std::cout << "NUEVOS ESTUDIANTES POR MES";
+    _tituloAnterior = "NUEVOS ESTUDIANTES POR MES"; // Recordar lo que escribimos
     
     fila += 4;
+    
+    // Redimensionar vectores si es necesario
+    _nombresAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
+    _numerosAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
     
     // Mostrar datos de estudiantes por mes
     for (int i = 0; i < _datosEstudiantes.size() && i < MAX_ELEMENTOS_GRAFICO; ++i) 
     {
-        // Borrar y escribir mes
+        // Limpiar mes anterior y escribir nuevo
         gotoXY(_coordSeccionEstudiantes.X + 3, fila + i);
-        std::cout << std::string(15, ' '); // Borrar solo el espacio del mes
+        if (!_nombresAnteriores[i].empty()) {
+            std::cout << std::string(_nombresAnteriores[i].length(), ' '); // Borrar exactamente lo anterior
+        }
         gotoXY(_coordSeccionEstudiantes.X + 3, fila + i);
         setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         std::cout << _datosEstudiantes[i].first;
+        _nombresAnteriores[i] = _datosEstudiantes[i].first; // Recordar lo que escribimos
         
-        // Borrar y escribir número de estudiantes
-        std::string numeroFormateado = formatearNumero(_datosEstudiantes[i].second);
+        // Limpiar número anterior y escribir nuevo
         gotoXY(_coordSeccionEstudiantes.X + 50, fila + i);
-        std::cout << std::string(numeroFormateado.length(), ' '); // Borrar solo el espacio del número
+        if (!_numerosAnteriores[i].empty()) {
+            std::cout << std::string(_numerosAnteriores[i].length(), ' '); // Borrar exactamente lo anterior
+        }
         gotoXY(_coordSeccionEstudiantes.X + 50, fila + i);
         setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+        std::string numeroFormateado = formatearNumero(_datosEstudiantes[i].second);
         std::cout << numeroFormateado;
+        _numerosAnteriores[i] = numeroFormateado; // Recordar lo que escribimos
     }
     
-    // Limpiar líneas que ya no se usan (si había más elementos antes)
+    // Limpiar líneas que ya no se usan (elementos que había antes pero ya no)
     for (int i = _datosEstudiantes.size(); i < MAX_ELEMENTOS_GRAFICO; ++i) {
-        gotoXY(_coordSeccionEstudiantes.X + 3, fila + i);
-        std::cout << std::string(15, ' '); // Solo el mes
-        gotoXY(_coordSeccionEstudiantes.X + 50, fila + i);
-        std::cout << std::string(10, ' '); // Solo el área del número
+        if (!_nombresAnteriores[i].empty()) {
+            gotoXY(_coordSeccionEstudiantes.X + 3, fila + i);
+            std::cout << std::string(_nombresAnteriores[i].length(), ' ');
+            _nombresAnteriores[i].clear();
+        }
+        if (!_numerosAnteriores[i].empty()) {
+            gotoXY(_coordSeccionEstudiantes.X + 50, fila + i);
+            std::cout << std::string(_numerosAnteriores[i].length(), ' ');
+            _numerosAnteriores[i].clear();
+        }
     }
     
     resetColor();
@@ -336,40 +392,59 @@ inline void EstadisticasEmpresaScreen::_renderizarSeccionIngresos()
 {
     int fila = _coordSeccionIngresos.Y;
     
-    // Borrar y escribir título de la sección
+    // Limpiar título anterior (solo lo que ensuciamos antes) y escribir nuevo
     gotoXY(_coordSeccionIngresos.X, fila);
-    std::cout << std::string(25, ' '); // Borrar título anterior
+    if (!_tituloAnterior.empty()) {
+        std::cout << std::string(_tituloAnterior.length(), ' '); // Borrar exactamente lo anterior
+    }
     gotoXY(_coordSeccionIngresos.X, fila);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
     std::cout << "INGRESOS POR TRIMESTRE";
+    _tituloAnterior = "INGRESOS POR TRIMESTRE"; // Recordar lo que escribimos
     
     fila += 4;
+    
+    // Redimensionar vectores si es necesario
+    _nombresAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
+    _numerosAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
     
     // Mostrar datos de ingresos por trimestre
     for (int i = 0; i < _datosIngresos.size() && i < MAX_ELEMENTOS_GRAFICO; ++i) 
     {
-        // Borrar y escribir trimestre
+        // Limpiar trimestre anterior y escribir nuevo
         gotoXY(_coordSeccionIngresos.X + 3, fila + i);
-        std::cout << std::string(15, ' '); // Borrar solo el espacio del trimestre
+        if (!_nombresAnteriores[i].empty()) {
+            std::cout << std::string(_nombresAnteriores[i].length(), ' '); // Borrar exactamente lo anterior
+        }
         gotoXY(_coordSeccionIngresos.X + 3, fila + i);
         setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         std::cout << _datosIngresos[i].first;
+        _nombresAnteriores[i] = _datosIngresos[i].first; // Recordar lo que escribimos
         
-        // Borrar y escribir cantidad de ingresos
-        std::string dineroFormateado = formatearDinero(_datosIngresos[i].second);
+        // Limpiar dinero anterior y escribir nuevo
         gotoXY(_coordSeccionIngresos.X + 50, fila + i);
-        std::cout << std::string(dineroFormateado.length(), ' '); // Borrar solo el espacio del dinero
+        if (!_numerosAnteriores[i].empty()) {
+            std::cout << std::string(_numerosAnteriores[i].length(), ' '); // Borrar exactamente lo anterior
+        }
         gotoXY(_coordSeccionIngresos.X + 50, fila + i);
         setConsoleColor(ColorIndex::ERROR_COLOR, ColorIndex::FONDO_PRINCIPAL);
+        std::string dineroFormateado = formatearDinero(_datosIngresos[i].second);
         std::cout << dineroFormateado;
+        _numerosAnteriores[i] = dineroFormateado; // Recordar lo que escribimos
     }
     
-    // Limpiar líneas que ya no se usan (si había más elementos antes)
+    // Limpiar líneas que ya no se usan (elementos que había antes pero ya no)
     for (int i = _datosIngresos.size(); i < MAX_ELEMENTOS_GRAFICO; ++i) {
-        gotoXY(_coordSeccionIngresos.X + 3, fila + i);
-        std::cout << std::string(15, ' '); // Solo el trimestre
-        gotoXY(_coordSeccionIngresos.X + 50, fila + i);
-        std::cout << std::string(15, ' '); // Solo el área del dinero
+        if (!_nombresAnteriores[i].empty()) {
+            gotoXY(_coordSeccionIngresos.X + 3, fila + i);
+            std::cout << std::string(_nombresAnteriores[i].length(), ' ');
+            _nombresAnteriores[i].clear();
+        }
+        if (!_numerosAnteriores[i].empty()) {
+            gotoXY(_coordSeccionIngresos.X + 50, fila + i);
+            std::cout << std::string(_numerosAnteriores[i].length(), ' ');
+            _numerosAnteriores[i].clear();
+        }
     }
     
     resetColor();
