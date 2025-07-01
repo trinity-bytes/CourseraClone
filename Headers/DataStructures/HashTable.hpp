@@ -13,6 +13,19 @@ private:
     std::unordered_map<K, T> table;
 
 public:
+    // Define an iterator type
+    using iterator = typename std::unordered_map<K, T>::iterator;
+
+    // Method to get the beginning iterator
+    iterator begin() {
+        return table.begin();
+    }
+
+    // Method to get the end iterator
+    iterator end() {
+        return table.end();
+    }
+
     // Inserta un elemento en la tabla hash  
     void insert(K key, const T& value) {
         table[key] = value;

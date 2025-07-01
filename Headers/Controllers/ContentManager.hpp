@@ -694,31 +694,28 @@ inline void ContentManager::logOperation(const std::string& operation, const std
     */
 }
 
-inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite) {
+inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite) {  
+   std::vector<std::string> sugerencias;  
+   if (texto.empty()) return sugerencias;  
 
-    std::vector<std::string> sugerencias;
-    if (texto.empty()) return sugerencias;
+   // Convertir texto de búsqueda a minúsculas  
+   std::string textoLower = texto;  
+   std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });  
 
-    // Convertir texto de búsqueda a minúsculas
-    std::string textoLower = texto;
-    std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });
+   FilesManager& fileManager = FilesManager::getInstance();
+   auto& hashCursos = fileManager.getIndiceCursos();
 
-    std::vector<std::unique_ptr<Curso>> _cursos;
+   // Solución: Usar iteradores explícitos para recorrer el hash table  
+   for (auto it = hashCursos.begin(); it != hashCursos.end(); ++it) {  
+       std::string tituloLower = it->first;  
+       std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), ::tolower);  
 
-    for (const auto& cursoPtr : _cursos) {
-        if (!cursoPtr) continue;
-        std::string titulo = cursoPtr->obtenerDatosCrudosCurso().titulo;
-        // Convertir título a minúsculas
-        std::string tituloLower = titulo;
-        std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), [](unsigned char c) { return std::tolower(c); });
-
-        // Buscar si el título comienza con el texto
-        if (tituloLower.find(textoLower) == 0) {
-            sugerencias.push_back(titulo);
-            if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;
-        }
-    }
-    return sugerencias;
+       if (tituloLower.find(textoLower) == 0) {  
+           sugerencias.push_back(it->first);  
+           if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;  
+       }  
+   }  
+   return sugerencias;  
 }
 // ========== UTILIDADES ==========
 
