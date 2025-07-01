@@ -932,42 +932,42 @@ inline void UI_EstadisticasEmpresa()
    █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
 
+
+    
+
+
+
     ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
     ║                                         R E S U M E N  G E N E R A L                                         ║
     ║ ┌─────────────────────────┐┌─────────────────────────┐┌─────────────────────────┐┌─────────────────────────┐ ║
     ║ │ ESTUDIANTES             ││ INGRESOS                ││ CURSOS                  ││ ESPECIALIZACIONES       │ ║
     ║ │ INSCRITOS:              ││ TOTALES:                ││ PUBLICADOS:             ││ PUBLICADAS:             │ ║
-    ║ │                         ││                         ││                         ││                         │ ║
-    ║ │       1,247             ││    S/ 89,450.00         ││         23              ││          5              │ ║
     ║ └─────────────────────────┘└─────────────────────────┘└─────────────────────────┘└─────────────────────────┘ ║
     ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-    ╔═════════════════════════════════════╗ ╔══════════════════════════════════════════════════════════════════════╗
-    ║         INSCRIPCIONES POR MES       ║ ║                    TOP CURSOS MÁS POPULARES                          ║
-    ║                                     ║ ╠══════════════════════════════════════════════════════════════════════╣
-    ║  200┤                               ║ ║  Pos │ Curso                                  │ Inscritos │ Ingresos ║
-    ║     │    ██                         ║ ╟──────┼────────────────────────────────────────┼───────────┼──────────╢
-    ║  150┤    ██                         ║ ║  1º  │ Python para Data Science               │    245    │  S/15K   ║
-    ║     │ ██ ██    ██                   ║ ║  2º  │ Machine Learning Avanzado              │    198    │  S/12K   ║
-    ║  100┤ ██ ██ ██ ██                   ║ ║  3º  │ Desarrollo Web Full Stack              │    167    │  S/10K   ║
-    ║     │ ██ ██ ██ ██ ██                ║ ║  4º  │ Análisis de Datos con R                │    134    │  S/8K    ║
-    ║  50 ┤ ██ ██ ██ ██ ██ ██             ║ ║  5º  │ Fundamentos de IA                      │    112    │  S/7K    ║
-    ║     └─┬──┬──┬──┬──┬──┬─             ║ ║  5º  │ Fundamentos de IA                      │    112    │  S/7K    ║
-    ║      Ene Feb Mar Abr May Jun        ║ ║  5º  │ Fundamentos de IA                      │    112    │  S/7K    ║
-    ╚═════════════════════════════════════╝ ╚══════════════════════════════════════════════════════════════════════╝
-                                             
-                                                   EXPORTAR REPORTE  
-                                                   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  
+
+                                            ╔══════════════════════════════════════════════════════════════════════╗
+                                            ║                                                                      ║
+                                            ╠══════════════════════════════════════════════════════════════════════╣
+                                            ║  Pos                                            Inscritos - Ingresos ║
+                                            ║                                                                      ║
+                                            ║  1º                                                          S/      ║
+                                            ║  2º                                                          S/      ║
+                                            ║  3º                                                          S/      ║
+                                            ║  4º                                                          S/      ║
+                                            ║  5º                                                          S/      ║
+                                            ╚══════════════════════════════════════════════════════════════════════╝
+
+
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Use IZQUIERDA/DERECHA para cambiar sección - ESC para regresar.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
 
     /// @brief Dibujar fondo de la cabecera
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    for (int y = 0; y < 6; y++)
+    setConsoleColor(ColorIndex::AZUL_MARCA , ColorIndex::BLANCO_PURO);
+    for (int y = 0; y < 4; y++)
     {
         for (int x = 0; x < ANCHO_CONSOLA; x++)
         {
@@ -976,15 +976,23 @@ inline void UI_EstadisticasEmpresa()
         }
     }
 
-    /// @brief Mostrar título de la sección
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(42, 5); std::cout << "***  DASHBOARD DE ESTADÍSTICAS  ***";
-
     /// @brief Dibujar logo principal
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
     gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
     gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
     gotoXY(35, 1); std::cout << "│  C L O N E";
+
+    /// @brief Dibujar fondo de la sección de título
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 4; y < 8; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    gotoXY(8, 6); std::cout << "Institucion Educativa";
 
     resetColor();
 }
