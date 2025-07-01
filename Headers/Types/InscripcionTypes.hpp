@@ -46,6 +46,7 @@ struct InscripcionIndex {
 
 // Estructura para inscripciones (registro principal) en disco
 struct InscripcionBinaria {
+    int id;
     int idEstudiante;
     int idActividad;
     int tipoActividad;

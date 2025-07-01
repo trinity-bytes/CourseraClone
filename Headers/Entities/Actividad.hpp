@@ -24,6 +24,9 @@ protected:
     std::string _titulo;
     std::string _descripcion;
     int _cantidadAlumnos;
+    int _cantidadCompletados;
+    double _montoRecaudado;
+    double _progresoTotal;
 
 public:
     Actividad() : _id(0),
@@ -33,7 +36,10 @@ public:
         _tipo(TipoActividad::DEFAULT),
         _titulo(""),
         _descripcion(""),
-        _cantidadAlumnos(0)
+        _cantidadAlumnos(0),
+        _cantidadCompletados(0),
+        _montoRecaudado(0),
+        _progresoTotal(0.0)
     {
     }
 
@@ -52,7 +58,10 @@ public:
         _titulo(titulo),
         _descripcion(descripcion),
         _tipo(tipo),
-        _cantidadAlumnos(0)
+        _cantidadAlumnos(0),
+        _cantidadCompletados(0),
+        _montoRecaudado(0),
+        _progresoTotal(0.0)
     {
     }
 
@@ -90,6 +99,7 @@ public:
     void setDescripcion(const std::string& descripcion) { _descripcion = descripcion; }
     void setTipo(const TipoActividad tipo) { _tipo = tipo; }
     void aumentarAlumno() { _cantidadAlumnos++; }
+    void aumentarAlumnoCompletado() { _cantidadCompletados++; }
 
 
     virtual bool guardar() = 0; // Método virtual puro para guardar la actividad

@@ -34,10 +34,14 @@ public:
 	inline void guardarCursoInscripcion(Inscripcion inscripcion);
 	inline void guardarEspecializacionInscripcion(Inscripcion inscripcion);
 	inline FileOperationResult inscribirCurso(int idCurso);
+	inline FileOperationResult completarActividad(TipoActividad tipo, int id);
 	inline FileOperationResult inscribirEspecializacion(int idEspecializacion);
 	inline bool verificarCurso(int idCurso);
 	inline bool verificarEspecializacion(int idEspecializacion);
 	inline void mostrarCursos();
+	inline void reportarDatosInscripcion(bool& _yaInscrito, bool& _yaPagado, bool& _yaCompletado, TipoActividad tipo, int id);
+
+	inline Inscripcion& getInscripcion(TipoActividad tipo, int id);
 
 	// Métodos para visualizar inscripciones
 	inline std::vector<ElementoInscripcion> getElementosInscripcionesDash(Stack<Inscripcion>& inscripciones);
@@ -107,6 +111,28 @@ inline void InscripcionesController::guardarEspecializacionInscripcion(Inscripci
 	}
 }
 
+inline FileOperationResult InscripcionesController::completarActividad(TipoActividad tipo, int id) {
+	Inscripcion& actual = getInscripcion(tipo, id);
+	if (!actual.getCompletado()) {
+		actual.completar();
+		actual.actualizar();
+
+		ContentManager::getInstance().obtenerCurso(id)->aumentarAlumnoCompletado();
+
+		logOperation("Completar actividad",
+			"Éxito: Actividad " + std::to_string(id) +
+			" para estudiante " + std::to_string(idEstudiante));
+	}
+	else {
+		logOperation("Completar actiivdad",
+			"Error: Actividad completada antes " + std::to_string(id) +
+			" para estudiante " + std::to_string(idEstudiante));
+	}
+
+	
+	return FileOperationResult::SUCCESS;
+}
+
 inline FileOperationResult InscripcionesController::inscribirCurso(int idCurso) {
 	if (!idCursos->Insertar(idCurso)) {
 		logError("Inscribir curso",
@@ -158,6 +184,42 @@ inline bool InscripcionesController::verificarEspecializacion(int idEspecializac
 
 inline void InscripcionesController::mostrarCursos() {
 	idCursos.get()->inOrden();
+}
+
+inline void InscripcionesController::reportarDatosInscripcion(bool& _yaInscrito, bool& _yaPagado, bool& _yaCompletado, TipoActividad tipo, int id) {
+	if (tipo == TipoActividad::CURSO) {
+		_yaInscrito = verificarCurso(id);
+	}
+	else {
+		_yaInscrito = verificarEspecializacion(id);
+	}
+	
+	if (_yaInscrito) {
+		Inscripcion& ins = getInscripcion(tipo, id);
+		_yaPagado = ins.getEstadoPago();
+		_yaCompletado = ins.getCompletado();
+	}
+	else {
+		_yaPagado = false;
+		_yaCompletado = false;
+	}
+
+	
+}
+
+inline Inscripcion& InscripcionesController::getInscripcion(TipoActividad tipo, int id) {
+	auto igualarId = [](const Inscripcion& i) {
+		return i.getId();
+		};
+
+	if (tipo == TipoActividad::CURSO) {
+		Inscripcion& ins = inscripcionesCursos.buscarPorClave(id, igualarId);
+		return ins;
+	}
+	else {
+		Inscripcion& ins = inscripcionesEspecialidades.buscarPorClave(id, igualarId);
+		return ins;
+	}
 }
 
 inline std::vector<ElementoInscripcion> InscripcionesController::getElementosInscripcionesDash(Stack<Inscripcion>& inscripciones) {

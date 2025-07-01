@@ -446,6 +446,8 @@ inline ResultadoPantalla DashboardEstudianteScreen::_procesarSeleccion()
         if (_elementoActual < _cursosInscritos.size())
         {
             // TODO: Aquí se podría pasar el ID del curso seleccionado
+            int idCurso = _cursosInscritos[_elementoActual].idActividad;
+            ContentManager::getInstance().setCursoIdMostrar(idCurso);
             return ResultadoPantalla(AccionPantalla::IR_A_MOSTRAR_CURSO);
         }
         break;

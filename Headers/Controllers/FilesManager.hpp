@@ -903,17 +903,22 @@ inline FileOperationResult FilesManager::guardarInscripcionBinaria(const Inscrip
     
     
     try {
-        std::ofstream os(DataPaths::Core::DB_INSCRIPCIONES, std::ios::binary | std::ios::app);
+        auto path = DataPaths::Core::DB_INSCRIPCIONES;
+        std::fstream os(path, std::ios::binary | std::ios::in | std::ios::out);
         
         if (!os.is_open()) {
             logError("Guardar inscripción", DataPaths::Core::DB_INSCRIPCIONES, "No se pudo abrir el archivo");
             return FileOperationResult::FILE_NOT_FOUND;
         }
-        
-        os.seekp(0, std::ios::end);
-        offsetRegistro = static_cast<int>(os.tellp() / sizeof(InscripcionBinaria));
 
-        os.write(reinterpret_cast<const char*>(&bin), sizeof(bin));
+        os.seekg((offsetRegistro) * sizeof(InscripcionBinaria), std::ios::beg);
+        if (os.eof()) {
+            logError("Actualizar usuario binario", path, "Posición fuera de rango");
+            os.close();
+            return FileOperationResult::FILE_NOT_FOUND;
+        }
+        os.write(reinterpret_cast<const char*>(&bin), sizeof(InscripcionBinaria));
+  
         
         if (!os.good()) {
             logError("Guardar inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al escribir datos");

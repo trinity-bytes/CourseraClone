@@ -43,7 +43,9 @@ public:
     inline TipoActividad getTipo() const;
 
     inline void guardar();
+    inline void actualizar();
 
+    inline void completar();
     inline void actualizaPagoEnDisco(int _posicion, bool _estado);
     inline void marcarComoPagada();
 
@@ -108,6 +110,14 @@ inline TipoActividad Inscripcion::getTipo() const {
 inline void Inscripcion::guardar() {
 	FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago), this->id);
     FilesManager::getInstance().guardarInidiceInscripcion(idEstudiante, this->id);
+}
+
+inline void Inscripcion::actualizar() {
+    FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago), this->id);
+}
+
+inline void Inscripcion::completar() {
+    completado = true;
 }
 
 inline void Inscripcion::marcarComoPagada() {

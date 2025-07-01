@@ -55,6 +55,22 @@ public:
         return actual->data;
     }
 
+    template <typename KeyType, typename Predicado>
+    T& buscarPorClave(KeyType _clave, Predicado _predicado) const
+    {
+        Nodo<T>* actual = _head;
+
+        while (actual)
+        {
+            if (_predicado(actual->data) == _clave)
+            {
+                return actual->data;
+            }
+            actual = actual->next;
+        }
+
+    }
+
     int getTamano() const
     {
         return _tamano;

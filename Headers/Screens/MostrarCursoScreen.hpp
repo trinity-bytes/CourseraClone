@@ -30,6 +30,8 @@ private:
     AccionPantalla _pantallaAnterior;
     bool _primeraRenderizacion;
     bool _yaInscrito; // Estado de inscripción
+    bool _yaPagado;
+    bool _yaCompletado;
     
     // Navegación
     int _elementoActual; // 0-4 para clases, 5 para botón inscribirse
@@ -46,7 +48,9 @@ private:
     /// @brief Elementos de botones
     std::vector<std::string> _elementosBotones = {
         " INSCRIBIRME ",
-        "  INSCRITO   "
+        "  COMPLETAR  ",
+        "    PAGAR    ",
+        " COMPLETADO  ",
     };
 
     /// @brief Contenido de clases
@@ -116,7 +120,7 @@ inline MostrarCursoScreen::MostrarCursoScreen(int idCurso,
 {
     _idCurso = ContentManager::getInstance().getCursoIdMostrar();
     if (SessionManager::getInstance().isLoggedIn()) {
-        _yaInscrito = SessionManager::getInstance().getInscripcionesController().verificarCurso(_idCurso);
+        SessionManager::getInstance().getInscripcionesController().reportarDatosInscripcion(_yaInscrito, _yaPagado, _yaCompletado, TipoActividad::CURSO, _idCurso);
         _tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
     }
     else {
@@ -325,8 +329,18 @@ inline void MostrarCursoScreen::_renderizarBotonInscribirse(bool seleccionado)
             setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
         }
     }
-    
-    std::string botonTexto = _yaInscrito ? _elementosBotones[1] : _elementosBotones[0];
+
+    std::string botonTexto = _elementosBotones[0];
+    if (_yaInscrito) {
+        if (_yaCompletado) {
+            if (_yaPagado) botonTexto = _elementosBotones[3];
+            else botonTexto = _elementosBotones[2];
+        }
+        else {
+            botonTexto = _elementosBotones[1];
+        }
+    }
+
     std::cout << botonTexto;
     resetColor();
 }
@@ -527,35 +541,62 @@ inline std::vector<std::string> MostrarCursoScreen::dividirEnLineas(const std::s
 inline ResultadoPantalla MostrarCursoScreen::_procesarSeleccion()
 {
     ResultadoPantalla res;
-    
-    if (_esBotonInscribirse()) {
-        if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
-            _yaInscrito = true;
-			SessionManager::getInstance().getInscripcionesController().inscribirCurso(_idCurso);
+    bool registrado = SessionManager::getInstance().isLoggedIn();
+    auto restablecer = []() {
+        resetColor();
+        _getch(); // Pausa para mostrar mensaje
 
-            // Actualizar el botón inmediatamente
-            _renderizarBotonInscribirse(true);
-            
-            gotoXY(30, 29);
-            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
-            std::cout << "[ÉXITO]: Te has inscrito al curso";
-            resetColor();
-            _getch(); // Pausa para mostrar mensaje
-            
-            // Limpiar mensaje
-            gotoXY(30, 29);
-            std::cout << "                                  ";
-		}
+        // Limpiar mensaje
+        gotoXY(30, 29);
+        std::cout << "                                  ";
+        };
+
+    if (_esBotonInscribirse()) {
+
+        if (registrado) {
+            if (!_yaInscrito) {
+                _yaInscrito = true;
+                SessionManager::getInstance().getInscripcionesController().inscribirCurso(_idCurso);
+
+                // Actualizar el botón inmediatamente
+                _renderizarBotonInscribirse(true);
+
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[ÉXITO]: Te has inscrito al curso";
+                restablecer();
+            }
+            else if (!_yaCompletado) {
+                _yaCompletado = true;
+                SessionManager::getInstance().getInscripcionesController().completarActividad(TipoActividad::CURSO, _idCurso);
+                _renderizarBotonInscribirse(true);
+
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[EXITO]: Curso Completado";
+                restablecer();
+            }
+            else if (!_yaPagado) {
+                _yaPagado = true;
+                _renderizarBotonInscribirse(true);
+
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[EXITO]: Curso Pagado";
+                restablecer();
+            }
+            else {
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[EXITO]: Curso Finalizado";
+                restablecer();
+            }
+        }
 		else {
 			gotoXY(30, 29);
 			setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::ERROR_COLOR);
-			std::cout << "[ERROR]: Curso ya inscrito";
-			resetColor();
-			_getch(); // Pausa para mostrar mensaje
-
-			// Limpiar mensaje
-			gotoXY(30, 29);
-			std::cout << "                                  ";
+			std::cout << "[ERROR]: Curso Finalizado";
+            restablecer();
 		}
         // Si ya está inscrito, no hacer nada
     } else {
