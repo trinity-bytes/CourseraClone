@@ -21,6 +21,7 @@
 #include "../Screens/MostrarCursoScreen.hpp"
 #include "../Screens/EstadisticasEmpresaScreen.hpp"
 #include "../Screens/ExplorarContenidoScreen.hpp"
+#include "../Screens/VerBoletasScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
@@ -43,6 +44,7 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaMostrarCurso();
     inline std::unique_ptr<PantallaBase> crearPantallaEstadisticasEmpresa();
     inline std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
+    inline std::unique_ptr<PantallaBase> crearPantallaVerBoletas();
 
 public:
     /// @brief Constructor y destructor
@@ -135,11 +137,17 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarConten
     return std::make_unique<ExplorarContenidoScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla ver boletas
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaVerBoletas()
+{
+    return std::make_unique<VerBoletasScreen>();
+}
+
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaEstadisticasEmpresa();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaVerBoletas();
     
     do
     {
@@ -197,6 +205,10 @@ inline void MainController::run()
 
         case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
             _pantallaActual = crearPantallaExplorarContenido();
+            break;
+
+        case AccionPantalla::IR_A_VER_BOLETAS:
+            _pantallaActual = crearPantallaVerBoletas();
             break;
 
         case AccionPantalla::SALIR:

@@ -837,7 +837,7 @@ inline void UI_CrearContenido()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(30, 5); std::cout << "📚 GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO 📚";
+    gotoXY(30, 5); std::cout << "GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO";
 
     /// @brief Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
