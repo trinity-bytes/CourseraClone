@@ -601,8 +601,9 @@ inline ResultadoPantalla DashboardOrganizacionScreen::_procesarSeleccion()
             // Ver curso específico
             int cursoIndex = _elementoActual - 1;
             if (cursoIndex < _cursos.size()) {
+                int idCurso = _cursos[cursoIndex].id;
+                ContentManager::getInstance().setCursoIdMostrar(idCurso);
                 res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
-                res.idCursoSeleccionado = _cursos[cursoIndex].id;
             }
         }
         break;

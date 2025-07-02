@@ -129,7 +129,7 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaExplorarConten
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaMostrarCurso();
+    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaLandingPage();
     
     do
     {

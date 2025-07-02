@@ -89,6 +89,11 @@ public:
     const std::string& getDescripcion() const { return _descripcion; }
     const int getCantidad() const { return _cantidadAlumnos; }
     const TipoActividad getTipo() const { return _tipo; }
+    const double getMontoRecaudado() const { return _montoRecaudado; }
+    double getProgresoTotal() {
+        calcularProgreso();
+        return _progresoTotal;
+    }
 
     // Setters
     void setId(int id) { _id = id; }
@@ -100,6 +105,11 @@ public:
     void setTipo(const TipoActividad tipo) { _tipo = tipo; }
     void aumentarAlumno() { _cantidadAlumnos++; }
     void aumentarAlumnoCompletado() { _cantidadCompletados++; }
+    void calcularProgreso() {
+        double alumnoTotalDouble = static_cast<double> (_cantidadAlumnos);
+        double alumnoCompletoDouble = static_cast<double> (_cantidadCompletados);
+        _progresoTotal = (_cantidadCompletados * 100) / alumnoTotalDouble;
+    }
 
 
     virtual bool guardar() = 0; // Método virtual puro para guardar la actividad
