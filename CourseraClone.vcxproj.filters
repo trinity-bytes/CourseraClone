@@ -31,6 +31,9 @@
     <Filter Include="Header Files\Types">
       <UniqueIdentifier>{b1b8deba-26bb-4e19-9af0-e36dc6d469fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{d4e1b8c2-7a3f-4d5e-9b8c-1a2b3c4d5e6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\CourseraCloneApp.cpp">
@@ -38,10 +41,24 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" />
-    <None Include="Resources\Documentation\Plan de implementacion.md" />
-    <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
-    <None Include="Resources\Documentation\Entendiendo el proyecto.md" />
+    <None Include="README.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Plan de implementacion.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Guia de Estilo de Codigo.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Entendiendo el proyecto.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Paleta de Colores Coursera.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Resumen_Actualizacion_Documentacion.md">
+      <Filter>Documentation</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\ContentManager.hpp">
