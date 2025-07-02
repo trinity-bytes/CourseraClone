@@ -50,8 +50,8 @@ inline void UI_LandingPage()
        ╚════════════════════════════════╝  ╚════════════════════════════════╝  ╚════════════════════════════════╝
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para SALIR DEL PROGRAMA.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para SALIR DEL PROGRAMA.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -129,8 +129,8 @@ inline void UI_Login()
                                                      ¯¯¯¯¯¯¯¯¯¯¯¯¯¯                                                  
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA Y ABAJO) para navegar por el menu.
- Pulsa la tecla ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA Y ABAJO) para navegar por el menú.
+ Pulsa la tecla ENTER para seleccionar una opción y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -193,8 +193,8 @@ inline void UI_Signup()
                                                       CREAR CUENTA                                                  
                                                       ¯¯¯¯¯¯¯¯¯¯¯¯                                                  
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA Y ABAJO) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar un botón y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -231,7 +231,7 @@ inline void UI_StudentDashboard()
             Te damos la bienvenida   
             RECUERDA: 
                                                                                                                     
-                                 EXPLORAR CURSOS Y ESPECIALIDADES      REVISAR OFERTAS                                 |
+                                 EXPLORAR CURSOS Y ESPECIALIDADES      REVISAR OFERTAS                                 
        
                                                                                                                      
        MIS CURSOS: [ VER TODOS ]
@@ -253,8 +253,8 @@ inline void UI_StudentDashboard()
        ╚════════════════════════════════╝  ╚════════════════════════════════╝  ╚════════════════════════════════╝
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -331,8 +331,8 @@ inline void UI_OrganizationDashboard()
        ╚════════════════════════════════╝  ╚════════════════════════════════╝  ╚════════════════════════════════╝
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -358,7 +358,7 @@ inline void UI_OrganizationDashboard()
     gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
     gotoXY(35, 1); std::cout << "│  C L O N E";
 
-    /// @brief Dibujar fondo del menu suoerior
+    /// @brief Dibujar fondo del menú superior
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
     for (int y = 4; y < 10; y++)
     {
@@ -410,8 +410,8 @@ __/  \__   \__/  \__  │   (  ._.  )   │  \__   \__/  \__   \__/  \__   \__/ 
                                                                                                                      
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -454,8 +454,8 @@ inline void UI_OrganizationProfile()
                                                                                                                     
                                                                                                                     
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior)";
+ Usa las flechas de dirección (IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -496,11 +496,11 @@ inline void UI_UserUpdateData()
                          └──────────────────────────────────────────────────────────────────┘
 
 
-                                                    GURRDAR CAMBIOS   
+                                                    GUARDAR CAMBIOS   
                                                     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯    
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
- Pulsa ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección ARRIBA/ABAJO para moverte por el menú.
+ Pulsa ENTER para seleccionar una opción y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -545,7 +545,7 @@ inline void UI_VistaEspecialidad()
                                            │ ║                                ║  ║                                ║ │
                                            │ ╠════════════════════════════════╣  ╠════════════════════════════════╣ │
                                            │ ║                                ║  ║                                ║ │
-    Descripcion:                           │ ║                                ║  ║                                ║ │
+    Descripción:                           │ ║                                ║  ║                                ║ │
                                            │ ║                                ║  ║                                ║ │
                                            │ ║                                ║  ║                                ║ │ 
                                            │ ║                                ║  ║                                ║ │
@@ -563,8 +563,8 @@ inline void UI_VistaEspecialidad()
                                            └────────────────────────────────────────────────────────────────────────┘
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -605,7 +605,7 @@ inline void UI_VistaCurso()
                                                     │  ┌───┬─────────────────────────────────────────────────────┐  │
                                                     │  │ 1 │                                                     │  │
                                                     │  └───┴─────────────────────────────────────────────────────┘  │
-    Descripcion:                                    │    |                                                          │
+    Descripción:                                    │    |                                                          │
                                                     │  ┌───┬─────────────────────────────────────────────────────┐  │
                                                     │  │ 2 │                                                     │  │
                                                     │  └───┴─────────────────────────────────────────────────────┘  │
@@ -624,8 +624,8 @@ inline void UI_VistaCurso()
                     ¯¯¯¯¯¯¯¯¯¯¯                     └───────────────────────────────────────────────────────────────┘
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";
  //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -686,8 +686,8 @@ inline void UI_ExplorarContenido()
                                                                                             │                       │
                                   < ANTERIOR   SIGUIENTE >                                  └───────────────────────┘
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -721,7 +721,7 @@ inline void UI_ComprobanteDePago()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                        TUS COMPROBANTES DE PAGO ELECTRÓNICO                                           |
+                                        TUS COMPROBANTES DE PAGO ELECTRÓNICO                                           
 
 
         -
@@ -746,8 +746,8 @@ inline void UI_ComprobanteDePago()
                                            < ANTERIOR     SIGUIENTE >
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -806,8 +806,8 @@ inline void UI_CrearContenido()
                                       CREAR CURSO       CREAR ESPECIALIDAD
                                       ¯¯¯¯¯¯¯¯¯¯¯       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -882,8 +882,8 @@ inline void UI_CrearOferta()
                                                     ¯¯¯¯¯¯¯¯¯¯¯¯
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -1032,7 +1032,7 @@ inline void UI_AboutUs()
                                           VER REPOSITORIO         DOCUMENTACIÓN      
                                           ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯         ¯¯¯¯¯¯¯¯¯¯¯¯¯      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO) para navegar. ENTER para seleccionar, ESC para regresar.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO) para navegar. ENTER para seleccionar, ESC para regresar.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -1094,8 +1094,8 @@ inline void UI_Ofertas()
 ║                                                                                               ║  │                   │
 ╚═══════════════════════════════════════════════════════════════════════════════════════════════╝  └───────────────────┘
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -1154,7 +1154,7 @@ inline void UI_AgregarMetodoPago()
                                                  GUARDAR MÉTODO                                      
                                                  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
  Pulsa ENTER para seleccionar, ESC para cancelar.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1230,7 +1230,7 @@ inline void UI_ProcesarPago()
                                 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯                ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
  Pulsa ENTER para confirmar, ESC para cancelar.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1302,8 +1302,8 @@ inline void UI_Certificados()
                               < ANTERIOR     [1/5]     SIGUIENTE >       VER DETALLES     DESCARGAR PDF
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (IZQUIERDA/DERECHA) para navegar por certificados.
- Pulsa ENTER para ver detalles o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (IZQUIERDA/DERECHA) para navegar por certificados.
+ Pulsa ENTER para ver detalles o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
