@@ -22,19 +22,19 @@ private:
 	bool _primeraRenderizacion;
 	/// @brief Configuración de interfaz - Coordenadas de los botones
 	COORD _coordsBotones[CANT_BOTONES] = {
-		{20, 16},  // Perfil GitHub Fabrizio
-		{20, 20},  // Perfil GitHub Mauricio
-		{20, 24},  // Perfil GitHub Jahat
-		{41, 28},  // Repositorio GitHub del proyecto
-		{65, 28}   // Carpeta de documentacion en el repositorio
+		{18, 16},  // Perfil GitHub Fabrizio
+		{18, 20},  // Perfil GitHub Mauricio
+		{18, 24},  // Perfil GitHub Jahat
+		{31, 28},  // Repositorio GitHub del proyecto
+		{67, 28}   // Carpeta de documentacion en el repositorio
 	};
 	/// @brief Textos de los botones
 	std::vector<std::string> _textosBotones = {
 		" Ver perfil de GitHub ",
 		" Ver perfil de GitHub ",
 		" Ver perfil de GitHub ",
-		" VER REPOSITORIO ",
-		" DOCUMENTACION "
+		" IR AL REPOSITORIO DE GITHUB ",
+		" IR A LA DOCUMENTACIÓN "
 	};
 
 	/// @brief URLs correspondientes a cada botón (para futuro uso)
