@@ -24,31 +24,59 @@
 class CrearContenidoScreen : public PantallaBase
 {
 private:
-    // Estado de navegación
+    // CONSTANTES DE CONFIGURACIÓN
+    /// @brief Límites de elementos navegables
+    static const int MAX_OPCIONES_MENU = 2;
+    static const int ELEMENTOS_INPUT = 4; // Título, Descripción, Precio, Duración
+    static const int TOTAL_ELEMENTOS = ELEMENTOS_INPUT + MAX_OPCIONES_MENU; // Total navegables
+    
+    // COORDENADAS DE POSICIONAMIENTO
+    /// @brief Posiciones para las opciones del menú
+    const COORD _coordsOpcionesMenu[MAX_OPCIONES_MENU] = {
+        {33, 26}, // Crear Curso
+        {57, 26}  // Crear Especialización
+    };
+    
+    /// @brief Coordenadas para los campos de entrada
+    const COORD _coordsElementosInput[ELEMENTOS_INPUT] = {
+        {8, 12},   // Título/Nombre del Contenido
+        {8, 16},  // Descripción detallada
+        {8, 21},  // Precio (S/)
+        {31, 21}  // Duración (horas)
+    };
+    
+    /// @brief Posiciones fijas de interfaz
+    static const int COL_TITULO = 40;
+    static const int FILA_TITULO = 4;
+    static const int COL_FORMULARIO = 20;
+    static const int FILA_FORMULARIO = 8;
+    
+    // DATOS ESTÁTICOS DE LA INTERFAZ
+    /// @brief Elementos del menú principal
+    const std::vector<std::string> _opcionesMenu = {
+        " CREAR NUEVO CURSO ",
+        " CREAR NUEVA ESPECIALIZACION "
+    };
+    
+    // ESTADO DE NAVEGACIÓN
+    /// @brief Estado actual de la navegación
     AccionPantalla _pantallaAnterior;
     bool _primeraRenderizacion;
     
-    // Navegación y selección
-    int _opcionSeleccionada;
+    /// @brief Estado de navegación unificado
+    int _elementoActual; // 0-3: campos, 4-5: botones
+    int _elementoAnterior;
     
-    // Constantes para la interfaz
-    static const int COL_TITULO = 40;
-    static const int FILA_TITULO = 4;
-    static const int COL_VOLVER = 100;
-    static const int FILA_VOLVER = 4;
-    
-    static const int COL_MENU = 30;
-    static const int FILA_MENU = 10;
-    static const int ESPACIO_ENTRE_OPCIONES = 2;
-    
-    static const int COL_FORMULARIO = 20;
-    static const int FILA_FORMULARIO = 8;
+    /// @brief Datos del formulario (opcionales)
+    std::string _titulo;
+    std::string _descripcion;
+    std::string _precio;
+    std::string _duracion;
     
     // Opciones del menú principal
     enum class OpcionMenu {
         CREAR_CURSO = 0,
-        CREAR_ESPECIALIZACION = 1,
-        VOLVER = 2
+        CREAR_ESPECIALIZACION = 1
     };
     
     // ---- MÉTODOS PRIVADOS ----
@@ -58,20 +86,28 @@ private:
     
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
-    inline void _renderizarTitulo();
-    inline void _renderizarBotonVolver();
-    inline void _renderizarMenuPrincipal();
+    inline void _renderizarCamposYBotones();
+    inline void _renderizarCampo(const std::string& valor, int indice, bool seleccionado);
+    inline void _renderizarBoton(int indice, bool seleccionado);
+    inline void _actualizarElemento(int elemento, bool seleccionado);
     inline void _actualizarSeleccion();
     
     /// @brief Métodos de navegación
     inline void _manejarNavegacion(int tecla);
-    inline void _navegarArriba();
-    inline void _navegarAbajo();
+    inline void _manejarEntradaTexto(int tecla);
+    inline void _manejarRetroceso();
+    
+    /// @brief Métodos de utilidad
+    inline bool _esBoton(int elemento);
+    inline int _obtenerIndiceBoton(int elemento);
+    inline std::string* _obtenerCampoActivo(int elemento);
+    inline int _obtenerMaxLength(int indiceCampo);
     
     /// @brief Métodos de procesamiento
     inline ResultadoPantalla _procesarSeleccion();
-    inline void _crearCurso();
-    inline void _crearEspecializacion();
+    inline void _crearCursoConDatos();
+    inline void _crearEspecializacionConDatos();
+    inline void _limpiarCampos();
     
     /// @brief Métodos de formularios
     inline std::string _solicitarTexto(const std::string& prompt, int maxLength = 100);
@@ -96,15 +132,18 @@ public:
 
 // Constructor
 inline CrearContenidoScreen::CrearContenidoScreen(AccionPantalla pantallaAnterior) : PantallaBase(),
-    _pantallaAnterior(pantallaAnterior), _primeraRenderizacion(true), _opcionSeleccionada(0)
+    _pantallaAnterior(pantallaAnterior), _primeraRenderizacion(true), 
+    _elementoActual(0), _elementoAnterior(-1)
 {
 }
 
 // Limpiar estado
 inline void CrearContenidoScreen::_limpiarEstado()
 {
-    _opcionSeleccionada = 0;
+    _elementoActual = 0;
+    _elementoAnterior = -1; // Importante: -1 para forzar actualización en primera llamada
     _primeraRenderizacion = true;
+    _limpiarCampos();
 }
 
 // Dibujar interfaz completa
@@ -113,66 +152,83 @@ inline void CrearContenidoScreen::dibujarInterfazCompleta()
     system("cls");
     UI_CrearContenido();
     
-    _renderizarTitulo();
-    _renderizarBotonVolver();
-    _renderizarMenuPrincipal();
+    _renderizarCamposYBotones();
     
     resetColor();
 }
 
-// Renderizar título
-inline void CrearContenidoScreen::_renderizarTitulo()
+// Renderizar campos y botones
+inline void CrearContenidoScreen::_renderizarCamposYBotones()
 {
-    gotoXY(COL_TITULO, FILA_TITULO);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "CREAR CONTENIDO EDUCATIVO";
-    resetColor();
-}
-
-// Renderizar botón volver
-inline void CrearContenidoScreen::_renderizarBotonVolver()
-{
-    gotoXY(COL_VOLVER, FILA_VOLVER);
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "[ ESC - VOLVER ]";
-    resetColor();
-}
-
-// Renderizar menú principal
-inline void CrearContenidoScreen::_renderizarMenuPrincipal()
-{
-    std::vector<std::string> opciones = {
-        "Crear Nuevo Curso",
-        "Crear Nueva Especializacion", 
-        "Volver al Dashboard"
-    };
-    
-    for (size_t i = 0; i < opciones.size(); ++i) {
-        int fila = FILA_MENU + i * ESPACIO_ENTRE_OPCIONES;
-        
-        // Determinar colores según selección
-        if (i == _opcionSeleccionada) {
-            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-        } else {
-            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    // Renderizar todos los campos
+    for (int i = 0; i < ELEMENTOS_INPUT; ++i) {
+        std::string* valor = _obtenerCampoActivo(i);
+        if (valor != nullptr) {
+            _renderizarCampo(*valor, i, i == _elementoActual);
         }
-        
-        gotoXY(COL_MENU, fila);
-        std::cout << "  " << opciones[i] << "  ";
-        resetColor();
     }
     
-    // Instrucciones de uso
-    gotoXY(COL_MENU, FILA_MENU + opciones.size() * ESPACIO_ENTRE_OPCIONES + 2);
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "ENTER - Seleccionar | ↑↓ - Navegar | ESC - Volver";
+    // Renderizar todos los botones
+    for (int i = 0; i < MAX_OPCIONES_MENU; ++i) {
+        int elementoBoton = ELEMENTOS_INPUT + i;
+        _renderizarBoton(i, elementoBoton == _elementoActual);
+    }
+    
     resetColor();
+}
+
+// Renderizar botón individual
+inline void CrearContenidoScreen::_renderizarBoton(int indice, bool seleccionado)
+{
+    if (indice >= MAX_OPCIONES_MENU) return;
+    
+    const COORD& coord = _coordsOpcionesMenu[indice];
+    gotoXY(coord.X, coord.Y);
+    
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    std::cout << _opcionesMenu[indice];
+    resetColor();
+}
+
+// Actualizar elemento individual
+inline void CrearContenidoScreen::_actualizarElemento(int elemento, bool seleccionado)
+{
+    if (_esBoton(elemento)) {
+        int indiceBoton = _obtenerIndiceBoton(elemento);
+        _renderizarBoton(indiceBoton, seleccionado);
+    } else if (elemento < ELEMENTOS_INPUT) {
+        std::string* valor = _obtenerCampoActivo(elemento);
+        if (valor != nullptr) {
+            _renderizarCampo(*valor, elemento, seleccionado);
+        }
+    }
 }
 
 // Actualizar selección
 inline void CrearContenidoScreen::_actualizarSeleccion()
 {
-    _renderizarMenuPrincipal();
+    // Solo actualizar si hay cambio de selección
+    if (_elementoAnterior != _elementoActual)
+    {
+        // Actualizar elemento anterior
+        if (_elementoAnterior >= 0 && _elementoAnterior < TOTAL_ELEMENTOS)
+        {
+            _actualizarElemento(_elementoAnterior, false);
+        }
+
+        // Actualizar elemento actual
+        if (_elementoActual >= 0 && _elementoActual < TOTAL_ELEMENTOS)
+        {
+            _actualizarElemento(_elementoActual, true);
+        }
+
+        _elementoAnterior = _elementoActual;
+    }
 }
 
 // Manejar navegación
@@ -180,31 +236,17 @@ inline void CrearContenidoScreen::_manejarNavegacion(int tecla)
 {
     switch (tecla) {
     case 72: // Flecha arriba
-        _navegarArriba();
+        _elementoActual = (_elementoActual > 0) ? _elementoActual - 1 : TOTAL_ELEMENTOS - 1;
         break;
     case 80: // Flecha abajo
-        _navegarAbajo();
+        _elementoActual = (_elementoActual < TOTAL_ELEMENTOS - 1) ? _elementoActual + 1 : 0;
         break;
-    }
-}
-
-// Navegar hacia arriba
-inline void CrearContenidoScreen::_navegarArriba()
-{
-    if (_opcionSeleccionada > 0) {
-        _opcionSeleccionada--;
-    } else {
-        _opcionSeleccionada = 2; // Última opción
-    }
-}
-
-// Navegar hacia abajo
-inline void CrearContenidoScreen::_navegarAbajo()
-{
-    if (_opcionSeleccionada < 2) {
-        _opcionSeleccionada++;
-    } else {
-        _opcionSeleccionada = 0; // Primera opción
+    case 75: // Flecha izquierda (para navegar entre precio y duración)
+        if (_elementoActual == 3) _elementoActual = 2; // De duración a precio
+        break;
+    case 77: // Flecha derecha (para navegar entre precio y duración)
+        if (_elementoActual == 2) _elementoActual = 3; // De precio a duración
+        break;
     }
 }
 
@@ -213,74 +255,159 @@ inline ResultadoPantalla CrearContenidoScreen::_procesarSeleccion()
 {
     ResultadoPantalla res;
     
-    switch (static_cast<OpcionMenu>(_opcionSeleccionada)) {
-    case OpcionMenu::CREAR_CURSO:
-        _crearCurso();
-        _primeraRenderizacion = true;
-        break;
+    if (_esBoton(_elementoActual)) {
+        int indiceBoton = _obtenerIndiceBoton(_elementoActual);
         
-    case OpcionMenu::CREAR_ESPECIALIZACION:
-        _crearEspecializacion();
-        _primeraRenderizacion = true;
-        break;
-        
-    case OpcionMenu::VOLVER:
-        res.accion = _pantallaAnterior;
-        break;
+        switch (static_cast<OpcionMenu>(indiceBoton)) {
+        case OpcionMenu::CREAR_CURSO:
+            _crearCursoConDatos();
+            _primeraRenderizacion = true;
+            break;
+            
+        case OpcionMenu::CREAR_ESPECIALIZACION:
+            _crearEspecializacionConDatos();
+            _primeraRenderizacion = true;
+            break;
+        }
     }
     
     return res;
 }
 
-// Crear curso
-inline void CrearContenidoScreen::_crearCurso()
+// Mostrar mensaje
+inline void CrearContenidoScreen::_mostrarMensaje(const std::string& mensaje)
+{
+    gotoXY(COL_FORMULARIO, 20);
+    setConsoleColor(ColorIndex::ERROR_COLOR, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << mensaje;
+    resetColor();
+}
+
+// Renderizar campo de entrada
+inline void CrearContenidoScreen::_renderizarCampo(const std::string& valor, int indice, bool seleccionado)
+{
+    if (indice >= ELEMENTOS_INPUT) return;
+    
+    gotoXY(_coordsElementosInput[indice].X, _coordsElementosInput[indice].Y);
+
+    if (seleccionado)
+    {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BORDES_SUTILES);
+        _configurarCursor(true);
+    }
+    else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+        _configurarCursor(false);
+    }
+
+    // Mostrar el valor con padding para limpiar caracteres residuales
+    std::string display = valor;
+    int maxLength = _obtenerMaxLength(indice);
+    
+    display.resize(maxLength, ' ');
+    std::cout << display;
+
+    // Posicionar cursor al final del texto real si está seleccionado
+    if (seleccionado) 
+    {
+        gotoXY(_coordsElementosInput[indice].X + valor.length(), _coordsElementosInput[indice].Y);
+    }
+
+    resetColor();
+}
+
+// Manejar entrada de texto
+inline void CrearContenidoScreen::_manejarEntradaTexto(int tecla)
+{
+    // Solo procesar entrada de texto si estamos en un campo de entrada
+    if (_elementoActual < ELEMENTOS_INPUT && tecla >= 32 && tecla <= 126)
+    {
+        std::string* campoActivo = _obtenerCampoActivo(_elementoActual);
+        int maxLength = _obtenerMaxLength(_elementoActual);
+
+        if (campoActivo != nullptr && campoActivo->length() < maxLength)
+        {
+            *campoActivo += static_cast<char>(tecla);
+            _renderizarCampo(*campoActivo, _elementoActual, true);
+        }
+    }
+}
+
+// Manejar retroceso
+inline void CrearContenidoScreen::_manejarRetroceso()
+{
+    if (_elementoActual < ELEMENTOS_INPUT)
+    {
+        std::string* campoActivo = _obtenerCampoActivo(_elementoActual);
+
+        if (campoActivo != nullptr && !campoActivo->empty())
+        {
+            campoActivo->pop_back();
+            _renderizarCampo(*campoActivo, _elementoActual, true);
+        }
+    }
+}
+
+// Verificar si un elemento es un botón
+inline bool CrearContenidoScreen::_esBoton(int elemento)
+{
+    return elemento >= ELEMENTOS_INPUT && elemento < TOTAL_ELEMENTOS;
+}
+
+// Obtener índice de botón
+inline int CrearContenidoScreen::_obtenerIndiceBoton(int elemento)
+{
+    return elemento - ELEMENTOS_INPUT;
+}
+
+// Obtener campo activo
+inline std::string* CrearContenidoScreen::_obtenerCampoActivo(int elemento)
+{
+    switch (elemento)
+    {
+    case 0: return &_titulo;
+    case 1: return &_descripcion;
+    case 2: return &_precio;
+    case 3: return &_duracion;
+    default: return nullptr;
+    }
+}
+
+// Obtener longitud máxima del campo
+inline int CrearContenidoScreen::_obtenerMaxLength(int indiceCampo)
+{
+    switch (indiceCampo)
+    {
+    case 0: return 104; // Título
+    case 1: return 104; // Descripción
+    case 2: return 17; // Precio
+    case 3: return 22; // Duración
+    default: return 50;
+    }
+}
+
+// Crear curso con datos opcionales
+inline void CrearContenidoScreen::_crearCursoConDatos()
 {
     system("cls");
     
     // Título del formulario
     gotoXY(COL_FORMULARIO, 3);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== CREAR NUEVO CURSO ===";
+    std::cout << "=== CREANDO NUEVO CURSO ===";
     resetColor();
     
     try {
-        // Solicitar datos del curso
-        std::string titulo = _solicitarTexto("Título del curso:", 80);
-        if (titulo.empty()) return;
+        // Usar datos del formulario si están disponibles, sino usar valores por defecto
+        std::string titulo = _titulo.empty() ? "Curso de Programación" : _titulo;
+        std::string descripcion = _descripcion.empty() ? "Curso completo de programación" : _descripcion;
         
-        std::string descripcion = _solicitarTexto("Descripción del curso:", 200);
-        if (descripcion.empty()) return;
-        
-        std::string instructor = _solicitarTexto("Nombre del instructor:", 50);
-        if (instructor.empty()) return;
-        
-        int cantidadClases = _solicitarNumero("Cantidad de clases:", 1, 50);
-        
-        CategoriaActividad categoria = _seleccionarCategoria();
-        
-        // Solicitar información de las clases
-        std::vector<std::pair<std::string, std::string>> clases = _solicitarClases(cantidadClases);
-        
-        // Datos simulados para la empresa (en la implementación real vendrían del usuario logueado)
+        // Datos simulados para la empresa
         int idEmpresa = 1;
         std::string nombreEmpresa = "Tech Education Corp";
         int idCurso = rand() % 10000 + 1000; // ID simulado
         
-        // Crear el curso
-        Curso nuevoCurso(
-            idCurso,
-            idEmpresa,
-            nombreEmpresa,
-            categoria,
-            titulo,
-            descripcion,
-            instructor,
-            cantidadClases,
-            clases
-        );
-        
         // Mostrar confirmación
-        system("cls");
         gotoXY(COL_FORMULARIO, 8);
         setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
         std::cout << "CURSO CREADO EXITOSAMENTE";
@@ -290,13 +417,17 @@ inline void CrearContenidoScreen::_crearCurso()
         std::cout << "Título: " << titulo;
         
         gotoXY(COL_FORMULARIO, 11);
-        std::cout << "Instructor: " << instructor;
+        std::cout << "Descripción: " << descripcion;
         
-        gotoXY(COL_FORMULARIO, 12);
-        std::cout << "Clases: " << cantidadClases;
+        if (!_precio.empty()) {
+            gotoXY(COL_FORMULARIO, 12);
+            std::cout << "Precio: S/ " << _precio;
+        }
         
-        gotoXY(COL_FORMULARIO, 13);
-        std::cout << "Categoría: " << _categoriaNombre(categoria);
+        if (!_duracion.empty()) {
+            gotoXY(COL_FORMULARIO, 13);
+            std::cout << "Duración: " << _duracion << " horas";
+        }
         
         gotoXY(COL_FORMULARIO, 15);
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -315,51 +446,28 @@ inline void CrearContenidoScreen::_crearCurso()
     }
 }
 
-// Crear especialización
-inline void CrearContenidoScreen::_crearEspecializacion()
+// Crear especialización con datos opcionales
+inline void CrearContenidoScreen::_crearEspecializacionConDatos()
 {
     system("cls");
     
     // Título del formulario
     gotoXY(COL_FORMULARIO, 3);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== CREAR NUEVA ESPECIALIZACIÓN ===";
+    std::cout << "=== CREANDO NUEVA ESPECIALIZACIÓN ===";
     resetColor();
     
     try {
-        // Solicitar datos de la especialización
-        std::string titulo = _solicitarTexto("Título de la especialización:", 80);
-        if (titulo.empty()) return;
-        
-        std::string descripcion = _solicitarTexto("Descripción de la especialización:", 200);
-        if (descripcion.empty()) return;
-        
-        int duracionEstimada = _solicitarNumero("Duración estimada (semanas):", 1, 52);
-        
-        CategoriaActividad categoria = _seleccionarCategoria();
-        
-        // IDs de cursos simulados (en la implementación real se seleccionarían cursos existentes)
-        std::vector<int> idsCursos = {1001, 1002, 1003}; // Ejemplo
+        // Usar datos del formulario si están disponibles, sino usar valores por defecto
+        std::string titulo = _titulo.empty() ? "Especialización en Tecnología" : _titulo;
+        std::string descripcion = _descripcion.empty() ? "Especialización completa en tecnología" : _descripcion;
         
         // Datos simulados para la empresa
         int idEmpresa = 1;
         std::string nombreEmpresa = "Tech Education Corp";
         int idEspecializacion = rand() % 10000 + 2000; // ID simulado
         
-        // Crear la especialización
-        Especializacion nuevaEspecializacion(
-            idEspecializacion,
-            idEmpresa,
-            nombreEmpresa,
-            categoria,
-            titulo,
-            descripcion,
-            idsCursos,
-            duracionEstimada
-        );
-        
         // Mostrar confirmación
-        system("cls");
         gotoXY(COL_FORMULARIO, 8);
         setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
         std::cout << "ESPECIALIZACION CREADA EXITOSAMENTE";
@@ -369,13 +477,17 @@ inline void CrearContenidoScreen::_crearEspecializacion()
         std::cout << "Título: " << titulo;
         
         gotoXY(COL_FORMULARIO, 11);
-        std::cout << "Duración: " << duracionEstimada << " semanas";
+        std::cout << "Descripción: " << descripcion;
         
-        gotoXY(COL_FORMULARIO, 12);
-        std::cout << "Cursos incluidos: " << idsCursos.size();
+        if (!_precio.empty()) {
+            gotoXY(COL_FORMULARIO, 12);
+            std::cout << "Precio: S/ " << _precio;
+        }
         
-        gotoXY(COL_FORMULARIO, 13);
-        std::cout << "Categoría: " << _categoriaNombre(categoria);
+        if (!_duracion.empty()) {
+            gotoXY(COL_FORMULARIO, 13);
+            std::cout << "Duración estimada: " << _duracion << " semanas";
+        }
         
         gotoXY(COL_FORMULARIO, 15);
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -394,173 +506,13 @@ inline void CrearContenidoScreen::_crearEspecializacion()
     }
 }
 
-// Solicitar texto
-inline std::string CrearContenidoScreen::_solicitarTexto(const std::string& prompt, int maxLength)
+// Limpiar campos
+inline void CrearContenidoScreen::_limpiarCampos()
 {
-    static int fila = 6;
-    fila += 2;
-    
-    gotoXY(COL_FORMULARIO, fila);
-    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << prompt;
-    
-    gotoXY(COL_FORMULARIO, fila + 1);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "> ";
-    resetColor();
-    
-    std::string input;
-    std::getline(std::cin, input);
-    
-    if (input.length() > maxLength) {
-        input = input.substr(0, maxLength);
-    }
-    
-    return input;
-}
-
-// Solicitar número
-inline int CrearContenidoScreen::_solicitarNumero(const std::string& prompt, int min, int max)
-{
-    static int fila = 6;
-    fila += 2;
-    
-    while (true) {
-        gotoXY(COL_FORMULARIO, fila);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << prompt << " (" << min << "-" << max << ")";
-        
-        gotoXY(COL_FORMULARIO, fila + 1);
-        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "> ";
-        resetColor();
-        
-        int numero;
-        if (std::cin >> numero && numero >= min && numero <= max) {
-            std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
-            return numero;
-        }
-        
-        std::cin.clear();
-        std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
-        
-        gotoXY(COL_FORMULARIO, fila + 2);
-        setConsoleColor(ColorIndex::ERROR_COLOR, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Número inválido. Presiona Enter para reintentar.";
-        resetColor();
-        _getch();
-        
-        // Limpiar las líneas
-        gotoXY(COL_FORMULARIO, fila + 2);
-        std::cout << "                                                ";
-    }
-}
-
-// Seleccionar categoría
-inline CategoriaActividad CrearContenidoScreen::_seleccionarCategoria()
-{
-    static int fila = 6;
-    fila += 3;
-    
-    std::vector<std::pair<CategoriaActividad, std::string>> categorias = {
-        {CategoriaActividad::PROGRAMACION, "Programación"},
-        {CategoriaActividad::DESARROLLO_WEB, "Desarrollo Web"},
-        {CategoriaActividad::CIENCIA_DE_DATOS, "Ciencia de Datos"},
-        {CategoriaActividad::INTELIGENCIA_ARTIFICIAL, "Inteligencia Artificial"},
-        {CategoriaActividad::DISENO, "Diseño"},
-        {CategoriaActividad::MARKETING_DIGITAL, "Marketing Digital"},
-        {CategoriaActividad::NEGOCIOS, "Negocios"}
-    };
-    
-    int seleccion = 0;
-    
-    while (true) {
-        gotoXY(COL_FORMULARIO, fila);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Selecciona una categoría:";
-        
-        for (size_t i = 0; i < categorias.size(); ++i) {
-            gotoXY(COL_FORMULARIO + 2, fila + 2 + i);
-            
-            if (i == seleccion) {
-                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-                std::cout << "► " << categorias[i].second;
-            } else {
-                setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-                std::cout << "  " << categorias[i].second;
-            }
-            resetColor();
-        }
-        
-        gotoXY(COL_FORMULARIO, fila + categorias.size() + 4);
-        setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "↑↓ - Navegar | ENTER - Seleccionar";
-        resetColor();
-        
-        int tecla = _getch();
-        
-        if (tecla == 0 || tecla == 224) {
-            tecla = _getch();
-            
-            if (tecla == 72 && seleccion > 0) { // Flecha arriba
-                seleccion--;
-            } else if (tecla == 80 && seleccion < categorias.size() - 1) { // Flecha abajo
-                seleccion++;
-            }
-        } else if (tecla == 13) { // Enter
-            return categorias[seleccion].first;
-        }
-    }
-}
-
-// Solicitar clases
-inline std::vector<std::pair<std::string, std::string>> CrearContenidoScreen::_solicitarClases(int cantidadClases)
-{
-    std::vector<std::pair<std::string, std::string>> clases;
-    
-    system("cls");
-    gotoXY(COL_FORMULARIO, 3);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== INFORMACIÓN DE LAS CLASES ===";
-    resetColor();
-    
-    for (int i = 0; i < cantidadClases; ++i) {
-        gotoXY(COL_FORMULARIO, 6 + i * 4);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Clase " << (i + 1) << ":";
-        
-        gotoXY(COL_FORMULARIO, 7 + i * 4);
-        std::cout << "Título: ";
-        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "> ";
-        resetColor();
-        
-        std::string titulo;
-        std::getline(std::cin, titulo);
-        
-        gotoXY(COL_FORMULARIO, 8 + i * 4);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Descripción: ";
-        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "> ";
-        resetColor();
-        
-        std::string descripcion;
-        std::getline(std::cin, descripcion);
-        
-        clases.push_back({titulo, descripcion});
-    }
-    
-    return clases;
-}
-
-// Mostrar mensaje
-inline void CrearContenidoScreen::_mostrarMensaje(const std::string& mensaje)
-{
-    gotoXY(COL_FORMULARIO, 20);
-    setConsoleColor(ColorIndex::ERROR_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << mensaje;
-    resetColor();
+    _titulo.clear();
+    _descripcion.clear();
+    _precio.clear();
+    _duracion.clear();
 }
 
 // Obtener nombre de categoría
@@ -583,13 +535,13 @@ inline ResultadoPantalla CrearContenidoScreen::ejecutar()
 {
     _limpiarEstado();
     
+    if (_primeraRenderizacion) {
+        dibujarInterfazCompleta();
+        _primeraRenderizacion = false;
+    }
+    
     while (true) {
-        if (_primeraRenderizacion) {
-            dibujarInterfazCompleta();
-            _primeraRenderizacion = false;
-        } else {
-            _actualizarSeleccion();
-        }
+        _actualizarSeleccion();
         
         int tecla = _getch();
         
@@ -603,6 +555,8 @@ inline ResultadoPantalla CrearContenidoScreen::ejecutar()
         break;
         
         case 72: // Flecha arriba (por si acaso)
+        case 75: // Flecha izquierda
+        case 77: // Flecha derecha  
         case 80: // Flecha abajo (por si acaso)
             _manejarNavegacion(tecla);
             break;
@@ -616,15 +570,21 @@ inline ResultadoPantalla CrearContenidoScreen::ejecutar()
         }
         break;
         
+        case 8: // Backspace
+            _manejarRetroceso();
+            break;
+        
         case 27: // ESC - Volver a pantalla anterior
         {
             ResultadoPantalla res;
             res.accion = _pantallaAnterior;
             return res;
         }
+        break;
         
         default:
-            // Ignorar otras teclas
+            // Manejar entrada de texto
+            _manejarEntradaTexto(tecla);
             break;
         }
     }

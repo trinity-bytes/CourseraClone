@@ -802,11 +802,11 @@ inline void UI_CrearContenido()
     ║                                                                                                              ║
     ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-                                        CREAR CURSO       CREAR ESPECIALIDAD
-                                        ¯¯¯¯¯¯¯¯¯¯¯       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+                                  CREAR NUEVO CURSO       CREAR NUEVA ESPECIALIZACION
+                                  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Usa las flechas de dirección ARRIBA/ABAJO para navegar por las opciones.
  Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -843,7 +843,7 @@ inline void UI_CrearContenido()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(32, 5); std::cout << "GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO";
+    gotoXY(38, 5); std::cout << "GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO";
 
     resetColor();
 }
