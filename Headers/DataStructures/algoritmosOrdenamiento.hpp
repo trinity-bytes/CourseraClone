@@ -1,121 +1,94 @@
-// filepath: Headers/DataStructures/algoritmosOrdenamiento.hpp
-// Algoritmos de ordenamiento genéricos para diferentes tipos de datos
-
-#ifndef COURSERACLONE_DATASTRUCTURES_ALGORITMOSORDENAMIENTO_HPP
-#define COURSERACLONE_DATASTRUCTURES_ALGORITMOSORDENAMIENTO_HPP
-
-// Includes del sistema
+#pragma once
 #include <vector>
 #include <iostream>
+using namespace std;
 
-// Fusionar dos subarreglos ordenados
 template <typename T>
-void merge(std::vector<T>& _arreglo, int _izquierda, int _derecha, int _medio)
-{
-    int n1 = _medio - _izquierda + 1;
-    int n2 = _derecha - _medio;
+auto menorDefecto = [](T a, T b) {
+	return a < b;
+	};
 
-    std::vector<T> izq(n1);
-    std::vector<T> der(n2);
+template <typename T, typename Comp>
+void merge(vector<T>& arr, int l, int r, int mid, Comp comp) {
+	int n1 = mid - l + 1;
+	int n2 = r - mid;
 
-    // Copiar datos a arreglos temporales
-    for (int i = 0; i < n1; i++)
-    {
-        izq[i] = _arreglo[_izquierda + i];
-    }
+	vector<T> L(n1);
+	vector<T> R(n2);
 
-    for (int j = 0; j < n2; j++)
-    {
-        der[j] = _arreglo[_medio + 1 + j];
-    }
+	for (int i = 0; i < n1; i++)
+		L[i] = arr[l + i];
 
-    // Fusionar los arreglos temporales de vuelta al arreglo original
-    int i = 0, j = 0, k = _izquierda;
+	for (int j = 0; j < n2; j++)
+		R[j] = arr[mid + 1 + j];
 
-    while (i < n1 && j < n2)
-    {
-        if (izq[i] <= der[j])
-        {
-            _arreglo[k] = izq[i];
-            i++;
-        }
-        else
-        {
-            _arreglo[k] = der[j];
-            j++;
-        }
-        k++;
-    }
+	int i = 0, j = 0, k = l;
 
-    // Copiar elementos restantes de izq[], si los hay
-    while (i < n1)
-    {
-        _arreglo[k] = izq[i];
-        i++;
-        k++;
-    }
+	while (i < n1 && j < n2) {
+		if (comp(L[i], R[j])) {
+			arr[k] = L[i];
+			i++;
+		}
+		else {
+			arr[k] = R[j];
+			j++;
+		}
+		k++;
+	}
 
-    // Copiar elementos restantes de der[], si los hay
-    while (j < n2)
-    {
-        _arreglo[k] = der[j];
-        j++;
-        k++;
-    }
+	while (i < n1) {
+		arr[k] = L[i];
+		i++;
+		k++;
+	}
+	while (j < n2) {
+		arr[k] = R[j];
+		j++;
+		k++;
+	}
+
 }
 
-// Algoritmo Merge Sort recursivo
-template <typename T>
-void mergeSort(std::vector<T>& _arreglo, int _izquierda, int _derecha)
-{
-    if (_izquierda >= _derecha) return;
+template < typename T, typename Comp = decltype(menorDefecto<T>) >
+void mergeSort(vector<T>& arr, int l, int r, Comp comp = menorDefecto<T>) {
+	if (l >= r) return;
 
-    int medio = _izquierda + (_derecha - _izquierda) / 2;
-    mergeSort(_arreglo, _izquierda, medio);
-    mergeSort(_arreglo, medio + 1, _derecha);
-    merge(_arreglo, _izquierda, _derecha, medio);
+	int mid = l + (r - l) / 2;
+	mergeSort(arr, l, mid, comp);
+	mergeSort(arr, mid + 1, r, comp);
+	merge(arr, l, r, mid, comp);
 }
 
-// Algoritmo Bubble Sort
-template <typename T>
-void bubbleSort(std::vector<T>& _arreglo)
-{
-    int n = _arreglo.size();
-    for (int i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < n - 1 - i; ++j)
-        {
-            if (_arreglo[j] > _arreglo[j + 1])
-            {
-                T temporal = _arreglo[j];
-                _arreglo[j] = _arreglo[j + 1];
-                _arreglo[j + 1] = temporal;
-            }
-        }
-    }
+
+template <typename T, typename Comp = decltype(menorDefecto<T>)>
+void bubbleSort(vector<T>& arr, Comp comp = menorDefecto<T>) {
+	int n = arr.size();
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n - 1 - i; ++j) {
+			if (comp(arr[j], arr[j + 1])) {
+				T tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp;
+			}
+		}
+	}
 }
 
-// Algoritmo Shell Sort usando gaps decrecientes
-template <typename T>
-void shellSort(std::vector<T>& _arreglo)
-{
-    int n = _arreglo.size();
-    for (int gap = n / 2; gap > 0; gap /= 2)
-    {
-        for (int i = gap; i < n; ++i)
-        {
-            T temporal = _arreglo[i];
-            int j = i;
-            while (j >= gap && _arreglo[j - gap] > temporal)
-            {
-                _arreglo[j] = _arreglo[j - gap];
-                j -= gap;
-            }
-            _arreglo[j] = temporal;
-        }
-    }
+// Shell sort
+// Usa gaps decrecientes para comparar e intercambiar elementos
+template <typename T, typename Comp = decltype(menorDefecto<T>)>
+void shellSort(vector<T>& arr, Comp comp = menorDefecto<T>) {
+	int n = int(arr.size());
+	for (int gap = n / 2; gap > 0; gap /= 2) {
+		for (int i = gap; i < n; ++i) {
+			T temp = arr[i];
+			int j = i;
+			// Reemplazamos "arr[j-gap] > temp" por "comp(temp, arr[j-gap])"
+			while (j >= gap && comp(temp, arr[j - gap])) {
+				arr[j] = arr[j - gap];
+				j -= gap;
+			}
+			arr[j] = temp;
+		}
+	}
 }
-
-#endif // COURSERACLONE_DATASTRUCTURES_ALGORITMOSORDENAMIENTO_HPP
-
-

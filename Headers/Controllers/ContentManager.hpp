@@ -22,7 +22,6 @@
 #include "../DataStructures/LinkedList.hpp"
 #include "../Utils/DataPaths.hpp"
 #include "../DataStructures/PriorityQueue.hpp"
-#include "../DataStructures/LinkedList.hpp"
 
 // Enums para tipos y resultados
 enum class ActividadTipo : int {
@@ -169,20 +168,6 @@ public:
         const std::string& categoria = ""
     );
 
-    /**
-     * @brief Actualiza una especialización existente
-     * @param idEspecializacion ID de la especialización
-     * @param nuevosDatos Nuevos datos
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult actualizarEspecializacion(int idEspecializacion, const RawEspecializacionData& nuevosDatos);
-
-    /**
-     * @brief Elimina una especialización
-     * @param idEspecializacion ID de la especialización
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult eliminarEspecializacion(int idEspecializacion);
 
     // ========== GESTIÓN DE INSCRIPCIONES ==========    
     /**
@@ -201,14 +186,6 @@ public:
      */
     ContentOperationResult inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion);
 
-    /**
-     * @brief Desinscribe un estudiante de una actividad
-     * @param idEstudiante ID del estudiante
-     * @param idActividad ID de la actividad
-     * @param tipoActividad Tipo de actividad
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult desinscribirEstudiante(int idEstudiante, int idActividad, ActividadTipo tipoActividad);
 
     // ========== GESTIÓN DE PROGRESO Y CALIFICACIONES ==========    
     /**
@@ -339,7 +316,7 @@ public:
  * @param limite Máximo de resultados a retornar (-1 para sin límite).
  * @return Vector de títulos de cursos que coinciden.
  */
-    std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
+    inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
 
 
     // ========== GETTERS ==========
@@ -492,6 +469,31 @@ inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() c
     return datosExplorador;
 }
 
+inline std::vector<std::string> ContentManager::sugerirCursosPorPrefijo(const std::string& texto, int limite) const
+{
+    std::vector<std::string> sugerencias;
+    if (texto.empty()) return sugerencias;
+
+    // Convertir texto de búsqueda a minúsculas  
+    std::string textoLower = texto;
+    std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+    FilesManager& fileManager = FilesManager::getInstance();
+    auto& hashCursos = fileManager.getIndiceCursos();
+
+    // Solución: Usar iteradores explícitos para recorrer el hash table  
+    for (auto it = hashCursos.begin(); it != hashCursos.end(); ++it) {
+        std::string tituloLower = it->first;
+        std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), ::tolower);
+
+        if (tituloLower.find(textoLower) == 0) {
+            sugerencias.push_back(it->first);
+            if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;
+        }
+    }
+    return sugerencias;
+}
+
 inline Curso* ContentManager::obtenerCurso(int id) {
     if (id < 0 || id >= _nextCursoId) {
         logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
@@ -627,8 +629,17 @@ inline ContentOperationResult ContentManager::cargarCantidadInscripcionesActivid
         int idActividad = inscripcion.idActividad;
         TipoActividad tipoActividad = static_cast<TipoActividad>(inscripcion.tipoActividad);
 
-        if (tipoActividad == TipoActividad::CURSO) _cursos.getElemento(idActividad).aumentarAlumno();
-        else _especializaciones.getElemento(idActividad).aumentarAlumno();
+        bool completado = inscripcion.completado;
+        if (tipoActividad == TipoActividad::CURSO) {
+            _cursos.getElemento(idActividad).aumentarAlumno();
+            if (completado) _cursos.getElemento(idActividad).aumentarAlumnoCompletado();
+        }
+        else {
+            _especializaciones.getElemento(idActividad).aumentarAlumno();
+            if (completado) _especializaciones.getElemento(idActividad).aumentarAlumnoCompletado();
+        }
+
+        
     }
 
     int cantidadCursos = _cursos.getTamano();
@@ -692,30 +703,6 @@ inline void ContentManager::logOperation(const std::string& operation, const std
     std::cout << std::endl;
     #endif
     */
-}
-
-inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite) {  
-   std::vector<std::string> sugerencias;  
-   if (texto.empty()) return sugerencias;  
-
-   // Convertir texto de búsqueda a minúsculas  
-   std::string textoLower = texto;  
-   std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });  
-
-   FilesManager& fileManager = FilesManager::getInstance();
-   auto& hashCursos = fileManager.getIndiceCursos();
-
-   // Solución: Usar iteradores explícitos para recorrer el hash table  
-   for (auto it = hashCursos.begin(); it != hashCursos.end(); ++it) {  
-       std::string tituloLower = it->first;  
-       std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), ::tolower);  
-
-       if (tituloLower.find(textoLower) == 0) {  
-           sugerencias.push_back(it->first);  
-           if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;  
-       }  
-   }  
-   return sugerencias;  
 }
 // ========== UTILIDADES ==========
 

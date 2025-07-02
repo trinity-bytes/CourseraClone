@@ -3,11 +3,12 @@
 
 #include "../DataStructures/LinkedList.hpp"
 #include "../Controllers/ContentManager.hpp"
+#include "../DataStructures/algoritmosOrdenamiento.hpp"
 
 class ActividadesController {
 private:
 	LinkedList<int> idCursos;
-	LinkedList<int>  idEspecializaciones;
+	LinkedList<int> idEspecializaciones;
 	int idOrganizacion;
 	int totalInscritos;
 
@@ -29,6 +30,8 @@ public:
 	inline int getCantidadCursos();
 	inline int getCantidadEspecializaciones();
 	inline int getCantidadInscritos();
+	
+	inline std::vector<std::pair<std::string, int>> getOrdenadoInscripciones(int maximoDatos);
 
 };
 
@@ -83,7 +86,7 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 	auto textoDouble = [](double valor) {
 		auto decimalEnteroMuestra = [](double numero) {
 			int nuevo = numero * 100;
-			int resultado = nuevo / 100;
+			int resultado = nuevo % 100;
 			return resultado;
 			};
 
@@ -140,14 +143,44 @@ inline int ActividadesController::getCantidadCursos() {
 	return idCursos.getTamano();
 }
 
-
-
 inline int ActividadesController::getCantidadEspecializaciones() {
 	return idEspecializaciones.getTamano();
 }
 
 inline int ActividadesController::getCantidadInscritos() {
 	return totalInscritos;
+}
+
+inline std::vector<std::pair<std::string, int>> ActividadesController::getOrdenadoInscripciones(int maximoDatos) {
+	std::vector < std::pair < std::string, int > > informacion;
+
+	for (auto it = idCursos.begin(); it != idCursos.end(); it++) {
+		int id = *it;
+		std::string tituloActividad = ContentManager::getInstance().obtenerCurso(*it)->getTitulo();
+		int cantidad = ContentManager::getInstance().obtenerCurso(*it)->getCantidad();
+		informacion.push_back({ tituloActividad, cantidad });
+	}
+	for (auto it = idEspecializaciones.begin(); it != idEspecializaciones.end(); it++) {
+		int id = *it;
+		std::string tituloActividad = ContentManager::getInstance().obtenerEspecializacion(*it)->getTitulo();
+		int cantidad = ContentManager::getInstance().obtenerEspecializacion(*it)->getCantidad();
+		informacion.push_back({ tituloActividad, cantidad });
+	}
+
+	auto comparador = [](std::pair < std::string, int > a, std::pair < std::string, int > b) {
+		return a.second < b.second;
+		};
+	int tamano = informacion.size();
+	mergeSort(informacion, 0, tamano - 1, comparador);
+
+	
+	int minimo = (tamano > 5) ? 5 : tamano;
+	std::vector < std::pair < std::string, int > > resultado;
+	for (int i = 0; i < minimo; i++) {
+		resultado.push_back(informacion[i]);
+	}
+
+	return resultado;
 }
 
 // ========== MÉTODOS PRIVADOS - LOGGING ==========

@@ -74,13 +74,13 @@ private:
     // --- Vectores de datos ---
     std::vector<std::string> _nombresCategorias;
     std::vector<RawExploradorData> _resultados;
+    std::vector<std::string> _sugerenciasCursos;
     std::vector<std::string> _textosFiltroTipos;
 
     // --- Métodos privados de inicialización ---
     inline void _inicializarDatos();
     inline void _cargarCategorias();
     inline void _cargarDatosSinRecomendacion(); // No hay sesion activa o el usuario no tiene inscripciones
-	inline void _cargarDatosRecomendados(); // Cargar datos de recomendación si hay sesión activa e inscripciones
     inline void _cargarResultadosEjemplo();    // --- Métodos privados de estado ---
     inline void _limpiarEstado();
     inline void _mostrarCursor();
@@ -112,7 +112,8 @@ private:
     inline void _manejarEntradaTexto(int tecla);
     inline void _manejarRetroceso();
 
-
+    // --- Métodos de busqueda(sugerencias)
+    inline void _actualizarSugerenciasCursos();
 
     // --- Métodos utilitarios ---
     inline int _obtenerMaxElementosEnSeccion(int seccion);
@@ -145,7 +146,7 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
-    _cargarDatosSinRecomendacion();
+    //_cargarDatosSinRecomendacion();
     
     _textosFiltroTipos = {
         " TODOS ",
@@ -204,6 +205,10 @@ inline void ExplorarContenidoScreen::_cargarResultadosEjemplo()
         {TipoActividad::CURSO, 1, "Curso de JavaScript Avanzado", CategoriaActividad::DESARROLLO_WEB},
 		{TipoActividad::ESPECIALIZACION, 2, "Diseno UX / UI Completo", CategoriaActividad::DISENO},
     };
+}
+
+inline void ExplorarContenidoScreen::_actualizarSugerenciasCursos() {
+    _sugerenciasCursos = ContentManager::getInstance().sugerirCursosPorPrefijo(_textoBusqueda, 5);
 }
 
 // Limpiar estado
@@ -341,6 +346,21 @@ inline void ExplorarContenidoScreen::_renderizarBuscador(bool seleccionado)
     }
     
     resetColor();
+
+    // Mostrar sugerencias debajo del buscador (titulos de los cursos)
+    int y = _coordBuscador.Y + 1;
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    for (const auto& sug : _sugerenciasCursos) {
+        gotoXY(_coordBuscador.X, y++);
+        std::cout << "  > " << sug << "                                        ";
+    }
+    // Limpiar lineas 
+    for (int i = _sugerenciasCursos.size(); i < 5; ++i) {
+        gotoXY(_coordBuscador.X, y++);
+        std::cout << "                                              ";
+    }
+    resetColor();
+
 }
 
 // Renderizar filtro de tipos
@@ -665,6 +685,7 @@ inline void ExplorarContenidoScreen::_manejarEntradaTexto(int tecla)
     if (_seccionActual == SECCION_BUSCADOR && tecla >= 32 && tecla <= 126) {
         if (_textoBusqueda.length() < 60) {
             _textoBusqueda.push_back(static_cast<char>(tecla));
+            _actualizarSugerenciasCursos();
             _renderizarBuscador(true);
         }
     }
@@ -675,6 +696,7 @@ inline void ExplorarContenidoScreen::_manejarRetroceso()
 {
     if (_seccionActual == SECCION_BUSCADOR && !_textoBusqueda.empty()) {
         _textoBusqueda.pop_back();
+        _actualizarSugerenciasCursos();
         _renderizarBuscador(true);
     }
 }
@@ -766,10 +788,12 @@ inline ResultadoPantalla ExplorarContenidoScreen::ejecutar()
         case KEY_LEFT:
         case KEY_RIGHT:
             _manejarNavegacion(tecla);
-            break;        case KEY_ESCAPE: // ESC - Regresar
+            break;        
+        case KEY_ESCAPE: // ESC - Regresar
             _ocultarCursor(); // Ocultar cursor antes de salir
             res.accion = AccionPantalla::IR_A_LANDING_PAGE;
-            return res;        case KEY_ENTER: // Enter - Procesar selección
+            return res;        
+        case KEY_ENTER: // Enter - Procesar selección
             res = _procesarSeleccion();
             if (res.accion != AccionPantalla::NINGUNA) {
                 _ocultarCursor(); // Ocultar cursor antes de salir

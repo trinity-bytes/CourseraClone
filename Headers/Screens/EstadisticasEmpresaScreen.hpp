@@ -38,7 +38,6 @@ private:
     struct EstadisticasGenerales {
         int totalCursos;
         int totalEspecializaciones;
-        int totalEstudiantes;
         int totalInscripciones;
         double ingresosTotal;
         double ingresosMes;
@@ -74,6 +73,7 @@ private:
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
     inline void _cargarDatosDummy();
+    inline void _cargarDatos();
 
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
@@ -115,6 +115,7 @@ inline EstadisticasEmpresaScreen::EstadisticasEmpresaScreen(AccionPantalla panta
     _pantallaAnterior(pantallaAnterior), _primeraRenderizacion(true), _seccionActual(0), _totalSecciones(3)
 {
     _cargarDatosDummy();
+    _cargarDatos();
     
     // Inicializar vectores para recordar lo escrito anteriormente
     _nombresAnteriores.resize(MAX_ELEMENTOS_GRAFICO);
@@ -146,7 +147,6 @@ inline void EstadisticasEmpresaScreen::_cargarDatosDummy()
     // Estadísticas generales (simuladas)
     _stats.totalCursos = 45;
     _stats.totalEspecializaciones = 12;
-    _stats.totalEstudiantes = 2847;
     _stats.totalInscripciones = 5692;
     _stats.ingresosTotal = 125640.50;
     _stats.ingresosMes = 18320.25;
@@ -176,6 +176,26 @@ inline void EstadisticasEmpresaScreen::_cargarDatosDummy()
     _datosIngresos.push_back({"Q3 2024", 29875.50});
     _datosIngresos.push_back({"Q4 2024", 35214.00});
     _datosIngresos.push_back({"Q1 2025", 38920.30});
+}
+
+inline void EstadisticasEmpresaScreen::_cargarDatos() {
+    SessionManager& sm = SessionManager::getInstance();
+
+    /*
+    _stats.totalCursos = 45;
+    _stats.totalEspecializaciones = 12;
+    _stats.totalEstudiantes = 2847;
+    _stats.totalInscripciones = 5692;
+    _stats.ingresosTotal = 125640.50;
+    _stats.ingresosMes = 18320.25;
+    _stats.cursosPopulares = 8;
+    _stats.nuevosEstudiantes = 156;
+    */
+
+    _stats.totalCursos = sm.getActividadesController().getCantidadCursos();
+    _stats.totalEspecializaciones = sm.getActividadesController().getCantidadEspecializaciones();
+    _stats.totalInscripciones = sm.getActividadesController().getCantidadInscritos();
+    
 }
 
 // Dibujar interfaz completa
@@ -219,7 +239,7 @@ inline void EstadisticasEmpresaScreen::_renderizarEstadisticasGenerales()
     // Estudiantes e Inscripciones
     gotoXY(_coordStatsGenerales.X, _coordStatsGenerales.Y);
     setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << formatearNumero(_stats.totalEstudiantes);
+    std::cout << formatearNumero(_stats.totalInscripciones);
     
     //gotoXY(_coordStatsGenerales.X, _coordStatsGenerales.Y);
     //setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
