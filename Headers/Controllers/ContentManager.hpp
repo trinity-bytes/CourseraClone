@@ -22,7 +22,6 @@
 #include "../DataStructures/LinkedList.hpp"
 #include "../Utils/DataPaths.hpp"
 #include "../DataStructures/PriorityQueue.hpp"
-#include "../DataStructures/LinkedList.hpp"
 
 // Enums para tipos y resultados
 enum class ActividadTipo : int {
@@ -317,7 +316,7 @@ public:
  * @param limite Máximo de resultados a retornar (-1 para sin límite).
  * @return Vector de títulos de cursos que coinciden.
  */
-    std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
+    inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
 
 
     // ========== GETTERS ==========
@@ -468,6 +467,31 @@ inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() c
     procesar(_especializaciones); // procesa el vector de especializaciones
 
     return datosExplorador;
+}
+
+inline std::vector<std::string> ContentManager::sugerirCursosPorPrefijo(const std::string& texto, int limite) const
+{
+    std::vector<std::string> sugerencias;
+    if (texto.empty()) return sugerencias;
+
+    // Convertir texto de búsqueda a minúsculas  
+    std::string textoLower = texto;
+    std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+    FilesManager& fileManager = FilesManager::getInstance();
+    auto& hashCursos = fileManager.getIndiceCursos();
+
+    // Solución: Usar iteradores explícitos para recorrer el hash table  
+    for (auto it = hashCursos.begin(); it != hashCursos.end(); ++it) {
+        std::string tituloLower = it->first;
+        std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), ::tolower);
+
+        if (tituloLower.find(textoLower) == 0) {
+            sugerencias.push_back(it->first);
+            if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;
+        }
+    }
+    return sugerencias;
 }
 
 inline Curso* ContentManager::obtenerCurso(int id) {
@@ -679,30 +703,6 @@ inline void ContentManager::logOperation(const std::string& operation, const std
     std::cout << std::endl;
     #endif
     */
-}
-
-inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite) {  
-   std::vector<std::string> sugerencias;  
-   if (texto.empty()) return sugerencias;  
-
-   // Convertir texto de búsqueda a minúsculas  
-   std::string textoLower = texto;  
-   std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });  
-
-   FilesManager& fileManager = FilesManager::getInstance();
-   auto& hashCursos = fileManager.getIndiceCursos();
-
-   // Solución: Usar iteradores explícitos para recorrer el hash table  
-   for (auto it = hashCursos.begin(); it != hashCursos.end(); ++it) {  
-       std::string tituloLower = it->first;  
-       std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), ::tolower);  
-
-       if (tituloLower.find(textoLower) == 0) {  
-           sugerencias.push_back(it->first);  
-           if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;  
-       }  
-   }  
-   return sugerencias;  
 }
 // ========== UTILIDADES ==========
 
