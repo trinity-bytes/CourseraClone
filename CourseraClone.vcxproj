@@ -107,27 +107,46 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>User32.lib</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>User32.lib</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>User32.lib</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -137,35 +156,38 @@
     <None Include="README.md" />
     <None Include="Resources\Documentation\Entendiendo el proyecto.md" />
     <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
+    <None Include="Resources\Documentation\Paleta de Colores Coursera.md" />
     <None Include="Resources\Documentation\Plan de implementacion.md" />
+    <None Include="Resources\Documentation\Resumen_Actualizacion_Documentacion.md" />
   </ItemGroup>
   <ItemGroup>
+    <!-- Controllers -->
     <ClInclude Include="Headers\Controllers\ActividadesController.hpp" />
-    <ClInclude Include="Headers\Controllers\InscripcionesController.hpp" />
-    <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
-    <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
-    <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
-    <ClInclude Include="Headers\Entities\DateTime.hpp" />
-    <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp" />
-    <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
-    <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />
-    <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
-    <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\ContentManager.hpp" />
+    <ClInclude Include="Headers\Controllers\FilesManager.hpp" />
+    <ClInclude Include="Headers\Controllers\InscripcionesController.hpp" />
+    <ClInclude Include="Headers\Controllers\MainController.hpp" />
+    <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
+    
+    <!-- Data Structures -->
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.hpp" />
+    <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\BinaryHeap.hpp" />
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.hpp" />
     <ClInclude Include="Headers\DataStructures\HashEntity.hpp" />
     <ClInclude Include="Headers\DataStructures\HashTable.hpp" />
     <ClInclude Include="Headers\DataStructures\LinkedList.hpp" />
     <ClInclude Include="Headers\DataStructures\Nodo.hpp" />
+    <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\PriorityQueue.hpp" />
     <ClInclude Include="Headers\DataStructures\Queue.hpp" />
     <ClInclude Include="Headers\DataStructures\Stack.hpp" />
+    
+    <!-- Entities -->
     <ClInclude Include="Headers\Entities\Actividad.hpp" />
-    <ClInclude Include="Headers\Entities\ComprobanteDePago.hpp" />
     <ClInclude Include="Headers\Entities\Clase.hpp" />
+    <ClInclude Include="Headers\Entities\ComprobanteDePago.hpp" />
     <ClInclude Include="Headers\Entities\Curso.hpp" />
     <ClInclude Include="Headers\Entities\Empresa.hpp" />
     <ClInclude Include="Headers\Entities\Especializacion.hpp" />
@@ -173,27 +195,45 @@
     <ClInclude Include="Headers\Entities\Inscripcion.hpp" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.hpp" />
-    <ClInclude Include="Headers\Types\FilesTypes.hpp" />
-    <ClInclude Include="Headers\Types\InscripcionTypes.hpp" />
-    <ClInclude Include="Headers\Types\ScreenTypes.hpp" />
-    <ClInclude Include="Headers\Types\UsuarioTypes.hpp" />
+    
+    <!-- Screens -->
+    <ClInclude Include="Headers\Screens\AgregarMetodoPagoScreen.hpp" />
+    <ClInclude Include="Headers\Screens\CrearContenidoScreen.hpp" />
+    <ClInclude Include="Headers\Screens\CrearOfertaScreen.hpp" />
     <ClInclude Include="Headers\Screens\DashboardEstudianteScreen.hpp" />
     <ClInclude Include="Headers\Screens\DashboardOrganizacionScreen.hpp" />
     <ClInclude Include="Headers\Screens\EditarPerfilScreen.hpp" />
+    <ClInclude Include="Headers\Screens\EstadisticasEmpresaScreen.hpp" />
     <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.hpp" />
     <ClInclude Include="Headers\Screens\LandingPageScreen.hpp" />
+    <ClInclude Include="Headers\Screens\ListarContenidoScreen.hpp" />
     <ClInclude Include="Headers\Screens\LoginScreen.hpp" />
     <ClInclude Include="Headers\Screens\MostrarCursoScreen.hpp" />
     <ClInclude Include="Headers\Screens\MostrarEspecialidadScreen.hpp" />
     <ClInclude Include="Headers\Screens\PerfilEstudianteScreen.hpp" />
     <ClInclude Include="Headers\Screens\PerfilOrganizacionScreen.hpp" />
+    <ClInclude Include="Headers\Screens\ProcesarPagoScreen.hpp" />
     <ClInclude Include="Headers\Screens\RegistroScreen.hpp" />
+    <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp" />
     <ClInclude Include="Headers\Screens\VerBoletasScreen.hpp" />
+    <ClInclude Include="Headers\Screens\VerCertificadosScreen.hpp" />
+    <ClInclude Include="Headers\Screens\VerOfertasScreen.hpp" />
+    
+    <!-- Types -->
+    <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
+    <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />
+    <ClInclude Include="Headers\Types\FilesTypes.hpp" />
+    <ClInclude Include="Headers\Types\InscripcionTypes.hpp" />
+    <ClInclude Include="Headers\Types\ScreenTypes.hpp" />
+    <ClInclude Include="Headers\Types\UsuarioTypes.hpp" />
+    
+    <!-- Utils -->
     <ClInclude Include="Headers\Utils\ColorPalette.hpp" />
     <ClInclude Include="Headers\Utils\ConsoleConfig.hpp" />
     <ClInclude Include="Headers\Utils\ConsoleRenderer.hpp" />
     <ClInclude Include="Headers\Utils\ConsoleTypes.hpp" />
     <ClInclude Include="Headers\Utils\DataPaths.hpp" />
+    <ClInclude Include="Headers\Utils\DateTime.hpp" />
     <ClInclude Include="Headers\Utils\InputUtils.hpp" />
     <ClInclude Include="Headers\Utils\Lambda.hpp" />
     <ClInclude Include="Headers\Utils\ScreenSystem.hpp" />

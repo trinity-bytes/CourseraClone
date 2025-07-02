@@ -1,197 +1,340 @@
 ﻿#ifndef COURSERACLONE_SCREENS_VERBOLETASSCREEN_HPP
 #define COURSERACLONE_SCREENS_VERBOLETASSCREEN_HPP
 
-#pragma once
-
 // Headers estándar
 #include <iomanip>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <conio.h>
 
-//// Headers de consola
-//#include "../Entities/Boleta.h"
-//#include "../Entities/Estudiante.h"
-//#include "../Utils/SystemUtils.h"
-//#include "../Utils/ScreenSystem.h"
-//#include "../Utils/UI_Ascii.h"
+// Headers propios
+#include "../Utils/SystemUtils.hpp"
+#include "../Utils/ScreenSystem.hpp"
+#include "../Utils/UI_Ascii.hpp"
+#include "../Types/UsuarioTypes.hpp"
+#include "../Entities/ComprobanteDePago.hpp"
 
-/// Pantalla para ver boletas del estudiante
-// Screen to display student payment receipts/invoices
+/// Pantalla para ver comprobantes de pago del estudiante
 class VerBoletasScreen : public PantallaBase
 {
 private:
-    Estudiante& _estudiante;
-    std::vector<Boleta> _boletas;
-    int _boletaSeleccionada;
-    int _indiceInicio;
-    int _boletasPorPagina;
-    bool _primeraRenderizacion;
+    // Estado de navegación
     AccionPantalla _pantallaAnterior;
-
+    bool _primeraRenderizacion;
+    
+    // Navegación y selección
+    int _comprobanteSeleccionado;
+    int _indiceInicio;
+    int _comprobantesPorPagina;
+    
+    // Datos simulados de comprobantes
+    std::vector<ComprobanteDePago> _comprobantes;
+    
     // Constantes para la interfaz
-    const int COL_TITULO = 50;
-    const int FILA_TITULO = 3;
-    const int COL_VOLVER = 110;
-    const int FILA_VOLVER = 3;
-
-    const int COL_LISTA_BOLETAS = 10;
-    const int FILA_LISTA_BOLETAS = 8;
-    const int ESPACIO_ENTRE_BOLETAS = 2;
-    const int ANCHO_BOLETA = 100;    void dibujarInterfazCompleta() {
-        system("cls");
-        // Supongamos que tenemos una función UI para esta pantalla
-        // UI_VerBoletas();
-
-        // Dibujar título
-        gotoXY(COL_TITULO, FILA_TITULO);
-        setConsoleColor(15, 1);
-        std::cout << "MIS COMPROBANTES DE PAGO";
-
-        // Dibujar botón volver
-        gotoXY(COL_VOLVER, FILA_VOLVER);
-        setConsoleColor(15, 1);
-        std::cout << " VOLVER ";
-
-        // Mostrar las boletas
-        dibujarBoletas();
-    }    void dibujarBoletas() {
-        // Limpiar área de boletas
-        for (int i = 0; i < _boletasPorPagina * ESPACIO_ENTRE_BOLETAS; i++) {
-            gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS + i);
-            std::cout << std::string(ANCHO_BOLETA, ' ');
-        }
-
-        if (_boletas.empty()) {
-            gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS);
-            setConsoleColor(15, 1);
-            std::cout << "No tienes comprobantes de pago.";
-            return;
-        }
-
-        int boletasAMostrar = (std::min)(_boletasPorPagina, static_cast<int>(_boletas.size()) - _indiceInicio);
-
-        for (int i = 0; i < boletasAMostrar; i++) {
-            int indice = _indiceInicio + i;
-            Boleta boleta = _boletas[indice];
-
-            int y = FILA_LISTA_BOLETAS + i * ESPACIO_ENTRE_BOLETAS;
-
-            // Destacar la boleta seleccionada
-            if (i == _boletaSeleccionada) {
-                setConsoleColor(1, 13); // Color para selección
-            }
-            else {
-                setConsoleColor(15, 1); // Color normal
-            }
-
-            // Mostrar información de la boleta
-            gotoXY(COL_LISTA_BOLETAS, y);
-            std::cout << "ID: " << boleta.getId()
-                << " | Fecha: " << boleta.getFecha()
-                << " | Precio: $" << std::fixed << std::setprecision(2) << boleta.getPrecio();
-        }
-
-        // Indicadores de paginación
-        if (_indiceInicio > 0) {
-            gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS - 2);
-            setConsoleColor(15, 1);
-            std::cout << "Más arriba (Flecha ARRIBA)";
-        }
-
-        if (_indiceInicio + _boletasPorPagina < _boletas.size()) {
-            gotoXY(COL_LISTA_BOLETAS, FILA_LISTA_BOLETAS + boletasAMostrar * ESPACIO_ENTRE_BOLETAS + 1);
-            setConsoleColor(15, 1);
-            std::cout << "Más abajo (Flecha ABAJO)";
-        }
-
-        setConsoleColor(15, 1); // Restaurar color normal
-    }
+    static const int COL_TITULO = 45;
+    static const int FILA_TITULO = 4;
+    static const int COL_VOLVER = 100;
+    static const int FILA_VOLVER = 4;
+    
+    static const int COL_LISTA_COMPROBANTES = 15;
+    static const int FILA_LISTA_COMPROBANTES = 8;
+    static const int ESPACIO_ENTRE_COMPROBANTES = 3;
+    static const int ANCHO_COMPROBANTE = 90;
+    
+    // ---- MÉTODOS PRIVADOS ----
+    
+    /// @brief Métodos de inicialización
+    inline void _limpiarEstado();
+    
+    /// @brief Métodos de renderizado
+    inline void dibujarInterfazCompleta();
+    inline void _renderizarTitulo();
+    inline void _renderizarBotonVolver();
+    inline void _renderizarListaComprobantes();
+    inline void _renderizarIndicadoresPaginacion();
+    inline void _mostrarQRComprobante(const ComprobanteDePago& comprobante);
+    inline void _actualizarSeleccion();
+    
+    /// @brief Métodos de navegación
+    inline void _manejarNavegacion(int tecla);
+    inline void _navegarArriba();
+    inline void _navegarAbajo();
+    
+    /// @brief Métodos de procesamiento
+    inline ResultadoPantalla _procesarSeleccion();
 
 public:
-    VerBoletasScreen(Estudiante& _estudiante, AccionPantalla _pantallaAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE)
-        : PantallaBase(),
-        _estudiante(_estudiante),
-        _boletaSeleccionada(0),
-        _indiceInicio(0),
-        _boletasPorPagina(10),
-        _primeraRenderizacion(true),
-        _pantallaAnterior(_pantallaAnterior)
-    {
-        // Cargar boletas desde el estudiante
-        // Problema
-        LinkedList<Boleta>& boletasLista = _estudiante.getBoletas();
-
-        // Convertir la lista enlazada a un vector para facilitar el manejo
-        for (int i = 1; i <= boletasLista.getTamano(); i++) {
-            _boletas.push_back(boletasLista.get(i));
-        }
-        /*
-        if (estudiante != NULL) {
-            
-        }
-        */
-    }    
+    inline VerBoletasScreen(AccionPantalla pantallaAnterior = AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
     
-    ~VerBoletasScreen() = default;
+    inline ~VerBoletasScreen() = default;
 
-    ResultadoPantalla ejecutar() override {
-        ResultadoPantalla resultado;
+    inline ResultadoPantalla ejecutar() override;
+};
 
+// --- IMPLEMENTACIONES INLINE ---
+
+// Constructor
+inline VerBoletasScreen::VerBoletasScreen(AccionPantalla pantallaAnterior) : PantallaBase(),
+    _pantallaAnterior(pantallaAnterior), _primeraRenderizacion(true), 
+    _comprobanteSeleccionado(0), _indiceInicio(0), _comprobantesPorPagina(8)
+{
+}
+
+// Limpiar estado
+inline void VerBoletasScreen::_limpiarEstado()
+{
+    _comprobanteSeleccionado = 0;
+    _indiceInicio = 0;
+    _primeraRenderizacion = true;
+}
+
+// Dibujar interfaz completa
+inline void VerBoletasScreen::dibujarInterfazCompleta()
+{
+    system("cls");
+    UI_ComprobanteDePago();
+    
+    _renderizarTitulo();
+    _renderizarBotonVolver();
+    _renderizarListaComprobantes();
+    _renderizarIndicadoresPaginacion();
+    
+    resetColor();
+}
+
+// Renderizar título
+inline void VerBoletasScreen::_renderizarTitulo()
+{
+    gotoXY(COL_TITULO, FILA_TITULO);
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "MIS COMPROBANTES DE PAGO";
+    resetColor();
+}
+
+// Renderizar botón volver
+inline void VerBoletasScreen::_renderizarBotonVolver()
+{
+    gotoXY(COL_VOLVER, FILA_VOLVER);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "[ ESC - VOLVER ]";
+    resetColor();
+}
+
+// Renderizar lista de comprobantes
+inline void VerBoletasScreen::_renderizarListaComprobantes()
+{
+    if (_comprobantes.empty()) {
+        gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + 2);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+        std::cout << "No tienes comprobantes de pago registrados.";
+        resetColor();
+        return;
+    }
+    
+    int comprobantesAMostrar = (std::min)(_comprobantesPorPagina,
+                                      static_cast<int>(_comprobantes.size()) - _indiceInicio);
+    
+    for (int i = 0; i < comprobantesAMostrar; ++i) {
+        int indice = _indiceInicio + i;
+        const ComprobanteDePago& comprobante = _comprobantes[indice];
+        
+        int fila = FILA_LISTA_COMPROBANTES + i * ESPACIO_ENTRE_COMPROBANTES;
+
+        
+        resetColor();
+    }
+}
+
+// Renderizar indicadores de paginación
+inline void VerBoletasScreen::_renderizarIndicadoresPaginacion()
+{
+    // Información de página actual
+    gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + _comprobantesPorPagina * ESPACIO_ENTRE_COMPROBANTES + 1);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    
+    int paginaActual = (_indiceInicio / _comprobantesPorPagina) + 1;
+    int totalPaginas = ((_comprobantes.size() - 1) / _comprobantesPorPagina) + 1;
+    
+    std::cout << "Página " << paginaActual << " de " << totalPaginas 
+              << " | Total: " << _comprobantes.size() << " comprobantes";
+    
+    // Instrucciones de uso
+    gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + _comprobantesPorPagina * ESPACIO_ENTRE_COMPROBANTES + 3);
+    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "ENTER - Ver código QR | ↑↓ - Navegar | ESC - Volver";
+    
+    // Indicadores de navegación
+    if (_indiceInicio > 0) {
+        gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES - 1);
+        setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+        std::cout << "↑ Flecha ARRIBA para ver anteriores";
+    }
+    
+    if (_indiceInicio + _comprobantesPorPagina < _comprobantes.size()) {
+        gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + _comprobantesPorPagina * ESPACIO_ENTRE_COMPROBANTES + 5);
+        setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+        std::cout << "↓ Flecha ABAJO para ver siguientes";
+    }
+    
+    resetColor();
+}
+
+// Mostrar QR para el comprobante
+inline void VerBoletasScreen::_mostrarQRComprobante(const ComprobanteDePago& comprobante)
+{
+    system("cls");
+    
+    // Título de la pantalla del QR
+    gotoXY(35, 3);
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "COMPROBANTE DE PAGO - CÓDIGO QR";
+    
+    // QR ASCII simulado (representación visual simple)
+    gotoXY(35, 11);
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "████████████████████████████████";
+    gotoXY(35, 12);
+    std::cout << "██                            ██";
+    gotoXY(35, 13);
+    std::cout << "██  ████  ██████  ████  ████  ██";
+    gotoXY(35, 14);
+    std::cout << "██  ████  ██████  ████  ████  ██";
+    gotoXY(35, 15);
+    std::cout << "██        ██████        ████  ██";
+    gotoXY(35, 16);
+    std::cout << "██  ████        ██████  ████  ██";
+    gotoXY(35, 17);
+    std::cout << "██  ████  ██████  ████  ████  ██";
+    gotoXY(35, 18);
+    std::cout << "██        ██████        ████  ██";
+    gotoXY(35, 19);
+    std::cout << "██  ████  ██████  ████  ████  ██";
+    gotoXY(35, 20);
+    std::cout << "██                            ██";
+    gotoXY(35, 21);
+    std::cout << "████████████████████████████████";
+    
+    resetColor();
+    
+    // Esperar a que el usuario presione una tecla
+    _getch();
+}
+
+// Actualizar selección
+inline void VerBoletasScreen::_actualizarSeleccion()
+{
+    _renderizarListaComprobantes();
+    _renderizarIndicadoresPaginacion();
+}
+
+// Manejar navegación
+inline void VerBoletasScreen::_manejarNavegacion(int tecla)
+{
+    switch (tecla) {
+    case 72: // Flecha arriba
+        _navegarArriba();
+        break;
+    case 80: // Flecha abajo
+        _navegarAbajo();
+        break;
+    }
+}
+
+// Navegar hacia arriba
+inline void VerBoletasScreen::_navegarArriba()
+{
+    if (_comprobanteSeleccionado > 0) {
+        _comprobanteSeleccionado--;
+    } else if (_indiceInicio > 0) {
+        _indiceInicio--;
+        _comprobanteSeleccionado = 0;
+    }
+}
+
+// Navegar hacia abajo
+inline void VerBoletasScreen::_navegarAbajo()
+{
+    int comprobantesEnPagina = (std::min)(_comprobantesPorPagina,
+                                       static_cast<int>(_comprobantes.size()) - _indiceInicio);
+    
+    if (_comprobanteSeleccionado < comprobantesEnPagina - 1) {
+        _comprobanteSeleccionado++;
+    } else if (_indiceInicio + _comprobantesPorPagina < _comprobantes.size()) {
+        _indiceInicio++;
+        _comprobanteSeleccionado = 0;
+    }
+}
+
+// Procesar selección
+inline ResultadoPantalla VerBoletasScreen::_procesarSeleccion()
+{
+    ResultadoPantalla res;
+    
+    if (!_comprobantes.empty() && _indiceInicio + _comprobanteSeleccionado < _comprobantes.size()) {
+        // Obtener el comprobante seleccionado
+        const ComprobanteDePago& comprobanteSeleccionado = _comprobantes[_indiceInicio + _comprobanteSeleccionado];
+        
+        // Mostrar el QR del comprobante
+        _mostrarQRComprobante(comprobanteSeleccionado);
+        
+        // Después de mostrar el QR, redibujar la interfaz completa
+        _primeraRenderizacion = true;
+    }
+    
+    return res;
+}
+
+// Método principal de ejecución
+inline ResultadoPantalla VerBoletasScreen::ejecutar()
+{
+    _limpiarEstado();
+    
+    while (true) {
         if (_primeraRenderizacion) {
             dibujarInterfazCompleta();
             _primeraRenderizacion = false;
+        } else {
+            _actualizarSeleccion();
         }
-
-        while (true) {
-            int tecla = _getch();
-
-            switch (tecla) {
-            case 224: // Tecla extendida
-                tecla = _getch();
-
-                switch (tecla) {
-                case 72: // Flecha arriba
-                    if (_boletaSeleccionada > 0) {
-                        _boletaSeleccionada--;
-                        dibujarBoletas();
-                    }
-                    else if (_indiceInicio > 0) {
-                        _indiceInicio--;
-                        dibujarBoletas();
-                    }
-                    break;
-
-                case 80: // Flecha abajo
-                    if (_boletaSeleccionada < (std::min)(_boletasPorPagina - 1, static_cast<int>(_boletas.size()) - _indiceInicio - 1)) {
-                        _boletaSeleccionada++;
-                        dibujarBoletas();
-                    }
-                    else if (_indiceInicio + _boletasPorPagina < _boletas.size()) {
-                        _indiceInicio++;
-                        dibujarBoletas();
-                    }
-                    break;
-                }
-                break;
-
-            case 13: // Enter - Ver detalles de la boleta
-                if (!_boletas.empty() && _indiceInicio + _boletaSeleccionada < _boletas.size()) {
-                    // Implementar lógica para mostrar detalles (podría ser una nueva pantalla)
-                    // Por ahora simplemente volvemos
-                    resultado.accion = _pantallaAnterior;
-                    return resultado;
-                }
-                break;
-
-            case 27: // ESC - Volver
-                resultado.accion = AccionPantalla::IR_A_PERFIL_ESTUDIANTE; // En vez de IR_A_DASHBOARD_ESTUDIANTE
-                return resultado;
+        
+        int tecla = _getch();
+        
+        switch (tecla) {
+        case 0:
+        case 224: // Teclas especiales
+        {
+            int segundaTecla = _getch();
+            _manejarNavegacion(segundaTecla);
+        }
+        break;
+        
+        case 72: // Flecha arriba (por si acaso)
+        case 80: // Flecha abajo (por si acaso)
+            _manejarNavegacion(tecla);
+            break;
+            
+        case 13: // Enter - Ver detalles del comprobante
+        {
+            ResultadoPantalla res = _procesarSeleccion();
+            if (res.accion != AccionPantalla::NINGUNA) {
+                return res;
             }
         }
-
-        return resultado;
+        break;
+        
+        case 27: // ESC - Volver a pantalla anterior
+        {
+            ResultadoPantalla res;
+            res.accion = _pantallaAnterior;
+            return res;
+        }
+        
+        default:
+            // Ignorar otras teclas
+            break;
+        }
     }
-};
+}
 
 #endif // COURSERACLONE_SCREENS_VERBOLETASSCREEN_HPP

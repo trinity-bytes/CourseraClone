@@ -3,7 +3,7 @@
 
 #include "../Types/UsuarioTypes.hpp"
 
-/// @brief Acciones de navegación disponibles en el sistema
+/// @brief Acciones de navegaciï¿½n disponibles en el sistema
 enum class AccionPantalla{
     NINGUNA,
     IR_A_LOGIN,
@@ -19,7 +19,15 @@ enum class AccionPantalla{
     IR_A_MOSTRAR_ESPECIALIZACION,
     IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES,
     IR_A_GESTIONAR_INSCRIPCIONES,
+    IR_A_VER_ESTADISTICAS,
     IR_A_VER_BOLETAS,
+    IR_A_CREAR_CONTENIDO,
+    IR_A_CREAR_OFERTA,
+    IR_A_VER_OFERTAS,
+    IR_A_AGREGAR_METODO_PAGO,
+    IR_A_PROCESAR_PAGO,
+    IR_A_VER_CERTIFICADOS,
+    IR_A_LISTAR_CONTENIDO,
     SALIR
 };
 
@@ -37,6 +45,7 @@ enum class Pantalla{
     EDITAR_PERFIL,
     MOSTRAR_ESPECIALIZACION,
     MOSTRAR_CURSO,
+    ESTADISTICAS_EMPRESA,
     CURSOS_PUBLICADOS,
     ESPECIALIDADES_PUBLICADAS,
     CURSOS_INSCRITOS,
@@ -45,9 +54,9 @@ enum class Pantalla{
     DETALLE_ESPECIALIDAD
 };
 
-/// @brief Estructura que encapsula el resultado de la ejecución de una pantalla
+/// @brief Estructura que encapsula el resultado de la ejecuciï¿½n de una pantalla
 struct ResultadoPantalla{
-    // Compatibilidad total con código existente
+    // Compatibilidad total con cï¿½digo existente
     AccionPantalla accion = AccionPantalla::NINGUNA;
     std::string email = "";
     std::string password = "";
@@ -77,7 +86,7 @@ struct ResultadoPantalla{
         TipoUsuario _tipo
     ) : accion(_accion), email(_email), password(_password), tipoUsuario(_tipo) {}
 
-    // Métodos de utilidad
+    // Mï¿½todos de utilidad
     inline bool tieneAccion() const { return accion != AccionPantalla::NINGUNA; }
     inline bool esAccionSalir() const { return accion == AccionPantalla::SALIR; }
     inline bool tieneSeleccionCurso() const { return idCursoSeleccionado > 0; }
@@ -102,6 +111,7 @@ namespace ScreenUtils{
         case AccionPantalla::IR_A_REGISTRO: return "IR_A_REGISTRO";
         case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE: return "IR_A_DASHBOARD_ESTUDIANTE";
         case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION: return "IR_A_DASHBOARD_ORGANIZACION";
+        case AccionPantalla::IR_A_VER_ESTADISTICAS: return "IR_A_VER_ESTADISTICAS";
         case AccionPantalla::SALIR: return "SALIR";
         default: return "NINGUNA";
         }
@@ -116,6 +126,7 @@ namespace ScreenUtils{
         case Pantalla::REGISTRO: return "REGISTRO";
         case Pantalla::DASHBOARD_ESTUDIANTE: return "DASHBOARD_ESTUDIANTE";
         case Pantalla::DASHBOARD_EMPRESA: return "DASHBOARD_EMPRESA";
+        case Pantalla::ESTADISTICAS_EMPRESA: return "ESTADISTICAS_EMPRESA";
         default: return "NONE";
         }
     }
@@ -128,6 +139,7 @@ namespace ScreenUtils{
         case AccionPantalla::IR_A_REGISTRO: return Pantalla::REGISTRO;
         case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE: return Pantalla::DASHBOARD_ESTUDIANTE;
         case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION: return Pantalla::DASHBOARD_EMPRESA;
+        case AccionPantalla::IR_A_VER_ESTADISTICAS: return Pantalla::ESTADISTICAS_EMPRESA;
         case AccionPantalla::IR_A_MOSTRAR_CURSO: return Pantalla::MOSTRAR_CURSO;
         case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES: return Pantalla::CURSOS_PUBLICADOS;
         default: return Pantalla::NONE;

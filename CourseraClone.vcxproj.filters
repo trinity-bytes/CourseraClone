@@ -25,11 +25,14 @@
     <Filter Include="Header Files\Screens">
       <UniqueIdentifier>{e6e45ad0-60c3-4742-88e4-fa9ed080def8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Controller">
+    <Filter Include="Header Files\Controllers">
       <UniqueIdentifier>{7ebf0f94-3e0e-4f5b-9050-830d0254df8d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Types">
       <UniqueIdentifier>{b1b8deba-26bb-4e19-9af0-e36dc6d469fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{d4e1b8c2-7a3f-4d5e-9b8c-1a2b3c4d5e6f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -38,17 +41,31 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" />
-    <None Include="Resources\Documentation\Plan de implementacion.md" />
-    <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
-    <None Include="Resources\Documentation\Entendiendo el proyecto.md" />
+    <None Include="README.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Plan de implementacion.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Guia de Estilo de Codigo.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Entendiendo el proyecto.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Paleta de Colores Coursera.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Resources\Documentation\Resumen_Actualizacion_Documentacion.md">
+      <Filter>Documentation</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\ContentManager.hpp">
-      <Filter>Header Files\Controller</Filter>
+      <Filter>Header Files\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Controllers\MainController.hpp">
-      <Filter>Header Files\Controller</Filter>
+      <Filter>Header Files\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.hpp">
       <Filter>Header Files\DataStructures</Filter>
@@ -171,7 +188,7 @@
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Controllers\FilesManager.hpp">
-      <Filter>Header Files\Controller</Filter>
+      <Filter>Header Files\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Types\ActividadTypes.hpp">
       <Filter>Header Files\Types</Filter>
@@ -207,22 +224,46 @@
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Controllers\InscripcionesController.hpp">
-      <Filter>Header Files\Controller</Filter>
+      <Filter>Header Files\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Utils\Lambda.hpp">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\AgregarMetodoPagoScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\CrearContenidoScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\CrearOfertaScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\ListarContenidoScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\ProcesarPagoScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Screens\SobreNosotrosScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Controllers\SessionManager.hpp">
-      <Filter>Header Files\Controller</Filter>
+      <Filter>Header Files\Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entities\DateTime.hpp">
-      <Filter>Header Files\Entities</Filter>
+    <ClInclude Include="Headers\Utils\DateTime.hpp">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Controllers\ActividadesController.hpp">
-      <Filter>Header Files\Controller</Filter>
+      <Filter>Header Files\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\VerCertificadosScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\VerOfertasScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Screens\EstadisticasEmpresaScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
