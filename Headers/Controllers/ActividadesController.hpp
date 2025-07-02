@@ -24,6 +24,7 @@ public:
 	inline std::vector<ElementoMenu> getElementosDashboard(TipoActividad _tipo);
 
 	inline int calcularCantidad();
+	inline void reportarDatosMostrarActividad(std::string& _cantidadRecaudada, std::string& _cantidadAlumnos, std::string& _porcentajeCompletado, TipoActividad _tipo, int id);
 
 	inline int getCantidadCursos();
 	inline int getCantidadEspecializaciones();
@@ -71,6 +72,43 @@ inline int ActividadesController::calcularCantidad() {
 	}
 
 	return total;
+}
+
+inline void ActividadesController::reportarDatosMostrarActividad(std::string& _cantidadRecaudada, std::string& _cantidadAlumnos, std::string& _porcentajeCompletado, TipoActividad _tipo, int id) {
+	int cantidad = 0;
+	double ingreso = 0.0, porcentaje = 0.0;
+
+	
+
+	auto textoDouble = [](double valor) {
+		auto decimalEnteroMuestra = [](double numero) {
+			int nuevo = numero * 100;
+			int resultado = nuevo / 100;
+			return resultado;
+			};
+
+		int parteEntera = static_cast<int> (valor);
+		int parteDecimal = decimalEnteroMuestra(valor);
+		return std::to_string(parteEntera) + "." + std::to_string(parteDecimal);
+
+		};
+
+	if (_tipo == TipoActividad::CURSO) {
+		Curso* curso = ContentManager::getInstance().obtenerCurso(id);
+		cantidad = curso->getCantidad();
+		ingreso = curso->getMontoRecaudado();
+		porcentaje = curso->getProgresoTotal();
+	}
+	else {
+		Especializacion* especializacion = ContentManager::getInstance().obtenerEspecializacion(id);
+		cantidad = especializacion->getCantidad();
+		ingreso = especializacion->getMontoRecaudado();
+		porcentaje = especializacion->getProgresoTotal();
+	}
+
+	_cantidadRecaudada = "S/" + textoDouble(ingreso);
+	_cantidadAlumnos = std::to_string(cantidad);
+	_porcentajeCompletado = textoDouble(porcentaje) + "%";
 }
 
 inline std::vector<ElementoMenu> ActividadesController::getElementosDashboard(TipoActividad _tipo) {

@@ -24,6 +24,11 @@ private:
     std::string _tituloCurso;
     std::string _descripcionCurso;
     std::string _organizacionCurso;
+
+    // Datos del curso para empresa
+    std::string _cantidadRecaudada;
+    std::string _cantidadAlumnos;
+    std::string _porcentajeCompletado;
     
     // Estado de navegación
     TipoUsuario _tipoUsuario;
@@ -39,6 +44,7 @@ private:
     bool _enBotonInscribirse; // true si está en el botón
 
     static const int MAX_CLASES = 5; // 5 clases en total
+    static const int MAX_DATOS_OR = 3;
     static const int MAX_BOTONES_EXTRA = 1; // Botón "Inscribirme"
     static const int LONGITUD_ORGANIZACION_CURSO = 40;
     static const int LONGITUD_DESCRIPCION_CURSO = 40;
@@ -51,6 +57,13 @@ private:
         "  COMPLETAR  ",
         "    PAGAR    ",
         " COMPLETADO  ",
+    };
+
+    /// @brief Texto de datos
+    std::vector<std::string> _textoDatosOrganizacion = {
+        "INSCRITOS:                ",
+        "PORCENTAJE DE COMPLETADO: ",
+        "MONTO RECAUDADO:          ",
     };
 
     /// @brief Contenido de clases
@@ -67,6 +80,11 @@ private:
     /// @brief Coordenadas para las clases (lista vertical)
     COORD _coordsClases[MAX_CLASES] = {
         {61, 9}, {61, 13}, {61, 17}, {61, 21}, {61, 25}
+    };
+
+    /// @brief Coordenadas datos organizacion
+    COORD _coordsDatos[MAX_DATOS_OR] = {
+        {5, 18}, {5, 20}, {5, 22}
     };
 
     // ---- MÉTODOS PRIVADOS ----
@@ -116,12 +134,21 @@ inline MostrarCursoScreen::MostrarCursoScreen(int idCurso,
                                              TipoUsuario tipoUsuario,
                                              AccionPantalla pantallaAnterior) : PantallaBase(),
     _idCurso(idCurso), _tipoUsuario(tipoUsuario), _pantallaAnterior(pantallaAnterior),
-    _primeraRenderizacion(true), _elementoActual(0), _enBotonInscribirse(false), _yaInscrito(false)
+    _primeraRenderizacion(true), _elementoActual(0), _enBotonInscribirse(false), _yaInscrito(false),
+    _cantidadRecaudada(""), _cantidadAlumnos(""), _porcentajeCompletado("")
+
 {
     _idCurso = ContentManager::getInstance().getCursoIdMostrar();
+   
+
     if (SessionManager::getInstance().isLoggedIn()) {
-        SessionManager::getInstance().getInscripcionesController().reportarDatosInscripcion(_yaInscrito, _yaPagado, _yaCompletado, TipoActividad::CURSO, _idCurso);
         _tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+        if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
+            SessionManager::getInstance().getInscripcionesController().reportarDatosInscripcion(_yaInscrito, _yaPagado, _yaCompletado, TipoActividad::CURSO, _idCurso);
+        }
+        else if (_tipoUsuario == TipoUsuario::EMPRESA) {
+            SessionManager::getInstance().getActividadesController().reportarDatosMostrarActividad(_cantidadRecaudada, _cantidadAlumnos, _porcentajeCompletado, TipoActividad::CURSO, _idCurso);
+        }
     }
     else {
         _yaInscrito = false;
@@ -270,6 +297,19 @@ inline void MostrarCursoScreen::_renderizarInformacionCurso()
         gotoXY(_coordDescripcionCurso.X, _coordDescripcionCurso.Y + i);
         setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         std::cout << lineasDescripcion[i];
+    }
+
+    // Datos de interes a la organizacion 
+    if (_cantidadAlumnos != "") {
+        std::vector<std::string> datosRecopilados = { _cantidadAlumnos, _porcentajeCompletado, _cantidadRecaudada };
+
+        for (int i = 0; i < MAX_DATOS_OR; i++) {
+            gotoXY(_coordsDatos[i].X, _coordsDatos[i].Y);
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+            std::cout << _textoDatosOrganizacion[i];
+            setConsoleColor(ColorIndex::TEXTO_IMPORTANTE, ColorIndex::FONDO_PRINCIPAL);
+            std::cout << datosRecopilados[i];
+        }
     }
 
     resetColor();
