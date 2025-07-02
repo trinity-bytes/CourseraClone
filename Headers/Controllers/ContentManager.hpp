@@ -169,20 +169,6 @@ public:
         const std::string& categoria = ""
     );
 
-    /**
-     * @brief Actualiza una especialización existente
-     * @param idEspecializacion ID de la especialización
-     * @param nuevosDatos Nuevos datos
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult actualizarEspecializacion(int idEspecializacion, const RawEspecializacionData& nuevosDatos);
-
-    /**
-     * @brief Elimina una especialización
-     * @param idEspecializacion ID de la especialización
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult eliminarEspecializacion(int idEspecializacion);
 
     // ========== GESTIÓN DE INSCRIPCIONES ==========    
     /**
@@ -201,14 +187,6 @@ public:
      */
     ContentOperationResult inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion);
 
-    /**
-     * @brief Desinscribe un estudiante de una actividad
-     * @param idEstudiante ID del estudiante
-     * @param idActividad ID de la actividad
-     * @param tipoActividad Tipo de actividad
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult desinscribirEstudiante(int idEstudiante, int idActividad, ActividadTipo tipoActividad);
 
     // ========== GESTIÓN DE PROGRESO Y CALIFICACIONES ==========    
     /**
@@ -627,8 +605,17 @@ inline ContentOperationResult ContentManager::cargarCantidadInscripcionesActivid
         int idActividad = inscripcion.idActividad;
         TipoActividad tipoActividad = static_cast<TipoActividad>(inscripcion.tipoActividad);
 
-        if (tipoActividad == TipoActividad::CURSO) _cursos.getElemento(idActividad).aumentarAlumno();
-        else _especializaciones.getElemento(idActividad).aumentarAlumno();
+        bool completado = inscripcion.completado;
+        if (tipoActividad == TipoActividad::CURSO) {
+            _cursos.getElemento(idActividad).aumentarAlumno();
+            if (completado) _cursos.getElemento(idActividad).aumentarAlumnoCompletado();
+        }
+        else {
+            _especializaciones.getElemento(idActividad).aumentarAlumno();
+            if (completado) _especializaciones.getElemento(idActividad).aumentarAlumnoCompletado();
+        }
+
+        
     }
 
     int cantidadCursos = _cursos.getTamano();

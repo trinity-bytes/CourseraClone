@@ -589,7 +589,7 @@ inline ResultadoPantalla DashboardOrganizacionScreen::_procesarSeleccion()
             res.accion = AccionPantalla::NINGUNA; // Por implementar
         } else if (_elementoActual == 2) {
             // Ver estadísticas
-            res.accion = AccionPantalla::NINGUNA; // Por implementar
+            res.accion = AccionPantalla::IR_A_VER_ESTADISTICAS; // Por implementar
         }
         break;
         
