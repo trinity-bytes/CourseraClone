@@ -205,6 +205,7 @@
     <ClInclude Include="Headers\Screens\EditarPerfilScreen.hpp" />
     <ClInclude Include="Headers\Screens\EstadisticasEmpresaScreen.hpp" />
     <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.hpp" />
+    <ClInclude Include="Headers\Screens\GestionarOfertasScreen.hpp" />
     <ClInclude Include="Headers\Screens\LandingPageScreen.hpp" />
     <ClInclude Include="Headers\Screens\ListarContenidoScreen.hpp" />
     <ClInclude Include="Headers\Screens\LoginScreen.hpp" />
