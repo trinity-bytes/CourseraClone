@@ -214,6 +214,9 @@
     <ClInclude Include="Headers\Utils\ConsoleTypes.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Utils\ContentGenerator.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\Utils\InputUtils.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>

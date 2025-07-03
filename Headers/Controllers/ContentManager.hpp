@@ -850,9 +850,21 @@ inline ContentOperationResult ContentManager::crearEspecializacion(
         // Incrementar contador de IDs
         _nextEspecializacionId++;
 
-        // Guardar en archivo
-        if (!nuevaEspecializacion.guardar()) {
-            logError("CrearEspecializacion", "Error al persistir la especialización");
+        // Guardar en archivo usando FilesManager
+        RawEspecializacionData rawData;
+        rawData.id = nuevaEspecializacion.getId();
+        rawData.idEmpresa = idEmpresa;
+        rawData.nombreEmpresa = nombreEmpresa;
+        rawData.categoria = cat;
+        rawData.titulo = titulo;
+        rawData.descripcion = descripcion;
+        rawData.cantidadCursos = static_cast<int>(idsCursos.size());
+        rawData.idsCursos = idsCursos;
+        rawData.duracionEstimada = duracionEstimada;
+
+        FileOperationResult resultado = FilesManager::getInstance().guardarEspecializacion(rawData);
+        if (resultado != FileOperationResult::SUCCESS) {
+            logError("CrearEspecializacion", "Error al persistir la especialización en archivo");
             return ContentOperationResult::FILE_ERROR;
         }
 

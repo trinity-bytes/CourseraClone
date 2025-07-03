@@ -1,5 +1,5 @@
 // filepath: Headers/Utils/UI_Ascii.hpp
-// Descripcion: Elementos ASCII para interfaces de usuario
+// Descripción: Elementos ASCII para interfaces de usuario
 
 #ifndef COURSERACLONE_UTILS_UI_ASCII_HPP
 #define COURSERACLONE_UTILS_UI_ASCII_HPP

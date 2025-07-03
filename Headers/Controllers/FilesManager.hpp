@@ -438,7 +438,6 @@ inline bool FilesManager::inicializarSistemaArchivos() {
     success &= createDirectoryIfNotExists(DataPaths::Financial::BASE);
     success &= createDirectoryIfNotExists(DataPaths::Logs::BASE);
     success &= createDirectoryIfNotExists("Resources/Data/Index/");
-    success &= createDirectoryIfNotExists("Resources/Data/Indices/");
     
     if (success) {
         _sistemaInicializado = true;
@@ -1469,6 +1468,51 @@ inline FileOperationResult FilesManager::guardarCurso(const RawCursoData& curso)
 	}
 	catch (const std::exception& e) {
 		logError("Guardar curso", "Sistema", e.what());
+		return FileOperationResult::UNKNOWN_ERROR;
+	}
+}
+
+inline FileOperationResult FilesManager::guardarEspecializacion(const RawEspecializacionData& especializacion) {
+	try {
+		std::ofstream archivo(DataPaths::Content::DB_ESPECIALIZACIONES, std::ios::app);
+
+		if (!archivo.is_open()) {
+			logError("Guardar especialización", DataPaths::Content::DB_ESPECIALIZACIONES, "No se pudo abrir el archivo");
+			return FileOperationResult::FILE_NOT_FOUND;
+		}
+
+		// Formato: id|idEmpresa|nombreEmpresa|categoria|titulo|descripcion|cantidadCursos|idsCursos|duracionEstimada
+		archivo << especializacion.id << "\n"
+			<< especializacion.idEmpresa << "\n"
+			<< especializacion.nombreEmpresa << "\n"
+			<< RawActividadData::categoriaToString(especializacion.categoria) << "\n"
+			<< especializacion.titulo << "\n"
+			<< especializacion.descripcion << "\n"
+			<< especializacion.cantidadCursos << "\n";
+
+		// Guardar IDs de cursos separados por comas
+		for (size_t i = 0; i < especializacion.idsCursos.size(); i++) {
+			archivo << especializacion.idsCursos[i];
+			if (i < especializacion.idsCursos.size() - 1) {
+				archivo << ",";
+			}
+		}
+		archivo << "\n";
+
+		archivo << especializacion.duracionEstimada << "\n";
+		archivo << "%%%\n"; // Delimitador de fin de especialización
+
+		if (!archivo.good()) {
+			logError("Guardar especialización", DataPaths::Content::DB_ESPECIALIZACIONES, "Error al escribir");
+			return FileOperationResult::UNKNOWN_ERROR;
+		}
+
+		logInfo("Guardar especialización", DataPaths::Content::DB_ESPECIALIZACIONES, "Especialización ID: " + std::to_string(especializacion.id));
+		return FileOperationResult::SUCCESS;
+
+	}
+	catch (const std::exception& e) {
+		logError("Guardar especialización", "Sistema", e.what());
 		return FileOperationResult::UNKNOWN_ERROR;
 	}
 }
