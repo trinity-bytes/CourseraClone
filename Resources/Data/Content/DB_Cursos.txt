@@ -188,3 +188,60 @@ Atrae y retén clientes
 Escalabilidad
 Haz crecer tu negocio
 %%%
+11
+1
+coursera
+Marketing en Redes Sociales
+Potencia tu presencia digital y aumenta tus ventas
+MARKETING_DIGITAL
+Prof. Camila Jiménez
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+12
+1
+coursera
+Desarrollo Backend con Node.js
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dra. Elena Vásquez
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+13
+1
+coursera
+Computer Vision
+Introducción práctica al mundo de la inteligencia artificial
+INTELIGENCIA_ARTIFICIAL
+Prof. Gabriel Romero
+5
+Introducción a la IA
+Conceptos y aplicaciones
+Algoritmos de ML
+Regresión y clasificación
+Redes neuronales
+Deep learning básico
+Computer Vision
+Procesamiento de imágenes
+Proyecto final
+Implementa tu propia IA
+%%%

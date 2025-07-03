@@ -427,6 +427,9 @@ inline void CrearContenidoScreen::_crearCursoConDatos()
         if (resultado == ContentOperationResult::SUCCESS) {
             // Mostrar preview del curso creado
             _mostrarPreviewCurso(datosGenerados, datosGenerados.id);
+            // Resetear la pantalla después del preview
+            _limpiarCampos();
+            _primeraRenderizacion = true;
         } else {
             _mostrarMensaje("Error al crear el curso");
             _getch();
@@ -462,6 +465,9 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
         if (resultado == ContentOperationResult::SUCCESS) {
             // Mostrar preview de la especialización creada
             _mostrarPreviewEspecializacion(datosGenerados, datosGenerados.id);
+            // Resetear la pantalla después del preview
+            _limpiarCampos();
+            _primeraRenderizacion = true;
         } else {
             _mostrarMensaje("Error al crear la especialización");
             _getch();

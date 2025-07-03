@@ -65,13 +65,19 @@ inline int ActividadesController::calcularCantidad() {
 	int total = 0;
 
 	for (auto it = idCursos.begin(); it != idCursos.end(); it++) {
-		int adicionar = ContentManager::getInstance().obtenerCurso(*it)->getCantidad();
-		total += adicionar;
+		Curso* curso = ContentManager::getInstance().obtenerCurso(*it);
+		if (curso != nullptr) {
+			int adicionar = curso->getCantidad();
+			total += adicionar;
+		}
 	}
 
 	for (auto it = idEspecializaciones.begin(); it != idEspecializaciones.end(); it++) {
-		int adicionar = ContentManager::getInstance().obtenerEspecializacion(*it)->getCantidad();
-		total += adicionar;
+		Especializacion* esp = ContentManager::getInstance().obtenerEspecializacion(*it);
+		if (esp != nullptr) {
+			int adicionar = esp->getCantidad();
+			total += adicionar;
+		}
 	}
 
 	return total;
@@ -98,15 +104,19 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 
 	if (_tipo == TipoActividad::CURSO) {
 		Curso* curso = ContentManager::getInstance().obtenerCurso(id);
-		cantidad = curso->getCantidad();
-		ingreso = curso->getMontoRecaudado();
-		porcentaje = curso->getProgresoTotal();
+		if (curso != nullptr) {
+			cantidad = curso->getCantidad();
+			ingreso = curso->getMontoRecaudado();
+			porcentaje = curso->getProgresoTotal();
+		}
 	}
 	else {
 		Especializacion* especializacion = ContentManager::getInstance().obtenerEspecializacion(id);
-		cantidad = especializacion->getCantidad();
-		ingreso = especializacion->getMontoRecaudado();
-		porcentaje = especializacion->getProgresoTotal();
+		if (especializacion != nullptr) {
+			cantidad = especializacion->getCantidad();
+			ingreso = especializacion->getMontoRecaudado();
+			porcentaje = especializacion->getProgresoTotal();
+		}
 	}
 
 	_cantidadRecaudada = "S/" + textoDouble(ingreso);
@@ -155,16 +165,20 @@ inline std::vector<std::pair<std::string, int>> ActividadesController::getOrdena
 	std::vector < std::pair < std::string, int > > informacion;
 
 	for (auto it = idCursos.begin(); it != idCursos.end(); it++) {
-		int id = *it;
-		std::string tituloActividad = ContentManager::getInstance().obtenerCurso(*it)->getTitulo();
-		int cantidad = ContentManager::getInstance().obtenerCurso(*it)->getCantidad();
-		informacion.push_back({ tituloActividad, cantidad });
+		Curso* curso = ContentManager::getInstance().obtenerCurso(*it);
+		if (curso != nullptr) {
+			std::string tituloActividad = curso->getTitulo();
+			int cantidad = curso->getCantidad();
+			informacion.push_back({ tituloActividad, cantidad });
+		}
 	}
 	for (auto it = idEspecializaciones.begin(); it != idEspecializaciones.end(); it++) {
-		int id = *it;
-		std::string tituloActividad = ContentManager::getInstance().obtenerEspecializacion(*it)->getTitulo();
-		int cantidad = ContentManager::getInstance().obtenerEspecializacion(*it)->getCantidad();
-		informacion.push_back({ tituloActividad, cantidad });
+		Especializacion* esp = ContentManager::getInstance().obtenerEspecializacion(*it);
+		if (esp != nullptr) {
+			std::string tituloActividad = esp->getTitulo();
+			int cantidad = esp->getCantidad();
+			informacion.push_back({ tituloActividad, cantidad });
+		}
 	}
 
 	auto comparador = [](std::pair < std::string, int > a, std::pair < std::string, int > b) {
@@ -183,17 +197,17 @@ inline std::vector<std::pair<std::string, int>> ActividadesController::getOrdena
 	return resultado;
 }
 
-// ========== MÉTODOS PRIVADOS - LOGGING ==========
+// ========== Mï¿½TODOS PRIVADOS - LOGGING ==========
 inline void ActividadesController::logError(const std::string& operation, const std::string& error) {
-	// Implementación simple para logging de errores
+	// Implementaciï¿½n simple para logging de errores
 	FilesManager& fileManager = FilesManager::getInstance();
 	fileManager.logError(operation, "ActividadesController", error);
 }
 
 
 inline void ActividadesController::logOperation(const std::string& operation, const std::string& details) {
-	// Implementación simple para logging de operaciones
-	// En un proyecto más complejo esto iría a un archivo de log
+	// Implementaciï¿½n simple para logging de operaciones
+	// En un proyecto mï¿½s complejo esto irï¿½a a un archivo de log
 	FilesManager& fileManager = FilesManager::getInstance();
 	fileManager.logInfo(operation, "ActividadesController");
 

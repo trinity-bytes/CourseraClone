@@ -408,9 +408,13 @@ inline std::pair<int, std::string> ContentGenerator::obtenerInfoEmpresa()
     // Intentar obtener de SessionManager
     try {
         if (SessionManager::getInstance().isLoggedIn()) {
-            // TODO: Implementar cuando SessionManager tenga estos métodos
-            // return {SessionManager::getInstance().getCurrentOrganizationId(),
-            //         SessionManager::getInstance().getCurrentOrganizationName()};
+            Usuario& currentUser = SessionManager::getInstance().getCurrentUser();
+            int userId = currentUser.getId();
+            std::string userName = currentUser.getNombreCompleto();
+            
+            // Para organizaciones, usamos el ID del usuario como ID de empresa
+            // y el nombre completo como nombre de la empresa
+            return {userId, userName};
         }
     } catch (...) {
         // Fallback si hay error

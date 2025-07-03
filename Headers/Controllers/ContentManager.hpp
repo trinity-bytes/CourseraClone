@@ -495,27 +495,45 @@ inline std::vector<std::string> ContentManager::sugerirCursosPorPrefijo(const st
 }
 
 inline Curso* ContentManager::obtenerCurso(int id) {
-    if (id < 0 || id >= _nextCursoId) {
-        logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
-        return nullptr; // ID inválido
+    // Buscar curso por ID real, no por índice
+    for (int i = 0; i < _cursos.getTamano(); ++i) {
+        if (_cursos.getElemento(i).getId() == id) {
+            return &_cursos.getElemento(i);
+        }
     }
-    return &_cursos.getElemento(id);
+    logError("obtenerCurso", "Curso con ID " + std::to_string(id) + " no encontrado");
+    return nullptr;
 }
 
 inline RawCursoData ContentManager::obtenerCursoDatos(int id) {
-    return _cursos.getElemento(id).obtenerDatosCrudosCurso();
+    Curso* curso = obtenerCurso(id);
+    if (curso != nullptr) {
+        return curso->obtenerDatosCrudosCurso();
+    }
+    // Retornar datos vacíos si no se encuentra
+    RawCursoData datoVacio;
+    datoVacio.id = -1;
+    return datoVacio;
 }
 
 inline ElementoMenu ContentManager::obtenerRawCursoMenu(int id) {
-    return _cursos.getElemento(id).obtenerDatosCrudosMenu();
+    Curso* curso = obtenerCurso(id);
+    if (curso != nullptr) {
+        return curso->obtenerDatosCrudosMenu();
+    }
+    // Retornar elemento vacío si no se encuentra
+    return ElementoMenu("Curso no encontrado", "Error", -1);
 }
 
 inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
-    if (id < 0 || id >= _nextCursoId) {
-        logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
-        return nullptr; // ID inválido
+    // Buscar especialización por ID real, no por índice
+    for (int i = 0; i < _especializaciones.getTamano(); ++i) {
+        if (_especializaciones.getElemento(i).getId() == id) {
+            return &_especializaciones.getElemento(i);
+        }
     }
-    return &_especializaciones.getElemento(id);
+    logError("obtenerEspecializacion", "Especialización con ID " + std::to_string(id) + " no encontrada");
+    return nullptr;
 }
 
 inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
