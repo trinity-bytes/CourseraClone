@@ -50,8 +50,8 @@ inline void UI_LandingPage()
        ╚════════════════════════════════╝  ╚════════════════════════════════╝  ╚════════════════════════════════╝
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para SALIR DEL PROGRAMA.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para SALIR DEL PROGRAMA.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -129,8 +129,8 @@ inline void UI_Login()
                                                      ¯¯¯¯¯¯¯¯¯¯¯¯¯¯                                                  
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA Y ABAJO) para navegar por el menu.
- Pulsa la tecla ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA Y ABAJO) para navegar por el menú.
+ Pulsa la tecla ENTER para seleccionar una opción y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -193,8 +193,8 @@ inline void UI_Signup()
                                                       CREAR CUENTA                                                  
                                                       ¯¯¯¯¯¯¯¯¯¯¯¯                                                  
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar un boton y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA Y ABAJO) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar un botón y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -231,7 +231,7 @@ inline void UI_StudentDashboard()
             Te damos la bienvenida   
             RECUERDA: 
                                                                                                                     
-                                 EXPLORAR CURSOS Y ESPECIALIDADES      REVISAR OFERTAS                                 |
+                                 EXPLORAR CURSOS Y ESPECIALIDADES      REVISAR OFERTAS                                 
        
                                                                                                                      
        MIS CURSOS: [ VER TODOS ]
@@ -253,8 +253,8 @@ inline void UI_StudentDashboard()
        ╚════════════════════════════════╝  ╚════════════════════════════════╝  ╚════════════════════════════════╝
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -309,7 +309,7 @@ inline void UI_OrganizationDashboard()
           │ Cursos publicados:        │ Especialidades publicadas:        │ Estudiantes inscritos:           │
           └───────────────────────────┴───────────────────────────────────┴──────────────────────────────────┘
                                                                                                                 
-                   EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MI CONTENIDO      VER ESTADISTICAS                  
+          EXPLORAR CURSOS Y ESPECIALIDADES      GESTIONAR MI CONTENIDO      VER ESTADISTICAS      CREAR OFERTA          
 
                                                                                                             
        MIS CURSOS: [ VER TODOS ]
@@ -331,8 +331,8 @@ inline void UI_OrganizationDashboard()
        ╚════════════════════════════════╝  ╚════════════════════════════════╝  ╚════════════════════════════════╝
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -358,7 +358,7 @@ inline void UI_OrganizationDashboard()
     gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
     gotoXY(35, 1); std::cout << "│  C L O N E";
 
-    /// @brief Dibujar fondo del menu suoerior
+    /// @brief Dibujar fondo del menú superior
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
     for (int y = 4; y < 10; y++)
     {
@@ -410,8 +410,8 @@ __/  \__   \__/  \__  │   (  ._.  )   │  \__   \__/  \__   \__/  \__   \__/ 
                                                                                                                      
                                                                                                                      
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -454,8 +454,8 @@ inline void UI_OrganizationProfile()
                                                                                                                     
                                                                                                                     
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (IZQUIERDA, DERECHA) para moverte por el menu.
- Pulsa la tecla ENTER para seleciconar y ESC para regresar al menu anterior)";
+ Usa las flechas de dirección (IZQUIERDA, DERECHA) para moverte por el menú.
+ Pulsa la tecla ENTER para seleccionar y ESC para regresar al menú anterior)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -496,11 +496,11 @@ inline void UI_UserUpdateData()
                          └──────────────────────────────────────────────────────────────────┘
 
 
-                                                    GURRDAR CAMBIOS   
+                                                    GUARDAR CAMBIOS   
                                                     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯    
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA Y ABAJO) para moverte por el menu.
- Pulsa ENTER para seleciconar una opcion y ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección ARRIBA/ABAJO para moverte por el menú.
+ Pulsa ENTER para seleccionar una opción y ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -545,7 +545,7 @@ inline void UI_VistaEspecialidad()
                                            │ ║                                ║  ║                                ║ │
                                            │ ╠════════════════════════════════╣  ╠════════════════════════════════╣ │
                                            │ ║                                ║  ║                                ║ │
-    Descripcion:                           │ ║                                ║  ║                                ║ │
+    Descripción:                           │ ║                                ║  ║                                ║ │
                                            │ ║                                ║  ║                                ║ │
                                            │ ║                                ║  ║                                ║ │ 
                                            │ ║                                ║  ║                                ║ │
@@ -563,8 +563,8 @@ inline void UI_VistaEspecialidad()
                                            └────────────────────────────────────────────────────────────────────────┘
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -605,7 +605,7 @@ inline void UI_VistaCurso()
                                                     │  ┌───┬─────────────────────────────────────────────────────┐  │
                                                     │  │ 1 │                                                     │  │
                                                     │  └───┴─────────────────────────────────────────────────────┘  │
-    Descripcion:                                    │    |                                                          │
+    Descripción:                                    │    |                                                          │
                                                     │  ┌───┬─────────────────────────────────────────────────────┐  │
                                                     │  │ 2 │                                                     │  │
                                                     │  └───┴─────────────────────────────────────────────────────┘  │
@@ -624,8 +624,8 @@ inline void UI_VistaCurso()
                     ¯¯¯¯¯¯¯¯¯¯¯                     └───────────────────────────────────────────────────────────────┘
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";
  //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -686,8 +686,8 @@ inline void UI_ExplorarContenido()
                                                                                             │                       │
                                   < ANTERIOR   SIGUIENTE >                                  └───────────────────────┘
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -721,7 +721,7 @@ inline void UI_ComprobanteDePago()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                        TUS COMPROBANTES DE PAGO ELECTRÓNICO                                           |
+                                        TUS COMPROBANTES DE PAGO ELECTRÓNICO                                           
 
 
         -
@@ -746,8 +746,8 @@ inline void UI_ComprobanteDePago()
                                            < ANTERIOR     SIGUIENTE >
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -781,33 +781,33 @@ inline void UI_CrearContenido()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                    GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO                               
+                                      GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO                                      
+
 
     ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-    ║                                   FORMULARIO DE CREACIÓN DE CONTENIDO                                        ║
+    ║                                    FORMULARIO DE CREACIÓN DE CONTENIDO                                       ║
     ║                                                                                                              ║
-    ║  Título/Nombre del Contenido:                                                                                ║
-    ║  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐  ║
+    ║  ┌ Título/Nombre del Contenido: ──────────────────────────────────────────────────────────────────────────┐  ║
     ║  │                                                                                                        │  ║
     ║  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
     ║                                                                                                              ║
-    ║  Descripción detallada:                                                                                      ║
-    ║  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐  ║
+    ║  ┌ Descripción detallada: ────────────────────────────────────────────────────────────────────────────────┐  ║
     ║  │                                                                                                        │  ║
     ║  │                                                                                                        │  ║
     ║  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
     ║                                                                                                              ║
-    ║  Precio (S/):       Duración (horas):                                                                        ║
-    ║  ┌─────────────┐    ┌─────────────────┐                                                                      ║
-    ║  │             │    │                 │                                                                      ║
-    ║  └─────────────┘    └─────────────────┘                                                                      ║
+    ║  ┌ Precio (S/): ───┐    ┌ Duración (horas): ───┐                                                             ║
+    ║  │                 │    │                      │                                                             ║
+    ║  └─────────────────┘    └──────────────────────┘                                                             ║
+    ║                                                                                                              ║
     ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-                                      CREAR CURSO       CREAR ESPECIALIDAD
-                                      ¯¯¯¯¯¯¯¯¯¯¯       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+                                  CREAR NUEVO CURSO       CREAR NUEVA ESPECIALIZACION
+                                  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯       ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección ARRIBA/ABAJO para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -824,6 +824,12 @@ inline void UI_CrearContenido()
         }
     }
 
+    /// @brief Dibujar logo principal
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
+    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
+    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
+    gotoXY(35, 1); std::cout << "│  C L O N E";
+
     /// @brief Dibujar fondo de la sección de título
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
     for (int y = 4; y < 7; y++)
@@ -837,13 +843,7 @@ inline void UI_CrearContenido()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(30, 5); std::cout << "GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO";
-
-    /// @brief Dibujar logo principal
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
-    gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
-    gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
-    gotoXY(35, 1); std::cout << "│  C L O N E";
+    gotoXY(38, 5); std::cout << "GESTIÓN AUTOMATIZADA DE CONTENIDO EDUCATIVO";
 
     resetColor();
 }
@@ -857,7 +857,7 @@ inline void UI_CrearOferta()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                             CREAR NUEVA OFERTA PROMOCIONAL                            
+                                           CREAR NUEVA OFERTA PROMOCIONAL                            
 
 
     ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -882,8 +882,8 @@ inline void UI_CrearOferta()
                                                     ¯¯¯¯¯¯¯¯¯¯¯¯
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -959,7 +959,7 @@ inline void UI_EstadisticasEmpresa()
 
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Use IZQUIERDA/DERECHA para cambiar sección - ESC para regresar.)";   
+ Use IZQUIERDA/DERECHA para cambiar sección. Pulsa ESC para regresar.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -1007,39 +1007,39 @@ inline void UI_AboutUs()
                                          ▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀                                     
                                                         C L O N E       
 
-    ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗    
-    ║ Sistema de gestión de cursos desarrollado en C++ que replica las funcionalidades core de una plataforma      ║
-    ║ moderna. Implementa estructuras de datos avanzadas (AVL, HashMap, etc) y algoritmos optimizados para ofrecer ║
-    ║ una experiencia completa de inscripciones, gestion de contenido y usuarios desde una interfaz intuitiva.     ║
-    ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-               ┌───────────────────────────┬────────────────────────────────┬──────────────────────────┐
-               │      DESARROLLADORES      │       STACK TECNOLÓGICO        │     INFORMACIÓN UPC      │
-               ├───────────────────────────┼────────────────────────────────┼──────────────────────────┤
-               │- Fabrizio Santi           │ Lenguaje: C++17                │ Universidad Peruana de   │
-               │   u202411774@upc.edu.pe   │ IDE: Visual Studio 2022        │ Ciencias Aplicadas (UPC) │
-               │   [ Ver perfil GitHub ]   │ Plataforma: Windows            │                          │
-               │                           │                                │ Facultad de Ingeniería   │
-               │- Mauricio Teran           │ Estructuras implementadas:     │ Ciclo: 2025-1            │
-               │   u202417423@upc.edu.pe   │ • AVL Trees & Hash Tables      │                          │
-               │   [ Ver perfil GitHub ]   │ • Priority Queues & BST        │ Curso: Algoritmos y      │
-               │                           │ • Linked Lists & Stacks        │ Estructura de Datos      │
-               │- Jahat Trinidad           │                                │                          │
-               │   u202412248@upc.edu.pe   │ Algoritmos de búsqueda:        │ Trabajo Parcial          │
-               │   [ Ver perfil GitHub ]   │ • Búsqueda binaria & lineal    │ Versión: 2.0.0           │
-               │                           │ • Ordenamiento: Quick, Merge   │ Fecha: Julio 2025        │
-               └───────────────────────────┴────────────────────────────────┴──────────────────────────┘
+ 
+      Sistema de gestión de cursos desarrollado en C++ que replica las funcionalidades core de una plataforma      
+      moderna. Implementa estructuras de datos avanzadas (AVL, HashMap, etc) y algoritmos optimizados para ofrecer 
+      una experiencia completa de inscripciones, gestion de contenido y usuarios desde una interfaz intuitiva.     
 
-                                          VER REPOSITORIO         DOCUMENTACIÓN      
-                                          ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯         ¯¯¯¯¯¯¯¯¯¯¯¯¯      
+             ┌──────────────────────────────┬────────────────────────────────┬──────────────────────────┐
+             │      DESARROLLADORES         │       STACK TECNOLÓGICO        │     INFORMACIÓN UPC      │
+             ├──────────────────────────────┼────────────────────────────────┼──────────────────────────┤
+             │- Fabrizio Santi              │ Lenguaje: C++17                │ Universidad Peruana de   │
+             │   u202411774@upc.edu.pe      │ IDE: Visual Studio 2022        │ Ciencias Aplicadas (UPC) │
+             │   [ Ver perfil de GitHub ]   │ Plataforma: Windows            │                          │
+             │                              │                                │ Facultad de Ingeniería   │
+             │- Mauricio Teran              │ Estructuras implementadas:     │ Ciclo: 2025-1            │
+             │   u202417423@upc.edu.pe      │ • AVL Trees & Hash Tables      │                          │
+             │   [ Ver perfil de GitHub ]   │ • Priority Queues & BST        │ Curso: Algoritmos y      │
+             │                              │ • Linked Lists & Stacks        │ Estructura de Datos      │
+             │- Jahat Trinidad              │                                │                          │
+             │   u202412248@upc.edu.pe      │ Algoritmos de búsqueda:        │ Trabajo Parcial          │
+             │   [ Ver perfil de GitHub ]   │ • Búsqueda binaria & lineal    │ Versión: 2.0.0           │
+             │                              │ • Ordenamiento: Quick, Merge   │ Fecha: Julio 2025        │
+             └──────────────────────────────┴────────────────────────────────┴──────────────────────────┘
+
+                                IR AL REPOSITORIO DE GITHUB         IR A LA DOCUMENTACIÓN                        
+                                ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯         ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯        
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO) para navegar. ENTER para seleccionar, ESC para regresar.)";
+ Usa las flechas de dirección (ARRIBA, ABAJO) para navegar. ENTER para seleccionar, ESC para regresar.)";
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
 
     /// @brief Dibujar fondo de la cabecera
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
     for (int y = 0; y < 6; y++)
     {
         for (int x = 0; x < ANCHO_CONSOLA; x++)
@@ -1050,12 +1050,27 @@ inline void UI_AboutUs()
     }
 
     /// @brief Dibujar logo principal
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_AZUL_SUAVE);
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
     gotoXY(42, 1);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
     gotoXY(42, 2);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
     gotoXY(42, 3);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
 
     gotoXY(57, 4);  std::cout << "C L O N E";
+
+    /// @brief Dibujar fondo de la sección de título
+    setConsoleColor(ColorIndex::TEXTO_IMPORTANTE, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 6; y < 11; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    gotoXY(6, 7); std::cout << "Sistema de gestión de cursos desarrollado en C++ que replica las funcionalidades core de una plataforma";
+    gotoXY(6, 8); std::cout << "moderna. Implementa estructuras de datos avanzadas (AVL, HashMap, etc) y algoritmos optimizados para ofrecer";
+    gotoXY(6, 9); std::cout << "una experiencia completa de inscripciones, gestion de contenido y usuarios desde una interfaz intuitiva.";
 
     resetColor();
 }
@@ -1068,41 +1083,37 @@ inline void UI_Ofertas()
    █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
-╔═══════════════════════════════════════════════════════════════════════════════════════════════╗  ┌───────────────────┐
-║                                         OFERTAS DESTACADAS                                    ║  │  FILTRAR OFERTAS  │
-║                                                                                               ║  ├───────────────────┤
-║ ┌─────────────────────────────┐┌─────────────────────────────┐┌─────────────────────────────┐ ║  │ Categoría:        │
-║ │   MEGA OFERTA ESTUDIANTES   ││  PACK DESARROLLADOR WEB     ││   ESPECIALIZACIÓN DATA      │ ║  │  TODAS            │
-║ │                             ││                             ││                             │ ║  │  TECNOLOGÍA       │
-║ │ 50% OFF en todos los cursos ││ 3 cursos + certificación    ││ Machine Learning + Python   │ ║  │  NEGOCIOS         │
-║ │ ¡Solo por tiempo limitado!  ││ HTML, CSS, JavaScript       ││ 2 especialidades por S/99   │ ║  │  DISEÑO           │
-║ │                             ││                             ││                             │ ║  │  CIENCIAS         │
-║ │ Antes: S/150  Ahora: S/75   ││ Antes: S/300  Ahora: S/199  ││ Antes: S/250  Ahora: S/99   │ ║  │                   │
-║ │                             ││                             ││                             │ ║  │ Descuento:        │
-║ │     Código: STUDENT50       ││     Código: WEBDEV2025      ││     Código: DATAAI99        │ ║  │  TODOS            │
-║ └─────────────────────────────┘└─────────────────────────────┘└─────────────────────────────┘ ║  │  >30%             │
-╚═══════════════════════════════════════════════════════════════════════════════════════════════╝  │  >50%             │
-╔═══════════════════════════════════════════════════════════════════════════════════════════════╗  │  >70%             │
-║                                      LISTA DE PROMOCIONES ACTIVAS                             ║  │                   │
-║                                                                                               ║  │ Precio:           │
-║  Curso "Python Básico"                          S/80 -> S/49        Válido hasta: 30/06/2025  ║  │  TODOS            │
-║  Especialización "Marketing Digital"            S/200 -> S/149      Válido hasta: 15/07/2025  ║  │  <S/50            │
-║  Pack "Diseño UX/UI Completo"                   S/180 -> S/120      Válido hasta: 25/06/2025  ║  │  <S/100           │
-║  Curso "Análisis de Datos con R"                S/120 -> S/89       Válido hasta: 28/06/2025  ║  │  <S/200           │
-║  Especialización "Ciberseguridad"               S/250 -> S/175      Válido hasta: 10/07/2025  ║  │                   │
-║  Curso "Fundamentos de IA"                      S/90 -> S/59        Válido hasta: 05/07/2025  ║  │                   │
-║                                                                                               ║  │                   │
-╚═══════════════════════════════════════════════════════════════════════════════════════════════╝  └───────────────────┘
+
+                                           LISTA DE PROMOCIONES ACTIVAS 
+
+
+   ╔══════════════════╦══════════════════════════════════════╦══════════════════════╦══════════════╗  ┌─────────────┐
+   ║ TIPO             ║ NOMBRE                               ║ PRECIO CON DESCUENTO ║ VALIDO HASTA ║  │   FILTRAR   │
+   ╠══════════════════╩══════════════════════════════════════╩══════════════════════╩══════════════╣  ├─────────────┤
+   ║                                                                                               ║  │ Descuento:  │
+   ║                                                                                               ║  │  TODOS      │
+   ║                                                                                               ║  │  >30%       │
+   ║                                                                                               ║  │  >50%       │
+   ║                                                                                               ║  │  >70%       │
+   ║                                                                                               ║  │             │
+   ║                                                                                               ║  │ Tipo:       │
+   ║                                                                                               ║  │  TODOS      │
+   ║                                                                                               ║  │  Cursos     │
+   ║                                                                                               ║  │  Especi...  │
+   ║                                                                                               ║  └─────────────┘
+   ║                                                                                               ║
+   ╚═══════════════════════════════════════════════════════════════════════════════════════════════╝
+
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
- Pulsa ENTER para seleciconar una opcion o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar por las opciones.
+ Pulsa ENTER para seleccionar una opción o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << ui;
 
     /// @brief Dibujar fondo de la cabecera
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::BLANCO_PURO);
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
     for (int y = 0; y < 4; y++)
     {
         for (int x = 0; x < ANCHO_CONSOLA; x++)
@@ -1113,10 +1124,11 @@ inline void UI_Ofertas()
     }
 
     /// @brief Dibujar logo principal
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);
     gotoXY(3, 1);  std::cout << "█▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█";
     gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
     gotoXY(35, 1); std::cout << "│  C L O N E";
+
+
 
     resetColor();
 }
@@ -1134,27 +1146,27 @@ inline void UI_AgregarMetodoPago()
 
     ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
     ║   Número de tarjeta:              CVV:        Vencimiento:                                                   ║
-    ║  ┌─────┬─────┬─────┬─────┐       ┌─────┐      ┌────┬────┐                                                    ║
-    ║  │     │     │     │     │       │     │      │ MM │ AA │                                                    ║
-    ║  └─────┴─────┴─────┴─────┘       └─────┘      └────┴────┘                                                    ║
+    ║  ┌──────┬──────┬──────┬──────┐       ┌─────┐      ┌────┬────┐                                                ║
+    ║  │      │      │      │      │       │     │      │ MM │ AA │                                                ║
+    ║  └──────┴──────┴──────┴──────┘       └─────┘      └────┴────┘                                                ║
     ║                                                                                                              ║
     ║  ┌ Nombre del titular (como aparece en la tarjeta): ──────────────────────────────────────────────────────┐  ║
     ║  │                                                                                                        │  ║
     ║  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
     ║                                                                                                              ║
     ║  ┌ Banco emisor: ──────────────┐   ┌ Dirección del titular: ─────────────────────────────────────────────┐   ║
-    ║  │ BCP, BBVA, Interbank, etc.  │   │                                                                     │   ║
+    ║  │                             │   │                                                                     │   ║
     ║  └─────────────────────────────┘   └─────────────────────────────────────────────────────────────────────┘   ║
     ║                                                                                                              ║
     ║  Tipo de cuenta:  TARJETA DE CREDITO   TARGETA DE DEBITO                                                     ║
     ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-                Guardar como método de pago predeterminado   Habilitar pagos automáticos para suscripciones                  
+                        METODO DE PAGO PREDETERMINADO       HABILITAR PAGO AUTOATICO                 
 
                                                  GUARDAR MÉTODO                                      
                                                  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
  Pulsa ENTER para seleccionar, ESC para cancelar.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1203,12 +1215,12 @@ inline void UI_ProcesarPago()
     std::string ui = R"(
    █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
-   
- 
+  
+
+                                                 RESUMEN DE COMPRA
+
+
     ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-    ║                                          RESUMEN DE COMPRA                                                   ║
-    ╠══════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
-    ║                                                                                                              ║
     ║  Producto:                                                                                                   ║
     ║                                                                                                              ║
     ║  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐  ║
@@ -1219,18 +1231,18 @@ inline void UI_ProcesarPago()
     ║  │ TOTAL A PAGAR:                                                                 S/                      │  ║
     ║  └────────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
     ║                                                                                                              ║
-    ║  Método de pago seleccionado:  Visa **** **** **** 4567 (Juan Pérez)                                         ║
+    ║  Método de pago seleccionado:                                                                                ║
     ║                                [ Cambiar método de pago ]                                                    ║
     ║                                                                                                              ║
     ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
     Acepto los términos y condiciones de CourseraClone 
 
-                                CONFIRMAR PAGO                CANCELAR COMPRA                          
-                                ¯¯¯¯¯¯¯¯¯¯¯¯¯¯                ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+                                     CONFIRMAR PAGO                CANCELAR COMPRA                          
+                                     ¯¯¯¯¯¯¯¯¯¯¯¯¯¯                ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
+ Usa las flechas de dirección (ARRIBA, ABAJO, IZQUIERDA, DERECHA) para navegar. 
  Pulsa ENTER para confirmar, ESC para cancelar.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1254,56 +1266,63 @@ inline void UI_ProcesarPago()
     gotoXY(3, 2);  std::cout << "█▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█";
     gotoXY(35, 1); std::cout << "│  C L O N E";
 
+    /// @brief Dibujar fondo de la sección de título
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    for (int y = 4; y < 7; y++)
+    {
+        for (int x = 0; x < ANCHO_CONSOLA; x++)
+        {
+            gotoXY(x, y);
+            std::cout << " ";
+        }
+    }
+
+    /// @brief Mostrar título de la sección
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    gotoXY(40, 5); std::cout << " RESUMEN DE COMPRA ";
+
     resetColor();
 }
-
-/*
-┌──┬───────┐
-│  │       │
-├──┼───────┤
-│  │       │
-└──┴───────┘
-*/
 
 /// UI Vista de certificados obtenidos
 inline void UI_Certificados()
 {
+    gotoXY(42, 1);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
+    gotoXY(42, 2);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
+    gotoXY(42, 3);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
 //----------------------------------------------------------------------------------------------------------------------
     std::string ui = R"(
    █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                            MIS CERTIFICADOS OBTENIDOS
+                                           MIS CERTIFICADOS OBTENIDOS
 
-
-    ╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-    ║                                                                                                              ║
-    ║  ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════╗  ║
-    ║  ║                                   CERTIFICADO DE FINALIZACIÓN                                         ║  ║
-    ║  ║                                                                                                       ║  ║
-    ║  ║  COURSERA CLONE                                                                                       ║  ║
-    ║  ║                                                                                                       ║  ║
-    ║  ║  Por la presente certifica que:                                                                       ║  ║
-    ║  ║                                                                                                       ║  ║
-    ║  ║                               [NOMBRE DEL ESTUDIANTE]                                                 ║  ║
-    ║  ║                                                                                                       ║  ║
-    ║  ║  Ha completado satisfactoriamente el curso:                                                          ║  ║
-    ║  ║                                                                                                       ║  ║
-    ║  ║                               [NOMBRE DEL CURSO]                                                      ║  ║
-    ║  ║                                                                                                       ║  ║
-    ║  ║  Instructor: [NOMBRE INSTRUCTOR]                   Fecha: [DD/MM/AAAA]                               ║  ║
-    ║  ║  Calificación: [NOTA]                              ID Certificado: [ID]                             ║  ║
-    ║  ║                                                                                                       ║  ║
-    ║  ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝  ║
-    ║                                                                                                              ║
-    ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-
-                              < ANTERIOR     [1/5]     SIGUIENTE >       VER DETALLES     DESCARGAR PDF
+    ╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    ║  ┌───────────────────────────────────────────────────────────────────────────────────────────────────────┐  ║
+    ║  │                                    CERTIFICADO DE FINALIZACIÓN                                        │  ║
+    ║  │                                                                                                       │  ║
+    ║  │                              ▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█                                   │  ║
+    ║  │                              ▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█                                   │  ║
+    ║  │                              ▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀                                   │  ║
+    ║  │                                             C L O N E                                                 │  ║
+    ║  │                                                                                                       │  ║
+    ║  │   Por la presente certifica que:                                                                      │  ║
+    ║  │                                                                                                       │  ║
+    ║  │                               [NOMBRE DEL ESTUDIANTE]                                                 │  ║
+    ║  │                                                                                                       │  ║
+    ║  │   Ha completado satisfactoriamente el curso:                                                          │  ║
+    ║  │                                                                                                       │  ║
+    ║  │                               [NOMBRE DEL CURSO]                                                      │  ║
+    ║  │                                                                                                       │  ║
+    ║  │    Instructor: [NOMBRE INSTRUCTOR]                    Fecha: [DD/MM/AAAA]   ID Certificado: [ID]      │  ║
+    ║  └───────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
+    ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+    (Pulsa D para descargar el certificado en PDF)                           < ANTERIOR      [1/5]      SIGUIENTE > 
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- Usa las flechas de direccion (IZQUIERDA/DERECHA) para navegar por certificados.
- Pulsa ENTER para ver detalles o ESC para regresar al menu anterior.)";   
+ Usa las flechas de dirección (IZQUIERDA/DERECHA) para navegar por certificados.
+ Pulsa ENTER para ver detalles o ESC para regresar al menú anterior.)";   
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -1353,36 +1372,34 @@ inline void UI_ListarContenido()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                        GESTIÓN DE CONTENIDO PUBLICADO                                      
+                                               GESTIÓN DE CONTENIDO PUBLICADO                                      
 
 
      ID │ Nombre del contenido                      │ Tipo            │ Categoría    │ Precio     │ Inscritos
     ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
         │                                           │                 │              │            │
         │                                           │                 │              │            │
-    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
         │                                           │                 │              │            │
         │                                           │                 │              │            │
-    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
         │                                           │                 │              │            │
         │                                           │                 │              │            │
-    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
         │                                           │                 │              │            │
         │                                           │                 │              │            │
-    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
         │                                           │                 │              │            │
         │                                           │                 │              │            │
-    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
         │                                           │                 │              │            │
         │                                           │                 │              │            │
-    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
 
 
-                              < ANTERIOR     [1/5]     SIGUIENTE >       DETALLES  EDITAR  ESTADO
+                                             < ANTERIOR     [1/5]     SIGUIENTE >        
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- ARRIBA/ABAJO: Navegar │ IZQUIERDA/DERECHA: Cambiar página │ ENTER: Detalles │ E: Editar │ S: Estado
- T: Filtro tipo │ F: Filtro estado │ V: Estadísticas │ ESC: Regresar)";   
+ ARRIBA/ABAJO: Navegar, IZQUIERDA/DERECHA: Cambiar página, ENTER: Detalles,  ESC: Regresar)";  
+  
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -1423,8 +1440,18 @@ inline void UI_ListarContenido()
     resetColor();
 }
 
-/// UI Vista de ofertas disponibles para estudiantes
-inline void UI_VerOfertas()
+
+
+/*
+┌──┬───────┐
+│  │       │
+├──┼───────┤
+│  │       │
+└──┴───────┘
+*/
+
+/// UI Vista de gestión de ofertas para la organización
+inline void UI_GestionarOfertas()
 {
 //----------------------------------------------------------------------------------------------------------------------
     std::string ui = R"(
@@ -1432,37 +1459,34 @@ inline void UI_VerOfertas()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                           OFERTAS Y PROMOCIONES ESPECIALES                                    
+                                        GESTIÓN DE OFERTAS PROMOCIONALES                                  
 
-    ╔═════════════════════ OFERTA DESTACADA ═════════════════════╗  ╔══════════════════════════════════════╗
-    ║                                                             ║  ║            FILTROS                   ║
-    ║   🎯 ESPECIALIZACIÓN EN DATA SCIENCE                        ║  ║                                      ║
-    ║                                                             ║  ║  Tipo de contenido:                  ║
-    ║   💰 Precio original: S/ 299.99                             ║  ║  ○ Todos                             ║
-    ║   💳 Con descuento:   S/ 179.99 (40% OFF)                  ║  ║  ○ Cursos                            ║
-    ║                                                             ║  ║  ○ Especializaciones                 ║
-    ║   ⏰ Código: DATASCI40 │ Vence: 15/08/2025                  ║  ║                                      ║
-    ║   👥 1,247 estudiantes ya se inscribieron                   ║  ║  Categoría:                          ║
-    ╚═════════════════════════════════════════════════════════════╝  ║  ○ Todas las categorías              ║
-                                                                     ║  ○ Programación                     ║
-    ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════╗  ║  ○ Data Science                      ║
-    ║                                        TODAS LAS OFERTAS ACTIVAS                                           ║  ║  ○ Desarrollo Web                    ║
-    ║                                                                                                           ║  ║                                      ║
-    ║  [1] Python para Principiantes        │ Curso        │ S/ 89.99 → S/ 49.99 (44% OFF) │ PYTHON20      ║  ║  Descuento mínimo:                   ║
-    ║  [2] JavaScript Moderno                │ Curso        │ S/ 79.99 → S/ 59.99 (25% OFF) │ JS25          ║  ║  ○ Cualquier descuento               ║
-    ║  [3] Machine Learning Básico           │ Curso        │ S/ 149.99→ S/ 99.99 (33% OFF) │ ML33          ║  ║  ○ 20% o más                         ║
-    ║  [4] Full Stack Development            │ Especializ.  │ S/ 399.99→ S/ 279.99(30% OFF) │ FULLSTACK30   ║  ║  ○ 30% o más                         ║
-    ║  [5] UX/UI Design Fundamentals         │ Curso        │ S/ 99.99 → S/ 69.99 (30% OFF) │ DESIGN30      ║  ║  ○ 50% o más                         ║
-    ║  [6] DevOps con Docker y Kubernetes    │ Especializ.  │ S/ 349.99→ S/ 209.99(40% OFF) │ DEVOPS40      ║  ╚══════════════════════════════════════╝
-    ║  [7] Cybersecurity Essentials          │ Curso        │ S/ 129.99→ S/ 89.99 (31% OFF) │ CYBER31       ║
-    ║  [8] Cloud Computing con AWS           │ Curso        │ S/ 179.99→ S/ 125.99(30% OFF) │ CLOUD30       ║
-    ║                                                                                                           ║
-    ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-                                         < ANTERIOR     [1/3]     SIGUIENTE >
+     ID │ Nombre del contenido                      │ Codigo          │ Descuento    │ Precio     │ Estado
+    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+        │                                           │                 │              │            │
+
+
+                                      < ANTERIOR     [1/3]     SIGUIENTE >    
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- ARRIBA/ABAJO: Navegar ofertas │ ENTER: Ver detalles │ I: Inscribirse │ F: Aplicar filtros │ ESC: Regresar)";   
+ ARRIBA/ABAJO: Navegar, IZQUIERDA/DERECHA: Página, X: Eliminar.  ESC: Regresar)"; 
+  
 //----------------------------------------------------------------------------------------------------------------------
 
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -1492,7 +1516,7 @@ inline void UI_VerOfertas()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(35, 5); std::cout << "OFERTAS Y PROMOCIONES ESPECIALES";
+    gotoXY(35, 5); std::cout << "GESTIÓN DE OFERTAS PROMOCIONALES";
 
     /// @brief Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);

@@ -24,11 +24,18 @@ private:
     std::string _tituloEspecializacion;
     std::string _descripcionEspecializacion;
     std::string _organizacionEspecializacion;
+    // Datos del curso para empresa
+    std::string _cantidadRecaudada;
+    std::string _cantidadAlumnos;
+    std::string _porcentajeCompletado;
+
     std::vector<int> _idCursos;    // Estado de navegación
     TipoUsuario _tipoUsuario;
     AccionPantalla _pantallaAnterior;
     bool _primeraRenderizacion;
     bool _yaInscrito; // Estado de inscripción
+    bool _yaPagado;
+    bool _yaCompletado;
       
     // Navegación
     int _elementoActual;
@@ -126,15 +133,19 @@ inline MostrarEspecialidadScreen::MostrarEspecialidadScreen(int idEspecializacio
     _primeraRenderizacion(true), _elementoActual(0), _elementoAnterior(-1),
     _filaActual(0), _columnaActual(0), _enBotonInscribirse(false), _yaInscrito(false)
 {
-	_idEspecializacion = ContentManager::getInstance().getEspecializacionIdMostrar();
-	if (SessionManager::getInstance().isLoggedIn()) {
-		_yaInscrito = SessionManager::getInstance().getInscripcionesController().verificarEspecializacion(_idEspecializacion);
-		_tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
-	}
-	else {
-		_yaInscrito = false;
-		_tipoUsuario = TipoUsuario::DEFAULT;
-	}
+    if (SessionManager::getInstance().isLoggedIn()) {
+        _tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+        if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
+            SessionManager::getInstance().getInscripcionesController().reportarDatosInscripcion(_yaInscrito, _yaPagado, _yaCompletado, TipoActividad::ESPECIALIZACION, _idEspecializacion);
+        }
+        else if (_tipoUsuario == TipoUsuario::EMPRESA) {
+            SessionManager::getInstance().getActividadesController().reportarDatosMostrarActividad(_cantidadRecaudada, _cantidadAlumnos, _porcentajeCompletado, TipoActividad::CURSO, _idEspecializacion);
+        }
+    }
+    else {
+        _yaInscrito = false;
+        _tipoUsuario = TipoUsuario::DEFAULT;
+    }
 
 
 	if (_idEspecializacion == -1) {
@@ -553,8 +564,65 @@ inline std::vector<std::string> MostrarEspecialidadScreen::dividirEnLineas(const
 inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
 {
     ResultadoPantalla res;
-    
+    bool registrado = SessionManager::getInstance().isLoggedIn();
+    auto restablecer = []() {
+        resetColor();
+        _getch(); // Pausa para mostrar mensaje
+
+        // Limpiar mensaje
+        gotoXY(30, 29);
+        std::cout << "                                  ";
+        };
+
     if (_esBotonInscribirse()) {
+
+        if (registrado) {
+            if (!_yaInscrito) {
+                _yaInscrito = true;
+                SessionManager::getInstance().getInscripcionesController().inscribirCurso(_idEspecializacion);
+
+                // Actualizar el botón inmediatamente
+                _renderizarBotonInscribirse(true);
+
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[ÉXITO]: Te has inscrito al curso";
+                restablecer();
+            }
+            else if (!_yaCompletado) {
+                _yaCompletado = true;
+                SessionManager::getInstance().getInscripcionesController().completarActividad(TipoActividad::ESPECIALIZACION, _idEspecializacion);
+                _renderizarBotonInscribirse(true);
+
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[EXITO]: Curso Completado";
+                restablecer();
+            }
+            else if (!_yaPagado) {
+                _yaPagado = true;
+                _renderizarBotonInscribirse(true);
+
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[EXITO]: Curso Pagado";
+                restablecer();
+            }
+            else {
+                gotoXY(30, 29);
+                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                std::cout << "[EXITO]: Curso Finalizado";
+                restablecer();
+            }
+        }
+        else {
+            gotoXY(30, 29);
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::ERROR_COLOR);
+            std::cout << "[ERROR]: Curso Finalizado";
+            restablecer();
+        }
+
+
         if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
             _yaInscrito = true;
 			SessionManager::getInstance().getInscripcionesController().inscribirEspecializacion(_idEspecializacion);

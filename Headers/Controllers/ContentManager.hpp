@@ -22,7 +22,6 @@
 #include "../DataStructures/LinkedList.hpp"
 #include "../Utils/DataPaths.hpp"
 #include "../DataStructures/PriorityQueue.hpp"
-#include "../DataStructures/LinkedList.hpp"
 
 // Enums para tipos y resultados
 enum class ActividadTipo : int {
@@ -169,20 +168,6 @@ public:
         const std::string& categoria = ""
     );
 
-    /**
-     * @brief Actualiza una especialización existente
-     * @param idEspecializacion ID de la especialización
-     * @param nuevosDatos Nuevos datos
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult actualizarEspecializacion(int idEspecializacion, const RawEspecializacionData& nuevosDatos);
-
-    /**
-     * @brief Elimina una especialización
-     * @param idEspecializacion ID de la especialización
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult eliminarEspecializacion(int idEspecializacion);
 
     // ========== GESTIÓN DE INSCRIPCIONES ==========    
     /**
@@ -201,14 +186,6 @@ public:
      */
     ContentOperationResult inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion);
 
-    /**
-     * @brief Desinscribe un estudiante de una actividad
-     * @param idEstudiante ID del estudiante
-     * @param idActividad ID de la actividad
-     * @param tipoActividad Tipo de actividad
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult desinscribirEstudiante(int idEstudiante, int idActividad, ActividadTipo tipoActividad);
 
     // ========== GESTIÓN DE PROGRESO Y CALIFICACIONES ==========    
     /**
@@ -339,7 +316,7 @@ public:
  * @param limite Máximo de resultados a retornar (-1 para sin límite).
  * @return Vector de títulos de cursos que coinciden.
  */
-    std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
+    inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite = -1) const;
 
 
     // ========== GETTERS ==========
@@ -492,28 +469,71 @@ inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() c
     return datosExplorador;
 }
 
-inline Curso* ContentManager::obtenerCurso(int id) {
-    if (id < 0 || id >= _nextCursoId) {
-        logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
-        return nullptr; // ID inválido
+inline std::vector<std::string> ContentManager::sugerirCursosPorPrefijo(const std::string& texto, int limite) const
+{
+    std::vector<std::string> sugerencias;
+    if (texto.empty()) return sugerencias;
+
+    // Convertir texto de búsqueda a minúsculas  
+    std::string textoLower = texto;
+    std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+    FilesManager& fileManager = FilesManager::getInstance();
+    auto& hashCursos = fileManager.getIndiceCursos();
+
+    // Solución: Usar iteradores explícitos para recorrer el hash table  
+    for (auto it = hashCursos.begin(); it != hashCursos.end(); ++it) {
+        std::string tituloLower = it->first;
+        std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), ::tolower);
+
+        if (tituloLower.find(textoLower) == 0) {
+            sugerencias.push_back(it->first);
+            if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;
+        }
     }
-    return &_cursos.getElemento(id);
+    return sugerencias;
+}
+
+inline Curso* ContentManager::obtenerCurso(int id) {
+    // Buscar curso por ID real, no por índice
+    for (int i = 0; i < _cursos.getTamano(); ++i) {
+        if (_cursos.getElemento(i).getId() == id) {
+            return &_cursos.getElemento(i);
+        }
+    }
+    logError("obtenerCurso", "Curso con ID " + std::to_string(id) + " no encontrado");
+    return nullptr;
 }
 
 inline RawCursoData ContentManager::obtenerCursoDatos(int id) {
-    return _cursos.getElemento(id).obtenerDatosCrudosCurso();
+    Curso* curso = obtenerCurso(id);
+    if (curso != nullptr) {
+        return curso->obtenerDatosCrudosCurso();
+    }
+    // Retornar datos vacíos si no se encuentra
+    RawCursoData datoVacio;
+    datoVacio.id = -1;
+    return datoVacio;
 }
 
 inline ElementoMenu ContentManager::obtenerRawCursoMenu(int id) {
-    return _cursos.getElemento(id).obtenerDatosCrudosMenu();
+    Curso* curso = obtenerCurso(id);
+    if (curso != nullptr) {
+        return curso->obtenerDatosCrudosMenu();
+    }
+    // Retornar elemento vacío si no se encuentra
+    return ElementoMenu("Curso no encontrado", "Error", -1);
 }
 
 inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
-    if (id < 0 || id >= _nextCursoId) {
-        logError("obtenerCurso", "ID de curso inválido: " + std::to_string(id));
-        return nullptr; // ID inválido
+    // Buscar especialización por ID real, no por índice
+    for (int i = 0; i < _especializaciones.getTamano(); ++i) {
+        if (_especializaciones.getElemento(i).getId() == id) {
+            return &_especializaciones.getElemento(i);
+        }
     }
-    return &_especializaciones.getElemento(id);
+    logError("obtenerEspecializacion", "Especialización con ID " + std::to_string(id) + " no encontrada");
+    return nullptr;
 }
 
 inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
@@ -627,8 +647,17 @@ inline ContentOperationResult ContentManager::cargarCantidadInscripcionesActivid
         int idActividad = inscripcion.idActividad;
         TipoActividad tipoActividad = static_cast<TipoActividad>(inscripcion.tipoActividad);
 
-        if (tipoActividad == TipoActividad::CURSO) _cursos.getElemento(idActividad).aumentarAlumno();
-        else _especializaciones.getElemento(idActividad).aumentarAlumno();
+        bool completado = inscripcion.completado;
+        if (tipoActividad == TipoActividad::CURSO) {
+            _cursos.getElemento(idActividad).aumentarAlumno();
+            if (completado) _cursos.getElemento(idActividad).aumentarAlumnoCompletado();
+        }
+        else {
+            _especializaciones.getElemento(idActividad).aumentarAlumno();
+            if (completado) _especializaciones.getElemento(idActividad).aumentarAlumnoCompletado();
+        }
+
+        
     }
 
     int cantidadCursos = _cursos.getTamano();
@@ -694,29 +723,148 @@ inline void ContentManager::logOperation(const std::string& operation, const std
     */
 }
 
-inline std::vector<std::string> sugerirCursosPorPrefijo(const std::string& texto, int limite) {  
-   std::vector<std::string> sugerencias;  
-   if (texto.empty()) return sugerencias;  
+// ========== MÉTODOS DE CREACIÓN ==========
 
-   // Convertir texto de búsqueda a minúsculas  
-   std::string textoLower = texto;  
-   std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });  
+inline ContentOperationResult ContentManager::crearCurso(
+    int idEmpresa,
+    const std::string& titulo,
+    const std::string& nombreEmpresa,
+    const std::string& instructor,
+    const std::string& descripcion,
+    const std::vector<std::string>& titulosClases,
+    const std::vector<std::string>& descripcionesClases,
+    const std::string& categoria)
+{
+    try {
+        // Validar datos básicos
+        if (titulo.empty() || instructor.empty() || titulosClases.empty()) {
+            logError("CrearCurso", "Datos básicos incompletos");
+            return ContentOperationResult::INVALID_DATA;
+        }
 
-   FilesManager& fileManager = FilesManager::getInstance();
-   auto& hashCursos = fileManager.getIndiceCursos();
+        if (titulosClases.size() != descripcionesClases.size()) {
+            logError("CrearCurso", "Mismatch entre títulos y descripciones de clases");
+            return ContentOperationResult::INVALID_DATA;
+        }
 
-   // Solución: Usar iteradores explícitos para recorrer el hash table  
-   for (auto it = hashCursos.begin(); it != hashCursos.end(); ++it) {  
-       std::string tituloLower = it->first;  
-       std::transform(tituloLower.begin(), tituloLower.end(), tituloLower.begin(), ::tolower);  
+        // Crear vector de pares para las clases
+        std::vector<std::pair<std::string, std::string>> descripcionClases;
+        for (size_t i = 0; i < titulosClases.size(); ++i) {
+            descripcionClases.push_back({titulosClases[i], descripcionesClases[i]});
+        }
 
-       if (tituloLower.find(textoLower) == 0) {  
-           sugerencias.push_back(it->first);  
-           if (limite > 0 && static_cast<int>(sugerencias.size()) >= limite) break;  
-       }  
-   }  
-   return sugerencias;  
+        // Determinar categoría
+        CategoriaActividad cat = CategoriaActividad::DEFAULT;
+        if (!categoria.empty()) {
+            cat = RawActividadData::stringToCategoria(categoria);
+        }
+
+        // Crear objeto Curso
+        Curso nuevoCurso(
+            _nextCursoId,
+            idEmpresa,
+            nombreEmpresa,
+            cat,
+            titulo,
+            descripcion,
+            instructor,
+            static_cast<int>(titulosClases.size()),
+            descripcionClases
+        );
+
+        // Agregar a la lista
+        _cursos.agregarAlFinal(nuevoCurso);
+
+        // Incrementar contador de IDs
+        _nextCursoId++;
+
+        // Guardar en archivo
+        if (!nuevoCurso.guardar()) {
+            logError("CrearCurso", "Error al persistir el curso");
+            return ContentOperationResult::FILE_ERROR;
+        }
+
+        logOperation("CrearCurso", "Curso '" + titulo + "' creado exitosamente con ID " + std::to_string(nuevoCurso.getId()));
+        return ContentOperationResult::SUCCESS;
+
+    } catch (const std::exception& e) {
+        logError("CrearCurso", "Excepción: " + std::string(e.what()));
+        return ContentOperationResult::UNKNOWN_ERROR;
+    }
 }
+
+inline ContentOperationResult ContentManager::crearEspecializacion(
+    int idEmpresa,
+    const std::string& nombreEmpresa,
+    const std::string& titulo,
+    const std::string& descripcion,
+    const std::vector<int>& idsCursos,
+    const std::string& categoria)
+{
+    try {
+        // Validar datos básicos
+        if (titulo.empty() || idsCursos.empty()) {
+            logError("CrearEspecializacion", "Datos básicos incompletos");
+            return ContentOperationResult::INVALID_DATA;
+        }
+
+        // Validar que todos los cursos existen
+        for (int idCurso : idsCursos) {
+            bool cursoEncontrado = false;
+            for (int i = 0; i < _cursos.getTamano(); ++i) {
+                if (_cursos.getElemento(i).getId() == idCurso) {
+                    cursoEncontrado = true;
+                    break;
+                }
+            }
+            if (!cursoEncontrado) {
+                logError("CrearEspecializacion", "Curso con ID " + std::to_string(idCurso) + " no encontrado");
+                return ContentOperationResult::COURSE_NOT_FOUND;
+            }
+        }
+
+        // Determinar categoría
+        CategoriaActividad cat = CategoriaActividad::DEFAULT;
+        if (!categoria.empty()) {
+            cat = RawActividadData::stringToCategoria(categoria);
+        }
+
+        // Calcular duración estimada (promedio de 2-3 semanas por curso)
+        int duracionEstimada = static_cast<int>(idsCursos.size()) * 2 + (static_cast<int>(idsCursos.size()) / 2);
+
+        // Crear objeto Especializacion
+        Especializacion nuevaEspecializacion(
+            _nextEspecializacionId,
+            idEmpresa,
+            nombreEmpresa,
+            cat,
+            titulo,
+            descripcion,
+            idsCursos,
+            duracionEstimada
+        );
+
+        // Agregar a la lista
+        _especializaciones.agregarAlFinal(nuevaEspecializacion);
+
+        // Incrementar contador de IDs
+        _nextEspecializacionId++;
+
+        // Guardar en archivo
+        if (!nuevaEspecializacion.guardar()) {
+            logError("CrearEspecializacion", "Error al persistir la especialización");
+            return ContentOperationResult::FILE_ERROR;
+        }
+
+        logOperation("CrearEspecializacion", "Especialización '" + titulo + "' creada exitosamente con ID " + std::to_string(nuevaEspecializacion.getId()));
+        return ContentOperationResult::SUCCESS;
+
+    } catch (const std::exception& e) {
+        logError("CrearEspecializacion", "Excepción: " + std::string(e.what()));
+        return ContentOperationResult::UNKNOWN_ERROR;
+    }
+}
+
 // ========== UTILIDADES ==========
 
 #endif // COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP

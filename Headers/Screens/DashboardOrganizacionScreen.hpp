@@ -586,10 +586,10 @@ inline ResultadoPantalla DashboardOrganizacionScreen::_procesarSeleccion()
             res.accion = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
         } else if (_elementoActual == 1) {
             // Gestionar mi contenido
-            res.accion = AccionPantalla::NINGUNA; // Por implementar
+            res.accion = AccionPantalla::IR_A_CREAR_CONTENIDO;
         } else if (_elementoActual == 2) {
             // Ver estadísticas
-            res.accion = AccionPantalla::NINGUNA; // Por implementar
+            res.accion = AccionPantalla::IR_A_VER_ESTADISTICAS; // Por implementar
         }
         break;
         

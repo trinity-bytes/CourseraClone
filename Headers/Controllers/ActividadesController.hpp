@@ -3,11 +3,12 @@
 
 #include "../DataStructures/LinkedList.hpp"
 #include "../Controllers/ContentManager.hpp"
+#include "../DataStructures/algoritmosOrdenamiento.hpp"
 
 class ActividadesController {
 private:
 	LinkedList<int> idCursos;
-	LinkedList<int>  idEspecializaciones;
+	LinkedList<int> idEspecializaciones;
 	int idOrganizacion;
 	int totalInscritos;
 
@@ -29,6 +30,8 @@ public:
 	inline int getCantidadCursos();
 	inline int getCantidadEspecializaciones();
 	inline int getCantidadInscritos();
+	
+	inline std::vector<std::pair<std::string, int>> getOrdenadoInscripciones(int maximoDatos);
 
 };
 
@@ -62,13 +65,19 @@ inline int ActividadesController::calcularCantidad() {
 	int total = 0;
 
 	for (auto it = idCursos.begin(); it != idCursos.end(); it++) {
-		int adicionar = ContentManager::getInstance().obtenerCurso(*it)->getCantidad();
-		total += adicionar;
+		Curso* curso = ContentManager::getInstance().obtenerCurso(*it);
+		if (curso != nullptr) {
+			int adicionar = curso->getCantidad();
+			total += adicionar;
+		}
 	}
 
 	for (auto it = idEspecializaciones.begin(); it != idEspecializaciones.end(); it++) {
-		int adicionar = ContentManager::getInstance().obtenerEspecializacion(*it)->getCantidad();
-		total += adicionar;
+		Especializacion* esp = ContentManager::getInstance().obtenerEspecializacion(*it);
+		if (esp != nullptr) {
+			int adicionar = esp->getCantidad();
+			total += adicionar;
+		}
 	}
 
 	return total;
@@ -83,7 +92,7 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 	auto textoDouble = [](double valor) {
 		auto decimalEnteroMuestra = [](double numero) {
 			int nuevo = numero * 100;
-			int resultado = nuevo / 100;
+			int resultado = nuevo % 100;
 			return resultado;
 			};
 
@@ -95,15 +104,19 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 
 	if (_tipo == TipoActividad::CURSO) {
 		Curso* curso = ContentManager::getInstance().obtenerCurso(id);
-		cantidad = curso->getCantidad();
-		ingreso = curso->getMontoRecaudado();
-		porcentaje = curso->getProgresoTotal();
+		if (curso != nullptr) {
+			cantidad = curso->getCantidad();
+			ingreso = curso->getMontoRecaudado();
+			porcentaje = curso->getProgresoTotal();
+		}
 	}
 	else {
 		Especializacion* especializacion = ContentManager::getInstance().obtenerEspecializacion(id);
-		cantidad = especializacion->getCantidad();
-		ingreso = especializacion->getMontoRecaudado();
-		porcentaje = especializacion->getProgresoTotal();
+		if (especializacion != nullptr) {
+			cantidad = especializacion->getCantidad();
+			ingreso = especializacion->getMontoRecaudado();
+			porcentaje = especializacion->getProgresoTotal();
+		}
 	}
 
 	_cantidadRecaudada = "S/" + textoDouble(ingreso);
@@ -140,8 +153,6 @@ inline int ActividadesController::getCantidadCursos() {
 	return idCursos.getTamano();
 }
 
-
-
 inline int ActividadesController::getCantidadEspecializaciones() {
 	return idEspecializaciones.getTamano();
 }
@@ -150,17 +161,53 @@ inline int ActividadesController::getCantidadInscritos() {
 	return totalInscritos;
 }
 
-// ========== MÉTODOS PRIVADOS - LOGGING ==========
+inline std::vector<std::pair<std::string, int>> ActividadesController::getOrdenadoInscripciones(int maximoDatos) {
+	std::vector < std::pair < std::string, int > > informacion;
+
+	for (auto it = idCursos.begin(); it != idCursos.end(); it++) {
+		Curso* curso = ContentManager::getInstance().obtenerCurso(*it);
+		if (curso != nullptr) {
+			std::string tituloActividad = curso->getTitulo();
+			int cantidad = curso->getCantidad();
+			informacion.push_back({ tituloActividad, cantidad });
+		}
+	}
+	for (auto it = idEspecializaciones.begin(); it != idEspecializaciones.end(); it++) {
+		Especializacion* esp = ContentManager::getInstance().obtenerEspecializacion(*it);
+		if (esp != nullptr) {
+			std::string tituloActividad = esp->getTitulo();
+			int cantidad = esp->getCantidad();
+			informacion.push_back({ tituloActividad, cantidad });
+		}
+	}
+
+	auto comparador = [](std::pair < std::string, int > a, std::pair < std::string, int > b) {
+		return a.second < b.second;
+		};
+	int tamano = informacion.size();
+	mergeSort(informacion, 0, tamano - 1, comparador);
+
+	
+	int minimo = (tamano > 5) ? 5 : tamano;
+	std::vector < std::pair < std::string, int > > resultado;
+	for (int i = 0; i < minimo; i++) {
+		resultado.push_back(informacion[i]);
+	}
+
+	return resultado;
+}
+
+// ========== Mï¿½TODOS PRIVADOS - LOGGING ==========
 inline void ActividadesController::logError(const std::string& operation, const std::string& error) {
-	// Implementación simple para logging de errores
+	// Implementaciï¿½n simple para logging de errores
 	FilesManager& fileManager = FilesManager::getInstance();
 	fileManager.logError(operation, "ActividadesController", error);
 }
 
 
 inline void ActividadesController::logOperation(const std::string& operation, const std::string& details) {
-	// Implementación simple para logging de operaciones
-	// En un proyecto más complejo esto iría a un archivo de log
+	// Implementaciï¿½n simple para logging de operaciones
+	// En un proyecto mï¿½s complejo esto irï¿½a a un archivo de log
 	FilesManager& fileManager = FilesManager::getInstance();
 	fileManager.logInfo(operation, "ActividadesController");
 

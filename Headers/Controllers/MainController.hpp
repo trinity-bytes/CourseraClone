@@ -29,6 +29,7 @@
 #include "../Screens/ProcesarPagoScreen.hpp"
 #include "../Screens/VerCertificadosScreen.hpp"
 #include "../Screens/ListarContenidoScreen.hpp"
+#include "../Screens/GestionarOfertasScreen.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
@@ -59,6 +60,7 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaProcesarPago();
     inline std::unique_ptr<PantallaBase> crearPantallaVerCertificados();
     inline std::unique_ptr<PantallaBase> crearPantallaListarContenido();
+    inline std::unique_ptr<PantallaBase> crearPantallaGestionarOfertas();
 
 public:
     /// @brief Constructor y destructor
@@ -199,6 +201,12 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaListarContenid
     return std::make_unique<ListarContenidoScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla gestionar ofertas
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaGestionarOfertas()
+{
+    return std::make_unique<GestionarOfertasScreen>();
+}
+
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
@@ -293,6 +301,10 @@ inline void MainController::run()
 
         case AccionPantalla::IR_A_LISTAR_CONTENIDO:
             _pantallaActual = crearPantallaListarContenido();
+            break;
+
+        case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
+            _pantallaActual = crearPantallaGestionarOfertas();
             break;
 
         case AccionPantalla::SALIR:

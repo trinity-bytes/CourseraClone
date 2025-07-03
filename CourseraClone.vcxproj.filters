@@ -139,6 +139,9 @@
     <ClInclude Include="Headers\Screens\ExplorarContenidoScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Screens\GestionarOfertasScreen.hpp">
+      <Filter>Header Files\Screens</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\Screens\LandingPageScreen.hpp">
       <Filter>Header Files\Screens</Filter>
     </ClInclude>
