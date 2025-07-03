@@ -321,3 +321,41 @@ Clases, objetos y herencia
 Manejo de errores
 Debugging y manejo de excepciones
 %%%
+18
+1
+coursera
+Marketing de Contenidos - Módulo 1
+Desarrolla habilidades empresariales y de liderazgo
+MARKETING_DIGITAL
+Ing. Diego Martínez
+5
+Planificación estratégica
+Define objetivos y metas
+Gestión de equipos
+Liderazgo efectivo
+Finanzas básicas
+Presupuestos y análisis
+Marketing y ventas
+Atrae y retén clientes
+Escalabilidad
+Haz crecer tu negocio
+%%%
+19
+1
+coursera
+Marketing de Contenidos - Módulo 2
+Conviértete en desarrollador web full-stack
+MARKETING_DIGITAL
+Prof. Camila Jiménez
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%

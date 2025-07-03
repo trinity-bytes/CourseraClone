@@ -233,6 +233,7 @@
     <ClInclude Include="Headers\Utils\ConsoleConfig.hpp" />
     <ClInclude Include="Headers\Utils\ConsoleRenderer.hpp" />
     <ClInclude Include="Headers\Utils\ConsoleTypes.hpp" />
+    <ClInclude Include="Headers\Utils\ContentGenerator.hpp" />
     <ClInclude Include="Headers\Utils\DataPaths.hpp" />
     <ClInclude Include="Headers\Utils\DateTime.hpp" />
     <ClInclude Include="Headers\Utils\InputUtils.hpp" />
