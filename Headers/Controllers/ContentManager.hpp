@@ -704,6 +704,149 @@ inline void ContentManager::logOperation(const std::string& operation, const std
     #endif
     */
 }
+
+// ========== MÉTODOS DE CREACIÓN ==========
+
+inline ContentOperationResult ContentManager::crearCurso(
+    int idEmpresa,
+    const std::string& titulo,
+    const std::string& nombreEmpresa,
+    const std::string& instructor,
+    const std::string& descripcion,
+    const std::vector<std::string>& titulosClases,
+    const std::vector<std::string>& descripcionesClases,
+    const std::string& categoria)
+{
+    try {
+        // Validar datos básicos
+        if (titulo.empty() || instructor.empty() || titulosClases.empty()) {
+            logError("CrearCurso", "Datos básicos incompletos");
+            return ContentOperationResult::INVALID_DATA;
+        }
+
+        if (titulosClases.size() != descripcionesClases.size()) {
+            logError("CrearCurso", "Mismatch entre títulos y descripciones de clases");
+            return ContentOperationResult::INVALID_DATA;
+        }
+
+        // Crear vector de pares para las clases
+        std::vector<std::pair<std::string, std::string>> descripcionClases;
+        for (size_t i = 0; i < titulosClases.size(); ++i) {
+            descripcionClases.push_back({titulosClases[i], descripcionesClases[i]});
+        }
+
+        // Determinar categoría
+        CategoriaActividad cat = CategoriaActividad::DEFAULT;
+        if (!categoria.empty()) {
+            cat = RawActividadData::stringToCategoria(categoria);
+        }
+
+        // Crear objeto Curso
+        Curso nuevoCurso(
+            _nextCursoId,
+            idEmpresa,
+            nombreEmpresa,
+            cat,
+            titulo,
+            descripcion,
+            instructor,
+            static_cast<int>(titulosClases.size()),
+            descripcionClases
+        );
+
+        // Agregar a la lista
+        _cursos.agregarAlFinal(nuevoCurso);
+
+        // Incrementar contador de IDs
+        _nextCursoId++;
+
+        // Guardar en archivo
+        if (!nuevoCurso.guardar()) {
+            logError("CrearCurso", "Error al persistir el curso");
+            return ContentOperationResult::FILE_ERROR;
+        }
+
+        logOperation("CrearCurso", "Curso '" + titulo + "' creado exitosamente con ID " + std::to_string(nuevoCurso.getId()));
+        return ContentOperationResult::SUCCESS;
+
+    } catch (const std::exception& e) {
+        logError("CrearCurso", "Excepción: " + std::string(e.what()));
+        return ContentOperationResult::UNKNOWN_ERROR;
+    }
+}
+
+inline ContentOperationResult ContentManager::crearEspecializacion(
+    int idEmpresa,
+    const std::string& nombreEmpresa,
+    const std::string& titulo,
+    const std::string& descripcion,
+    const std::vector<int>& idsCursos,
+    const std::string& categoria)
+{
+    try {
+        // Validar datos básicos
+        if (titulo.empty() || idsCursos.empty()) {
+            logError("CrearEspecializacion", "Datos básicos incompletos");
+            return ContentOperationResult::INVALID_DATA;
+        }
+
+        // Validar que todos los cursos existen
+        for (int idCurso : idsCursos) {
+            bool cursoEncontrado = false;
+            for (int i = 0; i < _cursos.getTamano(); ++i) {
+                if (_cursos.getElemento(i).getId() == idCurso) {
+                    cursoEncontrado = true;
+                    break;
+                }
+            }
+            if (!cursoEncontrado) {
+                logError("CrearEspecializacion", "Curso con ID " + std::to_string(idCurso) + " no encontrado");
+                return ContentOperationResult::COURSE_NOT_FOUND;
+            }
+        }
+
+        // Determinar categoría
+        CategoriaActividad cat = CategoriaActividad::DEFAULT;
+        if (!categoria.empty()) {
+            cat = RawActividadData::stringToCategoria(categoria);
+        }
+
+        // Calcular duración estimada (promedio de 2-3 semanas por curso)
+        int duracionEstimada = static_cast<int>(idsCursos.size()) * 2 + (static_cast<int>(idsCursos.size()) / 2);
+
+        // Crear objeto Especializacion
+        Especializacion nuevaEspecializacion(
+            _nextEspecializacionId,
+            idEmpresa,
+            nombreEmpresa,
+            cat,
+            titulo,
+            descripcion,
+            idsCursos,
+            duracionEstimada
+        );
+
+        // Agregar a la lista
+        _especializaciones.agregarAlFinal(nuevaEspecializacion);
+
+        // Incrementar contador de IDs
+        _nextEspecializacionId++;
+
+        // Guardar en archivo
+        if (!nuevaEspecializacion.guardar()) {
+            logError("CrearEspecializacion", "Error al persistir la especialización");
+            return ContentOperationResult::FILE_ERROR;
+        }
+
+        logOperation("CrearEspecializacion", "Especialización '" + titulo + "' creada exitosamente con ID " + std::to_string(nuevaEspecializacion.getId()));
+        return ContentOperationResult::SUCCESS;
+
+    } catch (const std::exception& e) {
+        logError("CrearEspecializacion", "Excepción: " + std::string(e.what()));
+        return ContentOperationResult::UNKNOWN_ERROR;
+    }
+}
+
 // ========== UTILIDADES ==========
 
 #endif // COURSERACLONE_CONTROLLERS_COURSEMANAGER_HPP

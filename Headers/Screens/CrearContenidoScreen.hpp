@@ -15,10 +15,13 @@
 #include "../Utils/UI_Ascii.hpp"
 #include "../Utils/InputUtils.hpp"
 #include "../Utils/ValidationUtils.hpp"
+#include "../Utils/ContentGenerator.hpp"
 #include "../Types/UsuarioTypes.hpp"
 #include "../Types/ActividadTypes.hpp"
 #include "../Entities/Curso.hpp"
 #include "../Entities/Especializacion.hpp"
+#include "../Controllers/ContentManager.hpp"
+#include "../Controllers/SessionManager.hpp"
 
 /// Pantalla para crear nuevo contenido (cursos y especializaciones)
 class CrearContenidoScreen : public PantallaBase
@@ -108,6 +111,8 @@ private:
     inline void _crearCursoConDatos();
     inline void _crearEspecializacionConDatos();
     inline void _limpiarCampos();
+    inline void _mostrarPreviewCurso(const RawCursoData& datos, int idGenerado);
+    inline void _mostrarPreviewEspecializacion(const RawEspecializacionData& datos, int idGenerado);
     
     /// @brief Métodos de formularios
     inline std::string _solicitarTexto(const std::string& prompt, int maxLength = 100);
@@ -389,59 +394,46 @@ inline int CrearContenidoScreen::_obtenerMaxLength(int indiceCampo)
 // Crear curso con datos opcionales
 inline void CrearContenidoScreen::_crearCursoConDatos()
 {
-    system("cls");
-    
-    // Título del formulario
-    gotoXY(COL_FORMULARIO, 3);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== CREANDO NUEVO CURSO ===";
-    resetColor();
-    
     try {
-        // Usar datos del formulario si están disponibles, sino usar valores por defecto
-        std::string titulo = _titulo.empty() ? "Curso de Programación" : _titulo;
-        std::string descripcion = _descripcion.empty() ? "Curso completo de programación" : _descripcion;
+        // Generar datos completos usando ContentGenerator
+        RawCursoData datosGenerados = ContentGenerator::generarCurso(
+            _titulo,
+            _descripcion, 
+            _precio,
+            _duracion
+        );
         
-        // Datos simulados para la empresa
-        int idEmpresa = 1;
-        std::string nombreEmpresa = "Tech Education Corp";
-        int idCurso = rand() % 10000 + 1000; // ID simulado
+        // Separar títulos y descripciones de clases para ContentManager
+        std::vector<std::string> titulosClases;
+        std::vector<std::string> descripcionesClases;
         
-        // Mostrar confirmación
-        gotoXY(COL_FORMULARIO, 8);
-        setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "CURSO CREADO EXITOSAMENTE";
-        
-        gotoXY(COL_FORMULARIO, 10);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Título: " << titulo;
-        
-        gotoXY(COL_FORMULARIO, 11);
-        std::cout << "Descripción: " << descripcion;
-        
-        if (!_precio.empty()) {
-            gotoXY(COL_FORMULARIO, 12);
-            std::cout << "Precio: S/ " << _precio;
+        for (const auto& clase : datosGenerados.descripcionClases) {
+            titulosClases.push_back(clase.first);
+            descripcionesClases.push_back(clase.second);
         }
         
-        if (!_duracion.empty()) {
-            gotoXY(COL_FORMULARIO, 13);
-            std::cout << "Duración: " << _duracion << " horas";
+        // Crear curso usando ContentManager
+        ContentOperationResult resultado = ContentManager::getInstance().crearCurso(
+            datosGenerados.idEmpresa,
+            datosGenerados.titulo,
+            datosGenerados.nombreEmpresa,
+            datosGenerados.instructor,
+            datosGenerados.descripcion,
+            titulosClases,
+            descripcionesClases,
+            RawActividadData::categoriaToString(datosGenerados.categoria)
+        );
+        
+        if (resultado == ContentOperationResult::SUCCESS) {
+            // Mostrar preview del curso creado
+            _mostrarPreviewCurso(datosGenerados, datosGenerados.id);
+        } else {
+            _mostrarMensaje("Error al crear el curso");
+            _getch();
         }
-        
-        gotoXY(COL_FORMULARIO, 15);
-        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "ID del curso: " << idCurso;
-        
-        gotoXY(COL_FORMULARIO, 18);
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-        std::cout << " Presiona cualquier tecla para continuar ";
-        resetColor();
-        
-        _getch();
         
     } catch (...) {
-        _mostrarMensaje("Error al crear el curso");
+        _mostrarMensaje("Error inesperado al crear el curso");
         _getch();
     }
 }
@@ -449,59 +441,34 @@ inline void CrearContenidoScreen::_crearCursoConDatos()
 // Crear especialización con datos opcionales
 inline void CrearContenidoScreen::_crearEspecializacionConDatos()
 {
-    system("cls");
-    
-    // Título del formulario
-    gotoXY(COL_FORMULARIO, 3);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== CREANDO NUEVA ESPECIALIZACIÓN ===";
-    resetColor();
-    
     try {
-        // Usar datos del formulario si están disponibles, sino usar valores por defecto
-        std::string titulo = _titulo.empty() ? "Especialización en Tecnología" : _titulo;
-        std::string descripcion = _descripcion.empty() ? "Especialización completa en tecnología" : _descripcion;
+        // Generar datos completos usando ContentGenerator
+        RawEspecializacionData datosGenerados = ContentGenerator::generarEspecializacion(
+            _titulo,
+            _descripcion,
+            _duracion
+        );
         
-        // Datos simulados para la empresa
-        int idEmpresa = 1;
-        std::string nombreEmpresa = "Tech Education Corp";
-        int idEspecializacion = rand() % 10000 + 2000; // ID simulado
+        // Crear especialización usando ContentManager
+        ContentOperationResult resultado = ContentManager::getInstance().crearEspecializacion(
+            datosGenerados.idEmpresa,
+            datosGenerados.nombreEmpresa,
+            datosGenerados.titulo,
+            datosGenerados.descripcion,
+            datosGenerados.idsCursos,
+            RawActividadData::categoriaToString(datosGenerados.categoria)
+        );
         
-        // Mostrar confirmación
-        gotoXY(COL_FORMULARIO, 8);
-        setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "ESPECIALIZACION CREADA EXITOSAMENTE";
-        
-        gotoXY(COL_FORMULARIO, 10);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Título: " << titulo;
-        
-        gotoXY(COL_FORMULARIO, 11);
-        std::cout << "Descripción: " << descripcion;
-        
-        if (!_precio.empty()) {
-            gotoXY(COL_FORMULARIO, 12);
-            std::cout << "Precio: S/ " << _precio;
+        if (resultado == ContentOperationResult::SUCCESS) {
+            // Mostrar preview de la especialización creada
+            _mostrarPreviewEspecializacion(datosGenerados, datosGenerados.id);
+        } else {
+            _mostrarMensaje("Error al crear la especialización");
+            _getch();
         }
-        
-        if (!_duracion.empty()) {
-            gotoXY(COL_FORMULARIO, 13);
-            std::cout << "Duración estimada: " << _duracion << " semanas";
-        }
-        
-        gotoXY(COL_FORMULARIO, 15);
-        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "ID de la especialización: " << idEspecializacion;
-        
-        gotoXY(COL_FORMULARIO, 18);
-        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-        std::cout << " Presiona cualquier tecla para continuar ";
-        resetColor();
-        
-        _getch();
         
     } catch (...) {
-        _mostrarMensaje("Error al crear la especialización");
+        _mostrarMensaje("Error inesperado al crear la especialización");
         _getch();
     }
 }
@@ -588,6 +555,98 @@ inline ResultadoPantalla CrearContenidoScreen::ejecutar()
             break;
         }
     }
+}
+
+// Mostrar preview del curso creado
+inline void CrearContenidoScreen::_mostrarPreviewCurso(const RawCursoData& datos, int idGenerado)
+{
+    // Limpiar zona central para mostrar preview
+    for (int fila = 10; fila <= 20; fila++) {
+        gotoXY(15, fila);
+        for (int col = 0; col < 85; col++) {
+            std::cout << " ";
+        }
+    }
+    
+    // Título del preview
+    gotoXY(25, 10);
+    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    std::cout << " === CURSO CREADO EXITOSAMENTE === ";
+    resetColor();
+    
+    // Información del curso
+    gotoXY(20, 12);
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "Título: " << datos.titulo;
+    
+    gotoXY(20, 13);
+    std::cout << "Descripción: " << datos.descripcion.substr(0, 60) << "...";
+    
+    gotoXY(20, 14);
+    std::cout << "Instructor: " << datos.instructor;
+    
+    gotoXY(20, 15);
+    std::cout << "Categoría: " << _categoriaNombre(datos.categoria);
+    
+    gotoXY(20, 16);
+    std::cout << "Clases: " << datos.cantidadClases;
+    
+    gotoXY(20, 17);
+    std::cout << "Empresa: " << datos.nombreEmpresa;
+    
+    // Mensaje de continuación
+    gotoXY(25, 19);
+    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    std::cout << " Presiona cualquier tecla para continuar ";
+    resetColor();
+    
+    _getch();
+}
+
+// Mostrar preview de la especialización creada
+inline void CrearContenidoScreen::_mostrarPreviewEspecializacion(const RawEspecializacionData& datos, int idGenerado)
+{
+    // Limpiar zona central para mostrar preview
+    for (int fila = 10; fila <= 20; fila++) {
+        gotoXY(15, fila);
+        for (int col = 0; col < 85; col++) {
+            std::cout << " ";
+        }
+    }
+    
+    // Título del preview
+    gotoXY(25, 10);
+    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    std::cout << " === ESPECIALIZACIÓN CREADA EXITOSAMENTE === ";
+    resetColor();
+    
+    // Información de la especialización
+    gotoXY(20, 12);
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "Título: " << datos.titulo;
+    
+    gotoXY(20, 13);
+    std::cout << "Descripción: " << datos.descripcion.substr(0, 60) << "...";
+    
+    gotoXY(20, 14);
+    std::cout << "Categoría: " << _categoriaNombre(datos.categoria);
+    
+    gotoXY(20, 15);
+    std::cout << "Cursos incluidos: " << datos.cantidadCursos;
+    
+    gotoXY(20, 16);
+    std::cout << "Duración estimada: " << datos.duracionEstimada << " semanas";
+    
+    gotoXY(20, 17);
+    std::cout << "Empresa: " << datos.nombreEmpresa;
+    
+    // Mensaje de continuación
+    gotoXY(25, 19);
+    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    std::cout << " Presiona cualquier tecla para continuar ";
+    resetColor();
+    
+    _getch();
 }
 
 #endif // COURSERACLONE_SCREENS_CREARCONTENIDOSCREEN_HPP
