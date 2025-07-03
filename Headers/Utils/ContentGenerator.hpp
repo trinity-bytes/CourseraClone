@@ -40,6 +40,21 @@ public:
         const std::string& duracionUsuario
     );
 
+    /// @brief Crea cursos automáticamente para una especialización
+    /// @param categoria Categoría de la especialización
+    /// @param idEmpresa ID de la empresa
+    /// @param nombreEmpresa Nombre de la empresa
+    /// @param tituloBase Título base para los cursos
+    /// @param cantidadCursos Cantidad de cursos a crear
+    /// @return Vector con IDs de los cursos creados
+    static std::vector<int> crearCursosParaEspecializacion(
+        CategoriaActividad categoria,
+        int idEmpresa,
+        const std::string& nombreEmpresa,
+        const std::string& tituloBase,
+        int cantidadCursos
+    );
+
 private:
     // ===== UTILIDADES DE GENERACIÓN =====
     
@@ -292,15 +307,13 @@ inline RawEspecializacionData ContentGenerator::generarEspecializacion(
     std::string descripcion = generarDescripcion(descripcionUsuario, categoria);
     int duracion = generarDuracion(duracionUsuario, false);
     
-    // Generar cursos para la especialización (máximo 4)
-    int cantidadCursos = randomInt(3, 4);
-    std::vector<int> idsCursos;
+    // Generar cursos para la especialización (1 a 4 cursos)
+    int cantidadCursos = randomInt(1, 4);
     
-    // Por ahora generamos IDs simulados
-    // En una implementación completa, aquí se crearían cursos reales
-    for (int i = 0; i < cantidadCursos; i++) {
-        idsCursos.push_back(randomInt(1000, 9999));
-    }
+    // Crear cursos usando el método auxiliar
+    std::vector<int> idsCursos = crearCursosParaEspecializacion(
+        categoria, idEmpresa, nombreEmpresa, titulo, cantidadCursos
+    );
     
     // Crear estructura de datos
     RawEspecializacionData datos;
@@ -430,6 +443,47 @@ inline int ContentGenerator::randomInt(int min, int max)
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(min, max);
     return dis(gen);
+}
+
+inline std::vector<int> ContentGenerator::crearCursosParaEspecializacion(
+    CategoriaActividad categoria,
+    int idEmpresa,
+    const std::string& nombreEmpresa,
+    const std::string& tituloBase,
+    int cantidadCursos)
+{
+    std::vector<int> idsCursos;
+    
+    // Usar IDs secuenciales para cursos de especialización
+    static int siguienteIdCursoEsp = 10000;
+    
+    for (int i = 0; i < cantidadCursos; i++) {
+        // Generar datos para el curso
+        std::string tituloCurso = tituloBase + " - Módulo " + std::to_string(i + 1);
+        std::string instructor = generarInstructor();
+        std::string descripcionCurso = generarDescripcion("", categoria);
+        
+        // Generar clases específicas para el módulo
+        auto clases = generarClases(categoria, 3 + (i % 3)); // Entre 3-5 clases por módulo
+        
+        // Crear datos del curso
+        RawCursoData cursoDatos;
+        cursoDatos.id = siguienteIdCursoEsp++;
+        cursoDatos.idEmpresa = idEmpresa;
+        cursoDatos.nombreEmpresa = nombreEmpresa;
+        cursoDatos.categoria = categoria;
+        cursoDatos.titulo = tituloCurso;
+        cursoDatos.descripcion = descripcionCurso;
+        cursoDatos.instructor = instructor;
+        cursoDatos.cantidadClases = static_cast<int>(clases.size());
+        cursoDatos.duracionEstimada = randomInt(8, 15) * 60; // 8-15 horas en minutos
+        cursoDatos.descripcionClases = clases;
+        
+        // Guardar el ID del curso
+        idsCursos.push_back(cursoDatos.id);
+    }
+    
+    return idsCursos;
 }
 
 #endif // COURSERACLONE_UTILS_CONTENTGENERATOR_HPP

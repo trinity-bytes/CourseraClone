@@ -266,12 +266,12 @@ inline ResultadoPantalla CrearContenidoScreen::_procesarSeleccion()
         switch (static_cast<OpcionMenu>(indiceBoton)) {
         case OpcionMenu::CREAR_CURSO:
             _crearCursoConDatos();
-            _primeraRenderizacion = true;
+            // No establecer _primeraRenderizacion aquí, se hace después del preview
             break;
             
         case OpcionMenu::CREAR_ESPECIALIZACION:
             _crearEspecializacionConDatos();
-            _primeraRenderizacion = true;
+            // No establecer _primeraRenderizacion aquí, se hace después del preview
             break;
         }
     }
@@ -429,7 +429,11 @@ inline void CrearContenidoScreen::_crearCursoConDatos()
             _mostrarPreviewCurso(datosGenerados, datosGenerados.id);
             // Resetear la pantalla después del preview
             _limpiarCampos();
+            _elementoActual = 0; // Volver al primer campo
+            _elementoAnterior = -1; // Forzar actualización
             _primeraRenderizacion = true;
+            // Forzar re-renderización completa
+            dibujarInterfazCompleta();
         } else {
             _mostrarMensaje("Error al crear el curso");
             _getch();
@@ -452,8 +456,74 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
             _duracion
         );
         
-        // Crear especialización usando ContentManager
-        ContentOperationResult resultado = ContentManager::getInstance().crearEspecializacion(
+        // Primero crear los cursos individualmente para la especialización
+        ContentManager& contentManager = ContentManager::getInstance();
+        std::vector<int> idsReales;
+        
+        // Crear cada curso de la especialización
+        for (int i = 0; i < datosGenerados.cantidadCursos; i++) {
+            // Generar datos del curso usando ContentGenerator
+            std::string tituloCurso = datosGenerados.titulo + " - Módulo " + std::to_string(i + 1);
+            RawCursoData cursoDatos = ContentGenerator::generarCurso(tituloCurso, "", "", "");
+            
+            // Asegurar que tenga la misma categoría y empresa
+            cursoDatos.categoria = datosGenerados.categoria;
+            cursoDatos.idEmpresa = datosGenerados.idEmpresa;
+            cursoDatos.nombreEmpresa = datosGenerados.nombreEmpresa;
+            
+            // Separar títulos y descripciones de clases
+            std::vector<std::string> titulosClases;
+            std::vector<std::string> descripcionesClases;
+            
+            for (const auto& clase : cursoDatos.descripcionClases) {
+                titulosClases.push_back(clase.first);
+                descripcionesClases.push_back(clase.second);
+            }
+            
+            // Crear el curso
+            ContentOperationResult resultadoCurso = contentManager.crearCurso(
+                cursoDatos.idEmpresa,
+                cursoDatos.titulo,
+                cursoDatos.nombreEmpresa,
+                cursoDatos.instructor,
+                cursoDatos.descripcion,
+                titulosClases,
+                descripcionesClases,
+                RawActividadData::categoriaToString(cursoDatos.categoria)
+            );
+            
+            if (resultadoCurso == ContentOperationResult::SUCCESS) {
+                // Simplificamos: usamos IDs secuenciales predecibles
+                // El ContentManager usa un contador interno que incrementa con cada curso
+                int idEstimado = contentManager.getTotalCursos(); // El ID será aproximadamente el total actual
+                
+                // Verificar que el curso existe con este ID aproximado
+                Curso* cursoCreado = contentManager.obtenerCurso(idEstimado);
+                if (cursoCreado && cursoCreado->getTitulo() == cursoDatos.titulo) {
+                    idsReales.push_back(cursoCreado->getId());
+                } else {
+                    // Buscar en un rango pequeño alrededor del ID estimado
+                    bool encontrado = false;
+                    for (int offset = -2; offset <= 2 && !encontrado; ++offset) {
+                        int idPrueba = idEstimado + offset;
+                        if (idPrueba > 0) {
+                            Curso* cursoPrueba = contentManager.obtenerCurso(idPrueba);
+                            if (cursoPrueba && cursoPrueba->getTitulo() == cursoDatos.titulo) {
+                                idsReales.push_back(cursoPrueba->getId());
+                                encontrado = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Actualizar los IDs en los datos generados
+        datosGenerados.idsCursos = idsReales;
+        datosGenerados.cantidadCursos = static_cast<int>(idsReales.size());
+        
+        // Crear especialización con los IDs reales de los cursos
+        ContentOperationResult resultado = contentManager.crearEspecializacion(
             datosGenerados.idEmpresa,
             datosGenerados.nombreEmpresa,
             datosGenerados.titulo,
@@ -467,7 +537,11 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
             _mostrarPreviewEspecializacion(datosGenerados, datosGenerados.id);
             // Resetear la pantalla después del preview
             _limpiarCampos();
+            _elementoActual = 0; // Volver al primer campo
+            _elementoAnterior = -1; // Forzar actualización
             _primeraRenderizacion = true;
+            // Forzar re-renderización completa
+            dibujarInterfazCompleta();
         } else {
             _mostrarMensaje("Error al crear la especialización");
             _getch();

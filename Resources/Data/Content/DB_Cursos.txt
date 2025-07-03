@@ -245,3 +245,79 @@ Procesamiento de imágenes
 Proyecto final
 Implementa tu propia IA
 %%%
+14
+1
+coursera
+Full Stack Web Development - Módulo 1
+Desarrolla soluciones inteligentes con IA
+DESARROLLO_WEB
+Dr. Fernando Morales
+5
+Introducción a la IA
+Conceptos y aplicaciones
+Algoritmos de ML
+Regresión y clasificación
+Redes neuronales
+Deep learning básico
+Computer Vision
+Procesamiento de imágenes
+Proyecto final
+Implementa tu propia IA
+%%%
+15
+1
+coursera
+Full Stack Web Development - Módulo 2
+Domina las herramientas de análisis de datos más populares
+DESARROLLO_WEB
+Ing. Sofia Torres
+5
+Pandas y manipulación de datos
+Limpia y transforma datos
+Visualización con matplotlib
+Crea gráficos informativos
+Estadística descriptiva
+Analiza y resume datos
+Machine Learning básico
+Algoritmos de clasificación
+Proyectos prácticos
+Aplica lo aprendido
+%%%
+16
+1
+coursera
+Full Stack Web Development - Módulo 3
+Domina las herramientas de diseño más utilizadas
+DESARROLLO_WEB
+Prof. Camila Jiménez
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+17
+1
+coursera
+Fundamentos de Python
+Domina los conceptos fundamentales del desarrollo de software
+PROGRAMACION
+Prof. Carlos Mendoza
+5
+Variables y tipos de datos
+Aprende los conceptos básicos de variables
+Estructuras de control
+Domina if, while y for loops
+Funciones y métodos
+Organiza tu código con funciones
+Programación orientada a objetos
+Clases, objetos y herencia
+Manejo de errores
+Debugging y manejo de excepciones
+%%%
