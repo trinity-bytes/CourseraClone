@@ -174,7 +174,7 @@ CourseraClone/
 │   │   ├── 📁 Core/              # Datos centrales del sistema
 │   │   ├── 📁 Financial/         # Datos financieros y ventas
 │   │   ├── 📁 Index/             # Índices para búsquedas
-│   │   ├── 📁 Indices/           # Índices secundarios
+│   │   ├── 📁 Index/             # Índices secundarios
 │   │   └── 📁 Logs/              # Archivos de registro
 │   ├── 📁 Backup/                # Respaldos automáticos
 │   └── 📁 Documentation/         # Documentación del proyecto

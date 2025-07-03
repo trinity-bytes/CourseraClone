@@ -435,7 +435,6 @@ inline bool FilesManager::inicializarSistemaArchivos() {
     success &= createDirectoryIfNotExists(DataPaths::Financial::BASE);
     success &= createDirectoryIfNotExists(DataPaths::Logs::BASE);
     success &= createDirectoryIfNotExists("Resources/Data/Index/");
-    success &= createDirectoryIfNotExists("Resources/Data/Indices/");
     
     if (success) {
         _sistemaInicializado = true;

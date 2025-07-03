@@ -140,7 +140,7 @@ Resources/Data/
 ├── Core/                  # Dominio Núcleo
 │   ├── DB_Usuarios.dat       # Datos binarios de usuarios
 │   ├── DB_Inscripciones.dat  # Registro de inscripciones
-│   └── Indices/              # Índices para búsquedas rápidas
+│   └── Index/                # Índices para búsquedas rápidas
 ├── Content/               # Dominio de Contenido
 │   ├── DB_Cursos.txt         # Catálogo de cursos
 │   └── DB_Especializaciones.txt # Especializaciones disponibles
