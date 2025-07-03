@@ -191,10 +191,13 @@ inline void EstadisticasEmpresaScreen::_cargarDatos() {
     _stats.cursosPopulares = 8;
     _stats.nuevosEstudiantes = 156;
     */
-
+ 
     _stats.totalCursos = sm.getActividadesController().getCantidadCursos();
     _stats.totalEspecializaciones = sm.getActividadesController().getCantidadEspecializaciones();
     _stats.totalInscripciones = sm.getActividadesController().getCantidadInscritos();
+
+    _datosCursos.clear();
+    _datosCursos = sm.getActividadesController().getOrdenadoInscripciones(5);
     
 }
 

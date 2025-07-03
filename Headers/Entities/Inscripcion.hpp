@@ -46,7 +46,6 @@ public:
     inline void actualizar();
 
     inline void completar();
-    inline void actualizaPagoEnDisco(int _posicion, bool _estado);
     inline void marcarComoPagada();
 
     inline RawInscripcionData obtenerDatosCrudos() const;
@@ -122,7 +121,6 @@ inline void Inscripcion::completar() {
 
 inline void Inscripcion::marcarComoPagada() {
 	this->estadoPago = true;
-	FilesManager::getInstance().actualizarPagoInscripcion(id, this->estadoPago);
 }
 
 inline RawInscripcionData Inscripcion::obtenerDatosCrudos() const {

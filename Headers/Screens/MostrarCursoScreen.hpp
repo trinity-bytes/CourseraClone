@@ -617,13 +617,22 @@ inline ResultadoPantalla MostrarCursoScreen::_procesarSeleccion()
                 restablecer();
             }
             else if (!_yaPagado) {
-                _yaPagado = true;
-                _renderizarBotonInscribirse(true);
+                bool proceso = true;
+                double costo = 20.0;
+                if (proceso) {
+                    _yaPagado = true;
+                    _renderizarBotonInscribirse(true);
 
-                gotoXY(30, 29);
-                setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
-                std::cout << "[EXITO]: Curso Pagado";
-                restablecer();
+                    SessionManager::getInstance().getInscripcionesController().pagarActividad(TipoActividad::CURSO, _idCurso);
+                    Venta::pagarCurso(_idCurso, costo, SessionManager::getInstance().getCurrentUser().getId());
+
+                    gotoXY(30, 29);
+                    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
+                    std::cout << "[EXITO]: Curso Pagado";
+                    restablecer();
+                }
+
+                
             }
             else {
                 gotoXY(30, 29);

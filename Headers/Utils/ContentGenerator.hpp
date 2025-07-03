@@ -426,10 +426,8 @@ inline std::pair<int, std::string> ContentGenerator::obtenerInfoEmpresa()
 
 inline int ContentGenerator::randomInt(int min, int max)
 {
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(min, max);
-    return dis(gen);
+    srand(time(NULL));
+    return rand() % (max - min + 1) + min;
 }
 
 #endif // COURSERACLONE_UTILS_CONTENTGENERATOR_HPP

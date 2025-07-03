@@ -35,6 +35,7 @@ public:
 	inline void guardarEspecializacionInscripcion(Inscripcion inscripcion);
 	inline FileOperationResult inscribirCurso(int idCurso);
 	inline FileOperationResult completarActividad(TipoActividad tipo, int id);
+	inline FileOperationResult pagarActividad(TipoActividad tipo, int id);
 	inline FileOperationResult inscribirEspecializacion(int idEspecializacion);
 	inline bool verificarCurso(int idCurso);
 	inline bool verificarEspecializacion(int idEspecializacion);
@@ -130,6 +131,26 @@ inline FileOperationResult InscripcionesController::completarActividad(TipoActiv
 	}
 
 	
+	return FileOperationResult::SUCCESS;
+}
+
+inline FileOperationResult InscripcionesController::pagarActividad(TipoActividad tipo, int id) {
+	Inscripcion& actual = getInscripcion(tipo, id);
+	if (!actual.getEstadoPago()) {
+		actual.marcarComoPagada();
+		actual.actualizar();
+
+		logOperation("Pagar actividad actividad",
+			"Éxito: Actividad " + std::to_string(id) +
+			" para estudiante " + std::to_string(idEstudiante));
+	}
+	else {
+		logOperation("Pagar actividad d",
+			"Error: Actividad completada antes " + std::to_string(id) +
+			" para estudiante " + std::to_string(idEstudiante));
+	}
+
+
 	return FileOperationResult::SUCCESS;
 }
 

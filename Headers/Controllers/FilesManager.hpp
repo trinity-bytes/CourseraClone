@@ -239,6 +239,9 @@ public:
     /// @return Resultado de la operación
     FileOperationResult registrarPago(int idUsuario, int idActividad, double monto, const std::string& metodoPago);
 
+
+    int contarFilasCSV(const std::string& ruta = DataPaths::Financial::DB_COMPROBANTES, bool tieneCabecera = true);
+
     /// @brief Genera un comprobante de pago
     /// @param idPago ID del pago
     /// @param datosComprobante Datos del comprobante
@@ -968,51 +971,6 @@ inline int FilesManager::cantidadUsuarios(TipoUsuario _tipoUsuario) {
 	return cantidad;
 }
 
-inline FileOperationResult FilesManager::actualizarPagoInscripcion(int posicion, bool estado) {
-    
-    if (!_sistemaInicializado) {
-        logError("Actualizar pago inscripción", "Sistema", "Sistema no inicializado");
-        return FileOperationResult::UNKNOWN_ERROR;
-    }
-
-    std::fstream archivo(DataPaths::Core::DB_INSCRIPCIONES, std::ios::in | std::ios::out | std::ios::binary);
-    if (!archivo.is_open()) {
-        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "No se pudo abrir el archivo");
-        return FileOperationResult::FILE_NOT_FOUND;
-    }
-
-    archivo.seekg(posicion); // Ir a la posición del registro
-    if (archivo.fail()) {
-        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al buscar la posición del registro");
-        return FileOperationResult::UNKNOWN_ERROR;
-    }
-
-    InscripcionBinaria inscripcion;
-    archivo.read(reinterpret_cast<char*>(&inscripcion), sizeof(InscripcionBinaria));
-    if (archivo.fail() && !archivo.eof()) { // EOF es aceptable si el registro está al final
-        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al leer el registro");
-        return FileOperationResult::UNKNOWN_ERROR;
-    }
-
-    inscripcion.pagado = estado; // Actualizar el campo 'pagado'
-
-    archivo.seekp(posicion); // Volver a la posición para escribir
-    if (archivo.fail()) {
-        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al buscar la posición para escribir");
-        return FileOperationResult::UNKNOWN_ERROR;
-    }
-
-    archivo.write(reinterpret_cast<const char*>(&inscripcion), sizeof(InscripcionBinaria));
-    if (archivo.fail()) {
-        logError("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES, "Error al escribir el registro actualizado");
-        return FileOperationResult::UNKNOWN_ERROR;
-    }
-
-    logInfo("Actualizar pago inscripción", DataPaths::Core::DB_INSCRIPCIONES + " (Registro en pos: " + std::to_string(posicion) + " actualizado)");
-    return FileOperationResult::SUCCESS;
-}
-
-
 // ========== DOMINIO CONTENT ==========
 
 inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAnadir) {
@@ -1645,6 +1603,23 @@ inline FileOperationResult FilesManager::registrarPago(int idUsuario,int idActiv
     }
 }
 
+inline int FilesManager::contarFilasCSV(const std::string& ruta , bool tieneCabecera) {
+    std::ifstream file(ruta);
+    if (!file.is_open()) {
+        logError("contarFilasCSV", ruta, "No se pudo abrir el archivo");
+        return 0;
+    }
+
+    int lineas = 0;
+    std::string linea;
+    while (std::getline(file, linea)) {
+        if (!linea.empty())
+            lineas++;
+    }
+    // Si hay cabecera, la restamos
+    return (tieneCabecera && lineas > 0) ? lineas - 1 : lineas;
+}
+
 inline FileOperationResult FilesManager::generarComprobantePago(int idPago,const std::string& datosComprobante) {
     if (!_sistemaInicializado) {
         logError("Generar comprobante", "Sistema", "Sistema no inicializado");
@@ -1930,9 +1905,6 @@ inline void FilesManager::cargarComprobantes() {
             if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo montoPagado faltante");
             comprobante.montoPagado = std::stod(campo);
 
-            // metodoPago
-            if (!std::getline(ss, campo, '|')) throw std::runtime_error("Campo metodoPago faltante");
-            comprobante.metodoPago = static_cast<MetodoDePago>(std::stoi(campo));
 
             // Insertar en la tabla hash
             indiceComprobantes.insert(comprobante.id, comprobante);
