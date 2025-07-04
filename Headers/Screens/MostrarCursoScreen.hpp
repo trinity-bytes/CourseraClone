@@ -370,7 +370,7 @@ inline void MostrarCursoScreen::_renderizarBotonInscribirse(bool seleccionado)
         }
     }
 
-    std::string botonTexto = _elementosBotones[2];
+    std::string botonTexto = _elementosBotones[0];
     if (_yaInscrito) {
         if (_yaCompletado) {
             if (_yaPagado) botonTexto = _elementosBotones[3];
@@ -625,6 +625,7 @@ inline ResultadoPantalla MostrarCursoScreen::_procesarSeleccion()
 
                     SessionManager::getInstance().getInscripcionesController().pagarActividad(TipoActividad::CURSO, _idCurso);
                     Venta::pagarActividad(_idCurso, costo, SessionManager::getInstance().getCurrentUser().getId(), TipoActividad::CURSO);
+                    ContentManager::getInstance().aumentarMontoActividad(TipoActividad::CURSO, _idCurso, costo);
 
                     gotoXY(30, 29);
                     setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);

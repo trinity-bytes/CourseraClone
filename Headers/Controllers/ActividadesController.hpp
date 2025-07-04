@@ -26,7 +26,8 @@ public:
 
 	inline int calcularCantidad();
 	inline void reportarDatosMostrarActividad(std::string& _cantidadRecaudada, std::string& _cantidadAlumnos, std::string& _porcentajeCompletado, TipoActividad _tipo, int id);
-
+	inline std::vector<RawComprobanteData> boletasEmpresa();
+	inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(int maximo = 5);
 	inline int getCantidadCursos();
 	inline int getCantidadEspecializaciones();
 	inline int getCantidadInscritos();
@@ -120,6 +121,45 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 	_cantidadRecaudada = "S/" + textoDouble(ingreso);
 	_cantidadAlumnos = std::to_string(cantidad);
 	_porcentajeCompletado = textoDouble(porcentaje) + "%";
+}
+
+inline std::vector<RawComprobanteData> ActividadesController::boletasEmpresa() {
+	vector<int> idTodosCursos, idTodosEspecialidades;
+	idTodosCursos = idCursos.extraerTodo();
+	idTodosEspecialidades = idEspecializaciones.extraerTodo();
+
+
+	ArbolAVL<int> idCursosUnicos(idTodosCursos), idEspecialidadesUnicas(idTodosEspecialidades);
+	std::vector<RawComprobanteData> datos = FilesManager::getInstance().leerDatosComprobantes(),
+		res;
+
+	auto filtrarRec = [&](auto funcion, int idx, const ArbolAVL<int>& arbol, TipoActividad tipoAct) {
+			if (idx >= datos.size())
+				return;
+
+			const auto& b = datos[idx];
+		
+			if (b.tipoActividad == tipoAct && arbol.Buscar(b.idActividad)) {
+				res.push_back(b);
+			}
+			// Avanzamos al siguiente índice
+			funcion(funcion, idx + 1, arbol, tipoAct);
+		};
+
+	// 5) Aplicamos la misma lambda a cursos y a especializaciones
+	filtrarRec(filtrarRec, 0, idCursosUnicos, TipoActividad::CURSO);
+	filtrarRec(filtrarRec, 0, idEspecialidadesUnicas, TipoActividad::ESPECIALIZACION);
+	
+	return res;
+}
+
+inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, int maximo) {
+	std::vector<std::pair<std::string, double>> resultado;
+
+	HashTable<std::string, double> dineroTrimestres;
+
+	
+
 }
 
 inline std::vector<ElementoMenu> ActividadesController::getElementosDashboard(TipoActividad _tipo) {

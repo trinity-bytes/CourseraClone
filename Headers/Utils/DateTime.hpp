@@ -34,6 +34,29 @@ public:
         _hour(hour), _minute(minute), _second(second) {
     }
 
+    std::string trimestreQ(int mes, int anio) {
+        int q = (mes - 1) / 3 + 1;
+        return "Q" + std::to_string(q) + " " + std::to_string(anio);
+    }
+
+    // "YYYY-MM-DD"
+    std::string toTrimestreString(std::string fecha) {
+        auto convertidorFechaNumero = [](std::string fecha, int index, int cantidad) {
+            std::string texto = fecha.substr(index, cantidad);
+            return stoi(texto);
+            };
+
+        int mes = convertidorFechaNumero(fecha, 5, 2);
+        int q = (mes - 1) / 3 + 1;
+
+        int anio = convertidorFechaNumero(fecha, 0, 4);
+
+        std::string res = trimestreQ(mes, anio);
+        return res;
+    }
+
+
+
     // Fecha en formato "DD de <mes>, YYYY"
     std::string toLongDateString() const {
         
