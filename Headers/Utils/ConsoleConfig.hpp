@@ -93,7 +93,7 @@ inline void configurarConsola() {
     SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
 
     // Título de la aplicación
-    SetConsoleTitle(L"Coursera Clone - Alpha 4");
+    SetConsoleTitle(L"Coursera Clone - Beta 2");
 }
 
 #endif // COURSERACLONE_UTILS_CONSOLECONFIG_HPP
