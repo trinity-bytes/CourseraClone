@@ -463,8 +463,9 @@ inline std::vector<RawExploradorData> ContentManager::obtenerExploradorDatos() c
         }
         };
 
-    procesar(_cursos);            // procesa el vector de cursos
+
     procesar(_especializaciones); // procesa el vector de especializaciones
+    procesar(_cursos);            // procesa el vector de cursos
 
     return datosExplorador;
 }

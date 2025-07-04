@@ -140,12 +140,23 @@ inline FileOperationResult InscripcionesController::pagarActividad(TipoActividad
 		actual.marcarComoPagada();
 		actual.actualizar();
 
+		if (tipo == TipoActividad::ESPECIALIZACION) {
+			std::vector<int> idDeCursosEspecializacion = ContentManager::getInstance().obtenerEspecializacionDatos(id).idsCursos;
+			int tamano = idDeCursosEspecializacion.size();
+			for (int i = 0; i < tamano; i++) {
+				Inscripcion& nueva = getInscripcion(TipoActividad::CURSO, idDeCursosEspecializacion[i]);
+				nueva.marcarComoPagada();
+				nueva.actualizar();
+			}
+
+		}
+
 		logOperation("Pagar actividad actividad",
 			"Éxito: Actividad " + std::to_string(id) +
 			" para estudiante " + std::to_string(idEstudiante));
 	}
 	else {
-		logOperation("Pagar actividad d",
+		logOperation("Pagar actividadd",
 			"Error: Actividad completada antes " + std::to_string(id) +
 			" para estudiante " + std::to_string(idEstudiante));
 	}
@@ -182,6 +193,13 @@ inline FileOperationResult InscripcionesController::inscribirEspecializacion(int
 			" para estudiante " + std::to_string(idEstudiante));
 		return FileOperationResult::DUPLICATED_VALUE;
 	}
+
+	std::vector<int> idDeCursosEspecializacion = ContentManager::getInstance().obtenerEspecializacionDatos(idEspecializacion).idsCursos;
+	int tamano = idDeCursosEspecializacion.size();
+	for (int i = 0; i < tamano; i++) {
+		inscribirCurso(idDeCursosEspecializacion[i]);
+	}
+
 	// 2) Crea la nueva Inscripcion y la persiste en disco
 	int idActual = FilesManager::getInstance().cantidadInscripciones();
 	Inscripcion nueva(idEstudiante, idEspecializacion, idActual, TipoActividad::ESPECIALIZACION);
