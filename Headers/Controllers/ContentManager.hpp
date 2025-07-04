@@ -479,6 +479,7 @@ inline std::vector<std::string> ContentManager::sugerirCursosPorPrefijo(const st
     std::transform(textoLower.begin(), textoLower.end(), textoLower.begin(), [](unsigned char c) { return std::tolower(c); });
 
     FilesManager& fileManager = FilesManager::getInstance();
+	fileManager.cargarCursos();   
     auto& hashCursos = fileManager.getIndiceCursos();
 
     // Solución: Usar iteradores explícitos para recorrer el hash table  
