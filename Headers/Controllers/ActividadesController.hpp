@@ -87,8 +87,6 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 	int cantidad = 0;
 	double ingreso = 0.0, porcentaje = 0.0;
 
-	
-
 	auto textoDouble = [](double valor) {
 		auto decimalEnteroMuestra = [](double numero) {
 			int nuevo = numero * 100;

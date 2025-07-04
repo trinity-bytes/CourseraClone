@@ -215,6 +215,11 @@ private:
     /// @return ID del curso
     inline int obtenerIdCurso(int indice);
 
+    /// @brief Obtiene el ID de la especialidad seleccionaao
+    /// @param indice Índice de la especialidad
+    /// @return ID de la especialidad
+    inline int obtenerIdEspecialidad(int indice);
+
     /// @brief Determina la siguiente pantalla según la selección actual
     /// @return Pantalla a mostrar o NONE si no hay cambio
     inline Pantalla getSiguientePantalla();
@@ -618,6 +623,15 @@ inline int LandingPageScreen::obtenerIdCurso(int indice)
     return -1;
 }
 
+inline int LandingPageScreen::obtenerIdEspecialidad(int indice)
+{
+    if (indice >= 0 && indice < _cursos.size()) {
+        return _especialidades[indice].id;
+    }
+    return -1;
+}
+
+
 inline Pantalla LandingPageScreen::getSiguientePantalla()
 {
     if (_seccionActual == SECCION_CABECERA) {
@@ -705,7 +719,7 @@ inline void LandingPageScreen::procesarSeleccionCurso(ResultadoPantalla& resulta
 inline void LandingPageScreen::procesarSeleccionEspecialidad(ResultadoPantalla& resultado)
 {
     if (_elementoActual < _especialidades.size()) {
-        int idEspecializacionSeleccionada = obtenerIdCurso(_elementoActual);
+        int idEspecializacionSeleccionada = obtenerIdEspecialidad(_elementoActual);
 		ContentManager::getInstance().setEspecializacionIdMostar(idEspecializacionSeleccionada);
         resultado.idCursoSeleccionado = idEspecializacionSeleccionada;
         resultado.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
