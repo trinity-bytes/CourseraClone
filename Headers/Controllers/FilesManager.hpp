@@ -306,7 +306,7 @@ public:
     /// @return Datos del curso encontrado, o estructura vacía si no se encuentra
     bool buscarCursoPorNombreHash(const std::string& nombre, RawCursoData& resultado);
 
-    void FilesManager::cargarCursos();
+    void cargarCursos();
 
     /// @brief Busca un curso por su ID en la tabla hash
     int obtenerIdCursoPorNombre(const std::string& nombreCurso);

@@ -39,6 +39,21 @@
     <ClCompile Include="Source\CourseraCloneApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Utils\QR\qrcodegen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\QR\QRCodeGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\QRTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\QRCapacityTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TestAutocontainedQR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">
@@ -76,7 +91,7 @@
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\HashTableMethods.hpp">
+    <ClInclude Include="Headers\DataStructures\HashTable.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\LinkedList.hpp">
@@ -267,6 +282,18 @@
     </ClInclude>
     <ClInclude Include="Headers\Screens\EstadisticasEmpresaScreen.hpp">
       <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\qrcodegen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\QRCodeGenerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\QRDemo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\AutocontainedQR.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

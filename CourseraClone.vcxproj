@@ -157,9 +157,12 @@
     <ClCompile Include="Source\CourseraCloneApp.cpp" />
     <ClCompile Include="Source\Utils\QR\qrcodegen.cpp" />
     <ClCompile Include="Source\Utils\QR\QRCodeGenerator.cpp" />
-    <ClCompile Include="Source\QRTest.cpp" /> <!-- Habilitado para testing -->
-    <ClCompile Include="Source\QRCapacityTest.cpp" /> <!-- Test de capacidad -->
-    <ClCompile Include="Source\TestAutocontainedQR.cpp" /> <!-- Test QR autocontenidos -->
+    <ClCompile Include="Source\QRTest.cpp" />
+    <!-- Habilitado para testing -->
+    <ClCompile Include="Source\QRCapacityTest.cpp" />
+    <!-- Test de capacidad -->
+    <ClCompile Include="Source\TestAutocontainedQR.cpp" />
+    <!-- Test QR autocontenidos -->
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -183,7 +186,7 @@
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\BinaryHeap.hpp" />
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.hpp" />
-    <ClInclude Include="Headers\DataStructures\HashTableMethods.hpp" />
+    <ClInclude Include="Headers\DataStructures\HashTable.hpp" />
     <ClInclude Include="Headers\DataStructures\LinkedList.hpp" />
     <ClInclude Include="Headers\DataStructures\Nodo.hpp" />
     <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
@@ -245,7 +248,6 @@
     <ClInclude Include="Headers\Utils\SystemUtils.hpp" />
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp" />
     <ClInclude Include="Headers\Utils\ValidationUtils.hpp" />
-    
     <!-- QR Code Generator -->
     <ClInclude Include="Headers\Utils\QR\qrcodegen.hpp" />
     <ClInclude Include="Headers\Utils\QR\QRCodeGenerator.hpp" />

@@ -368,7 +368,7 @@ inline std::unique_ptr<PantallaBase> MainController::_crearPantallaConHistorial(
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActualPtr = crearPantallaVerBoletas();
+    std::unique_ptr<PantallaBase> _pantallaActualPtr = crearPantallaLandingPage();
     
     do
     {
