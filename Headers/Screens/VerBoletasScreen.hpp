@@ -31,27 +31,37 @@ private:
     // Datos simulados de comprobantes
     std::vector<ComprobanteDePago> _comprobantes;
     
-    // Constantes para la interfaz
-    static const int COL_TITULO = 45;
-    static const int FILA_TITULO = 4;
-    static const int COL_VOLVER = 100;
-    static const int FILA_VOLVER = 4;
+    // COORDENADAS PARA EL SISTEMA DE POSICIONAMIENTO
+    /// @brief Coordenadas para elementos principales
+    static const short LISTA_INICIO_X = 8;
+    static const short LISTA_INICIO_Y = 8;
+    static const short ALTURA_COMPROBANTE = 2;
+    static const short ANCHO_COMPROBANTE = 90;
     
-    static const int COL_LISTA_COMPROBANTES = 15;
-    static const int FILA_LISTA_COMPROBANTES = 8;
-    static const int ESPACIO_ENTRE_COMPROBANTES = 3;
-    static const int ANCHO_COMPROBANTE = 90;
+    /// @brief Coordenadas para la información de paginación
+    const COORD _coordsPaginacion = {8, 27};
+    const COORD _coordsIndicadorPrevio = {60, 27};
+    const COORD _coordsIndicadorSiguiente = {60, 27};
+    
+    /// @brief Coordenadas para los campos de cada comprobante
+    struct CoordsComprobante {
+        COORD numero;      // Número de comprobante
+        COORD fecha;       // Fecha de emisión
+        COORD actividad;   // Nombre de la actividad
+        COORD monto;       // Monto pagado
+        COORD estado;      // Estado del comprobante
+    };
     
     // ---- MÉTODOS PRIVADOS ----
     
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
+    inline void _cargarDatosEjemplo();
     
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
-    inline void _renderizarTitulo();
-    inline void _renderizarBotonVolver();
     inline void _renderizarListaComprobantes();
+    inline void _renderizarComprobante(const ComprobanteDePago& comprobante, int indice, bool seleccionado);
     inline void _renderizarIndicadoresPaginacion();
     inline void _mostrarQRComprobante(const ComprobanteDePago& comprobante);
     inline void _actualizarSeleccion();
@@ -63,6 +73,10 @@ private:
     
     /// @brief Métodos de procesamiento
     inline ResultadoPantalla _procesarSeleccion();
+    
+    /// @brief Métodos utilitarios
+    inline CoordsComprobante _calcularCoordenadasComprobante(int indice);
+    inline std::string _formatearMonto(double monto);
 
 public:
     inline VerBoletasScreen(AccionPantalla pantallaAnterior = AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
@@ -79,6 +93,7 @@ inline VerBoletasScreen::VerBoletasScreen(AccionPantalla pantallaAnterior) : Pan
     _pantallaAnterior(pantallaAnterior), _primeraRenderizacion(true), 
     _comprobanteSeleccionado(0), _indiceInicio(0), _comprobantesPorPagina(8)
 {
+    _cargarDatosEjemplo();
 }
 
 // Limpiar estado
@@ -89,43 +104,64 @@ inline void VerBoletasScreen::_limpiarEstado()
     _primeraRenderizacion = true;
 }
 
+// Cargar datos de ejemplo para pruebas
+inline void VerBoletasScreen::_cargarDatosEjemplo()
+{
+    _comprobantes.clear();
+    
+    // Generar algunos comprobantes de ejemplo
+    _comprobantes.push_back(ComprobanteDePago(1, 1001, 101, TipoActividad::CURSO, 99.0));
+    _comprobantes.push_back(ComprobanteDePago(2, 1001, 102, TipoActividad::ESPECIALIZACION, 199.0));
+    _comprobantes.push_back(ComprobanteDePago(3, 1001, 103, TipoActividad::CURSO, 149.0));
+    _comprobantes.push_back(ComprobanteDePago(4, 1001, 104, TipoActividad::ESPECIALIZACION, 299.0));
+    _comprobantes.push_back(ComprobanteDePago(5, 1001, 105, TipoActividad::CURSO, 79.0));
+    _comprobantes.push_back(ComprobanteDePago(6, 1001, 106, TipoActividad::CURSO, 119.0));
+    _comprobantes.push_back(ComprobanteDePago(7, 1001, 107, TipoActividad::ESPECIALIZACION, 249.0));
+    _comprobantes.push_back(ComprobanteDePago(8, 1001, 108, TipoActividad::CURSO, 89.0));
+    _comprobantes.push_back(ComprobanteDePago(8, 1001, 108, TipoActividad::CURSO, 89.0));
+    _comprobantes.push_back(ComprobanteDePago(8, 1001, 108, TipoActividad::CURSO, 89.0));
+}
+
 // Dibujar interfaz completa
 inline void VerBoletasScreen::dibujarInterfazCompleta()
 {
     system("cls");
     UI_ComprobanteDePago();
     
-    _renderizarTitulo();
-    _renderizarBotonVolver();
     _renderizarListaComprobantes();
     _renderizarIndicadoresPaginacion();
     
     resetColor();
 }
 
-// Renderizar título
-inline void VerBoletasScreen::_renderizarTitulo()
+// Calcular coordenadas para un comprobante específico
+inline VerBoletasScreen::CoordsComprobante VerBoletasScreen::_calcularCoordenadasComprobante(int indice)
 {
-    gotoXY(COL_TITULO, FILA_TITULO);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "MIS COMPROBANTES DE PAGO";
-    resetColor();
+    short fila = static_cast<short>(LISTA_INICIO_Y + (indice * ALTURA_COMPROBANTE));
+    
+    CoordsComprobante coords;
+    coords.numero = {LISTA_INICIO_X, fila};
+    coords.fecha = {static_cast<short>(LISTA_INICIO_X + 8), fila};
+    coords.actividad = {static_cast<short>(LISTA_INICIO_X + 20), fila};
+    coords.monto = {static_cast<short>(LISTA_INICIO_X + 65), fila};
+    coords.estado = {static_cast<short>(LISTA_INICIO_X + 78), fila};
+    
+    return coords;
 }
 
-// Renderizar botón volver
-inline void VerBoletasScreen::_renderizarBotonVolver()
+// Formatear monto con símbolo de moneda
+inline std::string VerBoletasScreen::_formatearMonto(double monto)
 {
-    gotoXY(COL_VOLVER, FILA_VOLVER);
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "[ ESC - VOLVER ]";
-    resetColor();
+    std::ostringstream oss;
+    oss << "S/ " << std::fixed << std::setprecision(2) << monto;
+    return oss.str();
 }
 
-// Renderizar lista de comprobantes
+// Renderizar lista de comprobantes usando coordenadas
 inline void VerBoletasScreen::_renderizarListaComprobantes()
 {
     if (_comprobantes.empty()) {
-        gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + 2);
+        gotoXY(LISTA_INICIO_X, LISTA_INICIO_Y + 2);
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         std::cout << "No tienes comprobantes de pago registrados.";
         resetColor();
@@ -136,21 +172,66 @@ inline void VerBoletasScreen::_renderizarListaComprobantes()
                                       static_cast<int>(_comprobantes.size()) - _indiceInicio);
     
     for (int i = 0; i < comprobantesAMostrar; ++i) {
-        int indice = _indiceInicio + i;
-        const ComprobanteDePago& comprobante = _comprobantes[indice];
+        int indiceGlobal = _indiceInicio + i;
+        const ComprobanteDePago& comprobante = _comprobantes[indiceGlobal];
+        bool seleccionado = (_comprobanteSeleccionado == i);
         
-        int fila = FILA_LISTA_COMPROBANTES + i * ESPACIO_ENTRE_COMPROBANTES;
-
-        
-        resetColor();
+        _renderizarComprobante(comprobante, i, seleccionado);
     }
 }
 
-// Renderizar indicadores de paginación
+// Renderizar un comprobante individual con coordenadas precisas
+inline void VerBoletasScreen::_renderizarComprobante(const ComprobanteDePago& comprobante, int indice, bool seleccionado)
+{
+    CoordsComprobante coords = _calcularCoordenadasComprobante(indice);
+    
+    // Obtener datos del comprobante usando el método público
+    RawComprobanteData datos = const_cast<ComprobanteDePago&>(comprobante).obtenerDatosCrudosComprobante();
+    
+    // Configurar colores según selección
+    if (seleccionado) {
+        setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
+    } else {
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+    }
+    
+    // Limpiar línea completa
+    gotoXY(LISTA_INICIO_X, coords.numero.Y);
+    std::cout << std::string(ANCHO_COMPROBANTE, ' ');
+    
+    // Renderizar campos del comprobante
+    // Número de comprobante
+    gotoXY(coords.numero.X, coords.numero.Y);
+    std::cout << "#" << std::setfill('0') << std::setw(4) << datos.id;
+    
+    // Fecha de emisión
+    gotoXY(coords.fecha.X, coords.fecha.Y);
+    std::cout << datos.fechaEmision;
+    
+    // Tipo y nombre de actividad (simulado)
+    gotoXY(coords.actividad.X, coords.actividad.Y);
+    std::string tipoActividad = (datos.tipoActividad == TipoActividad::CURSO) ? "Curso" : "Especialización";
+    std::cout << tipoActividad << " #" << datos.idActividad;
+    
+    // Monto pagado
+    gotoXY(coords.monto.X, coords.monto.Y);
+    std::cout << _formatearMonto(datos.montoPagado);
+    
+    // Estado (siempre "Pagado" para comprobantes existentes)
+    gotoXY(coords.estado.X, coords.estado.Y);
+    setConsoleColor(ColorIndex::EXITO_COLOR, seleccionado ? ColorIndex::AZUL_MARCA : ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "PAGADO";
+    
+    resetColor();
+}
+
+// Renderizar indicadores de paginación usando coordenadas
 inline void VerBoletasScreen::_renderizarIndicadoresPaginacion()
 {
+    if (_comprobantes.empty()) return;
+    
     // Información de página actual
-    gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + _comprobantesPorPagina * ESPACIO_ENTRE_COMPROBANTES + 1);
+    gotoXY(_coordsPaginacion.X, _coordsPaginacion.Y);
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     
     int paginaActual = (_indiceInicio / _comprobantesPorPagina) + 1;
@@ -159,61 +240,73 @@ inline void VerBoletasScreen::_renderizarIndicadoresPaginacion()
     std::cout << "Página " << paginaActual << " de " << totalPaginas 
               << " | Total: " << _comprobantes.size() << " comprobantes";
     
-    // Instrucciones de uso
-    gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + _comprobantesPorPagina * ESPACIO_ENTRE_COMPROBANTES + 3);
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "ENTER - Ver código QR | ↑↓ - Navegar | ESC - Volver";
-    
     // Indicadores de navegación
     if (_indiceInicio > 0) {
-        gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES - 1);
+        gotoXY(_coordsIndicadorPrevio.X, _coordsIndicadorPrevio.Y);
         setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "↑ Flecha ARRIBA para ver anteriores";
+        std::cout << "↑ Flecha ARRIBA para ver anteriores ";
     }
     
     if (_indiceInicio + _comprobantesPorPagina < _comprobantes.size()) {
-        gotoXY(COL_LISTA_COMPROBANTES, FILA_LISTA_COMPROBANTES + _comprobantesPorPagina * ESPACIO_ENTRE_COMPROBANTES + 5);
+        gotoXY(_coordsIndicadorSiguiente.X, _coordsIndicadorSiguiente.Y);
         setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "↓ Flecha ABAJO para ver siguientes";
+        std::cout << "↓ Flecha ABAJO para ver siguientes  ";
     }
     
     resetColor();
 }
 
-// Mostrar QR para el comprobante
+// Mostrar QR para el comprobante usando coordenadas
 inline void VerBoletasScreen::_mostrarQRComprobante(const ComprobanteDePago& comprobante)
 {
     system("cls");
     
+    // Obtener datos del comprobante usando el método público
+    RawComprobanteData datos = const_cast<ComprobanteDePago&>(comprobante).obtenerDatosCrudosComprobante();
+    
+    // Coordenadas para el QR
+    const COORD coordsTituloQR = {35, 3};
+    const COORD coordsQR = {35, 11};
+    const COORD coordsInfoComprobante = {20, 23};
+    
     // Título de la pantalla del QR
-    gotoXY(35, 3);
+    gotoXY(coordsTituloQR.X, coordsTituloQR.Y);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
     std::cout << "COMPROBANTE DE PAGO - CÓDIGO QR";
     
     // QR ASCII simulado (representación visual simple)
-    gotoXY(35, 11);
+    for (int i = 0; i < 11; ++i) {
+        gotoXY(coordsQR.X, coordsQR.Y + i);
+        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+        switch (i) {
+            case 0:
+            case 10:
+                std::cout << "████████████████████████████████";
+                break;
+            case 1:
+            case 9:
+                std::cout << "██                            ██";
+                break;
+            default:
+                std::cout << "██  ████  ██████  ████  ████  ██";
+                break;
+        }
+    }
+    
+    // Información del comprobante
+    gotoXY(coordsInfoComprobante.X, coordsInfoComprobante.Y);
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "████████████████████████████████";
-    gotoXY(35, 12);
-    std::cout << "██                            ██";
-    gotoXY(35, 13);
-    std::cout << "██  ████  ██████  ████  ████  ██";
-    gotoXY(35, 14);
-    std::cout << "██  ████  ██████  ████  ████  ██";
-    gotoXY(35, 15);
-    std::cout << "██        ██████        ████  ██";
-    gotoXY(35, 16);
-    std::cout << "██  ████        ██████  ████  ██";
-    gotoXY(35, 17);
-    std::cout << "██  ████  ██████  ████  ████  ██";
-    gotoXY(35, 18);
-    std::cout << "██        ██████        ████  ██";
-    gotoXY(35, 19);
-    std::cout << "██  ████  ██████  ████  ████  ██";
-    gotoXY(35, 20);
-    std::cout << "██                            ██";
-    gotoXY(35, 21);
-    std::cout << "████████████████████████████████";
+    std::cout << "Comprobante #" << std::setfill('0') << std::setw(4) << datos.id;
+    
+    gotoXY(coordsInfoComprobante.X, coordsInfoComprobante.Y + 1);
+    std::cout << "Fecha: " << datos.fechaEmision;
+    
+    gotoXY(coordsInfoComprobante.X, coordsInfoComprobante.Y + 2);
+    std::cout << "Monto: " << _formatearMonto(datos.montoPagado);
+    
+    gotoXY(coordsInfoComprobante.X, coordsInfoComprobante.Y + 4);
+    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "Presiona cualquier tecla para volver...";
     
     resetColor();
     
