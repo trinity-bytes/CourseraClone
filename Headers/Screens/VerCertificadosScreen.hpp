@@ -15,6 +15,8 @@
 #include "../Utils/UI_Ascii.hpp"
 #include "../Utils/InputUtils.hpp"
 #include "../Utils/ValidationUtils.hpp"
+#include "../Controllers/ContentManager.hpp"
+#include "../Controllers/SessionManager.hpp"
 #include "../Types/UsuarioTypes.hpp"
 
 /// Pantalla para visualizar certificados obtenidos por el estudiante
@@ -47,40 +49,48 @@ private:
     
     std::vector<Certificado> _certificados;
     
-    // Constantes para la interfaz
-    static const int COL_CERTIFICADO = 10;
-    static const int FILA_CERTIFICADO = 9;
-    static const int ANCHO_CERTIFICADO = 95;
-    static const int ALTO_CERTIFICADO = 15;
+    // === SISTEMA DE COORDENADAS BASADO EN POSICIONAMIENTO MANUAL ===
     
-    static const int COL_NAVEGACION = 30;
-    static const int FILA_NAVEGACION = 27;
+    /// @brief Coordenadas para elementos del certificado principal
+    COORD _coordNombreEstudiante = {38, 18};
+    COORD _coordNombreCurso = {36, 22};
     
-    static const int COL_BOTONES = 45;
-    static const int FILA_BOTONES = 27;
+    /// @brief Coordenadas para información adicional del certificado
+    COORD _coordInstructor = {9, 24};
+    COORD _coordFecha = {59, 24};
+    COORD _coordIdCertificado = {79, 24};
+    
+    /// @brief Coordenadas para navegación y botones
+    COORD _coordNavegacion = {79, 27};
+    
+    // === SISTEMA DE LIMPIEZA DINÁMICA ===
+    /// @brief Variables para recordar textos anteriores y hacer limpieza dinámica
+    std::string _nombreEstudianteAnterior;
+    std::string _nombreCursoAnterior;
+    std::string _instructorAnterior;
+    std::string _fechaAnterior;
+    std::string _idCertificadoAnterior;
+    std::string _navegacionAnterior;
     
     // ---- MÉTODOS PRIVADOS ----
     
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
-    inline void _cargarCertificadosEjemplo();
+    inline void _cargarCertificadosReales();
+    inline void _cargarCertificadosEjemplo(); // Mantener como fallback
     
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
     inline void _renderizarCertificadoActual();
     inline void _renderizarNavegacion();
-    inline void _renderizarBotones();
-    inline void _renderizarInstrucciones();
-    inline void _mostrarDetallesCertificado();
+    inline void _limpiarTextoAnterior(); // Nuevo método de limpieza dinámica
     
     /// @brief Métodos de navegación
     inline void _navegarAnterior();
     inline void _navegarSiguiente();
-    inline void _simularDescargarPDF();
     
     /// @brief Métodos de utilidad
     inline std::string _formatearFecha(const std::string& fecha);
-    inline std::string _formatearCalificacion(double calificacion);
 
 public:
     inline VerCertificadosScreen(AccionPantalla pantallaAnterior = AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE);
@@ -97,7 +107,7 @@ inline VerCertificadosScreen::VerCertificadosScreen(AccionPantalla pantallaAnter
     _pantallaAnterior(pantallaAnterior), _primeraRenderizacion(true), 
     _certificadoActual(0), _totalCertificados(0)
 {
-    _cargarCertificadosEjemplo();
+    _cargarCertificadosReales();
 }
 
 // Limpiar estado
@@ -105,6 +115,97 @@ inline void VerCertificadosScreen::_limpiarEstado()
 {
     _certificadoActual = 0;
     _primeraRenderizacion = true;
+    
+    // Limpiar strings de control de limpieza dinámica
+    _nombreEstudianteAnterior.clear();
+    _nombreCursoAnterior.clear();
+    _instructorAnterior.clear();
+    _fechaAnterior.clear();
+    _idCertificadoAnterior.clear();
+    _navegacionAnterior.clear();
+}
+
+// Cargar certificados reales desde ContentManager y SessionManager
+inline void VerCertificadosScreen::_cargarCertificadosReales()
+{
+    _certificados.clear();
+    
+    // Verificar si hay sesión activa
+    SessionManager& sessionManager = SessionManager::getInstance();
+    if (!sessionManager.isLoggedIn()) {
+        // Si no hay sesión, usar datos de ejemplo
+        _cargarCertificadosEjemplo();
+        return;
+    }
+    
+    // Obtener datos del usuario actual
+    Usuario usuarioActual = sessionManager.getCurrentUser();
+    if (usuarioActual.getTipoUsuario() != TipoUsuario::ESTUDIANTE) {
+        // Si no es estudiante, no tiene certificados
+        _totalCertificados = 0;
+        return;
+    }
+    
+    // Obtener ContentManager
+    ContentManager& contentManager = ContentManager::getInstance();
+    
+    // Obtener inscripciones del estudiante
+    std::vector<InscripcionBinaria> inscripciones = contentManager.obtenerInscripcionesEstudiante(usuarioActual.getId());
+    
+    // Procesar solo las inscripciones completadas para generar certificados
+    int certificadoId = 1;
+    for (const auto& inscripcion : inscripciones) {
+        if (inscripcion.completado) {
+            Certificado cert;
+            cert.id = certificadoId++;
+            cert.nombreEstudiante = usuarioActual.getNombreCompleto();
+            
+            // Obtener datos del curso o especialización según el tipo
+            if (static_cast<TipoActividad>(inscripcion.tipoActividad) == TipoActividad::CURSO) {
+                RawCursoData cursoData = contentManager.obtenerCursoDatos(inscripcion.idActividad);
+                if (cursoData.id != -1) {
+                    cert.nombreCurso = cursoData.titulo;
+                    cert.tipoCurso = "Curso";
+                    cert.instructor = cursoData.instructor;
+                    cert.categoria = RawActividadData::categoriaToString(cursoData.categoria);
+                    cert.duracionHoras = cursoData.cantidadClases * 2; // Estimación de 2 horas por clase
+                    cert.esEspecializacion = false;
+                }
+            } else {
+                RawEspecializacionData espData = contentManager.obtenerEspecializacionDatos(inscripcion.idActividad);
+                if (espData.id != -1) {
+                    cert.nombreCurso = espData.titulo;
+                    cert.tipoCurso = "Especialización";
+                    cert.instructor = "Equipo de " + espData.nombreEmpresa;
+                    cert.categoria = RawActividadData::categoriaToString(espData.categoria);
+                    cert.duracionHoras = espData.duracionEstimada * 8; // Estimación de 8 horas por semana
+                    cert.esEspecializacion = true;
+                }
+            }
+            
+            // Generar fechas ficticias pero realistas
+            cert.fechaFinalizacion = "15/06/2025";
+            cert.fechaEmision = "16/06/2025";
+            
+            // Generar calificación aleatoria alta (como certificado completado)
+            cert.calificacion = 85.0 + (rand() % 15); // Entre 85 y 100
+            
+            // Generar ID único del certificado
+            std::ostringstream oss;
+            oss << "CERT" << std::setfill('0') << std::setw(3) << cert.id 
+                << "-" << (cert.esEspecializacion ? "ESP" : "CUR") << "-2025";
+            cert.idCertificado = oss.str();
+            
+            _certificados.push_back(cert);
+        }
+    }
+    
+    _totalCertificados = _certificados.size();
+    
+    // Si no hay certificados reales, usar algunos de ejemplo para demostración
+    if (_totalCertificados == 0) {
+        _cargarCertificadosEjemplo();
+    }
 }
 
 // Cargar certificados de ejemplo
@@ -157,36 +258,6 @@ inline void VerCertificadosScreen::_cargarCertificadosEjemplo()
         false
     });
     
-    _certificados.push_back({
-        4,
-        "Bases de Datos Avanzadas con PostgreSQL",
-        "Curso",
-        "Juan Carlos Perez Rodriguez",
-        "MSc. Roberto Luis Fernandez",
-        "25/03/2025",
-        "26/03/2025",
-        89.1,
-        "CERT004-DB-2025",
-        35,
-        "Bases de Datos",
-        false
-    });
-    
-    _certificados.push_back({
-        5,
-        "Especialización en Ciberseguridad",
-        "Especialización",
-        "Juan Carlos Perez Rodriguez",
-        "Dr. Patricia Isabel Morales",
-        "15/02/2025",
-        "16/02/2025",
-        94.8,
-        "CERT005-SEC-2025",
-        150,
-        "Seguridad Informatica",
-        true
-    });
-    
     _totalCertificados = _certificados.size();
 }
 
@@ -198,13 +269,51 @@ inline void VerCertificadosScreen::dibujarInterfazCompleta()
     
     _renderizarCertificadoActual();
     _renderizarNavegacion();
-    _renderizarBotones();
-    _renderizarInstrucciones();
     
     resetColor();
 }
 
-// Renderizar certificado actual
+// Método de limpieza dinámica - Solo limpia las zonas donde hubo texto anterior
+inline void VerCertificadosScreen::_limpiarTextoAnterior()
+{
+    // Limpiar nombre del estudiante anterior
+    if (!_nombreEstudianteAnterior.empty()) {
+        gotoXY(_coordNombreEstudiante.X, _coordNombreEstudiante.Y);
+        std::cout << std::string(_nombreEstudianteAnterior.length(), ' ');
+    }
+    
+    // Limpiar nombre del curso anterior
+    if (!_nombreCursoAnterior.empty()) {
+        gotoXY(_coordNombreCurso.X, _coordNombreCurso.Y);
+        std::cout << std::string(_nombreCursoAnterior.length(), ' ');
+    }
+    
+    // Limpiar instructor anterior
+    if (!_instructorAnterior.empty()) {
+        gotoXY(_coordInstructor.X, _coordInstructor.Y);
+        std::cout << std::string(_instructorAnterior.length(), ' ');
+    }
+    
+    // Limpiar fecha anterior
+    if (!_fechaAnterior.empty()) {
+        gotoXY(_coordFecha.X, _coordFecha.Y);
+        std::cout << std::string(_fechaAnterior.length(), ' ');
+    }
+    
+    // Limpiar ID certificado anterior
+    if (!_idCertificadoAnterior.empty()) {
+        gotoXY(_coordIdCertificado.X, _coordIdCertificado.Y);
+        std::cout << std::string(_idCertificadoAnterior.length(), ' ');
+    }
+    
+    // Limpiar navegación anterior
+    if (!_navegacionAnterior.empty()) {
+        gotoXY(_coordNavegacion.X, _coordNavegacion.Y);
+        std::cout << std::string(_navegacionAnterior.length(), ' ');
+    }
+}
+
+// Renderizar certificado actual usando coordenadas con limpieza dinámica
 inline void VerCertificadosScreen::_renderizarCertificadoActual()
 {
     if (_certificados.empty()) {
@@ -217,168 +326,72 @@ inline void VerCertificadosScreen::_renderizarCertificadoActual()
     
     const auto& cert = _certificados[_certificadoActual];
     
-    // Limpiar área del certificado primero
-    setConsoleColor(ColorIndex::FONDO_PRINCIPAL, ColorIndex::FONDO_PRINCIPAL);
-    for (int y = 11; y < 23; y++) {
-        for (int x = 15; x < 100; x++) {
-            gotoXY(x, y);
-            std::cout << " ";
-        }
-    }
+    // PASO 1: Limpiar exactamente las zonas donde hubo texto anterior
+    _limpiarTextoAnterior();
     
-    // Título del certificado
-    gotoXY(45, 11);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "CERTIFICADO DE FINALIZACION";
-    
-    // Logo/Marca
-    gotoXY(20, 13);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "COURSERA CLONE";
-    
-    // Texto principal
-    gotoXY(20, 15);
-    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Por la presente certifica que:";
+    // PASO 2: Renderizar nuevo contenido y recordar lo que escribimos
     
     // Nombre del estudiante
-    gotoXY(40, 17);
+    gotoXY(_coordNombreEstudiante.X, _coordNombreEstudiante.Y);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
     std::cout << cert.nombreEstudiante;
-    
-    // Texto de completación
-    gotoXY(20, 19);
-    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Ha completado satisfactoriamente el " << cert.tipoCurso << ":";
+    _nombreEstudianteAnterior = cert.nombreEstudiante; // Recordar lo que escribimos
     
     // Nombre del curso
-    gotoXY(35, 21);
+    gotoXY(_coordNombreCurso.X, _coordNombreCurso.Y);
     setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
     std::cout << cert.nombreCurso;
+    _nombreCursoAnterior = cert.nombreCurso; // Recordar lo que escribimos
     
-    // Información adicional
-    gotoXY(20, 23);
+    // Instructor con formato completo
+    gotoXY(_coordInstructor.X, _coordInstructor.Y);
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Instructor: " << cert.instructor;
+    std::string textoInstructor = "Instructor: " + cert.instructor;
+    std::cout << textoInstructor;
+    _instructorAnterior = textoInstructor; // Recordar lo que escribimos
     
-    gotoXY(55, 23);
-    std::cout << "Fecha: " << _formatearFecha(cert.fechaFinalizacion);
+    // Fecha con formato completo
+    gotoXY(_coordFecha.X, _coordFecha.Y);
+    std::string textoFecha = "Fecha: " + _formatearFecha(cert.fechaFinalizacion);
+    std::cout << textoFecha;
+    _fechaAnterior = textoFecha; // Recordar lo que escribimos
     
-    gotoXY(20, 24);
-    std::cout << "Calificacion: " << _formatearCalificacion(cert.calificacion);
-    
-    gotoXY(55, 24);
-    std::cout << "ID Certificado: " << cert.idCertificado;
+    // ID Certificado con formato completo
+    gotoXY(_coordIdCertificado.X, _coordIdCertificado.Y);
+    std::string textoId = "ID Certificado: " + cert.idCertificado;
+    std::cout << textoId;
+    _idCertificadoAnterior = textoId; // Recordar lo que escribimos
     
     resetColor();
 }
 
-// Renderizar navegación
+// Renderizar navegación usando coordenadas con limpieza dinámica
 inline void VerCertificadosScreen::_renderizarNavegacion()
 {
-    if (_totalCertificados <= 1) return;
-    
-    gotoXY(COL_NAVEGACION, FILA_NAVEGACION);
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "< ANTERIOR     [" << (_certificadoActual + 1) << "/" << _totalCertificados << "]     SIGUIENTE >";
-    resetColor();
-}
-
-// Renderizar botones
-inline void VerCertificadosScreen::_renderizarBotones()
-{
-    gotoXY(COL_BOTONES, FILA_BOTONES);
-    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-    std::cout << " VER DETALLES ";
-    
-    gotoXY(COL_BOTONES + 18, FILA_BOTONES);
-    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
-    std::cout << " DESCARGAR PDF ";
-    
-    resetColor();
-}
-
-// Renderizar instrucciones
-inline void VerCertificadosScreen::_renderizarInstrucciones()
-{
-    gotoXY(15, 35);
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Navegacion: ";
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "[FLECHAS IZQUIERDA/DERECHA] ";
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "| Ver detalles: ";
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "[ENTER] ";
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "| Descargar: ";
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "[D] ";
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "| Volver: ";
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "[ESC]";
-    resetColor();
-}
-
-// Mostrar detalles del certificado
-inline void VerCertificadosScreen::_mostrarDetallesCertificado()
-{
-    if (_certificados.empty()) return;
-    
-    const auto& cert = _certificados[_certificadoActual];
-    
-    system("cls");
-    
-    gotoXY(35, 8);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "DETALLES DEL CERTIFICADO";
-    
-    gotoXY(20, 11);
-    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "ID del Certificado: " << cert.idCertificado;
-    
-    gotoXY(20, 12);
-    std::cout << "Tipo de Contenido: " << cert.tipoCurso;
-    
-    gotoXY(20, 13);
-    std::cout << "Nombre: " << cert.nombreCurso;
-    
-    gotoXY(20, 14);
-    std::cout << "Categoria: " << cert.categoria;
-    
-    gotoXY(20, 15);
-    std::cout << "Estudiante: " << cert.nombreEstudiante;
-    
-    gotoXY(20, 16);
-    std::cout << "Instructor: " << cert.instructor;
-    
-    gotoXY(20, 17);
-    std::cout << "Duracion: " << cert.duracionHoras << " horas academicas";
-    
-    gotoXY(20, 18);
-    std::cout << "Fecha de Finalizacion: " << _formatearFecha(cert.fechaFinalizacion);
-    
-    gotoXY(20, 19);
-    std::cout << "Fecha de Emision: " << _formatearFecha(cert.fechaEmision);
-    
-    gotoXY(20, 20);
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Calificacion Final: " << _formatearCalificacion(cert.calificacion);
-    
-    if (cert.esEspecializacion) {
-        gotoXY(20, 22);
-        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "ESPECIALIZACION COMPLETADA - Credito Academico Valido";
+    if (_totalCertificados <= 1) {
+        // Si no hay navegación necesaria, limpiar la anterior si existía
+        if (!_navegacionAnterior.empty()) {
+            gotoXY(_coordNavegacion.X, _coordNavegacion.Y);
+            std::cout << std::string(_navegacionAnterior.length(), ' ');
+            _navegacionAnterior.clear();
+        }
+        return;
     }
     
-    gotoXY(30, 25);
-    setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::AZUL_MARCA);
-    std::cout << " Presiona cualquier tecla para volver ";
-    resetColor();
+    // Limpiar navegación anterior antes de escribir la nueva
+    if (!_navegacionAnterior.empty()) {
+        gotoXY(_coordNavegacion.X, _coordNavegacion.Y);
+        std::cout << std::string(_navegacionAnterior.length(), ' ');
+    }
     
-    _getch();
-    _primeraRenderizacion = true;
+    // Renderizar nueva navegación
+    gotoXY(_coordNavegacion.X, _coordNavegacion.Y);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::string textoNavegacion = "< ANTERIOR     [" + std::to_string(_certificadoActual + 1) + "/" + std::to_string(_totalCertificados) + "]     SIGUIENTE >";
+    std::cout << textoNavegacion;
+    _navegacionAnterior = textoNavegacion; // Recordar lo que escribimos
+    
+    resetColor();
 }
 
 // Navegar al certificado anterior
@@ -386,6 +399,7 @@ inline void VerCertificadosScreen::_navegarAnterior()
 {
     if (_certificadoActual > 0) {
         _certificadoActual--;
+        // Solo renderizar las partes que cambiaron (limpieza dinámica automática)
         _renderizarCertificadoActual();
         _renderizarNavegacion();
     }
@@ -396,60 +410,16 @@ inline void VerCertificadosScreen::_navegarSiguiente()
 {
     if (_certificadoActual < _totalCertificados - 1) {
         _certificadoActual++;
+        // Solo renderizar las partes que cambiaron (limpieza dinámica automática)
         _renderizarCertificadoActual();
         _renderizarNavegacion();
     }
 }
 
-// Simular descarga de PDF
-inline void VerCertificadosScreen::_simularDescargarPDF()
-{
-    if (_certificados.empty()) return;
-    
-    const auto& cert = _certificados[_certificadoActual];
-    
-    gotoXY(20, 30);
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Descargando certificado " << cert.idCertificado << ".pdf...";
-    resetColor();
-    
-    // Simular progreso de descarga
-    for (int i = 0; i <= 10; i++) {
-        gotoXY(20, 31);
-        setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Progreso: [";
-        for (int j = 0; j < i; j++) {
-            std::cout << "=";
-        }
-        for (int j = i; j < 10; j++) {
-            std::cout << " ";
-        }
-        std::cout << "] " << (i * 10) << "%";
-        resetColor();
-        Sleep(200);
-    }
-    
-    gotoXY(20, 32);
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Descarga completada! Archivo guardado en Descargas/";
-    resetColor();
-    
-    Sleep(2000);
-    _primeraRenderizacion = true;
-}
-
 // Formatear fecha
 inline std::string VerCertificadosScreen::_formatearFecha(const std::string& fecha)
 {
-    return fecha; // En una implementación real, se podría formatear la fecha
-}
-
-// Formatear calificación
-inline std::string VerCertificadosScreen::_formatearCalificacion(double calificacion)
-{
-    std::ostringstream oss;
-    oss << std::fixed << std::setprecision(1) << calificacion << "/100";
-    return oss.str();
+	return fecha; /// @todo podemos personalizar esto más adelante si es necesario
 }
 
 // Método principal de ejecución
@@ -488,14 +458,10 @@ inline ResultadoPantalla VerCertificadosScreen::ejecutar()
         case 77: // Flecha derecha (por si acaso)
             _navegarSiguiente();
             break;
-            
-        case 13: // Enter - Ver detalles
-            _mostrarDetallesCertificado();
-            break;
-            
+
         case 'd':
         case 'D': // D - Descargar PDF
-            _simularDescargarPDF();
+			/// @todo logica para enviar data a la web para que genere los certificados en PDF
             break;
             
         case 27: // ESC - Volver a pantalla anterior
