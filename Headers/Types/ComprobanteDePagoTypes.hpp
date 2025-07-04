@@ -1,13 +1,6 @@
 #ifndef COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP
 #define COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP
 
-enum class MetodoDePago{
-    DEFAULT = 0,
-    TARJETA_CREDITO = 1,
-    TARJETA_DEBITO = 2,
-    BILLETERA_DIGITAL = 3
-};
-
 struct BoletaBinaria {
     int idEstudiante;
     int idActividad;
@@ -33,6 +26,5 @@ struct RawComprobanteData {
     std::string fechaEmision;
     std::string horaEmision;
     double montoPagado;
-    MetodoDePago metodoPago;
 };
 #endif // !COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP

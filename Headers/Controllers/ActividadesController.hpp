@@ -182,7 +182,7 @@ inline std::vector<std::pair<std::string, int>> ActividadesController::getOrdena
 	}
 
 	auto comparador = [](std::pair < std::string, int > a, std::pair < std::string, int > b) {
-		return a.second < b.second;
+		return a.second > b.second;
 		};
 	int tamano = informacion.size();
 	mergeSort(informacion, 0, tamano - 1, comparador);

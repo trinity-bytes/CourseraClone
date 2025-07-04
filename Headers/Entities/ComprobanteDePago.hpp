@@ -26,7 +26,6 @@ private:
     std::string _fechaEmision; 
 	std::string _horaEmision;
     double _montoPagado;
-	MetodoDePago _metodoPago;
 
 	// ---- Funciones privadas ----
     std::string obtenerFechaActual();
@@ -38,10 +37,7 @@ public:
         int idEstudiante, 
         int idActividad, 
         TipoActividad tipoActividad, 
-        const std::string& fecha, 
-        const std::string& hora, 
-        double montoPagado, 
-        MetodoDePago metodoPago
+        double montoPagado
     );
 
     void guardar();
@@ -54,29 +50,22 @@ ComprobanteDePago::ComprobanteDePago() :
     _idEstudiante(0), 
     _idActividad(0), 
     _tipoActividad(TipoActividad::DEFAULT), 
-    _fechaEmision(0), 
-    _horaEmision(0), 
-    _montoPagado(0.0), 
-    _metodoPago(MetodoDePago::DEFAULT) 
+    _montoPagado(0.0)
 {}
 
 ComprobanteDePago::ComprobanteDePago(
-    int id, 
-    int idEstudiante, 
-    int idActividad, 
-    TipoActividad tipoActividad, 
-    const std::string& fecha, 
-    const std::string& hora, 
-    double montoPagado, 
-    MetodoDePago metodoPago
-) : _id(id), 
-    _idEstudiante(idEstudiante), 
-    _idActividad(idActividad), 
+    int id,
+    int idEstudiante,
+    int idActividad,
+    TipoActividad tipoActividad,
+    double montoPagado
+    ) : _id(id),
+    _idEstudiante(idEstudiante),
+    _idActividad(idActividad),
     _tipoActividad(tipoActividad), 
-    _fechaEmision(fecha), 
-    _horaEmision(hora), 
-    _montoPagado(montoPagado), 
-    _metodoPago(metodoPago) 
+    _fechaEmision(obtenerFechaActual()), 
+    _horaEmision(obtenerHoraActual()), 
+    _montoPagado(montoPagado)
 {}
 
 // ---- Funciones privadas ----
@@ -101,8 +90,7 @@ inline void ComprobanteDePago::guardar(){
         << static_cast<int>(datosCrudos.tipoActividad) << "|"
         << datosCrudos.fechaEmision << "|"
         << datosCrudos.horaEmision << "|"
-        << datosCrudos.montoPagado << "|"
-        << static_cast<int>(datosCrudos.metodoPago);
+        << datosCrudos.montoPagado << "|";
 
     std::string datosComprobante = ss.str();
     auto resultado = FilesManager::getInstance().generarComprobantePago(_id, datosComprobante);
@@ -125,7 +113,6 @@ inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante(){
     data.fechaEmision = _fechaEmision.empty() ? obtenerFechaActual() : _fechaEmision;
     data.horaEmision = _horaEmision.empty() ? obtenerHoraActual() : _horaEmision;
     data.montoPagado = _montoPagado;
-    data.metodoPago = _metodoPago;
 
     return data;
 }
@@ -145,7 +132,6 @@ inline void ComprobanteDePago::mostrarComprobantePorNombreCurso(const std::strin
         std::cout << "Fecha de Emisión: " << comprobante.fechaEmision << std::endl;
         std::cout << "Hora de Emisión: " << comprobante.horaEmision << std::endl;
         std::cout << "Monto Pagado: " << comprobante.montoPagado << std::endl;
-        std::cout << "Método de Pago: " << static_cast<int>(comprobante.metodoPago) << std::endl;
     }
     else {
         std::cerr << "No se encontró comprobante para el curso: " << nombreCurso << std::endl;
