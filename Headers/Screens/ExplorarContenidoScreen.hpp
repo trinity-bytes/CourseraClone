@@ -146,7 +146,7 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
-    _cargarDatosSinRecomendacion();
+    //_cargarDatosSinRecomendacion();
     
     _textosFiltroTipos = {
         " TODOS ",
