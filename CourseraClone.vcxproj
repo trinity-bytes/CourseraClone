@@ -159,6 +159,7 @@
     <ClCompile Include="Source\Utils\QR\QRCodeGenerator.cpp" />
     <ClCompile Include="Source\QRTest.cpp" /> <!-- Habilitado para testing -->
     <ClCompile Include="Source\QRCapacityTest.cpp" /> <!-- Test de capacidad -->
+    <ClCompile Include="Source\TestAutocontainedQR.cpp" /> <!-- Test QR autocontenidos -->
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -255,6 +256,7 @@
     <ClInclude Include="Headers\Utils\QR\qrcodegen.hpp" />
     <ClInclude Include="Headers\Utils\QR\QRCodeGenerator.hpp" />
     <ClInclude Include="Headers\Utils\QR\QRDemo.hpp" />
+    <ClInclude Include="Headers\Utils\QR\AutocontainedQR.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
