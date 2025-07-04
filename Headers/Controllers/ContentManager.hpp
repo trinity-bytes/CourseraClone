@@ -100,12 +100,15 @@ public:
      * @return ContentOperationResult resultado de la operación
      */
     ContentOperationResult cargarDesdeDatos(
-        const RawActividadesData& dataActividades,
-        const std::vector<InscripcionBinaria>& dataInscripciones
+        const RawActividadesData& dataActividades
     );
 
     ContentOperationResult cargarCantidadInscripcionesActividad(
         const std::vector<InscripcionBinaria>& dataInscripciones);
+
+    ContentOperationResult cargarMontoRecaudadoActividad(
+        const std::vector<RawComprobanteData>& comprobantes
+    );
 
     // ========== GESTIÓN DE CURSOS ==========
 
@@ -219,6 +222,8 @@ public:
     RawCursoData obtenerCursoDatos(int id);
 
     ElementoMenu obtenerRawCursoMenu(int id);
+
+    void aumentarMontoActividad(TipoActividad tipo, int id, double monto);
 
 
     RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id);
@@ -351,16 +356,17 @@ inline std::once_flag ContentManager::_onceFlag;
 
 inline bool ContentManager::inicializarSistema()
 {
-    FilesManager* fileManager = &FilesManager::getInstance();
+    FilesManager& fileManager = FilesManager::getInstance();
 
-    RawActividadesData dataActividades = fileManager->leerDatosActividades();
-    std::vector<InscripcionBinaria> dataInscripciones = fileManager->leerDatosInscripciones();
+    RawActividadesData dataActividades = fileManager.leerDatosActividades();
+    std::vector<InscripcionBinaria> dataInscripciones = fileManager.leerDatosInscripciones();
+    std::vector<RawComprobanteData> dataComprobantes = fileManager.leerDatosComprobantes();
 
     // Para debugging: mostrar cantidad de datos cargados
     int cantidad = dataActividades.cursos.size() + dataActividades.especializaciones.size();
     // throw std::runtime_error(std::to_string(cantidad));
 
-    ContentOperationResult result = cargarDesdeDatos(dataActividades, dataInscripciones);
+    ContentOperationResult result = cargarDesdeDatos(dataActividades);
     if (result != ContentOperationResult::SUCCESS) {
         logError("Inicialización", "Error al cargar datos: " + std::to_string(static_cast<int>(result)));
         return false;
@@ -372,6 +378,9 @@ inline bool ContentManager::inicializarSistema()
         logError("Inicializacion", "No hay registros para cargar entidades");
         return false;
     }
+
+    result = cargarMontoRecaudadoActividad(dataComprobantes);
+
 
     logOperation("Inicializacion", "Carga de cursos y especializaciones exitosa");
 
@@ -526,6 +535,15 @@ inline ElementoMenu ContentManager::obtenerRawCursoMenu(int id) {
     return ElementoMenu("Curso no encontrado", "Error", -1);
 }
 
+inline void ContentManager::aumentarMontoActividad(TipoActividad tipo, int id, double monto) {
+    if (tipo == TipoActividad::CURSO) {
+        _cursos.getElemento(id).aumentarMonto(monto);
+    }
+    else {
+        _especializaciones.getElemento(id).aumentarMonto(monto);
+    }
+}
+
 inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
     // Buscar especialización por ID real, no por índice
     for (int i = 0; i < _especializaciones.getTamano(); ++i) {
@@ -538,7 +556,7 @@ inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
 }
 
 inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
-    return _especializaciones.getElemento(id).obtenerDatosCrudosEspecialidad();
+    return obtenerEspecializacion(id)->obtenerDatosCrudosEspecialidad();
 }
 
 inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
@@ -571,8 +589,7 @@ inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEs
 // ========== CARGA DE DATOS ==========
 
 inline ContentOperationResult ContentManager::cargarDesdeDatos(
-    const RawActividadesData& dataActividades,
-    const std::vector<InscripcionBinaria>& dataInscripciones
+    const RawActividadesData& dataActividades
 ) {
     try {
         // Limpiar datos existentes
@@ -671,6 +688,25 @@ inline ContentOperationResult ContentManager::cargarCantidadInscripcionesActivid
     }
 
     logOperation("Carga de cantidad inscripciones", "Se han cargado todos los datos de las inscripciones");
+    return ContentOperationResult::SUCCESS;
+}
+
+inline ContentOperationResult ContentManager::cargarMontoRecaudadoActividad(
+    const std::vector<RawComprobanteData>& dataComprobantes) {
+
+    if (static_cast<int>(dataComprobantes.size()) == 0) {
+        logOperation("Carga de cantidad comprobantes", "No hay comprobantes");
+        return ContentOperationResult::SUCCESS;
+    }
+
+    for (RawComprobanteData comprobante : dataComprobantes) {
+        int idActividad = comprobante.idActividad;
+        TipoActividad tipo = static_cast<TipoActividad>(comprobante.tipoActividad);
+        double monto = comprobante.montoPagado;
+        aumentarMontoActividad(tipo, idActividad, monto);
+    }
+
+    logOperation("Carga de cantidad comprobantes", "Todos los comprobantes han sido cargados");
     return ContentOperationResult::SUCCESS;
 }
 

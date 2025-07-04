@@ -49,6 +49,7 @@ private:
 
     static const int MAX_BOTONES_EXTRA = 1; // Botón "Inscribirme"
     static const int MAX_CURSOS = 4; // 4 cursos en total
+    static const int MAX_DATOS_OR = 3;
     static const int FILAS_CURSOS = 2;
     static const int COLUMNAS_CURSOS = 2;
     static const int LONGITUD_ORGANIZACION_ESPECIALIDAD = 38;
@@ -59,7 +60,16 @@ private:
     /// @brief Elementos de botones
     std::vector<std::string> _elementosBotones = {
         " INSCRIBIRME ",
-        "  INSCRITO   "
+        "  COMPLETAR  ",
+        "    PAGAR    ",
+        " COMPLETADO  ",
+    };
+
+    /// @brief Texto de datos
+    std::vector<std::string> _textoDatosOrganizacion = {
+        "INSCRITOS:                ",
+        "PORCENTAJE DE COMPLETADO: ",
+        "MONTO RECAUDADO:          ",
     };
 
     /// @brief Contenido de cursos
@@ -84,6 +94,12 @@ private:
     COORD _coordsDescCursos[MAX_CURSOS] = {
         {47, 11}, {83, 11}, {47, 21}, {83, 21}
     };
+
+    /// @brief Coordenadas datos organizacion
+    COORD _coordsDatos[MAX_DATOS_OR] = {
+        {5, 18}, {5, 20}, {5, 22}
+    };
+
 
     // ---- MÉTODOS PRIVADOS ----
     
@@ -133,13 +149,15 @@ inline MostrarEspecialidadScreen::MostrarEspecialidadScreen(int idEspecializacio
     _primeraRenderizacion(true), _elementoActual(0), _elementoAnterior(-1),
     _filaActual(0), _columnaActual(0), _enBotonInscribirse(false), _yaInscrito(false)
 {
+    _idEspecializacion = ContentManager::getInstance().getEspecializacionIdMostrar();
+
     if (SessionManager::getInstance().isLoggedIn()) {
         _tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
         if (_tipoUsuario == TipoUsuario::ESTUDIANTE) {
             SessionManager::getInstance().getInscripcionesController().reportarDatosInscripcion(_yaInscrito, _yaPagado, _yaCompletado, TipoActividad::ESPECIALIZACION, _idEspecializacion);
         }
         else if (_tipoUsuario == TipoUsuario::EMPRESA) {
-            SessionManager::getInstance().getActividadesController().reportarDatosMostrarActividad(_cantidadRecaudada, _cantidadAlumnos, _porcentajeCompletado, TipoActividad::CURSO, _idEspecializacion);
+            SessionManager::getInstance().getActividadesController().reportarDatosMostrarActividad(_cantidadRecaudada, _cantidadAlumnos, _porcentajeCompletado, TipoActividad::ESPECIALIZACION, _idEspecializacion);
         }
     }
     else {
@@ -247,6 +265,19 @@ inline void MostrarEspecialidadScreen::_renderizarInformacionEspecializacion()
         gotoXY(_coordDescripcionEspecializacion.X, _coordDescripcionEspecializacion.Y + i);
         setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
         std::cout << lineasDescripcion[i];
+    }
+
+    // Datos de interes a la organizacion 
+    if (_cantidadAlumnos != "") {
+        std::vector<std::string> datosRecopilados = { _cantidadAlumnos, _porcentajeCompletado, _cantidadRecaudada };
+
+        for (int i = 0; i < MAX_DATOS_OR; i++) {
+            gotoXY(_coordsDatos[i].X, _coordsDatos[i].Y);
+            setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+            std::cout << _textoDatosOrganizacion[i];
+            setConsoleColor(ColorIndex::TEXTO_IMPORTANTE, ColorIndex::FONDO_PRINCIPAL);
+            std::cout << datosRecopilados[i];
+        }
     }
 
     resetColor();

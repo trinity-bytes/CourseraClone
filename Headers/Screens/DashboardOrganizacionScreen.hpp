@@ -616,8 +616,9 @@ inline ResultadoPantalla DashboardOrganizacionScreen::_procesarSeleccion()
             // Ver especialización específica
             int espIndex = _elementoActual - 1;
             if (espIndex < _especializaciones.size()) {
+                int idEspecializacion = _especializaciones[espIndex].id;
+                ContentManager::getInstance().setEspecializacionIdMostar(idEspecializacion);
                 res.accion = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
-                res.idEspecializacionSeleccionada = _especializaciones[espIndex].id;
             }
         }
         break;
