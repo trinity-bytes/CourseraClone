@@ -76,10 +76,7 @@
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\DataStructures\HashEntity.hpp">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\DataStructures\HashTable.hpp">
+    <ClInclude Include="Headers\DataStructures\HashTableMethods.hpp">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Headers\DataStructures\LinkedList.hpp">

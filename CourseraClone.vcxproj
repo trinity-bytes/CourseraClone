@@ -168,22 +168,19 @@
     <ClInclude Include="Headers\Controllers\InscripcionesController.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
-    
     <!-- Data Structures -->
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.hpp" />
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\BinaryHeap.hpp" />
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.hpp" />
-    <ClInclude Include="Headers\DataStructures\HashEntity.hpp" />
-    <ClInclude Include="Headers\DataStructures\HashTable.hpp" />
+    <ClInclude Include="Headers\DataStructures\HashTableMethods.hpp" />
     <ClInclude Include="Headers\DataStructures\LinkedList.hpp" />
     <ClInclude Include="Headers\DataStructures\Nodo.hpp" />
     <ClInclude Include="Headers\DataStructures\NodoAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\PriorityQueue.hpp" />
     <ClInclude Include="Headers\DataStructures\Queue.hpp" />
     <ClInclude Include="Headers\DataStructures\Stack.hpp" />
-    
     <!-- Entities -->
     <ClInclude Include="Headers\Entities\Actividad.hpp" />
     <ClInclude Include="Headers\Entities\Clase.hpp" />
@@ -195,7 +192,6 @@
     <ClInclude Include="Headers\Entities\Inscripcion.hpp" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.hpp" />
-    
     <!-- Screens -->
     <ClInclude Include="Headers\Screens\AgregarMetodoPagoScreen.hpp" />
     <ClInclude Include="Headers\Screens\CrearContenidoScreen.hpp" />
@@ -219,7 +215,6 @@
     <ClInclude Include="Headers\Screens\VerBoletasScreen.hpp" />
     <ClInclude Include="Headers\Screens\VerCertificadosScreen.hpp" />
     <ClInclude Include="Headers\Screens\VerOfertasScreen.hpp" />
-    
     <!-- Types -->
     <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
     <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />
@@ -227,7 +222,6 @@
     <ClInclude Include="Headers\Types\InscripcionTypes.hpp" />
     <ClInclude Include="Headers\Types\ScreenTypes.hpp" />
     <ClInclude Include="Headers\Types\UsuarioTypes.hpp" />
-    
     <!-- Utils -->
     <ClInclude Include="Headers\Utils\ColorPalette.hpp" />
     <ClInclude Include="Headers\Utils\ConsoleConfig.hpp" />
