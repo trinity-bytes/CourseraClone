@@ -1287,14 +1287,11 @@ inline void UI_ProcesarPago()
 /// UI Vista de certificados obtenidos
 inline void UI_Certificados()
 {
-    gotoXY(42, 1);  std::cout << "▒█▀▀█ █▀▀█ █░░█ █▀▀█ █▀▀ █▀▀ █▀▀█ █▀▀█";
-    gotoXY(42, 2);  std::cout << "▒█░░░ █░░█ █░░█ █▄▄▀ ▀▀█ █▀▀ █▄▄▀ █▄▄█";
-    gotoXY(42, 3);  std::cout << "▒█▄▄█ ▀▀▀▀ ░▀▀▀ ▀░▀▀ ▀▀▀ ▀▀▀ ▀░▀▀ ▀░░▀";
 //----------------------------------------------------------------------------------------------------------------------
     std::string ui = R"(
-   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E       
+   █▀▀ █▀█ █░█ █▀█ █▀ █▀▀ █▀█ ▄▀█  |  C L O N E
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
-   
+
 
                                            MIS CERTIFICADOS OBTENIDOS
 
@@ -1315,10 +1312,10 @@ inline void UI_Certificados()
     ║  │                                                                                                       │  ║
     ║  │                               [NOMBRE DEL CURSO]                                                      │  ║
     ║  │                                                                                                       │  ║
-    ║  │    Instructor: [NOMBRE INSTRUCTOR]                    Fecha: [DD/MM/AAAA]   ID Certificado: [ID]      │  ║
+    ║  │ Instructor: [NOMBRE INSTRUCTOR]                   Fecha: DD/MM/AAAA    ID Certificado: [ID]           │  ║
     ║  └───────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
     ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-    (Pulsa D para descargar el certificado en PDF)                           < ANTERIOR      [1/5]      SIGUIENTE > 
+    (Pulsa D para descargar el certificado en PDF)                             < ANTERIOR     [1/5]     SIGUIENTE >
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  Usa las flechas de dirección (IZQUIERDA/DERECHA) para navegar por certificados.
@@ -1352,7 +1349,7 @@ inline void UI_Certificados()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(35, 5); std::cout << "MIS CERTIFICADOS OBTENIDOS";
+    gotoXY(43, 5); std::cout << "MIS CERTIFICADOS OBTENIDOS";
 
     /// @brief Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);

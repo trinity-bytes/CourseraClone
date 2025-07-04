@@ -1,5 +1,3 @@
-// description: Clase para gestionar todo el contenido del sistema (cursos y especializaciones) usando la nueva arquitectura por dominios.
-
 #ifndef COURSERACLONE_CONTROLLERS_CONTENTMANAGER_HPP
 #define COURSERACLONE_CONTROLLERS_CONTENTMANAGER_HPP
 
@@ -695,7 +693,25 @@ inline ElementoInscripcion ContentManager::cargarDatosInscripcionDash(RawInscrip
     return inscripcion;
 }
 
+// Implementación de obtenerInscripcionesEstudiante
+inline std::vector<InscripcionBinaria> ContentManager::obtenerInscripcionesEstudiante(int idEstudiante) const
+{
+    FilesManager& fileManager = FilesManager::getInstance();
+    std::vector<InscripcionBinaria> todasLasInscripciones = fileManager.leerDatosInscripciones();
+    std::vector<InscripcionBinaria> inscripcionesEstudiante;
+    
+    // Filtrar inscripciones por estudiante
+    for (const auto& inscripcion : todasLasInscripciones) {
+        if (inscripcion.idEstudiante == idEstudiante) {
+            inscripcionesEstudiante.push_back(inscripcion);
+        }
+    }
+    
+    return inscripcionesEstudiante;
+}
+
 // ========== MÉTODOS PRIVADOS - LOGGING ==========
+
 inline void ContentManager::logError(const std::string& operation, const std::string& error) {
     // Implementación simple para logging de errores
     FilesManager& fileManager = FilesManager::getInstance();

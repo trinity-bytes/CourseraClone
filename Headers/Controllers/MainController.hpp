@@ -204,7 +204,9 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaProcesarPago()
 /// @brief Crea una nueva instancia de la pantalla ver certificados
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaVerCertificados()
 {
-    return std::make_unique<VerCertificadosScreen>();
+    // Usar el sistema de historial para determinar la pantalla anterior
+    AccionPantalla pantallaAnterior = _resolverPantallaAnterior();
+    return std::make_unique<VerCertificadosScreen>(pantallaAnterior);
 }
 
 /// @brief Crea una nueva instancia de la pantalla listar contenido
@@ -346,6 +348,9 @@ inline std::unique_ptr<PantallaBase> MainController::_crearPantallaConHistorial(
     case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
         return std::make_unique<GestionarOfertasScreen>(pantallaAnterior);
         
+    case AccionPantalla::IR_A_VER_CERTIFICADOS:
+        return std::make_unique<VerCertificadosScreen>(pantallaAnterior);
+        
     default:
         // Para pantallas que no necesitan historial, usar factory method normal
         switch (accion) {
@@ -461,7 +466,7 @@ inline void MainController::run()
             break;
 
         case AccionPantalla::IR_A_VER_CERTIFICADOS:
-            _pantallaActualPtr = crearPantallaVerCertificados();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::IR_A_LISTAR_CONTENIDO:
