@@ -1,11 +1,9 @@
-// filepath: Headers/Controllers/MainController.hpp
-/// @brief Controlador principal del sistema CourseraClone 
-
 #ifndef COURSERACLONE_CONTROLLERS_MAINCONTROLLER_HPP
 #define COURSERACLONE_CONTROLLERS_MAINCONTROLLER_HPP
 
 // Headers del sistema
 #include <memory>
+#include <stack>
 
 // Headers propios del proyecto
 #include "../Screens/LandingPageScreen.hpp"
@@ -30,13 +28,18 @@
 #include "../Screens/VerCertificadosScreen.hpp"
 #include "../Screens/ListarContenidoScreen.hpp"
 #include "../Screens/GestionarOfertasScreen.hpp"
+#include "../Controllers/SessionManager.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
 class MainController
 {
 private:
     /// @brief Estado de la aplicación
-    bool _ejecutando;    
+    bool _ejecutando;
+    
+    /// @brief Sistema de navegación con historial
+    std::stack<AccionPantalla> _historialNavegacion;
+    AccionPantalla _pantallaActual;
     
     /// @brief Métodos privados de navegación
     inline std::unique_ptr<PantallaBase> crearPantallaLandingPage();
@@ -61,6 +64,15 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaVerCertificados();
     inline std::unique_ptr<PantallaBase> crearPantallaListarContenido();
     inline std::unique_ptr<PantallaBase> crearPantallaGestionarOfertas();
+    
+    /// @brief Métodos del sistema de navegación
+    inline void _procesarNavegacion(const ResultadoPantalla& resultado);
+    inline void _pushHistorial(AccionPantalla accion);
+    inline AccionPantalla _popHistorial();
+    inline bool _esPantallaConHistorial(AccionPantalla accion);
+    inline bool _esPantallaQueResetea(AccionPantalla accion);
+    inline AccionPantalla _resolverPantallaAnterior();
+    inline std::unique_ptr<PantallaBase> _crearPantallaConHistorial(AccionPantalla accion);
 
 public:
     /// @brief Constructor y destructor
@@ -72,7 +84,7 @@ public:
 };
 
 // ---- CONSTRUCTOR Y DESTRUCTOR ----
-inline MainController::MainController() : _ejecutando(true) {}
+inline MainController::MainController() : _ejecutando(true), _pantallaActual(AccionPantalla::IR_A_LANDING_PAGE) {}
 
 // ---- FUNCIONES PRIVADAS DE NAVEGACIÓN ----
 /// @brief Crea una nueva instancia de la pantalla landing page
@@ -207,104 +219,257 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaGestionarOfert
     return std::make_unique<GestionarOfertasScreen>();
 }
 
+// ---- SISTEMA DE NAVEGACIÓN INTELIGENTE ----
+
+/// @brief Procesa la navegación con historial inteligente
+inline void MainController::_procesarNavegacion(const ResultadoPantalla& resultado)
+{
+    // Si la pantalla especifica una acción anterior, la guardamos en el historial
+    if (resultado.accionAnterior != AccionPantalla::NINGUNA) {
+        _pushHistorial(resultado.accionAnterior);
+    } else if (_esPantallaConHistorial(resultado.accion)) {
+        // Para pantallas que necesitan historial, guardamos la actual
+        _pushHistorial(_pantallaActual);
+    }
+    
+    // Actualizar la pantalla actual
+    _pantallaActual = resultado.accion;
+}
+
+/// @brief Agrega una pantalla al historial si es apropiado
+inline void MainController::_pushHistorial(AccionPantalla accion)
+{
+    // No agregar pantallas que resetean el historial o son temporales
+    if (!_esPantallaQueResetea(accion) && accion != AccionPantalla::NINGUNA) {
+        _historialNavegacion.push(accion);
+    }
+}
+
+/// @brief Obtiene la pantalla anterior del historial
+inline AccionPantalla MainController::_popHistorial()
+{
+    if (!_historialNavegacion.empty()) {
+        AccionPantalla anterior = _historialNavegacion.top();
+        _historialNavegacion.pop();
+        return anterior;
+    }
+    
+    // Si no hay historial, determinar pantalla por defecto según contexto
+    return _resolverPantallaAnterior();
+}
+
+/// @brief Determina si una pantalla necesita manejo de historial
+inline bool MainController::_esPantallaConHistorial(AccionPantalla accion)
+{
+    switch (accion) {
+    case AccionPantalla::IR_A_MOSTRAR_CURSO:
+    case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
+    case AccionPantalla::IR_A_VER_BOLETAS:
+    case AccionPantalla::IR_A_EDITAR_PERFIL:
+    case AccionPantalla::IR_A_VER_CERTIFICADOS:
+    case AccionPantalla::IR_A_PROCESAR_PAGO:
+    case AccionPantalla::IR_A_AGREGAR_METODO_PAGO:
+        return true;
+    default:
+        return false;
+    }
+}
+
+/// @brief Determina si una pantalla resetea el historial de navegación
+inline bool MainController::_esPantallaQueResetea(AccionPantalla accion)
+{
+    switch (accion) {
+    case AccionPantalla::IR_A_LOGIN:
+    case AccionPantalla::IR_A_REGISTRO:
+    case AccionPantalla::IR_A_LANDING_PAGE:
+    case AccionPantalla::SALIR:
+        return true;
+    default:
+        return false;
+    }
+}
+
+/// @brief Resuelve una pantalla anterior por defecto cuando no hay historial
+inline AccionPantalla MainController::_resolverPantallaAnterior()
+{
+    // Determinar pantalla por defecto basada en si hay sesión activa
+    if (SessionManager::getInstance().isLoggedIn()) {
+        TipoUsuario tipo = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+        if (tipo == TipoUsuario::ESTUDIANTE) {
+            return AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE;
+        } else if (tipo == TipoUsuario::EMPRESA) {
+            return AccionPantalla::IR_A_DASHBOARD_ORGANIZACION;
+        }
+    }
+    
+    return AccionPantalla::IR_A_LANDING_PAGE;
+}
+
+/// @brief Crea una pantalla pasando el historial como contexto
+inline std::unique_ptr<PantallaBase> MainController::_crearPantallaConHistorial(AccionPantalla accion)
+{
+    AccionPantalla pantallaAnterior = _popHistorial();
+    
+    switch (accion) {
+    case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
+    {
+        // Obtener ID y tipo de usuario desde ContentManager y SessionManager
+        int idEspecializacion = 1; // Valor por defecto
+        TipoUsuario tipoUsuario = TipoUsuario::DEFAULT;
+        
+        if (SessionManager::getInstance().isLoggedIn()) {
+            tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+        }
+        
+        return std::make_unique<MostrarEspecialidadScreen>(idEspecializacion, tipoUsuario, pantallaAnterior);
+    }
+    
+    case AccionPantalla::IR_A_MOSTRAR_CURSO:
+    {
+        // Similar para MostrarCursoScreen cuando tengamos el constructor actualizado
+        int idCurso = 1; // Valor por defecto
+        TipoUsuario tipoUsuario = TipoUsuario::DEFAULT;
+        
+        if (SessionManager::getInstance().isLoggedIn()) {
+            tipoUsuario = SessionManager::getInstance().getCurrentUser().getTipoUsuario();
+        }
+        
+        return std::make_unique<MostrarCursoScreen>(idCurso, tipoUsuario, pantallaAnterior);
+    }
+    
+    case AccionPantalla::IR_A_LISTAR_CONTENIDO:
+        return std::make_unique<ListarContenidoScreen>(pantallaAnterior);
+        
+    case AccionPantalla::IR_A_CREAR_CONTENIDO:
+        return std::make_unique<CrearContenidoScreen>(pantallaAnterior);
+        
+    case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
+        return std::make_unique<GestionarOfertasScreen>(pantallaAnterior);
+        
+    default:
+        // Para pantallas que no necesitan historial, usar factory method normal
+        switch (accion) {
+        case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
+            return crearPantallaMostrarEspecializacion();
+        case AccionPantalla::IR_A_MOSTRAR_CURSO:
+            return crearPantallaMostrarCurso();
+        default:
+            return crearPantallaLandingPage();
+        }
+    }
+}
+
 // ---- FUNCIONES PÚBLICAS ----
 /// Método principal de ejecución del sistema
 inline void MainController::run()
 {
-    std::unique_ptr<PantallaBase> _pantallaActual = crearPantallaLandingPage();
+    std::unique_ptr<PantallaBase> _pantallaActualPtr = crearPantallaLandingPage();
     
     do
     {
-        ResultadoPantalla _resultado = _pantallaActual->ejecutar();
+        ResultadoPantalla _resultado = _pantallaActualPtr->ejecutar();
+
+        // Procesar navegación con historial
+        _procesarNavegacion(_resultado);
 
         switch (_resultado.accion)
         {
         case AccionPantalla::IR_A_LANDING_PAGE:
-            _pantallaActual = crearPantallaLandingPage();
+            // Limpiar historial en landing page
+            while (!_historialNavegacion.empty()) {
+                _historialNavegacion.pop();
+            }
+            _pantallaActualPtr = crearPantallaLandingPage();
             break;
 
         case AccionPantalla::IR_A_LOGIN:
-            _pantallaActual = crearPantallaLogin();
+            // Limpiar historial en login
+            while (!_historialNavegacion.empty()) {
+                _historialNavegacion.pop();
+            }
+            _pantallaActualPtr = crearPantallaLogin();
 			break;        
         
         case AccionPantalla::IR_A_REGISTRO:
-            _pantallaActual = crearPantallaRegistro();
+            _pantallaActualPtr = crearPantallaRegistro();
 			break;        
         
         case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
-            _pantallaActual = crearPantallaDashboardEstudiante();
+            _pantallaActualPtr = crearPantallaDashboardEstudiante();
             break;        
         
         case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
-            _pantallaActual = crearPantallaDashboardOrganizacion();
+            _pantallaActualPtr = crearPantallaDashboardOrganizacion();
             break;        
         
         case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
-            _pantallaActual = crearPantallaPerfilEstudiante();
+            _pantallaActualPtr = crearPantallaPerfilEstudiante();
             break;        
         
         case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
-            _pantallaActual = crearPantallaPerfilOrganizacion();
+            _pantallaActualPtr = crearPantallaPerfilOrganizacion();
             break;        
         
         case AccionPantalla::IR_A_EDITAR_PERFIL:
-            _pantallaActual = crearPantallaEditarPerfil();
+            _pantallaActualPtr = crearPantallaEditarPerfil();
             break;        
         
         case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
-            _pantallaActual = crearPantallaMostrarEspecializacion();
+            // Usar sistema de historial para estas pantallas críticas
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::IR_A_MOSTRAR_CURSO:
-            _pantallaActual = crearPantallaMostrarCurso();
+            // Usar sistema de historial para estas pantallas críticas
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::IR_A_VER_ESTADISTICAS:
-            _pantallaActual = crearPantallaEstadisticasEmpresa();
+            _pantallaActualPtr = crearPantallaEstadisticasEmpresa();
             break;
 
 		case AccionPantalla::IR_A_SOBRE_NOSOTROS:
-            _pantallaActual = crearPantallaSobreNosotros();
+            _pantallaActualPtr = crearPantallaSobreNosotros();
 			break;
 
         case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
-            _pantallaActual = crearPantallaExplorarContenido();
+            _pantallaActualPtr = crearPantallaExplorarContenido();
             break;
 
         case AccionPantalla::IR_A_VER_BOLETAS:
-            _pantallaActual = crearPantallaVerBoletas();
+            _pantallaActualPtr = crearPantallaVerBoletas();
             break;
 
         case AccionPantalla::IR_A_CREAR_CONTENIDO:
-            _pantallaActual = crearPantallaCrearContenido();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::IR_A_CREAR_OFERTA:
-            _pantallaActual = crearPantallaCrearOferta();
+            _pantallaActualPtr = crearPantallaCrearOferta();
             break;
 
         case AccionPantalla::IR_A_VER_OFERTAS:
-            _pantallaActual = crearPantallaVerOfertas();
+            _pantallaActualPtr = crearPantallaVerOfertas();
             break;
 
         case AccionPantalla::IR_A_AGREGAR_METODO_PAGO:
-            _pantallaActual = crearPantallaAgregarMetodoPago();
+            _pantallaActualPtr = crearPantallaAgregarMetodoPago();
             break;
 
         case AccionPantalla::IR_A_PROCESAR_PAGO:
-            _pantallaActual = crearPantallaProcesarPago();
+            _pantallaActualPtr = crearPantallaProcesarPago();
             break;
 
         case AccionPantalla::IR_A_VER_CERTIFICADOS:
-            _pantallaActual = crearPantallaVerCertificados();
+            _pantallaActualPtr = crearPantallaVerCertificados();
             break;
 
         case AccionPantalla::IR_A_LISTAR_CONTENIDO:
-            _pantallaActual = crearPantallaListarContenido();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
-            _pantallaActual = crearPantallaGestionarOfertas();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::SALIR:
@@ -313,7 +478,7 @@ inline void MainController::run()
             break;
         default:
             /// @brief Para acciones no implementadas aún, se regresa a landing page
-            _pantallaActual = crearPantallaLandingPage();
+            _pantallaActualPtr = crearPantallaLandingPage();
             break;
         }
     } while (_ejecutando);

@@ -359,3 +359,22 @@ React, Vue o Angular
 Deploy y hosting
 Publica tu sitio web
 %%%
+20
+1
+coursera
+Como Cazar OTORONGOS UwU*r - Módulo 1
+Domina las herramientas de análisis de datos más populares
+CIENCIA_DE_DATOS
+Ing. Pedro Ramírez
+5
+Pandas y manipulación de datos
+Limpia y transforma datos
+Visualización con matplotlib
+Crea gráficos informativos
+Estadística descriptiva
+Analiza y resume datos
+Machine Learning básico
+Algoritmos de clasificación
+Proyectos prácticos
+Aplica lo aprendido
+%%%

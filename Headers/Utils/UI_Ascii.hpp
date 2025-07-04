@@ -664,25 +664,25 @@ inline void UI_ExplorarContenido()
       Buscar:  │                                                                  │         │                       │   
                └──────────────────────────────────────────────────────────────────┘         │ Tipo de contenido:    │   
                                                                                             │   TODOS               │
-    -                                                                                       │   CURSOS              │
-    -                                                                                       │   ESPECIALIDADES      │
-    -                                                                                       │                       │
-    -                                                                                       │ Categoria:            │
-    -                                                                                       │   TODAS               │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
-    -                                                                                       │                       │
+                                                                                            │   CURSOS              │
+                                                                                            │   ESPECIALIDADES      │
+                                                                                            │                       │
+                                                                                            │ Categoria:            │
+                                                                                            │   TODAS               │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
+                                                                                            │                       │
                                                                                             │                       │
                                   < ANTERIOR   SIGUIENTE >                                  └───────────────────────┘
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -1372,30 +1372,30 @@ inline void UI_ListarContenido()
    █▄▄ █▄█ █▄█ █▀▄ ▄█ ██▄ █▀▄ █▀█                 
    
 
-                                               GESTIÓN DE CONTENIDO PUBLICADO                                      
+                                               LISTADO DE CONTENIDO PUBLICADO                                      
 
 
-     ID │ Nombre del contenido                      │ Tipo            │ Categoría    │ Precio     │ Inscritos
-    ────┼───────────────────────────────────────────┼─────────────────┼──────────────┼────────────┼──────────
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
-        │                                           │                 │              │            │
+     ID │ Nombre del contenido                  │ Tipo            │ Categoría        │ Precio     │ Inscritos
+    ────┼───────────────────────────────────────┼─────────────────┼──────────────────┼────────────┼──────────
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
+        │                                       │                 │                  │            │
 
 
-                                             < ANTERIOR     [1/5]     SIGUIENTE >        
+                                        < ANTERIOR     [1/5]     SIGUIENTE >        
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  ARRIBA/ABAJO: Navegar, IZQUIERDA/DERECHA: Cambiar página, ENTER: Detalles,  ESC: Regresar)";  
@@ -1429,7 +1429,7 @@ inline void UI_ListarContenido()
 
     /// @brief Mostrar título de la sección
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
-    gotoXY(35, 5); std::cout << "GESTIÓN DE CONTENIDO PUBLICADO";
+    gotoXY(45, 5); std::cout << "LISTADO DE CONTENIDO PUBLICADO";
 
     /// @brief Dibujar logo principal
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::BLANCO_PURO);

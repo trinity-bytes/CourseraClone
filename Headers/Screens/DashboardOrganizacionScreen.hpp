@@ -589,14 +589,14 @@ inline ResultadoPantalla DashboardOrganizacionScreen::_procesarSeleccion()
             res.accion = AccionPantalla::IR_A_CREAR_CONTENIDO;
         } else if (_elementoActual == 2) {
             // Ver estadísticas
-            res.accion = AccionPantalla::IR_A_VER_ESTADISTICAS; // Por implementar
+            res.accion = AccionPantalla::IR_A_VER_ESTADISTICAS;
         }
         break;
         
     case SECCION_CURSOS:
         if (_elementoActual == 0) {
-            // Ver todos los cursos
-            res.accion = AccionPantalla::NINGUNA; // Por implementar
+            // Ver todos los cursos - Navegar a ListarContenidoScreen
+            res.accion = AccionPantalla::IR_A_LISTAR_CONTENIDO;
         } else {
             // Ver curso específico
             int cursoIndex = _elementoActual - 1;
@@ -610,8 +610,8 @@ inline ResultadoPantalla DashboardOrganizacionScreen::_procesarSeleccion()
         
     case SECCION_ESPECIALIZACIONES:
         if (_elementoActual == 0) {
-            // Ver todas las especializaciones
-            res.accion = AccionPantalla::NINGUNA; // Por implementar
+            // Ver todas las especializaciones - Navegar a ListarContenidoScreen
+            res.accion = AccionPantalla::IR_A_LISTAR_CONTENIDO;
         } else {
             // Ver especialización específica
             int espIndex = _elementoActual - 1;
