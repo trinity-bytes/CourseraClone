@@ -11,18 +11,19 @@
 class Venta 
 {
 public:
-    static inline void pagarCurso(int idCurso, double precio, int idEstudiante);
-    static inline void pagarEspecialidad();
+    static inline int generarId();
+    static inline void pagarActividad(int idCurso, double precio, int idEstudiante, TipoActividad tipo);
+
+
 };
 
-inline void Venta::pagarCurso(int idCurso, double precio, int idEstudiante) {
-    int nuevoID = FilesManager::getInstance().contarFilasCSV(DataPaths::Financial::DB_COMPROBANTES, false);
-    ComprobanteDePago nuevoComprobante(nuevoID, idEstudiante, idCurso, TipoActividad::CURSO, precio);
+inline int Venta::generarId() {
+    return FilesManager::getInstance().contarFilasCSV(DataPaths::Financial::DB_COMPROBANTES, true);
+}
+
+inline void Venta::pagarActividad(int idCurso, double precio, int idEstudiante, TipoActividad tipo) {
+    int nuevoID = generarId();
+    ComprobanteDePago nuevoComprobante(nuevoID, idEstudiante, idCurso, tipo, precio);
     nuevoComprobante.guardar();
 }
-
-inline void Venta::pagarEspecialidad() {
-
-}
-
 #endif // COURSERACLONE_ENTITIES_VENTA_HPP
