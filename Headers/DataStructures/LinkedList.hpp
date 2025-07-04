@@ -134,6 +134,18 @@ public:
         return _head == nullptr;
     }
 
+    std::vector<T> extraerTodo() {
+        std::vector<T> resultado;
+
+        Nodo<T>* actual = _head;
+        while (actual != nullptr) {
+            resultado.push_back(actual->data);
+            actual = actual->next;
+        }
+
+        return resultado;
+    }
+
     // Filtrar elementos usando dos comparadores
     template<typename Key, typename CompIgual, typename CompMenor>
     LinkedList<T> filtrar(std::vector<Key>& _claves, CompIgual _igual, CompMenor _menor) const

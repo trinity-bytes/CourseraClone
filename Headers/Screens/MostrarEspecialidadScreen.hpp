@@ -364,7 +364,16 @@ inline void MostrarEspecialidadScreen::_renderizarBotonInscribirse(bool seleccio
         }
     }
     
-    std::string botonTexto = _yaInscrito ? _elementosBotones[1] : _elementosBotones[0];
+    std::string botonTexto = _elementosBotones[2];
+    if (_yaInscrito) {
+        if (_yaCompletado) {
+            if (_yaPagado) botonTexto = _elementosBotones[3];
+            else botonTexto = _elementosBotones[2];
+        }
+        else {
+            botonTexto = _elementosBotones[1];
+        }
+    }
     std::cout << botonTexto;
     resetColor();
 }
@@ -619,6 +628,7 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
 
                     SessionManager::getInstance().getInscripcionesController().pagarActividad(TipoActividad::ESPECIALIZACION, _idEspecializacion);
                     Venta::pagarActividad(_idEspecializacion, costo, SessionManager::getInstance().getCurrentUser().getId(), TipoActividad::ESPECIALIZACION);
+                    ContentManager::getInstance().aumentarMontoActividad(TipoActividad::ESPECIALIZACION, _idEspecializacion, costo);
 
                     gotoXY(30, 29);
                     setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);

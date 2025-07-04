@@ -140,6 +140,7 @@ inline FileOperationResult InscripcionesController::pagarActividad(TipoActividad
 		actual.marcarComoPagada();
 		actual.actualizar();
 
+
 		if (tipo == TipoActividad::ESPECIALIZACION) {
 			std::vector<int> idDeCursosEspecializacion = ContentManager::getInstance().obtenerEspecializacionDatos(id).idsCursos;
 			int tamano = idDeCursosEspecializacion.size();
