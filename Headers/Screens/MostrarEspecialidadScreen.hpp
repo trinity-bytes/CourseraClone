@@ -11,7 +11,7 @@
 #include "../Utils/SystemUtils.hpp"
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.hpp"
-#include "../Types/UsuarioTypes.hpp""
+#include "../Types/UsuarioTypes.hpp"
 #include "../Controllers/ContentManager.hpp"
 #include "../Controllers/SessionManager.hpp"
 

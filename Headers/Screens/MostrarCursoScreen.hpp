@@ -120,7 +120,7 @@ private:
 public:
     inline MostrarCursoScreen(int idCurso = 1, 
                              TipoUsuario tipoUsuario = TipoUsuario::ESTUDIANTE,
-                             AccionPantalla pantallaAnterior = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION);
+                             AccionPantalla pantallaAnterior = AccionPantalla::IR_A_DASHBOARD_ORGANIZACION);
     
     inline ~MostrarCursoScreen() = default;
 
