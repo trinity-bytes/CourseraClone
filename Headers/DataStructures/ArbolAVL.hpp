@@ -116,10 +116,23 @@ private:
         _inOrdenAlturas(nodo->der);
     }
 
+    void insertarRecursivo(const std::vector<T>& v, int idx) {
+        if (idx >= v.size()) return;
+        Insertar(v[idx]); 
+        insertarRecursivo(v, idx + 1); // siguiente elemento
+    }
+
 public:
     // Constructor: recibe opcionalmente una función para imprimir (o usa la por defecto)
     ArbolAVL(void (*funcImprimir)(T) = _imprimirPorDefecto)
         : raiz(nullptr), _procesar(funcImprimir) {
+    }
+
+    ArbolAVL(const std::vector<T>& datos,
+        void (*funcImprimir)(T) = _imprimirPorDefecto)
+        : raiz(nullptr), _procesar(funcImprimir)
+    {
+        insertarRecursivo(datos, 0);
     }
 
     // Inserta un nuevo valor en el árbol

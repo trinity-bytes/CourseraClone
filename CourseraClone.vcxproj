@@ -97,6 +97,7 @@
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Headers;$(ProjectDir)Headers\Utils\QR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>User32.lib</AdditionalDependencies>
@@ -109,6 +110,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Headers;$(ProjectDir)Headers\Utils\QR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>User32.lib</AdditionalDependencies>
@@ -121,6 +123,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Headers;$(ProjectDir)Headers\Utils\QR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -138,6 +141,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Headers;$(ProjectDir)Headers\Utils\QR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -151,6 +155,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\CourseraCloneApp.cpp" />
+    <ClCompile Include="Source\Utils\QR\qrcodegen.cpp" />
+    <ClCompile Include="Source\Utils\QR\QRCodeGenerator.cpp" />
+    <ClCompile Include="Source\QRTest.cpp" /> <!-- Habilitado para testing -->
+    <ClCompile Include="Source\QRCapacityTest.cpp" /> <!-- Test de capacidad -->
+    <ClCompile Include="Source\TestAutocontainedQR.cpp" /> <!-- Test QR autocontenidos -->
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -236,6 +245,12 @@
     <ClInclude Include="Headers\Utils\SystemUtils.hpp" />
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp" />
     <ClInclude Include="Headers\Utils\ValidationUtils.hpp" />
+    
+    <!-- QR Code Generator -->
+    <ClInclude Include="Headers\Utils\QR\qrcodegen.hpp" />
+    <ClInclude Include="Headers\Utils\QR\QRCodeGenerator.hpp" />
+    <ClInclude Include="Headers\Utils\QR\QRDemo.hpp" />
+    <ClInclude Include="Headers\Utils\QR\AutocontainedQR.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

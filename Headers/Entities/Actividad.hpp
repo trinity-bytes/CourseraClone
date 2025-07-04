@@ -105,8 +105,13 @@ public:
     void setTipo(const TipoActividad tipo) { _tipo = tipo; }
     void aumentarAlumno() { _cantidadAlumnos++; }
     void aumentarAlumnoCompletado() { _cantidadCompletados++; }
+    void aumentarMonto(double nuevoIngreso) { _montoRecaudado += nuevoIngreso; }
     void calcularProgreso() {
         double alumnoTotalDouble = static_cast<double> (_cantidadAlumnos);
+        if (_cantidadAlumnos == 0) {
+            _progresoTotal = 0.0;
+            return;
+        }
         double alumnoCompletoDouble = static_cast<double> (_cantidadCompletados);
         _progresoTotal = (_cantidadCompletados * 100) / alumnoTotalDouble;
     }

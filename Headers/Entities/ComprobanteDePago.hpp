@@ -117,6 +117,7 @@ inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante(){
     return data;
 }
 
+/*
 inline void ComprobanteDePago::mostrarComprobantePorNombreCurso(const std::string& nombreCurso) {
     int idCurso = FilesManager::getInstance().obtenerIdCursoPorNombre(nombreCurso);
     if (idCurso == -1) {
@@ -137,5 +138,6 @@ inline void ComprobanteDePago::mostrarComprobantePorNombreCurso(const std::strin
         std::cerr << "No se encontró comprobante para el curso: " << nombreCurso << std::endl;
     }
 }
+*/
 
 #endif // COURSERACLONE_ENTITIES_BOLETA_HPP

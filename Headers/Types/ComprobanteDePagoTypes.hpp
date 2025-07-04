@@ -1,6 +1,9 @@
 #ifndef COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP
 #define COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP
 
+#include "ActividadTypes.hpp"
+#include <string>
+
 struct BoletaBinaria {
     int idEstudiante;
     int idActividad;

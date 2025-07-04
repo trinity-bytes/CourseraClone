@@ -16,7 +16,6 @@
 #include <chrono>    // Para timestamps
 #include <iomanip>   // Para formateo de tiempo
 #include <sstream>   // Para std::stringstream
-#include <unordered_map> // Para la almacenar los datos en la hashTable
 
 // Headers propios
 #include "../Types/UsuarioTypes.hpp" 
@@ -27,7 +26,7 @@
 #include "../Utils/DataPaths.hpp"
 #include "../DataStructures/algoritmosBusqueda.hpp"
 #include "../Utils/Lambda.hpp"
-#include "../DataStructures/HashTableMethods.hpp"
+#include "../DataStructures/HashTable.hpp"
 
 
 class FilesManager {
@@ -45,8 +44,8 @@ private:
 
     /// @brief Constructor privado para evitar instanciación externa
     inline FilesManager();
-	std::unordered_map<std::string,RawCursoData> indiceCursos;
-    std::unordered_map<int,RawComprobanteData> indiceComprobantes;    
+	HashTable<std::string,RawCursoData> indiceCursos;
+
     // ========== MÉTODOS PRIVADOS ==========
     /// @brief Utilidades privadas para logging y validación
     bool validateFileIntegrity(const std::string& filePath, size_t expectedRecordSize);
@@ -307,20 +306,17 @@ public:
     /// @return Datos del curso encontrado, o estructura vacía si no se encuentra
     bool buscarCursoPorNombreHash(const std::string& nombre, RawCursoData& resultado);
 
-    /// @brief Cargar cursos para la hashtable
     void FilesManager::cargarCursos();
 
-    /// @brief Busca un curso por su nombre en la tabla hash
+    /// @brief Busca un curso por su ID en la tabla hash
     int obtenerIdCursoPorNombre(const std::string& nombreCurso);
 
     /// @brief carga los comprobantes y los agrega a la tabla hash
-    void cargarComprobantes();
+    std::vector<RawComprobanteData> leerDatosComprobantes();
 
-	/// @brief Busca un comprobante por su ID en la tabla hash
-    bool buscarComprobantePorIdHash(int id, RawComprobanteData& resultado);
 
 	/// @brief Obtiene el índice de cursos
-    std::unordered_map<std::string, RawCursoData>& getIndiceCursos();
+    HashTable<std::string, RawCursoData>& getIndiceCursos();
 
 };
 
@@ -1875,14 +1871,14 @@ inline void FilesManager::cargarCursos() {
     leerDatoCurso(cursos); // Lee todos los cursos del archivo
 
     for (const auto& curso : cursos) {
-        insert(indiceCursos,curso.titulo, curso); // Agrega cada curso al hash table usando el ID como clave
+        indiceCursos.insert(curso.titulo, curso); // Agrega cada curso al hash table usando el ID como clave
     }
 
     logInfo("Cargar cursos", "Se cargaron " + std::to_string(cursos.size()) + " cursos al hash table");
 }
 
 inline bool FilesManager::buscarCursoPorNombreHash(const std::string& nombre, RawCursoData& resultado) {
-	if (find(indiceCursos,nombre, resultado)) {
+	if (indiceCursos.find(nombre, resultado)) {
 		logInfo("Buscar curso por nombre", "Curso encontrado: " + nombre);
 		return true;
 	}
@@ -1903,18 +1899,20 @@ inline int FilesManager::obtenerIdCursoPorNombre(const std::string& nombreCurso)
     return -1; // No encontrado
 }
 
-inline void FilesManager::cargarComprobantes() {
-    indiceComprobantes.clear();
+inline std::vector<RawComprobanteData> FilesManager::leerDatosComprobantes() {
+    std::vector<RawComprobanteData> comprobantes;
 
     const std::string path = DataPaths::Financial::DB_COMPROBANTES;
     std::ifstream archivo(path);
 
     if (!archivo.is_open()) {
         logError("Cargar comprobantes", path, "No se pudo abrir el archivo");
-        return;
+        return comprobantes;
     }
 
     std::string linea;
+    std::getline(archivo, linea); // Lee cabecera
+
     int lineNumber = 0;
     while (std::getline(archivo, linea)) {
         lineNumber++;
@@ -1953,7 +1951,7 @@ inline void FilesManager::cargarComprobantes() {
 
 
             // Insertar en la tabla hash
-            insert(indiceComprobantes,comprobante.id, comprobante);
+            comprobantes.push_back(comprobante);
         }
         catch (const std::exception& e) {
             logError("Cargar comprobantes", path, "Error en línea " + std::to_string(lineNumber) + ": " + e.what());
@@ -1962,15 +1960,11 @@ inline void FilesManager::cargarComprobantes() {
     }
 
     archivo.close();
-    logInfo("Cargar comprobantes", path + " (Total: " + std::to_string(indiceComprobantes.size()) + " comprobantes indexados)");
+    logInfo("Cargar comprobantes", path + " (Total: " + std::to_string(comprobantes.size()) + " comprobantes indexados)");
+    return comprobantes;
 }
 
-
-inline bool FilesManager::buscarComprobantePorIdHash(int id, RawComprobanteData& resultado) {
-    return find(indiceComprobantes,id, resultado);
-}
-
-inline std::unordered_map<std::string, RawCursoData>& FilesManager::getIndiceCursos() {
+inline HashTable<std::string, RawCursoData>& FilesManager::getIndiceCursos() {
 	return indiceCursos;
 }
 

@@ -127,9 +127,47 @@ inline void PerfilEstudianteScreen::_cargarDatosDummy()
         _emailEstudiante = sm.getCurrentUser().getUsername();
         _nombreEstudiante = sm.getCurrentUser().getNombreCompleto();
         _fechaRegistroEstudiante = sm.getCurrentUser().getFechaRegistro();
+        
+        // Cargar estadísticas reales desde ContentManager
+        ContentManager& cm = ContentManager::getInstance();
+        std::vector<InscripcionBinaria> inscripciones = cm.obtenerInscripcionesEstudiante(_idEstudiante);
+        
+        _cursosCompletados = 0;
+        _certificadosObtenidos = 0;
+        _horasEstudio = 0;
+        
+        for (const auto& inscripcion : inscripciones) {
+            if (inscripcion.completado) {
+                _cursosCompletados++;
+                _certificadosObtenidos++;
+                
+                // Calcular horas estimadas
+                if (static_cast<TipoActividad>(inscripcion.tipoActividad) == TipoActividad::CURSO) {
+                    RawCursoData curso = cm.obtenerCursoDatos(inscripcion.idActividad);
+                    if (curso.id != -1) {
+                        _horasEstudio += curso.cantidadClases * 2; // 2 horas por clase
+                    }
+                } else {
+                    RawEspecializacionData esp = cm.obtenerEspecializacionDatos(inscripcion.idActividad);
+                    if (esp.id != -1) {
+                        _horasEstudio += esp.duracionEstimada * 8; // 8 horas por semana
+                    }
+                }
+            }
+        }
+        
+        // Si no hay datos reales, usar valores por defecto
+        if (_cursosCompletados == 0) {
+            _cursosCompletados = 8;
+            _certificadosObtenidos = 5;
+            _horasEstudio = 120;
+        }
+    } else {
+        // Valores por defecto si no hay sesión
+        _cursosCompletados = 8;
+        _certificadosObtenidos = 5;
+        _horasEstudio = 120;
     }
-    // Los datos ya se cargan en el constructor
-    // Este método está disponible para futuras cargas desde archivos
 }
 
 // Dibujar interfaz completa
@@ -250,8 +288,9 @@ inline ResultadoPantalla PerfilEstudianteScreen::_procesarSeleccion()
     
     switch (_botonActual) {
     case BOTON_CERTIFICADOS:
-        // Ir a pantalla de certificados
-        res.accion = AccionPantalla::NINGUNA; // Por implementar
+        // Ir a pantalla de certificados con historial
+        res.accion = AccionPantalla::IR_A_VER_CERTIFICADOS;
+        res.accionAnterior = AccionPantalla::IR_A_PERFIL_ESTUDIANTE;
         break;
     case BOTON_BOLETAS:
         // Ir a pantalla de boletas
