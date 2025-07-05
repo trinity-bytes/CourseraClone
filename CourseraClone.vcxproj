@@ -170,6 +170,7 @@
     <None Include="Resources\Documentation\Entendiendo el proyecto.md" />
     <None Include="Resources\Documentation\Formato_JSON_Estandar.md" />
     <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
+    <None Include="Resources\Documentation\Integracion_QR_Datos_Reales.md" />
     <None Include="Resources\Documentation\Optimizaciones_QR.md" />
     <None Include="Resources\Documentation\Paleta de Colores Coursera.md" />
     <None Include="Resources\Documentation\Plan de implementacion.md" />

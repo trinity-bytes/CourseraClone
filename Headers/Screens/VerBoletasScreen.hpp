@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <conio.h>
+#include <fstream>
+#include <algorithm>
 
 // Headers propios
 #include "../Utils/SystemUtils.hpp"
@@ -17,6 +19,9 @@
 #include "../Utils/QR/AutocontainedQR.hpp"
 #include "../Utils/QR/QRCodeGenerator.hpp"
 #include "../Utils/ConsoleConfig.hpp"
+#include "../Controllers/SessionManager.hpp"
+#include "../Controllers/ContentManager.hpp"
+#include "../Utils/DataPaths.hpp"
 
 /// Pantalla para ver comprobantes de pago del estudiante
 class VerBoletasScreen : public PantallaBase
@@ -60,6 +65,9 @@ private:
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
     inline void _cargarDatosEjemplo();
+    inline void _cargarComprobantesReales(int idEstudiante);
+    inline ComprobanteDePago _parsearLineaCSV(const std::string& linea, int idEstudianteActual);
+    inline void _cargarComprobantesEjemplo(int idEstudiante);
     
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
@@ -84,6 +92,7 @@ private:
     /// @brief Métodos utilitarios
     inline CoordsComprobante _calcularCoordenadasComprobante(int indice);
     inline std::string _formatearMonto(double monto);
+    inline std::string _obtenerNombreActividad(int idActividad, TipoActividad tipo);
 
 public:
     inline VerBoletasScreen(AccionPantalla pantallaAnterior = AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
@@ -116,38 +125,136 @@ inline void VerBoletasScreen::_cargarDatosEjemplo()
 {
     _comprobantes.clear();
     
-    // Generar comprobantes de ejemplo con datos más realistas para QR
-    ComprobanteDePago comp1(1, 1001, 101, TipoActividad::CURSO, 99.99);
+    // PASO 1: Verificar si hay usuario logueado
+    if (!SessionManager::getInstance().isLoggedIn()) {
+        // Si no hay usuario logueado, no mostrar comprobantes
+        return;
+    }
+    
+    // PASO 2: Obtener ID del usuario actual
+    Usuario& usuarioActual = SessionManager::getInstance().getCurrentUser();
+    int idUsuarioActual = usuarioActual.getId();
+    
+    // PASO 3: Cargar comprobantes reales desde el archivo CSV
+    _cargarComprobantesReales(idUsuarioActual);
+    
+    // Si no hay comprobantes reales, cargar algunos de ejemplo para demostración
+    if (_comprobantes.empty()) {
+        _cargarComprobantesEjemplo(idUsuarioActual);
+    }
+}
+
+// Nuevo método para cargar comprobantes reales desde CSV
+inline void VerBoletasScreen::_cargarComprobantesReales(int idEstudiante)
+{
+    try {
+        // Usar FilesManager para leer el archivo CSV de comprobantes
+        std::string rutaComprobantes = DataPaths::Financial::DB_COMPROBANTES;
+        
+        // Verificar si el archivo existe
+        std::ifstream archivo(rutaComprobantes);
+        if (!archivo.is_open()) {
+            // Si no existe el archivo, no hay comprobantes que cargar
+            return;
+        }
+        
+        std::string linea;
+        bool esPrimeraLinea = true;
+        
+        // Leer línea por línea del CSV
+        while (std::getline(archivo, linea)) {
+            // Saltar la cabecera si existe
+            if (esPrimeraLinea) {
+                esPrimeraLinea = false;
+                // Si la primera línea contiene "id" o "ID", es una cabecera
+                if (linea.find("id") != std::string::npos || linea.find("ID") != std::string::npos) {
+                    continue;
+                }
+            }
+            
+            // Parsear la línea del CSV
+            ComprobanteDePago comprobante = _parsearLineaCSV(linea, idEstudiante);
+            
+            // Solo agregar si pertenece al estudiante actual
+            if (comprobante.obtenerDatosCrudosComprobante().idEstudiante == idEstudiante) {
+                _comprobantes.push_back(comprobante);
+            }
+        }
+        
+        archivo.close();
+        
+        // Ordenar comprobantes por fecha (más recientes primero)
+        std::sort(_comprobantes.begin(), _comprobantes.end(), 
+            [](const ComprobanteDePago& a, const ComprobanteDePago& b) {
+                RawComprobanteData dataA = const_cast<ComprobanteDePago&>(a).obtenerDatosCrudosComprobante();
+                RawComprobanteData dataB = const_cast<ComprobanteDePago&>(b).obtenerDatosCrudosComprobante();
+                return dataA.fechaEmision > dataB.fechaEmision; // Más recientes primero
+            });
+            
+    } catch (const std::exception& e) {
+        // Si hay error al cargar, usar datos de ejemplo
+        _cargarComprobantesEjemplo(idEstudiante);
+    }
+}
+
+// Método auxiliar para parsear una línea del CSV
+inline ComprobanteDePago VerBoletasScreen::_parsearLineaCSV(const std::string& linea, int idEstudianteActual)
+{
+    std::vector<std::string> campos;
+    std::stringstream ss(linea);
+    std::string campo;
+    
+    // Dividir por el delimitador (probablemente '|' según el código de guardar)
+    while (std::getline(ss, campo, '|')) {
+        campos.push_back(campo);
+    }
+    
+    // Verificar que tenga todos los campos necesarios
+    if (campos.size() >= 7) {
+        try {
+            int id = std::stoi(campos[0]);
+            int idEstudiante = std::stoi(campos[1]);
+            int idActividad = std::stoi(campos[2]);
+            TipoActividad tipoActividad = static_cast<TipoActividad>(std::stoi(campos[3]));
+            std::string fechaEmision = campos[4];
+            std::string horaEmision = campos[5];
+            double montoPagado = std::stod(campos[6]);
+            
+            // Crear el comprobante con los datos parseados
+            ComprobanteDePago comprobante(id, idEstudiante, idActividad, tipoActividad, montoPagado);
+            
+            // Establecer la fecha y hora si están disponibles
+            if (!fechaEmision.empty()) {
+                comprobante.establecerFechaEmision(fechaEmision);
+            }
+            
+            return comprobante;
+            
+        } catch (const std::exception& e) {
+            // Si hay error al parsear, crear comprobante con datos por defecto
+            return ComprobanteDePago(0, idEstudianteActual, 0, TipoActividad::CURSO, 0.0);
+        }
+    }
+    
+    // Si no se puede parsear, devolver comprobante vacío
+    return ComprobanteDePago(0, idEstudianteActual, 0, TipoActividad::CURSO, 0.0);
+}
+
+// Método para cargar algunos comprobantes de ejemplo si no hay datos reales
+inline void VerBoletasScreen::_cargarComprobantesEjemplo(int idEstudiante)
+{
+    // Solo agregar ejemplos si el archivo CSV no existe o está vacío
+    ComprobanteDePago comp1(1, idEstudiante, 101, TipoActividad::CURSO, 99.99);
     comp1.establecerFechaEmision("2024-12-15");
     _comprobantes.push_back(comp1);
     
-    ComprobanteDePago comp2(2, 1001, 102, TipoActividad::ESPECIALIZACION, 299.50);
+    ComprobanteDePago comp2(2, idEstudiante, 102, TipoActividad::ESPECIALIZACION, 299.50);
     comp2.establecerFechaEmision("2024-12-10");
     _comprobantes.push_back(comp2);
     
-    ComprobanteDePago comp3(3, 1001, 103, TipoActividad::CURSO, 149.99);
+    ComprobanteDePago comp3(3, idEstudiante, 103, TipoActividad::CURSO, 149.99);
     comp3.establecerFechaEmision("2024-12-05");
     _comprobantes.push_back(comp3);
-    
-    ComprobanteDePago comp4(4, 1001, 104, TipoActividad::ESPECIALIZACION, 399.99);
-    comp4.establecerFechaEmision("2024-11-28");
-    _comprobantes.push_back(comp4);
-    
-    ComprobanteDePago comp5(5, 1001, 105, TipoActividad::CURSO, 79.99);
-    comp5.establecerFechaEmision("2024-11-20");
-    _comprobantes.push_back(comp5);
-    
-    ComprobanteDePago comp6(6, 1001, 106, TipoActividad::CURSO, 119.99);
-    comp6.establecerFechaEmision("2024-11-15");
-    _comprobantes.push_back(comp6);
-    
-    ComprobanteDePago comp7(7, 1001, 107, TipoActividad::ESPECIALIZACION, 249.99);
-    comp7.establecerFechaEmision("2024-11-10");
-    _comprobantes.push_back(comp7);
-    
-    ComprobanteDePago comp8(8, 1001, 108, TipoActividad::CURSO, 89.99);
-    comp8.establecerFechaEmision("2024-11-05");
-    _comprobantes.push_back(comp8);
 }
 
 // Dibujar interfaz completa
@@ -183,6 +290,45 @@ inline std::string VerBoletasScreen::_formatearMonto(double monto)
     std::ostringstream oss;
     oss << "S/ " << std::fixed << std::setprecision(2) << monto;
     return oss.str();
+}
+
+// Obtener nombre real de la actividad usando ContentManager
+inline std::string VerBoletasScreen::_obtenerNombreActividad(int idActividad, TipoActividad tipo)
+{
+    try {
+        ContentManager& contentManager = ContentManager::getInstance();
+        
+        if (tipo == TipoActividad::CURSO) {
+            // Obtener datos del curso
+            ElementoMenu cursoMenu = contentManager.obtenerRawCursoMenu(idActividad);
+            if (!cursoMenu.titulo.empty()) {
+                return cursoMenu.titulo;
+            }
+            
+            // Si no se encuentra, usar método alternativo
+            RawCursoData cursoData = contentManager.obtenerCursoDatos(idActividad);
+            if (!cursoData.titulo.empty()) {
+                return cursoData.titulo;
+            }
+        } else if (tipo == TipoActividad::ESPECIALIZACION) {
+            // Obtener datos de la especialización
+            RawEspecializacionData especializacionData = contentManager.obtenerEspecializacionDatos(idActividad);
+            if (!especializacionData.titulo.empty()) {
+                return especializacionData.titulo;
+            }
+        }
+        
+        // Si no se encuentra el nombre, usar un fallback descriptivo
+        return tipo == TipoActividad::CURSO ? 
+            "Curso ID: " + std::to_string(idActividad) : 
+            "Especialización ID: " + std::to_string(idActividad);
+            
+    } catch (const std::exception& e) {
+        // En caso de error, devolver un nombre genérico
+        return tipo == TipoActividad::CURSO ? 
+            "Curso de Programación" : 
+            "Especialización en Data Science";
+    }
 }
 
 // Renderizar lista de comprobantes usando coordenadas
@@ -236,13 +382,14 @@ inline void VerBoletasScreen::_renderizarComprobante(const ComprobanteDePago& co
     gotoXY(coords.fecha.X, coords.fecha.Y);
     std::cout << datos.fechaEmision;
     
-    // Información de actividad con datos para QR
+    // Información de actividad con datos reales para QR
     gotoXY(coords.actividad.X, coords.actividad.Y);
     std::string tipoActividad = (datos.tipoActividad == TipoActividad::CURSO) ? "Curso" : "Especialización";
-    std::string nombreSimulado = (datos.tipoActividad == TipoActividad::CURSO) 
-        ? "Programación C++" 
-        : "Data Science";
-    std::cout << tipoActividad << ": " << nombreSimulado;
+    
+    // OBTENER NOMBRE REAL del curso/especialización usando ContentManager
+    std::string nombreReal = _obtenerNombreActividad(datos.idActividad, datos.tipoActividad);
+    
+    std::cout << tipoActividad << ": " << nombreReal;
     
     // Monto pagado (exacto para QR)
     gotoXY(coords.monto.X, coords.monto.Y);
@@ -347,11 +494,9 @@ inline void VerBoletasScreen::_mostrarQRComprobante(const ComprobanteDePago& com
     gotoXY(coordsInfoComprobante.X, coordsInfoComprobante.Y + 7);
     std::cout << "Monto: " << _formatearMonto(datos.montoPagado);
     
-    // Nombres simulados para el QR
-    std::string nombreEstudiante = "Estudiante de Prueba";
-    std::string nombreCurso = (datos.tipoActividad == TipoActividad::CURSO) 
-        ? "Curso de Programación" 
-        : "Especialización en Data Science";
+    // Nombres reales para el QR obtenidos del sistema
+    std::string nombreEstudiante = SessionManager::getInstance().getCurrentUser().getNombreCompleto();
+    std::string nombreCurso = _obtenerNombreActividad(datos.idActividad, datos.tipoActividad);
     
     // Generar URL con formato ESTÁNDAR según especificación
     std::string urlAutocontenida = CourseraClone::QR::AutocontainedQR::generarURLEstandar(
@@ -460,7 +605,7 @@ inline void VerBoletasScreen::_mostrarQRComprobante(const ComprobanteDePago& com
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     std::cout << "Datos que recibe la página web:";
     
-    // Generar el JSON ESTÁNDAR que va en la URL
+    // Generar el JSON ESTÁNDAR que va en la URL usando datos reales
     std::string jsonDatos = CourseraClone::QR::AutocontainedQR::generarQRComprobanteEstandar(
         datos, 
         nombreEstudiante, 
