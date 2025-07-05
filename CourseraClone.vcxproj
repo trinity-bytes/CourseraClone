@@ -189,7 +189,6 @@
     <ClInclude Include="Headers\DataStructures\ArbolAVL.hpp" />
     <ClInclude Include="Headers\DataStructures\BinaryHeap.hpp" />
     <ClInclude Include="Headers\DataStructures\BinarySearchTree.hpp" />
-    <ClInclude Include="Headers\DataStructures\HashEntity.hpp" />
     <ClInclude Include="Headers\DataStructures\HashTable.hpp" />
     <ClInclude Include="Headers\DataStructures\LinkedList.hpp" />
     <ClInclude Include="Headers\DataStructures\Nodo.hpp" />
