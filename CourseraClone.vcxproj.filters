@@ -39,6 +39,21 @@
     <ClCompile Include="Source\CourseraCloneApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Utils\QR\qrcodegen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\QR\QRCodeGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\QRTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\QRCapacityTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TestAutocontainedQR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">
@@ -59,6 +74,9 @@
     <None Include="Resources\Documentation\Resumen_Actualizacion_Documentacion.md">
       <Filter>Documentation</Filter>
     </None>
+    <None Include="Resources\Documentation\Formato_JSON_Estandar.md" />
+    <None Include="Resources\Documentation\Ejemplo_Practico_QR.md" />
+    <None Include="Resources\Documentation\Optimizaciones_QR.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\ContentManager.hpp">
@@ -270,6 +288,18 @@
     </ClInclude>
     <ClInclude Include="Headers\Screens\EstadisticasEmpresaScreen.hpp">
       <Filter>Header Files\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\qrcodegen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\QRCodeGenerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\QRDemo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\QR\AutocontainedQR.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

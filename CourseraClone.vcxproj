@@ -157,14 +157,20 @@
     <ClCompile Include="Source\CourseraCloneApp.cpp" />
     <ClCompile Include="Source\Utils\QR\qrcodegen.cpp" />
     <ClCompile Include="Source\Utils\QR\QRCodeGenerator.cpp" />
-    <ClCompile Include="Source\QRTest.cpp" /> <!-- Habilitado para testing -->
-    <ClCompile Include="Source\QRCapacityTest.cpp" /> <!-- Test de capacidad -->
-    <ClCompile Include="Source\TestAutocontainedQR.cpp" /> <!-- Test QR autocontenidos -->
+    <ClCompile Include="Source\QRTest.cpp" />
+    <!-- Habilitado para testing -->
+    <ClCompile Include="Source\QRCapacityTest.cpp" />
+    <!-- Test de capacidad -->
+    <ClCompile Include="Source\TestAutocontainedQR.cpp" />
+    <!-- Test QR autocontenidos -->
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="Resources\Documentation\Ejemplo_Practico_QR.md" />
     <None Include="Resources\Documentation\Entendiendo el proyecto.md" />
+    <None Include="Resources\Documentation\Formato_JSON_Estandar.md" />
     <None Include="Resources\Documentation\Guia de Estilo de Codigo.md" />
+    <None Include="Resources\Documentation\Optimizaciones_QR.md" />
     <None Include="Resources\Documentation\Paleta de Colores Coursera.md" />
     <None Include="Resources\Documentation\Plan de implementacion.md" />
     <None Include="Resources\Documentation\Resumen_Actualizacion_Documentacion.md" />
@@ -177,7 +183,6 @@
     <ClInclude Include="Headers\Controllers\InscripcionesController.hpp" />
     <ClInclude Include="Headers\Controllers\MainController.hpp" />
     <ClInclude Include="Headers\Controllers\SessionManager.hpp" />
-    
     <!-- Data Structures -->
     <ClInclude Include="Headers\DataStructures\algoritmosBusqueda.hpp" />
     <ClInclude Include="Headers\DataStructures\algoritmosOrdenamiento.hpp" />
@@ -192,7 +197,6 @@
     <ClInclude Include="Headers\DataStructures\PriorityQueue.hpp" />
     <ClInclude Include="Headers\DataStructures\Queue.hpp" />
     <ClInclude Include="Headers\DataStructures\Stack.hpp" />
-    
     <!-- Entities -->
     <ClInclude Include="Headers\Entities\Actividad.hpp" />
     <ClInclude Include="Headers\Entities\Clase.hpp" />
@@ -204,7 +208,6 @@
     <ClInclude Include="Headers\Entities\Inscripcion.hpp" />
     <ClInclude Include="Headers\Entities\Usuario.hpp" />
     <ClInclude Include="Headers\Entities\Venta.hpp" />
-    
     <!-- Screens -->
     <ClInclude Include="Headers\Screens\AgregarMetodoPagoScreen.hpp" />
     <ClInclude Include="Headers\Screens\CrearContenidoScreen.hpp" />
@@ -228,7 +231,6 @@
     <ClInclude Include="Headers\Screens\VerBoletasScreen.hpp" />
     <ClInclude Include="Headers\Screens\VerCertificadosScreen.hpp" />
     <ClInclude Include="Headers\Screens\VerOfertasScreen.hpp" />
-    
     <!-- Types -->
     <ClInclude Include="Headers\Types\ActividadTypes.hpp" />
     <ClInclude Include="Headers\Types\ComprobanteDePagoTypes.hpp" />
@@ -236,7 +238,6 @@
     <ClInclude Include="Headers\Types\InscripcionTypes.hpp" />
     <ClInclude Include="Headers\Types\ScreenTypes.hpp" />
     <ClInclude Include="Headers\Types\UsuarioTypes.hpp" />
-    
     <!-- Utils -->
     <ClInclude Include="Headers\Utils\ColorPalette.hpp" />
     <ClInclude Include="Headers\Utils\ConsoleConfig.hpp" />
@@ -251,7 +252,6 @@
     <ClInclude Include="Headers\Utils\SystemUtils.hpp" />
     <ClInclude Include="Headers\Utils\UI_Ascii.hpp" />
     <ClInclude Include="Headers\Utils\ValidationUtils.hpp" />
-    
     <!-- QR Code Generator -->
     <ClInclude Include="Headers\Utils\QR\qrcodegen.hpp" />
     <ClInclude Include="Headers\Utils\QR\QRCodeGenerator.hpp" />

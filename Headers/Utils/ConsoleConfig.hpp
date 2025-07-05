@@ -52,8 +52,8 @@ inline void configurarPaletaColores() {
 }
 
 /// @brief Configura la fuente de la consola
-inline void configurarFuente(const std::wstring& nombreFuente = L"Cascadia Code Semibold", 
-                             int altoFuente = 22) {
+inline void configurarFuente(const std::wstring& nombreFuente = L"Cascadia Code Semibold", int altoFuente = 22) 
+{
     HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_FONT_INFOEX cfi = { 0 };
     cfi.cbSize = sizeof(cfi);
