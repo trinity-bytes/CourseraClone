@@ -565,7 +565,6 @@ inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEs
         return ContentOperationResult::COURSE_NOT_FOUND;
     }
 
-
     /*
     // Verificar si el estudiante ya está inscrito
     if (std::find_if(_cursos.begin(), _cursos.end(), [idEstudiante, idCurso](const std::unique_ptr<Curso>& c) {

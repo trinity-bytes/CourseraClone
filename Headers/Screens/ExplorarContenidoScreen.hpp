@@ -61,6 +61,7 @@ private:
 
     // --- Datos del buscador ---
     std::string _textoBusqueda;
+    int _sugerenciaSeleccionada = -1; // -1 significa ninguna seleccionada
 
     // --- Datos de filtros ---
     int _tipoSeleccionado; // 0=TODOS, 1=CURSOS, 2=ESPECIALIDADES
@@ -146,7 +147,7 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
-    _cargarDatosSinRecomendacion();
+    //_cargarDatosSinRecomendacion();
     
     _textosFiltroTipos = {
         " TODOS ",
@@ -220,6 +221,8 @@ inline void ExplorarContenidoScreen::_limpiarEstado()
     _elementoAnterior = 0;
     _primeraRenderizacion = true;
     _textoBusqueda.clear();
+    _sugerenciaSeleccionada = -1;
+
 }
 
 // Mostrar cursor
@@ -349,18 +352,23 @@ inline void ExplorarContenidoScreen::_renderizarBuscador(bool seleccionado)
 
     // Mostrar sugerencias debajo del buscador (titulos de los cursos)
     int y = _coordBuscador.Y + 1;
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    for (const auto& sug : _sugerenciasCursos) {
+    for (size_t i = 0; i < _sugerenciasCursos.size(); ++i) {
         gotoXY(_coordBuscador.X, y++);
-        std::cout << "  > " << sug << "                                        ";
+        if (static_cast<int>(i) == _sugerenciaSeleccionada) {
+            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
+        }
+        else {
+            setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+        }
+        std::cout << "  > " << _sugerenciasCursos[i] << "                                        ";
     }
-    // Limpiar lineas 
+    // Limpiar líneas sobrantes
     for (int i = _sugerenciasCursos.size(); i < 5; ++i) {
         gotoXY(_coordBuscador.X, y++);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         std::cout << "                                              ";
     }
     resetColor();
-
 }
 
 // Renderizar filtro de tipos
@@ -539,6 +547,24 @@ inline void ExplorarContenidoScreen::_manejarNavegacion(int tecla)
 // Manejar navegación vertical
 inline void ExplorarContenidoScreen::_manejarNavegacionVertical(int direccion)
 {
+    if (_seccionActual == SECCION_BUSCADOR && !_sugerenciasCursos.empty()) {
+        if (!_sugerenciasCursos.empty()) {
+            if (direccion > 0) { // Abajo
+                if (_sugerenciaSeleccionada < static_cast<int>(_sugerenciasCursos.size()) - 1)
+                    _sugerenciaSeleccionada++;
+                else
+                    _sugerenciaSeleccionada = 0;
+            }
+            else { // Arriba
+                if (_sugerenciaSeleccionada > 0)
+                    _sugerenciaSeleccionada--;
+                else
+                    _sugerenciaSeleccionada = static_cast<int>(_sugerenciasCursos.size()) - 1;
+            }
+            _renderizarBuscador(true);
+        }
+        return;
+    }
     if (direccion > 0) { // ABAJO
         switch (_seccionActual) {
         case SECCION_BUSCADOR:
@@ -686,6 +712,7 @@ inline void ExplorarContenidoScreen::_manejarEntradaTexto(int tecla)
         if (_textoBusqueda.length() < 60) {
             _textoBusqueda.push_back(static_cast<char>(tecla));
             _actualizarSugerenciasCursos();
+			_sugerenciaSeleccionada = -1;
             _renderizarBuscador(true);
         }
     }
@@ -697,6 +724,7 @@ inline void ExplorarContenidoScreen::_manejarRetroceso()
     if (_seccionActual == SECCION_BUSCADOR && !_textoBusqueda.empty()) {
         _textoBusqueda.pop_back();
         _actualizarSugerenciasCursos();
+		_sugerenciaSeleccionada = -1;
         _renderizarBuscador(true);
     }
 }
@@ -750,6 +778,18 @@ inline ResultadoPantalla ExplorarContenidoScreen::_procesarSeleccion()
             _paginaResultadosActual--;
         } else if (_elementoActual == 1 && _paginaResultadosActual < _totalPaginas - 1) {
             _paginaResultadosActual++;
+        }
+        break;
+	case SECCION_BUSCADOR:
+        if (_sugerenciaSeleccionada >= 0 && _sugerenciaSeleccionada < static_cast<int>(_sugerenciasCursos.size())) {
+            std::string tituloSeleccionado = _sugerenciasCursos[_sugerenciaSeleccionada];
+            RawCursoData curso;
+            if (FilesManager::getInstance().buscarCursoPorNombreHash(tituloSeleccionado, curso)) {
+                ContentManager::getInstance().setCursoIdMostrar(curso.id);
+                res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
+                res.accionAnterior = AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES;
+                return res;
+            }
         }
         break;
     }
