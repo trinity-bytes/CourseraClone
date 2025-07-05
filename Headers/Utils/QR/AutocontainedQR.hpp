@@ -563,6 +563,83 @@ public:
         return url.str();
     }
 
+    /// @brief Genera un QR JSON con formato estándar para certificados
+    /// @param idCertificado ID único del certificado
+    /// @param nombreEstudiante Nombre completo del estudiante
+    /// @param nombreActividad Nombre del curso/especialización
+    /// @param fechaFinalizacion Fecha de finalización del curso
+    /// @param fechaEmision Fecha de emisión del certificado
+    /// @param calificacion Calificación obtenida
+    /// @param duracion Duración del curso
+    /// @param tipoActividad Tipo de actividad
+    /// @return JSON en formato estándar para certificados
+    static std::string generarQRCertificadoEstandar(
+        int idCertificado,
+        const std::string& nombreEstudiante,
+        const std::string& nombreActividad,
+        const std::string& fechaFinalizacion,
+        const std::string& fechaEmision,
+        const std::string& calificacion,
+        const std::string& duracion,
+        TipoActividad tipoActividad
+    ) {
+        std::stringstream json;
+        json << "{";
+        json << "\"t\":\"c\",";  // type: certificate
+        json << "\"i\":" << idCertificado << ",";  // id
+        json << "\"s\":\"" << nombreEstudiante << "\",";  // student
+        json << "\"c\":\"" << nombreActividad << "\",";  // course
+        json << "\"cd\":\"" << extraerFecha(fechaFinalizacion) << "\",";  // completion date
+        json << "\"id\":\"" << extraerFecha(fechaEmision) << "\",";  // issue date
+        json << "\"g\":\"" << calificacion << "\",";  // grade
+        json << "\"dur\":\"" << duracion << "\",";  // duration
+        json << "\"ct\":\"" << (tipoActividad == TipoActividad::CURSO ? "c" : "e") << "\"";  // course type
+        json << "}";
+        return json.str();
+    }
+    
+    /// @brief Genera una URL con el formato estándar para certificados
+    /// @param idCertificado ID único del certificado
+    /// @param nombreEstudiante Nombre completo del estudiante
+    /// @param nombreActividad Nombre del curso/especialización
+    /// @param fechaFinalizacion Fecha de finalización del curso
+    /// @param fechaEmision Fecha de emisión del certificado
+    /// @param calificacion Calificación obtenida
+    /// @param duracion Duración del curso
+    /// @param tipoActividad Tipo de actividad
+    /// @return URL con JSON estándar para certificados
+    static std::string generarURLCertificadoEstandar(
+        int idCertificado,
+        const std::string& nombreEstudiante,
+        const std::string& nombreActividad,
+        const std::string& fechaFinalizacion,
+        const std::string& fechaEmision,
+        const std::string& calificacion,
+        const std::string& duracion,
+        TipoActividad tipoActividad
+    ) {
+        // Generar JSON en formato estándar
+        std::string jsonData = generarQRCertificadoEstandar(
+            idCertificado,
+            nombreEstudiante,
+            nombreActividad,
+            fechaFinalizacion,
+            fechaEmision,
+            calificacion,
+            duracion,
+            tipoActividad
+        );
+        
+        // Codificar en base64 (equivalente a btoa en JavaScript)
+        std::string dataEncoded = base64Encode(jsonData);
+        
+        std::stringstream url;
+        // Formato exacto: https://trinity-bytes.github.io/WebServices-for-CourseraClone/v?d={base64_payload}
+        url << BASE_URL << "/v?d=" << dataEncoded;
+        
+        return url.str();
+    }
+
     /// @brief Calcula el tamaño estimado de un QR para planificación
     /// @param contenido Contenido del QR
     /// @return Tamaño en caracteres y evaluación de seguridad

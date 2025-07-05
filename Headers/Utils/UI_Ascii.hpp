@@ -1321,13 +1321,13 @@ inline void UI_Certificados()
     ║  │                                                                                                       │  ║
     ║  │   Por la presente certifica que:                                                                      │  ║
     ║  │                                                                                                       │  ║
-    ║  │                               [NOMBRE DEL ESTUDIANTE]                                                 │  ║
+    ║  │                                                                                                       │  ║
     ║  │                                                                                                       │  ║
     ║  │   Ha completado satisfactoriamente el curso:                                                          │  ║
     ║  │                                                                                                       │  ║
-    ║  │                               [NOMBRE DEL CURSO]                                                      │  ║
     ║  │                                                                                                       │  ║
-    ║  │ Instructor: [NOMBRE INSTRUCTOR]                   Fecha: DD/MM/AAAA    ID Certificado: [ID]           │  ║
+    ║  │                                                                                                       │  ║
+    ║  │ Instructor:                                       Fecha: DD/MM/AAAA    ID Certificado: [ID]           │  ║
     ║  └───────────────────────────────────────────────────────────────────────────────────────────────────────┘  ║
     ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
     (Pulsa D para descargar el certificado en PDF)                             < ANTERIOR     [1/5]     SIGUIENTE >
