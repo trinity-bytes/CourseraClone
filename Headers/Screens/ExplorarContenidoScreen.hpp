@@ -351,7 +351,8 @@ inline void ExplorarContenidoScreen::_renderizarBuscador(bool seleccionado)
     resetColor();
 
     // Mostrar sugerencias debajo del buscador (titulos de los cursos)
-    int y = _coordBuscador.Y + 1;
+    int y = _coordBuscador.Y + 2;
+    const size_t maxLen = 40;
     for (size_t i = 0; i < _sugerenciasCursos.size(); ++i) {
         gotoXY(_coordBuscador.X, y++);
         if (static_cast<int>(i) == _sugerenciaSeleccionada) {
@@ -360,13 +361,19 @@ inline void ExplorarContenidoScreen::_renderizarBuscador(bool seleccionado)
         else {
             setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
         }
-        std::cout << "  > " << _sugerenciasCursos[i] << "                                        ";
+        std::string texto = "  > " + _sugerenciasCursos[i];
+        if (texto.length() > maxLen) {
+            texto = texto.substr(0, maxLen - 3) + "...";
+        }
+        // Rellenar hasta maxLen para que el fondo no sea más largo
+        texto.resize(maxLen, ' ');
+        std::cout << texto;
     }
     // Limpiar líneas sobrantes
     for (int i = _sugerenciasCursos.size(); i < 5; ++i) {
         gotoXY(_coordBuscador.X, y++);
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "                                              ";
+        std::cout << std::string(maxLen, ' ');
     }
     resetColor();
 }
