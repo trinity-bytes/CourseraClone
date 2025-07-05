@@ -200,7 +200,7 @@ inline void EstadisticasEmpresaScreen::_cargarDatos() {
 
     _datosCursos.clear();
     _datosCursos = sm.getActividadesController().getOrdenadoInscripciones(5);
-    sm.getActividadesController().reportarEstadisticas(_datosIngresos, _stats.ingresosTotal, 5);
+    sm.getActividadesController().reportarEstadisticas(_datosIngresos, _datosEstudiantes, _stats.ingresosTotal, 5);
     
 }
 

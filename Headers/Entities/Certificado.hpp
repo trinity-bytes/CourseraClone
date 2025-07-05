@@ -67,7 +67,7 @@ public:
 
     void insertarDatosInscripcion(InscripcionBinaria ins) {
         calificacion = ins.progreso;
-        fechaEmision = std::string(ins.fechaInicio, strnlen(ins.fechaInicio, MAX_DATE_LEN_INS));
+        fechaEmision = DateTime::now().toDateNormalString();
         fechaFinalizacion = std::string(ins.fechaFinal, strnlen(ins.fechaFinal, MAX_DATE_LEN_INS));
     }
 

@@ -34,6 +34,11 @@ public:
         _hour(hour), _minute(minute), _second(second) {
     }
 
+    static int convertidorFechaNumero(std::string fecha, int index, int cantidad) {
+        std::string texto = fecha.substr(index, cantidad);
+        return stoi(texto);
+    }
+
     static std::vector<std::string> obtenerUltimosTrimestres(int cantidad) {
 
         DateTime actual = DateTime::now();
@@ -61,13 +66,10 @@ public:
         return "Q" + std::to_string(q) + " " + std::to_string(anio);
     }
 
+ 
+
     // "YYYY-MM-DD"
     static std::string toTrimestreString(std::string fecha) {
-        auto convertidorFechaNumero = [](std::string fecha, int index, int cantidad) {
-            std::string texto = fecha.substr(index, cantidad);
-            return stoi(texto);
-            };
-
         int mes = convertidorFechaNumero(fecha, 5, 2);
         int q = (mes - 1) / 3 + 1;
 
@@ -77,7 +79,12 @@ public:
         return res;
     }
 
-
+	static std::string toMesString(std::string fecha) {
+		int mes = convertidorFechaNumero(fecha, 3, 2);
+        std::string res = meses[mes - 1];
+		res[0] = toupper(res[0]);
+		return res;
+	}
 
     // Fecha en formato "DD de <mes>, YYYY"
     std::string toLongDateString() const {

@@ -28,8 +28,10 @@ public:
 	inline int calcularCantidad();
 	inline void reportarDatosMostrarActividad(std::string& _cantidadRecaudada, std::string& _cantidadAlumnos, std::string& _porcentajeCompletado, TipoActividad _tipo, int id);
 	inline std::vector<RawComprobanteData> boletasEmpresa();
-	inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, double& total, int maximo = 5);
-	inline void reportarEstadisticas(std::vector<std::pair<std::string, double>>& trimestres, double& total, int maximo = 5);
+	inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, int maximo = 5);
+	inline double reportarTotal(std::vector<RawComprobanteData>& comprobantes);
+	inline std::vector<std::pair<std::string, int>> reportarAlumnosMensuales(std::vector<InscripcionBinaria>& inscripciones, int maximo = 5);
+	inline void reportarEstadisticas(std::vector<std::pair<std::string, double>>& trimestres, std::vector<std::pair<std::string, int>>& meses, double& total, int maximo);
 	inline int getCantidadCursos();
 	inline int getCantidadEspecializaciones();
 	inline int getCantidadInscritos(); 
@@ -155,18 +157,14 @@ inline std::vector<RawComprobanteData> ActividadesController::boletasEmpresa() {
 	return res;
 }
 
-inline std::vector<std::pair<std::string, double>> ActividadesController::reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, double& total, int maximo) {
+inline std::vector<std::pair<std::string, double>> ActividadesController::reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, int maximo) {
 	std::vector<std::pair<std::string, double>> resultado;
 
 	
 	HashTable<std::string, double> dineroTrimestres;
 	for (RawComprobanteData comprobante : comprobantes) {
 		std::string fechaTrimestre = DateTime::toTrimestreString(comprobante.fechaEmision);
-		double costo = 0;
-		bool encontrado = dineroTrimestres.find(fechaTrimestre, costo);
-		if (encontrado) dineroTrimestres.add(fechaTrimestre, comprobante.montoPagado);
-		else dineroTrimestres.insert(fechaTrimestre, comprobante.montoPagado);
-		total += comprobante.montoPagado;
+		dineroTrimestres.add(fechaTrimestre, comprobante.montoPagado);
 	}
 
 	
@@ -187,11 +185,52 @@ inline std::vector<std::pair<std::string, double>> ActividadesController::report
 	return resultado;
 }
 
-inline void ActividadesController::reportarEstadisticas(std::vector<std::pair<std::string, double>>& trimestres, double& total, int maximo) {
+inline double ActividadesController::reportarTotal(std::vector<RawComprobanteData>& comprobantes) {
+	double total = 0.0;
+	for (const RawComprobanteData& comprobante : comprobantes) {
+		total += comprobante.montoPagado;
+	}
+	return total;
+}
+
+inline std::vector<std::pair<std::string, int>> ActividadesController::reportarAlumnosMensuales(std::vector<InscripcionBinaria>& inscripciones, int maximo) {
+	std::vector<std::pair<std::string, int>> resultadoMomentaneo, resultado;
+
+
+	HashTable<std::string, int> estudiantesMeses;
+	for (InscripcionBinaria inscripcion : inscripciones) {
+		std::string fechaEmision = std::string(inscripcion.fechaInicio, strnlen(inscripcion.fechaInicio, MAX_DATE_LEN_INS));
+		std::string fechaMes = DateTime::toMesString(fechaEmision);
+		estudiantesMeses.add(fechaMes, 1);
+	}
+
+	for (std::string mes : meses) {
+		mes[0] = std::toupper(mes[0]);
+		int cantidad = 0;
+		bool encontrado = estudiantesMeses.find(mes, cantidad);
+		if (encontrado) resultadoMomentaneo.push_back({mes, cantidad});
+	}
+
+	auto ordenarMeses = [](pair<std::string, double> a, pair<std::string, double> b) {
+		return a.second < b.second;
+		};
+
+	for (int i = 0; i < 5 && i < resultadoMomentaneo.size(); i++) {
+		resultado.push_back(resultadoMomentaneo[i]);
+	}
+
+	return resultado;
+}
+
+inline void ActividadesController::reportarEstadisticas(std::vector<std::pair<std::string, double>>& trimestres, std::vector<std::pair<std::string, int>>& meses, double& total, int maximo) {
 	std::vector<RawComprobanteData> boletas = boletasEmpresa();
+	std::vector<InscripcionBinaria> inscripciones = FilesManager::getInstance().leerDatosInscripciones();
 	trimestres.clear();
-	total = 0.0;
-	trimestres = reportarIngresosTrimestrales(boletas, total, maximo);
+	meses.clear();
+
+	total = reportarTotal(boletas);
+	trimestres = reportarIngresosTrimestrales(boletas, maximo);
+	meses = reportarAlumnosMensuales(inscripciones, maximo);
 }
 
 inline std::vector<ElementoMenu> ActividadesController::getElementosDashboard(TipoActividad _tipo) {
