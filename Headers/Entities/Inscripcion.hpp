@@ -26,6 +26,8 @@ private:
     double progreso;
     bool completado;
     bool estadoPago;
+    std::string fechaInicio;
+    std::string fechaFinal;
 
 public:
     inline Inscripcion();
@@ -41,6 +43,8 @@ public:
 	inline bool getCompletado() const;
 	inline bool getEstadoPago() const;
     inline TipoActividad getTipo() const;
+    inline std::string getFechaInicio() const;
+    inline std::string getFechaFinal() const;
 
     inline void guardar();
     inline void actualizar();
@@ -66,7 +70,7 @@ inline Inscripcion::Inscripcion(int _idEstudiante, int _idActividad, int _id, Ti
     : id(_id), idEstudiante(_idEstudiante), idActividad(_idActividad), 
     progreso(0.0), completado(false), estadoPago(false), tipo(_tipo)
 {
-
+    fechaInicio = DateTime::now().toDateNormalString();
 }
 inline Inscripcion::Inscripcion(InscripcionBinaria& _bin, int _off)
     : id(_off), idEstudiante(_bin.idEstudiante), idActividad(_bin.idActividad),
@@ -79,7 +83,8 @@ inline Inscripcion::Inscripcion(RawInscripcionData rawInscripcionData)
     : id(rawInscripcionData.id), idEstudiante(rawInscripcionData.idEstudiante),
     idActividad(rawInscripcionData.idActividad), progreso(rawInscripcionData.progreso),
     completado(rawInscripcionData.completado), estadoPago(rawInscripcionData.pagado),
-    tipo(rawInscripcionData.tipo)
+    tipo(rawInscripcionData.tipo), fechaInicio(rawInscripcionData.fechaInicio),
+    fechaFinal(rawInscripcionData.fechaFinal)
 {
 }
 
@@ -105,18 +110,26 @@ inline bool Inscripcion::getEstadoPago() const {
 inline TipoActividad Inscripcion::getTipo() const {
     return this->tipo;
 }
+inline std::string Inscripcion::getFechaInicio() const{
+    return this->fechaInicio;
+}
+inline std::string Inscripcion::getFechaFinal() const {
+    return this->fechaFinal;
+}
 
 inline void Inscripcion::guardar() {
-	FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago), this->id);
+	FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago, fechaInicio, fechaFinal), this->id);
     FilesManager::getInstance().guardarInidiceInscripcion(idEstudiante, this->id);
 }
 
 inline void Inscripcion::actualizar() {
-    FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago), this->id);
+    FilesManager::getInstance().guardarInscripcionBinaria(InscripcionBinaria(idEstudiante, idActividad, static_cast<int>(tipo), progreso, completado, estadoPago, fechaInicio, fechaFinal), this->id);
 }
 
 inline void Inscripcion::completar() {
     completado = true;
+    fechaFinal = DateTime::now().toDateNormalString();
+    progreso = 85.0 + (rand() % 15);
 }
 
 inline void Inscripcion::marcarComoPagada() {
@@ -132,6 +145,8 @@ inline RawInscripcionData Inscripcion::obtenerDatosCrudos() const {
 	datos.completado = this->completado;
 	datos.pagado = this->estadoPago;
 	datos.tipo = this->tipo;
+    datos.fechaInicio = this->fechaInicio;
+    datos.fechaFinal = this->fechaFinal;
 	return datos;
 }
 

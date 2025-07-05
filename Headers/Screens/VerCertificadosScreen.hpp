@@ -2,12 +2,13 @@
 #define COURSERACLONE_SCREENS_VERCERTIFICADOSSCREEN_HPP
 
 // Headers estándar
-#include <iomanip>
-#include <sstream>
+
+
 #include <string>
 #include <vector>
 #include <conio.h>
 #include <limits>
+#include "../Entities/Certificado.hpp"
 
 // Headers propios
 #include "../Utils/SystemUtils.hpp"
@@ -35,20 +36,6 @@ private:
     int _totalCertificados;
     
     // Estructura de datos para certificados
-    struct Certificado {
-        int id;
-        std::string nombreCurso;
-        std::string tipoCurso; // "Curso" o "Especialización"
-        std::string nombreEstudiante;
-        std::string instructor;
-        std::string fechaFinalizacion;
-        std::string fechaEmision;
-        double calificacion;
-        std::string idCertificado;
-        int duracionHoras;
-        std::string categoria;
-        bool esEspecializacion;
-    };
     
     std::vector<Certificado> _certificados;
     
@@ -169,47 +156,55 @@ inline void VerCertificadosScreen::_cargarCertificadosReales()
     // Procesar solo las inscripciones completadas para generar certificados
     int certificadoId = 1;
     for (const auto& inscripcion : inscripciones) {
-        if (inscripcion.completado) {
-            Certificado cert;
-            cert.id = certificadoId++;
-            cert.nombreEstudiante = nombreEstudianteReal; // USAR EL NOMBRE REAL
+        if (inscripcion.completado && inscripcion.pagado) {
+            Certificado cert(certificadoId, nombreEstudianteReal);
+            certificadoId++;
+            //cert.getNombreEstudiante() = nombreEstudianteReal; // USAR EL NOMBRE REAL
             
             // Obtener datos del curso o especialización según el tipo
             if (static_cast<TipoActividad>(inscripcion.tipoActividad) == TipoActividad::CURSO) {
                 RawCursoData cursoData = contentManager.obtenerCursoDatos(inscripcion.idActividad);
                 if (cursoData.id != -1) {
-                    cert.nombreCurso = cursoData.titulo;
+                    cert.insertarDatosCurso(cursoData);
+                    /*
+                    cert.getNombreCurso() = cursoData.titulo;
                     cert.tipoCurso = "Curso";
                     cert.instructor = cursoData.instructor;
                     cert.categoria = RawActividadData::categoriaToString(cursoData.categoria);
-                    cert.duracionHoras = cursoData.cantidadClases * 2; // Estimación de 2 horas por clase
-                    cert.esEspecializacion = false;
+                    cert.getDuracionHoras() = cursoData.cantidadClases * 2; // Estimación de 2 horas por clase
+                    cert.getEsEspecializacion = false;
+                    */
                 }
             } else {
                 RawEspecializacionData espData = contentManager.obtenerEspecializacionDatos(inscripcion.idActividad);
                 if (espData.id != -1) {
-                    cert.nombreCurso = espData.titulo;
+                    cert.insertarDatosEspecializacion(espData);
+                    /*
+                    cert.getNombreCurso() = espData.titulo;
                     cert.tipoCurso = "Especialización";
                     cert.instructor = "Equipo de " + espData.nombreEmpresa;
                     cert.categoria = RawActividadData::categoriaToString(espData.categoria);
-                    cert.duracionHoras = espData.duracionEstimada * 8; // Estimación de 8 horas por semana
-                    cert.esEspecializacion = true;
+                    cert.getDuracionHoras() = espData.duracionEstimada * 8; // Estimación de 8 horas por semana
+                    cert.getEsEspecializacion = true;
+                    */
                 }
             }
             
             // Generar fechas ficticias pero realistas
-            cert.fechaFinalizacion = "15/06/2025";
-            cert.fechaEmision = "16/06/2025";
+            cert.insertarDatosInscripcion(inscripcion);
+            /*
+            cert.getFechaFinalizacion() = "15/06/2025";
+            cert.getFechaEmision() = "16/06/2025";
             
             // Generar calificación aleatoria alta (como certificado completado)
-            cert.calificacion = 85.0 + (rand() % 15); // Entre 85 y 100
+            cert.getCalificacion() = 85.0 + (rand() % 15); // Entre 85 y 100
             
             // Generar ID único del certificado
             std::ostringstream oss;
             oss << "CERT" << std::setfill('0') << std::setw(3) << cert.id 
-                << "-" << (cert.esEspecializacion ? "ESP" : "CUR") << "-2025";
+                << "-" << (cert.getEsEspecializacion ? "ESP" : "CUR") << "-2025";
             cert.idCertificado = oss.str();
-            
+            */
             _certificados.push_back(cert);
         }
     }
@@ -222,7 +217,7 @@ inline void VerCertificadosScreen::_cargarCertificadosReales()
         _cargarCertificadosEjemplo();
         // Actualizar el nombre en los certificados de ejemplo
         for (auto& cert : _certificados) {
-            cert.nombreEstudiante = nombreEstudianteReal;
+            cert.setNombre(nombreEstudianteReal);
         }
     }
 }
@@ -238,7 +233,7 @@ inline void VerCertificadosScreen::_cargarCertificadosEjemplo()
         nombreEstudiante = SessionManager::getInstance().getCurrentUser().getNombreCompleto();
     }
     
-    _certificados.push_back({
+    _certificados.push_back(Certificado(
         1,
         "Fundamentos de Python para Data Science",
         "Curso",
@@ -251,9 +246,9 @@ inline void VerCertificadosScreen::_cargarCertificadosEjemplo()
         40,
         "Programacion",
         false
-    });
+    ));
     
-    _certificados.push_back({
+    _certificados.push_back(Certificado(
         2,
         "Especialización en Machine Learning",
         "Especialización",
@@ -266,9 +261,9 @@ inline void VerCertificadosScreen::_cargarCertificadosEjemplo()
         120,
         "Inteligencia Artificial",
         true
-    });
+    ));
     
-    _certificados.push_back({
+    _certificados.push_back(Certificado(
         3,
         "Desarrollo Web Full Stack con React",
         "Curso",
@@ -281,7 +276,7 @@ inline void VerCertificadosScreen::_cargarCertificadosEjemplo()
         60,
         "Desarrollo Web",
         false
-    });
+    ));
     
     _totalCertificados = _certificados.size();
 }
@@ -359,31 +354,31 @@ inline void VerCertificadosScreen::_renderizarCertificadoActual()
     // Nombre del estudiante
     gotoXY(_coordNombreEstudiante.X, _coordNombreEstudiante.Y);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << cert.nombreEstudiante;
-    _nombreEstudianteAnterior = cert.nombreEstudiante; // Recordar lo que escribimos
+    std::cout << cert.getNombreEstudiante();
+    _nombreEstudianteAnterior = cert.getNombreEstudiante(); // Recordar lo que escribimos
     
     // Nombre del curso
     gotoXY(_coordNombreCurso.X, _coordNombreCurso.Y);
     setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << cert.nombreCurso;
-    _nombreCursoAnterior = cert.nombreCurso; // Recordar lo que escribimos
+    std::cout << cert.getNombreCurso();
+    _nombreCursoAnterior = cert.getNombreCurso(); // Recordar lo que escribimos
     
     // Instructor con formato completo
     gotoXY(_coordInstructor.X, _coordInstructor.Y);
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::string textoInstructor = "Instructor: " + cert.instructor;
+    std::string textoInstructor = "Instructor: " + cert.getInstructor();
     std::cout << textoInstructor;
     _instructorAnterior = textoInstructor; // Recordar lo que escribimos
     
     // Fecha con formato completo
     gotoXY(_coordFecha.X, _coordFecha.Y);
-    std::string textoFecha = "Fecha: " + _formatearFecha(cert.fechaFinalizacion);
+    std::string textoFecha = "Fecha: " + _formatearFecha(cert.getFechaFinalizacion());
     std::cout << textoFecha;
     _fechaAnterior = textoFecha; // Recordar lo que escribimos
     
     // ID Certificado con formato completo
     gotoXY(_coordIdCertificado.X, _coordIdCertificado.Y);
-    std::string textoId = "ID Certificado: " + cert.idCertificado;
+    std::string textoId = "ID Certificado: " + cert.getIdCertificado();
     std::cout << textoId;
     _idCertificadoAnterior = textoId; // Recordar lo que escribimos
     
@@ -563,44 +558,44 @@ inline void VerCertificadosScreen::_mostrarQRCertificado(const Certificado& cert
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 2);
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Certificado ID: " << certificado.idCertificado;
+    std::cout << "Certificado ID: " << certificado.getIdCertificado();
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 3);
-    std::cout << "Estudiante: " << certificado.nombreEstudiante;
+    std::cout << "Estudiante: " << certificado.getNombreEstudiante();
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 4);
-    std::cout << "Curso: " << certificado.nombreCurso;
+    std::cout << "Curso: " << certificado.getNombreCurso();
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 5);
-    std::cout << "Tipo: " << certificado.tipoCurso;
+    std::cout << "Tipo: " << certificado.getTipoCurso();
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 6);
-    std::cout << "Instructor: " << certificado.instructor;
+    std::cout << "Instructor: " << certificado.getInstructor();
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 7);
-    std::cout << "Fecha Finalización: " << certificado.fechaFinalizacion;
+    std::cout << "Fecha Finalización: " << certificado.getFechaFinalizacion();
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 8);
-    std::cout << "Fecha Emisión: " << certificado.fechaEmision;
+    std::cout << "Fecha Emisión: " << certificado.getFechaEmision();
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 9);
-    std::cout << "Calificación: " << _formatearCalificacion(certificado.calificacion);
+    std::cout << "Calificación: " << _formatearCalificacion(certificado.getCalificacion());
     
     gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 10);
-    std::cout << "Duración: " << _formatearDuracion(certificado.duracionHoras, certificado.esEspecializacion);
+    std::cout << "Duración: " << _formatearDuracion(certificado.getDuracionHoras(), certificado.getEsEspecializacion());
     
     // Convertir tipo de actividad
-    TipoActividad tipoActividad = certificado.esEspecializacion ? TipoActividad::ESPECIALIZACION : TipoActividad::CURSO;
+    TipoActividad tipoActividad = certificado.getEsEspecializacion() ? TipoActividad::ESPECIALIZACION : TipoActividad::CURSO;
     
     // Generar URL con formato ESTÁNDAR para certificados
     std::string urlAutocontenida = CourseraClone::QR::AutocontainedQR::generarURLCertificadoEstandar(
-        certificado.id,
-        certificado.nombreEstudiante,
-        certificado.nombreCurso,
-        _convertirFechaAISO(certificado.fechaFinalizacion),
-        _convertirFechaAISO(certificado.fechaEmision),
-        _formatearCalificacion(certificado.calificacion),
-        _formatearDuracion(certificado.duracionHoras, certificado.esEspecializacion),
+        certificado.getId(),
+        certificado.getNombreEstudiante(),
+        certificado.getNombreCurso(),
+        _convertirFechaAISO(certificado.getFechaFinalizacion()),
+        _convertirFechaAISO(certificado.getFechaEmision()),
+        _formatearCalificacion(certificado.getCalificacion()),
+        _formatearDuracion(certificado.getDuracionHoras(), certificado.getEsEspecializacion()),
         tipoActividad
     );
     
@@ -706,13 +701,13 @@ inline void VerCertificadosScreen::_mostrarQRCertificado(const Certificado& cert
     
     // Generar el JSON ESTÁNDAR para mostrar
     std::string jsonDatos = CourseraClone::QR::AutocontainedQR::generarQRCertificadoEstandar(
-        certificado.id,
-        certificado.nombreEstudiante,
-        certificado.nombreCurso,
-        _convertirFechaAISO(certificado.fechaFinalizacion),
-        _convertirFechaAISO(certificado.fechaEmision),
-        _formatearCalificacion(certificado.calificacion),
-        _formatearDuracion(certificado.duracionHoras, certificado.esEspecializacion),
+        certificado.getId(),
+        certificado.getNombreEstudiante(),
+        certificado.getNombreCurso(),
+        _convertirFechaAISO(certificado.getFechaFinalizacion()),
+        _convertirFechaAISO(certificado.getFechaEmision()),
+        _formatearCalificacion(certificado.getCalificacion()),
+        _formatearDuracion(certificado.getDuracionHoras(), certificado.getEsEspecializacion()),
         tipoActividad
     );
     

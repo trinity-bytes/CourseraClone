@@ -2,6 +2,7 @@
 #define COURSERACLONE_PERSISTENCE_INSCRIPCIONTYPES_HPP
 
 #include "ActividadTypes.hpp"
+static constexpr int MAX_DATE_LEN_INS = 11;
 
 struct RawInscripcionData{
     int id;
@@ -11,6 +12,8 @@ struct RawInscripcionData{
     double progreso;
     bool completado;
     bool pagado;
+    std::string fechaInicio;
+    std::string fechaFinal;
 };
 
 struct RawInscripcionElementoDash {
@@ -53,15 +56,28 @@ struct InscripcionBinaria {
     double progreso;
     bool completado;
     bool pagado;
+    char fechaInicio[MAX_DATE_LEN_INS];
+    char fechaFinal[MAX_DATE_LEN_INS];
 
     InscripcionBinaria(int _idUsuario, int _idActividad, int _tipoActividad,
-                       double _progreso, bool _completado, bool _pagado)
+        double _progreso, bool _completado, bool _pagado,
+        const std::string& _fechaInicio, const std::string& _fechaFinal)
         : idEstudiante(_idUsuario), idActividad(_idActividad),
-          tipoActividad(_tipoActividad), progreso(_progreso),
-          completado(_completado), pagado(_pagado) {}
+        tipoActividad(_tipoActividad), progreso(_progreso),
+        completado(_completado), pagado(_pagado)
+    {
+        std::strncpy(fechaInicio, _fechaInicio.c_str(), MAX_DATE_LEN_INS - 1);
+        std::strncpy(fechaFinal, _fechaFinal.c_str(), MAX_DATE_LEN_INS - 1);
+        fechaInicio[MAX_DATE_LEN_INS - 1] = '\0';
+        fechaFinal[MAX_DATE_LEN_INS - 1] = '\0';
+    }
+
     InscripcionBinaria()
         : idEstudiante(0), idActividad(0), tipoActividad(0), progreso(0.0),
-          completado(false), pagado(false) {}
+          completado(false), pagado(false) {
+        std::memset(fechaInicio, 0, MAX_DATE_LEN_INS);
+        std::memset(fechaFinal, 0, MAX_DATE_LEN_INS);
+    }
 };
 
 #endif // COURSERACLONE_PERSISTENCE_INSCRIPCIONTYPES_HPP

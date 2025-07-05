@@ -548,6 +548,8 @@ inline std::vector<RawInscripcionData> FilesManager::getInscripcionesRawData(std
         rawInscripcion.tipo = static_cast<TipoActividad>(inscripcion.tipoActividad);
 		rawInscripcion.progreso = inscripcion.progreso;
 		rawInscripcion.pagado = inscripcion.pagado;
+        rawInscripcion.fechaInicio = std::string(inscripcion.fechaInicio, strnlen(inscripcion.fechaInicio, MAX_DATE_LEN_INS));
+        rawInscripcion.fechaFinal = std::string(inscripcion.fechaFinal, strnlen(inscripcion.fechaFinal, MAX_DATE_LEN_INS));
 		
 		inscripciones.push_back(rawInscripcion);
         logInfo("Cargar inscripciones", "Inscripción cargada: id " + std::to_string(inscripcion.idActividad));

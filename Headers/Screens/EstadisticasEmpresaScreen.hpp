@@ -195,9 +195,12 @@ inline void EstadisticasEmpresaScreen::_cargarDatos() {
     _stats.totalCursos = sm.getActividadesController().getCantidadCursos();
     _stats.totalEspecializaciones = sm.getActividadesController().getCantidadEspecializaciones();
     _stats.totalInscripciones = sm.getActividadesController().getCantidadInscritos();
+    _nombreEmpresa = sm.getCurrentUser().getNombreCompleto();
+    
 
     _datosCursos.clear();
     _datosCursos = sm.getActividadesController().getOrdenadoInscripciones(5);
+    sm.getActividadesController().reportarEstadisticas(_datosIngresos, _stats.ingresosTotal, 5);
     
 }
 
@@ -558,7 +561,7 @@ inline std::string EstadisticasEmpresaScreen::formatearNumero(int numero)
 inline std::string EstadisticasEmpresaScreen::formatearDinero(double cantidad)
 {
     std::ostringstream oss;
-    oss << "$" << std::fixed << std::setprecision(2) << cantidad;
+    oss << "S/" << std::fixed << std::setprecision(2) << cantidad;
     std::string resultado = oss.str();
     
     // Agregar comas (simplificado)

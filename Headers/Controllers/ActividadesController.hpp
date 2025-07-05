@@ -4,6 +4,7 @@
 #include "../DataStructures/LinkedList.hpp"
 #include "../Controllers/ContentManager.hpp"
 #include "../DataStructures/algoritmosOrdenamiento.hpp"
+#include "../Utils/DateTime.hpp"
 
 class ActividadesController {
 private:
@@ -27,10 +28,11 @@ public:
 	inline int calcularCantidad();
 	inline void reportarDatosMostrarActividad(std::string& _cantidadRecaudada, std::string& _cantidadAlumnos, std::string& _porcentajeCompletado, TipoActividad _tipo, int id);
 	inline std::vector<RawComprobanteData> boletasEmpresa();
-	inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(int maximo = 5);
+	inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, double& total, int maximo = 5);
+	inline void reportarEstadisticas(std::vector<std::pair<std::string, double>>& trimestres, double& total, int maximo = 5);
 	inline int getCantidadCursos();
 	inline int getCantidadEspecializaciones();
-	inline int getCantidadInscritos();
+	inline int getCantidadInscritos(); 
 	
 	inline std::vector<std::pair<std::string, int>> getOrdenadoInscripciones(int maximoDatos);
 
@@ -153,13 +155,43 @@ inline std::vector<RawComprobanteData> ActividadesController::boletasEmpresa() {
 	return res;
 }
 
-inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, int maximo) {
+inline std::vector<std::pair<std::string, double>> ActividadesController::reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, double& total, int maximo) {
 	std::vector<std::pair<std::string, double>> resultado;
 
+	
 	HashTable<std::string, double> dineroTrimestres;
+	for (RawComprobanteData comprobante : comprobantes) {
+		std::string fechaTrimestre = DateTime::toTrimestreString(comprobante.fechaEmision);
+		double costo = 0;
+		bool encontrado = dineroTrimestres.find(fechaTrimestre, costo);
+		if (encontrado) dineroTrimestres.add(fechaTrimestre, comprobante.montoPagado);
+		else dineroTrimestres.insert(fechaTrimestre, comprobante.montoPagado);
+		total += comprobante.montoPagado;
+	}
 
 	
+	std::vector<std::string> ultimosQ = DateTime::obtenerUltimosTrimestres(5);
+	for (std::string q : ultimosQ) {
+		double costo = 0.0;
+		bool encontrado = dineroTrimestres.find(q, costo);
+		if (!encontrado) dineroTrimestres.insert(q, 0);
+		resultado.push_back({ q,costo });
+	}
 
+
+	auto ordenarQ = [](pair<std::string, double> a, pair<std::string, double> b) {
+		return a.second < b.second;
+		};
+
+	bubbleSort(resultado, ordenarQ);
+	return resultado;
+}
+
+inline void ActividadesController::reportarEstadisticas(std::vector<std::pair<std::string, double>>& trimestres, double& total, int maximo) {
+	std::vector<RawComprobanteData> boletas = boletasEmpresa();
+	trimestres.clear();
+	total = 0.0;
+	trimestres = reportarIngresosTrimestrales(boletas, total, maximo);
 }
 
 inline std::vector<ElementoMenu> ActividadesController::getElementosDashboard(TipoActividad _tipo) {

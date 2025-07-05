@@ -201,6 +201,7 @@
     <ClInclude Include="Headers\DataStructures\Stack.hpp" />
     <!-- Entities -->
     <ClInclude Include="Headers\Entities\Actividad.hpp" />
+    <ClInclude Include="Headers\Entities\Certificado.hpp" />
     <ClInclude Include="Headers\Entities\Clase.hpp" />
     <ClInclude Include="Headers\Entities\ComprobanteDePago.hpp" />
     <ClInclude Include="Headers\Entities\Curso.hpp" />

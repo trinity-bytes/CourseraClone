@@ -41,6 +41,19 @@ public:
         return false;
     }
 
+    void add(const K& key, const T& delta) {
+        size_t idx = hashFunction(key);
+        auto& bucket = table[idx];
+        for (auto& kv : bucket) {
+            if (kv.first == key) {
+                kv.second += delta;   // acumula
+                return;
+            }
+        }
+        bucket.emplace_back(key, delta);
+        ++currentSize;
+    }
+
     void clear() {
         for (auto& chain : table) {
             chain.clear();

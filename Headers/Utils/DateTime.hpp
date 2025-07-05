@@ -34,13 +34,35 @@ public:
         _hour(hour), _minute(minute), _second(second) {
     }
 
-    std::string trimestreQ(int mes, int anio) {
+    static std::vector<std::string> obtenerUltimosTrimestres(int cantidad) {
+
+        DateTime actual = DateTime::now();
+        int year = actual._year;
+        int month = actual._month;
+
+        int trimestre = (month - 1) / 3 + 1;
+
+        std::vector<std::string> res;
+
+        for (int i = 0; i < cantidad; ++i) {
+            res.push_back("Q" + std::to_string(trimestre)
+                + " " + std::to_string(year));
+            --trimestre;
+            if (trimestre == 0) {
+                trimestre = 4;
+                --year;
+            }
+        }
+        return res;
+    }
+
+    static std::string trimestreQ(int mes, int anio) {
         int q = (mes - 1) / 3 + 1;
         return "Q" + std::to_string(q) + " " + std::to_string(anio);
     }
 
     // "YYYY-MM-DD"
-    std::string toTrimestreString(std::string fecha) {
+    static std::string toTrimestreString(std::string fecha) {
         auto convertidorFechaNumero = [](std::string fecha, int index, int cantidad) {
             std::string texto = fecha.substr(index, cantidad);
             return stoi(texto);
@@ -70,6 +92,18 @@ public:
         return s;
     }
 
+    std::string toDateNormalString() {
+        std::string s;
+        if (_day < 10) s += '0';
+        s += std::to_string(_day);
+        s += '/';
+        if (_month < 10) s += '0';
+        s += std::to_string(_month);
+        s += '/';
+        s += std::to_string(_year);
+        return s;
+    }
+
     // Fecha ISO "YYYY-MM-DD"
     std::string toIsoDateString() const {
         std::string s;
@@ -95,6 +129,10 @@ public:
         if (_second < 10) s += '0';
         s += std::to_string(_second);
         return s;
+    }
+
+    int getYear() {
+        return _year;
     }
 
 private:
