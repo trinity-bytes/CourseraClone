@@ -66,6 +66,28 @@ enum class CategoriaActividad : int {
     OTROS
 };
 
+inline std::vector<std::vector<int>> adyacenciaCategoriaBusqueda = {
+	/*0 TODAS*/                   { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18 },
+    /*1 PROGRAMACION*/            { 2, 3, 4, 5 },
+    /*2 DESARROLLO_WEB*/          { 1,  9, 11 },
+    /*3 DESARROLLO_MOVIL*/        { 1,  9,  7 },
+    /*4 INTELIGENCIA_ARTIFICIAL*/ { 5,  6 },
+    /*5 CIENCIA_DE_DATOS*/        { 1,  4,  7,  8 },
+    /*6 SEGURIDAD_INFORMATICA*/   { 4,  7,  8 },
+    /*7 CLOUD_COMPUTING*/         { 5,  6,  8 },
+    /*8 DEVOPS*/                  { 5,  6,  7, 14 },
+    /*9 UX_UI*/                   { 2,  3, 10 },
+    /*10 DISENO_GRAFICO*/         {  9, 11 },
+    /*11 MARKETING_DIGITAL*/      {  2, 10, 12 },
+    /*12 NEGOCIOS*/               { 11, 13, 14 },
+    /*13 FINANZAS*/               { 12 },
+    /*14 GESTION_PROYECTOS*/      {  8, 12 },
+    /*15 FOTOGRAFIA*/             { 16, 17 },
+    /*16 VIDEO_ANIMACION*/        { 15 },
+    /*17 EDUCACION*/              { 15, 18 },
+    /*18 IDIOMAS*/                { 17 }
+};
+
 // Enum para representar los tipos de actividad
 enum class TipoActividad {
     DEFAULT, // Tipo por defecto, no se usa en la pr ctica

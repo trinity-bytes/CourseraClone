@@ -188,26 +188,6 @@ public:
     ContentOperationResult inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion);
 
 
-    // ========== GESTIÓN DE PROGRESO Y CALIFICACIONES ==========    
-    /**
-     * @brief Actualiza el progreso de un estudiante en una actividad
-     * @param idEstudiante ID del estudiante
-     * @param idActividad ID de la actividad
-     * @param nuevoProgreso Nuevo progreso (0.0 - 100.0)
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult actualizarProgreso(int idEstudiante, int idActividad, double nuevoProgreso);
-
-    /**
-     * @brief Agrega una calificación a una actividad
-     * @param idActividad ID de la actividad
-     * @param idEstudiante ID del estudiante que califica
-     * @param calificacion Calificación (1-5)
-     * @param comentario Comentario opcional
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult agregarCalificacion(int idActividad, int idEstudiante, int calificacion, const std::string& comentario = "");
-
     // ========== BÚSQUEDAS Y CONSULTAS ==========
 
     /**
@@ -556,32 +536,6 @@ inline Especializacion* ContentManager::obtenerEspecializacion(int id) {
 
 inline RawEspecializacionData ContentManager::obtenerEspecializacionDatos(int id) {
     return obtenerEspecializacion(id)->obtenerDatosCrudosEspecialidad();
-}
-
-inline ContentOperationResult ContentManager::inscribirEstudianteACurso(int idEstudiante, int idCurso) {
-    Curso* curso = obtenerCurso(idCurso);
-    if (!curso) {
-        logError("InscribirEstudianteACurso", "Curso no encontrado: " + std::to_string(idCurso));
-        return ContentOperationResult::COURSE_NOT_FOUND;
-    }
-
-    /*
-    // Verificar si el estudiante ya está inscrito
-    if (std::find_if(_cursos.begin(), _cursos.end(), [idEstudiante, idCurso](const std::unique_ptr<Curso>& c) {
-        return c->estaInscrito(idEstudiante);
-        }) != _cursos.end()) {
-        logError("InscribirEstudianteACurso", "Estudiante ya inscrito en el curso: " + std::to_string(idCurso));
-        return ContentOperationResult::STUDENT_ALREADY_ENROLLED;
-    }
-
-    // Inscribir al estudiante
-    curso->inscribirEstudiante(idEstudiante);
-
-    logOperation("InscribirEstudianteACurso", "Estudiante " + std::to_string(idEstudiante) +
-        " inscrito en curso " + std::to_string(idCurso));
-
-    return ContentOperationResult::SUCCESS;
-    */
 }
 
 // ========== CARGA DE DATOS ==========

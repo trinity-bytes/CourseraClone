@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "../DataStructures/Grafo.hpp"
 #include <conio.h>   // Para _getch()
 
 // Includes propios del proyecto
@@ -81,6 +82,7 @@ private:
     // --- Métodos privados de inicialización ---
     inline void _inicializarDatos();
     inline void _cargarCategorias();
+    inline void _cargarCategoriasRecomendacion();
     inline void _cargarDatosSinRecomendacion(); // No hay sesion activa o el usuario no tiene inscripciones
     inline void _cargarResultadosEjemplo();    // --- Métodos privados de estado ---
     inline void _limpiarEstado();
@@ -147,6 +149,12 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
+	if (SessionManager::getInstance().isLoggedIn()) {
+		_cargarCategoriasRecomendacion();
+	}
+	else {
+		_cargarDatosSinRecomendacion(); // No hay sesión activa o el usuario no tiene inscripciones
+	}
     //_cargarDatosSinRecomendacion();
     
     _textosFiltroTipos = {
@@ -182,6 +190,28 @@ inline void ExplorarContenidoScreen::_cargarCategorias()
         "OTROS"
     };
 }
+
+inline void ExplorarContenidoScreen::_cargarCategoriasRecomendacion() {
+    std::vector<std::pair<std::string, int>> conteo = SessionManager::getInstance().getInscripcionesController().getConteoCategoria(_nombresCategorias);
+	std::vector<std::string> categoriasRecomendadas;
+	for (const auto& par : conteo) {
+		if (par.second > 0) {
+			categoriasRecomendadas.push_back(par.first);
+		}
+	}
+	// Si no hay categorías recomendadas, usar todas
+	if (!categoriasRecomendadas.empty()) {
+        Grafo grafo(categoriasRecomendadas, adyacenciaCategoriaBusqueda, _nombresCategorias);
+        _nombresCategorias = grafo.bfsExpand();
+    }
+    
+  
+    int totalCargados = static_cast<int>(_resultados.size());
+    MAX_RESULTADOS_VISIBLES = (totalCargados > 15) ? 15 : totalCargados;
+    if (MAX_RESULTADOS_VISIBLES == 0) _totalPaginas = 1;
+    else _totalPaginas = (totalCargados + MAX_RESULTADOS_VISIBLES - 1) / MAX_RESULTADOS_VISIBLES; // Calcular total de páginas
+}
+
 
 inline void ExplorarContenidoScreen::_cargarDatosSinRecomendacion()
 {

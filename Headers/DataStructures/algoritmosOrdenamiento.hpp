@@ -92,3 +92,70 @@ void shellSort(vector<T>& arr, Comp comp = menorDefecto<T>) {
 		}
 	}
 }
+
+template <typename T, typename Comp = decltype(menorDefecto<T>)>
+void insertionSort(vector<T>& arr, Comp comp = menorDefecto<T>) {
+	int n = int(arr.size());
+	for (int i = 1; i < n; ++i) {
+		T key = arr[i];
+		int j = i - 1;
+		// desplaza hacia la derecha mientras key sea "menor" que arr[j]
+		while (j >= 0 && comp(key, arr[j])) {
+			arr[j + 1] = arr[j];
+			--j;
+		}
+		arr[j + 1] = key;
+	}
+}
+
+template <typename T, typename Comp = decltype(menorDefecto<T>)>
+void selectionSort(vector<T>& arr, Comp comp = menorDefecto<T>) {
+	int n = int(arr.size());
+	for (int i = 0; i < n - 1; ++i) {
+		int idxMin = i;
+		for (int j = i + 1; j < n; ++j) {
+			if (comp(arr[j], arr[idxMin])) {
+				idxMin = j;
+			}
+		}
+		if (idxMin != i) {
+			T tmp = arr[i];
+			arr[i] = arr[idxMin];
+			arr[idxMin] = arr[i];
+		}
+	}
+}
+
+template <typename T, typename Comp = decltype(menorDefecto<T>)>
+int partitionQS(vector<T>& arr, int low, int high, Comp comp) {
+	T pivot = arr[high];
+	int i = low - 1;
+	for (int j = low; j < high; ++j) {
+		if (comp(arr[j], pivot)) {
+			++i;
+			T tmp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = tmp;
+		}
+	}
+	T tmp = arr[i + 1];
+	arr[i + 1] = arr[high];
+	arr[high] = tmp;
+	return i + 1;
+}
+
+template <typename T, typename Comp = decltype(menorDefecto<T>)>
+void quickSort(vector<T>& arr, int low, int high, Comp comp = menorDefecto<T>) {
+	if (low < high) {
+		int pi = partitionQS(arr, low, high, comp);
+		quickSort(arr, low, pi - 1, comp);
+		quickSort(arr, pi + 1, high, comp);
+	}
+}
+
+// Sobrecarga para no tener que pasar índices
+template <typename T, typename Comp = decltype(menorDefecto<T>)>
+void quickSort(vector<T>& arr, Comp comp = menorDefecto<T>) {
+	if (!arr.empty())
+		quickSort(arr, 0, int(arr.size()) - 1, comp);
+}

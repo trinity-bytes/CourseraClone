@@ -304,5 +304,8 @@
     <ClInclude Include="Headers\Entities\Certificado.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\DataStructures\Grafo.hpp">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

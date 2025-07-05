@@ -8,6 +8,7 @@
 #include "../DataStructures/Stack.hpp"
 #include "../Entities/Inscripcion.hpp"
 #include "../Controllers/ContentManager.hpp"
+#include "../DataStructures/algoritmosOrdenamiento.hpp"
 
 class InscripcionesController
 {
@@ -37,6 +38,7 @@ public:
 	inline FileOperationResult completarActividad(TipoActividad tipo, int id);
 	inline FileOperationResult pagarActividad(TipoActividad tipo, int id);
 	inline FileOperationResult inscribirEspecializacion(int idEspecializacion);
+	inline std::vector<std::pair<std::string, int>> getConteoCategoria(std::vector<std::string> categoriasInicio);
 	inline bool verificarCurso(int idCurso);
 	inline bool verificarEspecializacion(int idEspecializacion);
 	inline void mostrarCursos();
@@ -212,6 +214,56 @@ inline FileOperationResult InscripcionesController::inscribirEspecializacion(int
 		"Éxito: especializacon " + std::to_string(idEspecializacion) +
 		" para estudiante " + std::to_string(idEstudiante));
 	return FileOperationResult::SUCCESS;
+}
+
+inline std::vector<std::pair<std::string, int>> InscripcionesController::getConteoCategoria(std::vector<std::string> categoriasInicio) {
+	std::vector<std::pair<std::string, int>> conteo;
+	HashTable<std::string, int> conteoCategorias;
+	for (std::string c : categoriasInicio) {
+		conteoCategorias.insert(c, 0);
+	}
+
+	int cantidadCursos = inscripcionesCursos.getTamano();
+	for (int i = 0; i < cantidadCursos; i++) {
+		Inscripcion& inscripcion = inscripcionesCursos.get(i);
+		int idCurso = inscripcion.getIdActividad();
+		CategoriaActividad categoria = ContentManager::getInstance().obtenerCursoDatos(idCurso).categoria;
+		std::string textoCategoria = RawActividadData::categoriaToString(categoria);
+		int total = 0;
+		bool encontrado = conteoCategorias.find(textoCategoria, total);
+		int todo = 1 + inscripcion.getEstadoPago() * 3 + inscripcion.getCompletado() * 5;
+		if (encontrado) conteoCategorias.add(textoCategoria, todo);
+		else conteoCategorias.add("OTROS", 1);
+	}
+
+	int cantidadEspecializaciones = inscripcionesEspecialidades.getTamano();
+	for (int i = 0; i < cantidadEspecializaciones; i++) {
+		Inscripcion& inscripcion = inscripcionesEspecialidades.get(i);
+		int idEspecializacion = inscripcion.getIdActividad();
+		CategoriaActividad categoria = ContentManager::getInstance().obtenerEspecializacionDatos(idEspecializacion).categoria;
+		std::string textoCategoria = RawActividadData::categoriaToString(categoria);
+		int total = 0;
+		bool encontrado = conteoCategorias.find(textoCategoria, total);
+		int todo = 1 + inscripcion.getEstadoPago() * 3 + inscripcion.getCompletado() * 5;
+		if (encontrado) conteoCategorias.add(textoCategoria, todo);
+		else conteoCategorias.add("OTROS", 1);
+	}
+
+	for (std::string c : categoriasInicio) {
+		if (c == "OTROS" || c == "TODAS") continue;
+		int total = 0;
+		bool encontrado = conteoCategorias.find(c, total);
+		if (encontrado) {
+			conteo.push_back({ c, total });
+		}
+	}
+
+	auto ordenar = [](std::pair<std::string, int> a, std::pair<std::string, int> b) {
+		return a.second > b.second;
+		};
+	insertionSort(conteo, ordenar);
+
+	return conteo;
 }
 
 inline bool InscripcionesController::verificarCurso(int idCurso) {
