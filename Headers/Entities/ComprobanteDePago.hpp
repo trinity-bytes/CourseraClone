@@ -43,6 +43,11 @@ public:
     void guardar();
     RawComprobanteData obtenerDatosCrudosComprobante();
     void mostrarComprobantePorNombreCurso(const std::string& nombreCurso);
+    
+    // MÃ©todo para establecer fecha personalizada (Ãºtil para datos de ejemplo)
+    inline void establecerFechaEmision(const std::string& fecha) {
+        _fechaEmision = fecha;
+    }
 };
 
 ComprobanteDePago::ComprobanteDePago() : 
@@ -121,7 +126,7 @@ inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante(){
 inline void ComprobanteDePago::mostrarComprobantePorNombreCurso(const std::string& nombreCurso) {
     int idCurso = FilesManager::getInstance().obtenerIdCursoPorNombre(nombreCurso);
     if (idCurso == -1) {
-        std::cerr << "No se encontró un curso con el nombre: " << nombreCurso << std::endl;
+        std::cerr << "No se encontrï¿½ un curso con el nombre: " << nombreCurso << std::endl;
         return;
     }
     RawComprobanteData comprobante;
@@ -130,12 +135,12 @@ inline void ComprobanteDePago::mostrarComprobantePorNombreCurso(const std::strin
         std::cout << "Estudiante ID: " << comprobante.idEstudiante << std::endl;
         std::cout << "Actividad ID: " << comprobante.idActividad << std::endl;
         std::cout << "Tipo de Actividad: " << static_cast<int>(comprobante.tipoActividad) << std::endl;
-        std::cout << "Fecha de Emisión: " << comprobante.fechaEmision << std::endl;
-        std::cout << "Hora de Emisión: " << comprobante.horaEmision << std::endl;
+        std::cout << "Fecha de Emisiï¿½n: " << comprobante.fechaEmision << std::endl;
+        std::cout << "Hora de Emisiï¿½n: " << comprobante.horaEmision << std::endl;
         std::cout << "Monto Pagado: " << comprobante.montoPagado << std::endl;
     }
     else {
-        std::cerr << "No se encontró comprobante para el curso: " << nombreCurso << std::endl;
+        std::cerr << "No se encontrï¿½ comprobante para el curso: " << nombreCurso << std::endl;
     }
 }
 */

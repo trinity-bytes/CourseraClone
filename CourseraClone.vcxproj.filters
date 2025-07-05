@@ -74,6 +74,9 @@
     <None Include="Resources\Documentation\Resumen_Actualizacion_Documentacion.md">
       <Filter>Documentation</Filter>
     </None>
+    <None Include="Resources\Documentation\Formato_JSON_Estandar.md" />
+    <None Include="Resources\Documentation\Ejemplo_Practico_QR.md" />
+    <None Include="Resources\Documentation\Optimizaciones_QR.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Controllers\ContentManager.hpp">

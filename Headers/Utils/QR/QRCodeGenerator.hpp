@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <map>
 
 // Headers propios del proyecto
 #include "../ColorPalette.hpp"
@@ -105,6 +106,21 @@ namespace QR {
         /// @param text Texto a codificar
         /// @return Código QR con estilo Coursera
         static std::string generateCourseraQR(const std::string& text);
+        
+        /// @brief Configura automáticamente el QR para el mejor balance entre tamaño y legibilidad
+        /// @param contentLength Longitud estimada del contenido
+        /// @return Configuración optimizada
+        static QRConfig configuracionOptima(size_t contentLength);
+        
+        /// @brief Analiza el contenido y sugiere la mejor configuración
+        /// @param text Texto a codificar
+        /// @return Información sobre la configuración recomendada
+        std::string analizarContenido(const std::string& text) const;
+        
+        /// @brief Genera múltiples versiones del QR con diferentes estilos para comparación
+        /// @param text Texto a codificar
+        /// @return Mapa con diferentes versiones del QR
+        std::map<std::string, std::string> generarVariaciones(const std::string& text);
     };
 
 } // namespace QR
