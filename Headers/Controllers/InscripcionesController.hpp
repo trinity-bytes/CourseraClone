@@ -10,8 +10,7 @@
 #include "../Controllers/ContentManager.hpp"
 #include "../DataStructures/algoritmosOrdenamiento.hpp"
 
-class InscripcionesController
-{
+class InscripcionesController{
 private:
 	// Estructuras de datos principales
 	Stack<Inscripcion> inscripcionesCursos;
@@ -19,7 +18,6 @@ private:
 	std::unique_ptr<ArbolAVL<int>> idCursos;
 	std::unique_ptr<ArbolAVL<int>> idEspecialidades;
 	int idEstudiante;
-
 
 	// Utilidades privadas
 	void logOperation(const std::string& operation, const std::string& details);
@@ -232,8 +230,8 @@ inline std::vector<std::pair<std::string, int>> InscripcionesController::getCont
 		int total = 0;
 		bool encontrado = conteoCategorias.find(textoCategoria, total);
 		int todo = 1 + inscripcion.getEstadoPago() * 3 + inscripcion.getCompletado() * 5;
-		if (encontrado) conteoCategorias.add(textoCategoria, todo);
-		else conteoCategorias.add("OTROS", 1);
+		if (encontrado) conteoCategorias.insert(textoCategoria, todo);
+		else conteoCategorias.insert("OTROS", 1);
 	}
 
 	int cantidadEspecializaciones = inscripcionesEspecialidades.getTamano();
@@ -245,8 +243,8 @@ inline std::vector<std::pair<std::string, int>> InscripcionesController::getCont
 		int total = 0;
 		bool encontrado = conteoCategorias.find(textoCategoria, total);
 		int todo = 1 + inscripcion.getEstadoPago() * 3 + inscripcion.getCompletado() * 5;
-		if (encontrado) conteoCategorias.add(textoCategoria, todo);
-		else conteoCategorias.add("OTROS", 1);
+		if (encontrado) conteoCategorias.insert(textoCategoria, todo);
+		else conteoCategorias.insert("OTROS", 1);
 	}
 
 	for (std::string c : categoriasInicio) {
