@@ -251,6 +251,7 @@
     <ClInclude Include="Headers\Utils\ContentGenerator.hpp" />
     <ClInclude Include="Headers\Utils\DataPaths.hpp" />
     <ClInclude Include="Headers\Utils\DateTime.hpp" />
+    <ClInclude Include="Headers\Utils\GeneradorDatos.hpp" />
     <ClInclude Include="Headers\Utils\InputUtils.hpp" />
     <ClInclude Include="Headers\Utils\Lambda.hpp" />
     <ClInclude Include="Headers\Utils\ScreenSystem.hpp" />

@@ -310,5 +310,8 @@
     <ClInclude Include="Headers\Entities\Estadistica.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Utils\GeneradorDatos.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

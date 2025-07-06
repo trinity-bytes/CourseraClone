@@ -29,11 +29,7 @@ private:
     std::string _correoOrganizacion;
     std::string _fechaCreacionOrganizacion;
 
-    /// @brief Estadísticas de la organización
-    int _cursosPublicados;
-    int _especialidadesPublicadas;
-    int _estudiantesInscritos;
-
+    
     /// @brief Estado actual
     bool _primeraRenderizacion;
     bool _botonSeleccionado;
@@ -51,10 +47,8 @@ private:
     COORD coordsCorreo = {30, 22};
     COORD coordsFechaCreacion = {47, 26};
 
-    /// @brief Coordenadas para estadísticas
-    COORD coordsEstadisticas[3] = {
-        {30, 14}, {55, 14}, {80, 14}  // Cursos, Especializaciones, Estudiantes
-    };
+    /// @brief Coordenada para ID
+    COORD coordID = { 30,14 };
     
     // ---- MÉTODOS PRIVADOS ----
     
@@ -65,7 +59,6 @@ private:
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
     inline void renderizarDatosPerfil();
-    inline void renderizarEstadisticas();
     inline void renderizarBoton(bool seleccionado);
 
     /// @brief Métodos de navegación
@@ -87,7 +80,6 @@ inline PerfilOrganizacionScreen::PerfilOrganizacionScreen() : PantallaBase(),
     _nombreOrganizacion("UPC - Universidad Peruana de Ciencias Aplicadas"),
     _correoOrganizacion("admin@upc.edu.pe"),
     _fechaCreacionOrganizacion("10 de Enero, 2020"),
-    _cursosPublicados(25), _especialidadesPublicadas(8), _estudiantesInscritos(1250),
     _primeraRenderizacion(true), _botonSeleccionado(true)
 {
     _cargarDatosDummy();
@@ -122,7 +114,6 @@ inline void PerfilOrganizacionScreen::dibujarInterfazCompleta()
     UI_OrganizationProfile();
 
     renderizarDatosPerfil();
-    renderizarEstadisticas();
     renderizarBoton(_botonSeleccionado);
 
     resetColor();
@@ -133,6 +124,9 @@ inline void PerfilOrganizacionScreen::renderizarDatosPerfil()
 {
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
     
+    gotoXY(coordID.X, coordID.Y);
+	std::cout << _idOrganizacion;
+
     // Nombre de la organización
     gotoXY(coordsNombre.X, coordsNombre.Y);
     std::cout << _nombreOrganizacion;
@@ -143,26 +137,6 @@ inline void PerfilOrganizacionScreen::renderizarDatosPerfil()
     // Fecha de creación
     gotoXY(coordsFechaCreacion.X, coordsFechaCreacion.Y);
     std::cout << _fechaCreacionOrganizacion;
-    
-    resetColor();
-}
-
-// Renderizar estadísticas
-inline void PerfilOrganizacionScreen::renderizarEstadisticas()
-{
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    
-    // Cursos publicados
-    gotoXY(coordsEstadisticas[0].X, coordsEstadisticas[0].Y);
-    std::cout << _cursosPublicados;
-    
-    // Especializaciones publicadas
-    gotoXY(coordsEstadisticas[1].X, coordsEstadisticas[1].Y);
-    std::cout << _especialidadesPublicadas;
-    
-    // Estudiantes inscritos
-    gotoXY(coordsEstadisticas[2].X, coordsEstadisticas[2].Y);
-    std::cout << _estudiantesInscritos;
     
     resetColor();
 }

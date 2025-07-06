@@ -31,11 +31,6 @@ private:
     std::string _emailEstudiante;
     std::string _fechaRegistroEstudiante;
 
-    /// @brief Estadísticas del estudiante
-    int _cursosCompletados;
-    int _certificadosObtenidos;
-    int _horasEstudio;
-
     /// @brief Estado actual
     int _seccionActual;
     int _botonActual;
@@ -61,21 +56,18 @@ private:
     COORD coordsEmail = {30, 22};
     COORD coordsFechaRegistro = {49, 26};
 
-    /// @brief Coordenadas para estadísticas
-    COORD coordsEstadisticas[3] = {
-        {30, 14}, {55, 14}, {80, 14}  // Cursos, Certificados, Horas
-    };
+    /// @brief Coordenada para ID
+    COORD coordID = { 30,14 };
 	// ---- METODOS PRIVADOS ----
 
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
-    inline void cargarDatos();
+
     inline void _cargarDatosDummy();
 
     /// @brief Métodos de renderizado
     inline void dibujarInterfazCompleta();
     inline void renderizarDatosPerfil();
-    inline void renderizarEstadisticas();
     inline void renderizarBoton(int indice, bool seleccionado);
     inline void actualizarSeleccion();
 
@@ -99,7 +91,6 @@ inline PerfilEstudianteScreen::PerfilEstudianteScreen() : PantallaBase(),
     _idEstudiante(1), _nombreEstudiante("Juan Carlos Pérez"),
     _emailEstudiante("juan.perez@upc.edu.pe"),
     _fechaRegistroEstudiante("15 de Marzo, 2024"),
-    _cursosCompletados(8), _certificadosObtenidos(5), _horasEstudio(120),
     _seccionActual(0), _botonActual(0), _botonAnterior(-1), _primeraRenderizacion(true)
 {
     _cargarDatosDummy();
@@ -131,43 +122,10 @@ inline void PerfilEstudianteScreen::_cargarDatosDummy()
         // Cargar estadísticas reales desde ContentManager
         ContentManager& cm = ContentManager::getInstance();
         std::vector<InscripcionBinaria> inscripciones = cm.obtenerInscripcionesEstudiante(_idEstudiante);
-        
-        _cursosCompletados = 0;
-        _certificadosObtenidos = 0;
-        _horasEstudio = 0;
-        
-        for (const auto& inscripcion : inscripciones) {
-            if (inscripcion.completado) {
-                _cursosCompletados++;
-                _certificadosObtenidos++;
-                
-                // Calcular horas estimadas
-                if (static_cast<TipoActividad>(inscripcion.tipoActividad) == TipoActividad::CURSO) {
-                    RawCursoData curso = cm.obtenerCursoDatos(inscripcion.idActividad);
-                    if (curso.id != -1) {
-                        _horasEstudio += curso.cantidadClases * 2; // 2 horas por clase
-                    }
-                } else {
-                    RawEspecializacionData esp = cm.obtenerEspecializacionDatos(inscripcion.idActividad);
-                    if (esp.id != -1) {
-                        _horasEstudio += esp.duracionEstimada * 8; // 8 horas por semana
-                    }
-                }
-            }
-        }
-        
-        // Si no hay datos reales, usar valores por defecto
-        if (_cursosCompletados == 0) {
-            _cursosCompletados = 8;
-            _certificadosObtenidos = 5;
-            _horasEstudio = 120;
-        }
-    } else {
-        // Valores por defecto si no hay sesión
-        _cursosCompletados = 8;
-        _certificadosObtenidos = 5;
-        _horasEstudio = 120;
+     
+
     }
+    
 }
 
 // Dibujar interfaz completa
@@ -177,7 +135,6 @@ inline void PerfilEstudianteScreen::dibujarInterfazCompleta()
     UI_UserProfile();
 
     renderizarDatosPerfil();
-    renderizarEstadisticas();
     
     // Renderizar todos los botones
     for (int i = 0; i < TOTAL_BOTONES; ++i) {
@@ -192,6 +149,8 @@ inline void PerfilEstudianteScreen::renderizarDatosPerfil()
 {
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
     
+	gotoXY(coordID.X, coordID.Y);
+	std::cout << _idEstudiante;
     // Nombre
     gotoXY(coordsNombre.X, coordsNombre.Y);
     std::cout << _nombreEstudiante;
@@ -207,25 +166,7 @@ inline void PerfilEstudianteScreen::renderizarDatosPerfil()
     resetColor();
 }
 
-// Renderizar estadísticas
-inline void PerfilEstudianteScreen::renderizarEstadisticas()
-{
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    
-    // Cursos completados
-    gotoXY(coordsEstadisticas[0].X, coordsEstadisticas[0].Y);
-    std::cout << _cursosCompletados;
-    
-    // Certificados obtenidos
-    gotoXY(coordsEstadisticas[1].X, coordsEstadisticas[1].Y);
-    std::cout << _certificadosObtenidos;
-    
-    // Horas de estudio
-    gotoXY(coordsEstadisticas[2].X, coordsEstadisticas[2].Y);
-    std::cout << _horasEstudio;
-    
-    resetColor();
-}
+
 
 // Renderizar botón
 inline void PerfilEstudianteScreen::renderizarBoton(int indice, bool seleccionado)
