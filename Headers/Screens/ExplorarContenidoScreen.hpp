@@ -78,6 +78,7 @@ private:
     std::vector<RawExploradorData> _resultados;
     std::vector<std::string> _sugerenciasCursos;
     std::vector<std::string> _textosFiltroTipos;
+    std::unordered_map<CategoriaActividad, std::vector<RawExploradorData>> _cursosPorCategoria;
 
     // --- Métodos privados de inicialización ---
     inline void _inicializarDatos();
@@ -152,13 +153,15 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
+  
+    
 	if (SessionManager::getInstance().isLoggedIn()) {
-		//_cargarCategoriasRecomendacion();
+		_cargarCategoriasRecomendacion();
 	}
 	else {
-		//_cargarDatosSinRecomendacion(); // No hay sesión activa o el usuario no tiene inscripciones
+		_cargarDatosSinRecomendacion(); // No hay sesión activa o el usuario no tiene inscripciones
 	}
-    //_cargarDatosSinRecomendacion();
+    //_cargarDatosSinRecomendacion();*/
     
     _textosFiltroTipos = {
         " TODOS ",
@@ -503,13 +506,25 @@ inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bo
     
     gotoXY(_coordResultados.X, _coordResultados.Y + indice);
     
+    const int anchoLinea = 50;
+    std::cout << std::string(anchoLinea, ' ');
+
+    gotoXY(_coordResultados.X, _coordResultados.Y + indice);
+
     if (seleccionado) {
         setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
-    } else {
+    }
+    else {
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
-    
-    std::string texto = "- " + _resultados[indice].titulo;
+
+    std::string titulo = _resultados[indice].titulo;
+    if (titulo.length() > anchoLinea - 2) {
+        titulo = titulo.substr(0, anchoLinea - 5) + "...";
+    }
+    std::string texto = "- " + titulo;
+    texto.resize(anchoLinea, ' '); // Rellenar para evitar residuos
+
     std::cout << texto;
     resetColor();
 }
@@ -563,6 +578,15 @@ inline int ExplorarContenidoScreen::_obtenerMaxElementosEnSeccion(int seccion)
 }
 // Filtrado de tipos de contenido
 inline void ExplorarContenidoScreen::_aplicarFiltroTipos() {
+    static bool _cursosPorCategoriaInicializado = false;
+    if (!_cursosPorCategoriaInicializado) {
+        _cursosPorCategoria.clear();
+        std::vector<RawExploradorData> todos = ContentManager::getInstance().obtenerExploradorDatos();
+        for (const auto& curso : todos) {
+            _cursosPorCategoria[curso.categoria].push_back(curso);
+        }
+        _cursosPorCategoriaInicializado = true;
+    }
 	_resultados.clear();
     // Obtén todos los datos (puedes optimizar esto si tienes muchos datos)
     std::vector<RawExploradorData> todos = ContentManager::getInstance().obtenerExploradorDatos();
@@ -572,10 +596,9 @@ inline void ExplorarContenidoScreen::_aplicarFiltroTipos() {
         bool tipoOk = (_tipoSeleccionado == 0) ||
             (_tipoSeleccionado == 1 && item.tipo == TipoActividad::CURSO) ||
             (_tipoSeleccionado == 2 && item.tipo == TipoActividad::ESPECIALIZACION);
-
+       
         // Filtro por categoría
-        bool categoriaOk = (_categoriaSeleccionada == 0) || // 0 = "TODAS"
-           (item.categoria == _indiceACategoriaEnum(_categoriaSeleccionada));
+        bool categoriaOk = (_categoriaSeleccionada == 0) || (item.categoria == _indiceACategoriaEnum(_categoriaSeleccionada));
 
         if (tipoOk && categoriaOk) {
             _resultados.push_back(item);
