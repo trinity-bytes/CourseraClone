@@ -619,11 +619,13 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
         if (registrado) {
             if (!_yaPagado) {
                 bool proceso = true;
-                double costo = 40.0;
+                double costo = ContentManager::getInstance().obtenerEspecializacion(_idEspecializacion)->getPrecio();
                 if (proceso) {
                     _yaPagado = true;
                     _yaInscrito = true;
                     SessionManager::getInstance().getInscripcionesController().inscribirEspecializacion(_idEspecializacion);
+
+					SessionManager::getInstance().getInscripcionesController().completarActividad(TipoActividad::ESPECIALIZACION, _idEspecializacion);
                     _renderizarBotonInscribirse(true);
 
                     SessionManager::getInstance().getInscripcionesController().pagarActividad(TipoActividad::ESPECIALIZACION, _idEspecializacion);

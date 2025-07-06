@@ -103,7 +103,8 @@ inline void ComprobanteDePago::guardar(){
         << static_cast<int>(datosCrudos.tipoActividad) << "|"
         << datosCrudos.fechaEmision << "|"
         << datosCrudos.horaEmision << "|"
-        << datosCrudos.montoPagado << "|";
+        << datosCrudos.montoPagado << "|"
+        << std::endl;
 
     std::string datosComprobante = ss.str();
     auto resultado = FilesManager::getInstance().generarComprobantePago(_id, datosComprobante);

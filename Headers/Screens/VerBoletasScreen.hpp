@@ -141,7 +141,7 @@ inline void VerBoletasScreen::_cargarDatosEjemplo()
     
     // Si no hay comprobantes reales, cargar algunos de ejemplo para demostración
     if (_comprobantes.empty()) {
-        _cargarComprobantesEjemplo(idUsuarioActual);
+        //_cargarComprobantesEjemplo(idUsuarioActual);
     }
 }
 

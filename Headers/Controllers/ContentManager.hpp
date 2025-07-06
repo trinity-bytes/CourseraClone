@@ -9,7 +9,6 @@
 #include <stdexcept> // Para excepciones
 #include <iostream>  // Para logging
 #include <algorithm> // Para std::find_if
-#include <set>       // Para std::set en estadísticas
 #include <mutex>     // Para std::once_flag
 
 // Headers propios
@@ -57,10 +56,6 @@ private:
     // Estructuras de datos principales
     LinkedList<Curso> _cursos;
     LinkedList<Especializacion> _especializaciones;
-
-    // Mapas para seguimiento de progreso y calificaciones
-    std::map<int, std::map<int, double>> _progresoEstudiantes; // [idEstudiante][idActividad] -> progreso
-    std::map<int, std::map<int, std::pair<int, std::string>>> _calificacionesActividades; // [idActividad][idEstudiante] -> (calificacion, comentario)
 
     // Contadores para IDs autoincrementales
     int _nextCursoId;
@@ -159,6 +154,10 @@ public:
         const std::string& categoria = ""
         
     );
+
+    int getNextIdCurso() {
+		return _nextCursoId;
+    }
 
 
     // ========== BÚSQUEDAS Y CONSULTAS ==========
@@ -807,6 +806,7 @@ inline ContentOperationResult ContentManager::crearEspecializacion(
         // Agregar a la lista
         _especializaciones.agregarAlFinal(nuevaEspecializacion);
 
+
         // Incrementar contador de IDs
         _nextEspecializacionId++;
 
@@ -830,6 +830,7 @@ inline ContentOperationResult ContentManager::crearEspecializacion(
         }
 
         logOperation("CrearEspecializacion", "Especialización '" + titulo + "' creada exitosamente con ID " + std::to_string(nuevaEspecializacion.getId()));
+        res = _nextEspecializacionId - 1; // Retornar el ID del nuevo curso
         return ContentOperationResult::SUCCESS;
 
     } catch (const std::exception& e) {

@@ -394,11 +394,10 @@ inline double ContentGenerator::generarPrecio(const std::string& precioUsuario)
         try {
             return std::stod(precioUsuario);
         } catch (...) {
+            return static_cast<double>(randomInt(20, 40));
             // Si no se puede convertir, generar precio aleatorio
         }
     }
-    
-    // Generar precio entre 50 y 500 soles
     return static_cast<double>(randomInt(20, 40));
 }
 
@@ -408,6 +407,14 @@ inline int ContentGenerator::generarDuracion(const std::string& duracionUsuario,
         try {
             return std::stoi(duracionUsuario);
         } catch (...) {
+            if (esCurso) {
+                // Cursos: 10-50 horas
+                return randomInt(10, 50);
+            }
+            else {
+                // Especializaciones: 8-24 semanas
+                return randomInt(8, 24);
+            }
             // Si no se puede convertir, generar duración aleatoria
         }
     }

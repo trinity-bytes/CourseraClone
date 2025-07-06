@@ -406,7 +406,7 @@ Funciona
 prueba de que funciona
 CIENCIA_DE_DATOS
 Dr. Mario García
-4.6327e-313
+42
 5
 Pandas y manipulación de datos
 Limpia y transforma datos
@@ -426,7 +426,7 @@ sisi
 vamos
 DISENO
 Dr. Andrés Guerrero
-3.26254e-312
+30
 5
 Principios de diseño
 Teoría del color y composición
@@ -446,7 +446,7 @@ nuevo
 nuevo curso prueba
 DISENO
 Ing. Sofia Torres
-2.9289e-312
+25
 5
 Principios de diseño
 Teoría del color y composición
@@ -458,4 +458,344 @@ Branding y logotipos
 Identidad visual
 Portfolio profesional
 Presenta tu trabajo
+%%%
+24
+1
+coursera
+prueba especializacion - Módulo 1
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Dra. Isabella Cruz
+30
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+25
+1
+coursera
+prueba especializacion - Módulo 2
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Dra. Isabella Cruz
+30
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+26
+1
+coursera
+prueba especializacion - Módulo 3
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Dra. Isabella Cruz
+30
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+27
+1
+coursera
+prueba especializacion - Módulo 4
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Dra. Isabella Cruz
+30
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+28
+1
+coursera
+prueba especializacion - Módulo 1
+Potencia tu presencia digital y aumenta tus ventas
+MARKETING_DIGITAL
+Prof. Carlos Mendoza
+30
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+29
+1
+coursera
+prueba especializacion - Módulo 2
+Potencia tu presencia digital y aumenta tus ventas
+MARKETING_DIGITAL
+Prof. Carlos Mendoza
+33
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+30
+1
+coursera
+prueba especializacion - Módulo 3
+Potencia tu presencia digital y aumenta tus ventas
+MARKETING_DIGITAL
+Prof. Carlos Mendoza
+33
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+31
+1
+coursera
+prueba especializacion - Módulo 4
+Crea sitios web modernos y responsivos
+MARKETING_DIGITAL
+Prof. Lucia Santos
+33
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+32
+1
+coursera
+prueba precio
+debe ser 20
+DISENO
+Ing. Miguel Ángel Castro
+4.40351e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+33
+1
+coursera
+prueba precio especializacion - Módulo 1
+Crea diseños impactantes y profesionales
+DISENO
+Dra. Carmen Flores
+4.40351e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+34
+1
+coursera
+prueba precio especializacion - Módulo 2
+Crea diseños impactantes y profesionales
+DISENO
+Dra. Carmen Flores
+4.40351e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+35
+1
+coursera
+prueba precio especializacion - Módulo 3
+Crea diseños impactantes y profesionales
+DISENO
+Dra. Carmen Flores
+4.40351e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+36
+1
+coursera
+prueba precio especializacion - Módulo 4
+Crea diseños impactantes y profesionales
+DISENO
+Dra. Carmen Flores
+4.40351e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+37
+1
+coursera
+otra prueba precio - Módulo 1
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Prof. Lucia Santos
+4.40351e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+38
+1
+coursera
+otra prueba precio - Módulo 2
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Prof. Lucia Santos
+4.40351e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+39
+1
+coursera
+otra prueba precio - Módulo 3
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Prof. Lucia Santos
+4.40351e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+40
+1
+coursera
+otra prueba precio - Módulo 4
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Prof. Lucia Santos
+4.40351e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
 %%%

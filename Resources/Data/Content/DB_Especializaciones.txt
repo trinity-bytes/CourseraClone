@@ -65,3 +65,47 @@ jSJSJSJSJSJS xd
 60
 %%%
 
+6
+1
+coursera
+MARKETING_DIGITAL
+prueba especializacion
+hola
+50
+4
+24,25,26,27
+10
+%%%
+6
+1
+coursera
+MARKETING_DIGITAL
+prueba especializacion
+hola prueba
+60
+4
+28,29,30,31
+10
+%%%
+7
+1
+coursera
+DISENO
+prueba precio especializacion
+hola, esto es una prueba del precio de especializacion
+38
+4
+33,34,35,36
+10
+%%%
+8
+1
+coursera
+MARKETING_DIGITAL
+otra prueba precio
+otra prueba
+40
+4
+37,38,39,40
+10
+%%%

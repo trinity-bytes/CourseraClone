@@ -36,6 +36,7 @@ public:
 	inline void guardarEspecializacionInscripcion(Inscripcion inscripcion);
 	inline FileOperationResult inscribirCurso(int idCurso);
 	inline FileOperationResult completarActividad(TipoActividad tipo, int id);
+	inline FileOperationResult completarEspecializacion(int idInscripciones, int idEspecializacion = -1);
 	inline FileOperationResult pagarActividad(TipoActividad tipo, int id);
 	inline FileOperationResult inscribirEspecializacion(int idEspecializacion);
 	inline std::vector<std::pair<std::string, int>> getConteoCategoria(std::vector<std::string> categoriasInicio);
@@ -114,13 +115,69 @@ inline void InscripcionesController::guardarEspecializacionInscripcion(Inscripci
 	}
 }
 
+inline FileOperationResult InscripcionesController::completarEspecializacion(int idInscripcion, int idEspecializacion) {
+	Inscripcion& inscripcionEspecializacion = inscripcionesEspecialidades.get(idInscripcion);
+
+	 if (idEspecializacion != -1) {
+		inscripcionEspecializacion = getInscripcion(TipoActividad::ESPECIALIZACION, idEspecializacion);
+	 }
+	
+
+	if (inscripcionEspecializacion.getCompletado()) {
+		logOperation("Completar especializacion", "Especializacion ya completada: " + std::to_string(idInscripcion));
+		return FileOperationResult::SUCCESS;
+	}
+	
+	RawEspecializacionData especializacionDatos = ContentManager::getInstance().obtenerEspecializacionDatos(inscripcionEspecializacion.getIdActividad());
+	std::vector<int> idDeCursosEspecializacion = especializacionDatos.idsCursos;
+	int tamano = idDeCursosEspecializacion.size();
+	bool todosCompletados = true;
+	for (int i = 0; i < tamano; i++) {
+		Inscripcion& inscripcionCurso = getInscripcion(TipoActividad::CURSO, idDeCursosEspecializacion[i]);
+		if (!inscripcionCurso.getCompletado()) {
+			todosCompletados = false;
+			break;
+		}
+	}
+
+	if (todosCompletados) {
+		inscripcionEspecializacion.completar();
+		inscripcionEspecializacion.actualizar();
+		ContentManager::getInstance().obtenerEspecializacion(idEspecializacion)->aumentarAlumnoCompletado();
+	}
+	else {
+		logOperation("Completar especializacion",
+			"Error: No se puede completar la especializacion " + std::to_string(idEspecializacion) +
+			" porque no todos los cursos están completados para estudiante " + std::to_string(idEstudiante));
+		return FileOperationResult::SUCCESS;
+	}
+
+	return FileOperationResult::SUCCESS;
+
+}
+
 inline FileOperationResult InscripcionesController::completarActividad(TipoActividad tipo, int id) {
 	Inscripcion& actual = getInscripcion(tipo, id);
 	if (!actual.getCompletado()) {
-		actual.completar();
-		actual.actualizar();
+		
+		if (tipo == TipoActividad::CURSO) {
+			actual.completar();
+			actual.actualizar();
+			ContentManager::getInstance().obtenerCurso(id)->aumentarAlumnoCompletado();
 
-		ContentManager::getInstance().obtenerCurso(id)->aumentarAlumnoCompletado();
+			int tamano = inscripcionesEspecialidades.getTamano();
+			for (int i = 0; i < tamano; i++) {
+				completarEspecializacion(i);
+
+			}
+
+		} 
+		else if (tipo == TipoActividad::ESPECIALIZACION) {
+			completarEspecializacion(0, id);
+		}
+		
+
+
 
 		logOperation("Completar actividad",
 			"Éxito: Actividad " + std::to_string(id) +

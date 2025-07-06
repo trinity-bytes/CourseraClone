@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 #include <conio.h>
-#include <limits>
+
 
 // Headers propios
 #include "../Utils/SystemUtils.hpp"
@@ -279,6 +279,11 @@ inline ResultadoPantalla CrearContenidoScreen::_procesarSeleccion()
             _crearEspecializacionConDatos(nuevoIdCurso);
 			if (nuevoIdCurso != -1) {
 				SessionManager::getInstance().getActividadesController().anadirActividad(TipoActividad::ESPECIALIZACION, nuevoIdCurso);
+                int nuevoId = ContentManager::getInstance().getNextIdCurso();
+				for (int i = nuevoId - 4; i < nuevoId; i++) {
+					SessionManager::getInstance().getActividadesController().anadirActividad(TipoActividad::CURSO, i);
+				}
+
 			}
             // No establecer _primeraRenderizacion aquí, se hace después del preview
             break;
