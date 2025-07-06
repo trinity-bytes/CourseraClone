@@ -37,6 +37,20 @@ struct ElementoInscripcion {
     }
 };
 
+struct InscripcionContenido {
+    int idActividad;
+    std::string nombre;
+    bool completado;
+    bool pagado;
+    bool esEspecializacion;
+
+    InscripcionContenido() = default;
+
+	InscripcionContenido(const std::string& _nombre, int _idActividad = -1, bool _completado = false, bool _pagado = false, bool _esEspecializacion = false)
+		: nombre(_nombre), idActividad(_idActividad), completado(_completado), pagado(_pagado), esEspecializacion(_esEspecializacion) {
+	}
+};
+
 // Estructura para índice de inscripciones en disco (.dat)
 struct InscripcionIndex {
     int idUsuario;
