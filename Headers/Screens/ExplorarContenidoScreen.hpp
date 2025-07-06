@@ -78,6 +78,7 @@ private:
     std::vector<RawExploradorData> _resultados;
     std::vector<std::string> _sugerenciasCursos;
     std::vector<std::string> _textosFiltroTipos;
+    std::unordered_map<CategoriaActividad, std::vector<RawExploradorData>> _cursosPorCategoria;
 
     // --- Métodos privados de inicialización ---
     inline void _inicializarDatos();
@@ -117,6 +118,9 @@ private:
 
     // --- Métodos de busqueda(sugerencias)
     inline void _actualizarSugerenciasCursos();
+	inline void _aplicarFiltroTipos();
+    inline CategoriaActividad _indiceACategoriaEnum(int indice);
+
 
     // --- Métodos utilitarios ---
     inline int _obtenerMaxElementosEnSeccion(int seccion);
@@ -149,13 +153,15 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
+  
+    
 	if (SessionManager::getInstance().isLoggedIn()) {
 		_cargarCategoriasRecomendacion();
 	}
 	else {
 		_cargarDatosSinRecomendacion(); // No hay sesión activa o el usuario no tiene inscripciones
 	}
-    _cargarDatosSinRecomendacion();
+    //_cargarDatosSinRecomendacion();*/
     
     _textosFiltroTipos = {
         " TODOS ",
@@ -234,7 +240,19 @@ inline void ExplorarContenidoScreen::_cargarResultadosEjemplo()
         {TipoActividad::CURSO, 1, "Machine Learning Basico", CategoriaActividad::CIENCIA_DE_DATOS},
         {TipoActividad::CURSO, 1, "Especializacion en Data Science", CategoriaActividad::CIENCIA_DE_DATOS},
         {TipoActividad::CURSO, 1, "Curso de JavaScript Avanzado", CategoriaActividad::DESARROLLO_WEB},
-		{TipoActividad::ESPECIALIZACION, 2, "Diseno UX / UI Completo", CategoriaActividad::DISENO},
+        {TipoActividad::CURSO, 1, "Seguridad Informatica", CategoriaActividad::SEGURIDAD_INFORMATICA},
+        {TipoActividad::CURSO, 1, "Cloud Computing", CategoriaActividad::CLOUD_COMPUTING},
+		{TipoActividad::CURSO, 1, "DevOps", CategoriaActividad::DEVOPS},
+        {TipoActividad::CURSO, 1, "Marketing Digital", CategoriaActividad::MARKETING_DIGITAL},
+        {TipoActividad::CURSO, 1, "Fotografia Digital", CategoriaActividad::FOTOGRAFIA},
+        {TipoActividad::CURSO, 1, "Video y Edicion", CategoriaActividad::VIDEO_ANIMACION},
+		{TipoActividad::CURSO, 1, "Ingles Basico", CategoriaActividad::IDIOMAS},
+        {TipoActividad::ESPECIALIZACION, 2, "Diseno UX / UI Completo", CategoriaActividad::DISENO},
+        {TipoActividad::ESPECIALIZACION, 2, "Especializacion en Inteligencia Artificial", CategoriaActividad::INTELIGENCIA_ARTIFICIAL},
+        {TipoActividad::ESPECIALIZACION, 2, "Especializacion en Negocios Digitales", CategoriaActividad::NEGOCIOS},
+        {TipoActividad::ESPECIALIZACION, 2, "Especializacion en Educacion Online", CategoriaActividad::EDUCACION},
+
+
     };
 }
 
@@ -488,13 +506,25 @@ inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bo
     
     gotoXY(_coordResultados.X, _coordResultados.Y + indice);
     
+    const int anchoLinea = 50;
+    std::cout << std::string(anchoLinea, ' ');
+
+    gotoXY(_coordResultados.X, _coordResultados.Y + indice);
+
     if (seleccionado) {
         setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::HOVER_ESTADO);
-    } else {
+    }
+    else {
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
-    
-    std::string texto = "- " + _resultados[indice].titulo;
+
+    std::string titulo = _resultados[indice].titulo;
+    if (titulo.length() > anchoLinea - 2) {
+        titulo = titulo.substr(0, anchoLinea - 5) + "...";
+    }
+    std::string texto = "- " + titulo;
+    texto.resize(anchoLinea, ' '); // Rellenar para evitar residuos
+
     std::cout << texto;
     resetColor();
 }
@@ -546,7 +576,46 @@ inline int ExplorarContenidoScreen::_obtenerMaxElementosEnSeccion(int seccion)
         return 0;
     }
 }
+// Filtrado de tipos de contenido
+inline void ExplorarContenidoScreen::_aplicarFiltroTipos() {
+    static bool _cursosPorCategoriaInicializado = false;
+    if (!_cursosPorCategoriaInicializado) {
+        _cursosPorCategoria.clear();
+        std::vector<RawExploradorData> todos = ContentManager::getInstance().obtenerExploradorDatos();
+        for (const auto& curso : todos) {
+            _cursosPorCategoria[curso.categoria].push_back(curso);
+        }
+        _cursosPorCategoriaInicializado = true;
+    }
+	_resultados.clear();
+    // Obtén todos los datos (puedes optimizar esto si tienes muchos datos)
+    std::vector<RawExploradorData> todos = ContentManager::getInstance().obtenerExploradorDatos();
 
+    for (const auto& item : todos) {
+        // Filtro por tipo
+        bool tipoOk = (_tipoSeleccionado == 0) ||
+            (_tipoSeleccionado == 1 && item.tipo == TipoActividad::CURSO) ||
+            (_tipoSeleccionado == 2 && item.tipo == TipoActividad::ESPECIALIZACION);
+       
+        // Filtro por categoría
+        bool categoriaOk = (_categoriaSeleccionada == 0) || (item.categoria == _indiceACategoriaEnum(_categoriaSeleccionada));
+
+        if (tipoOk && categoriaOk) {
+            _resultados.push_back(item);
+        }
+    }
+
+    // Actualiza paginación
+    int totalCargados = static_cast<int>(_resultados.size());
+    MAX_RESULTADOS_VISIBLES = (totalCargados > 15) ? 15 : totalCargados;
+    _totalPaginas = (MAX_RESULTADOS_VISIBLES == 0) ? 1 : (totalCargados + MAX_RESULTADOS_VISIBLES - 1) / MAX_RESULTADOS_VISIBLES;
+    _paginaResultadosActual = 0;
+}
+
+inline CategoriaActividad ExplorarContenidoScreen::_indiceACategoriaEnum(int indice) {
+    // El índice 0 es "TODAS", así que los enums empiezan en 0 para la posición 1
+    return static_cast<CategoriaActividad>(indice - 1);
+}
 // Obtener elementos visibles de categoría
 inline int ExplorarContenidoScreen::_obtenerElementosVisiblesCategoria()
 {
@@ -788,13 +857,17 @@ inline ResultadoPantalla ExplorarContenidoScreen::_procesarSeleccion()
     switch (_seccionActual) {
     case SECCION_FILTRO_TIPOS:
         _tipoSeleccionado = _elementoActual;
+		_aplicarFiltroTipos();
         _renderizarFiltroTipos(); // Actualizar visual
+		_renderizarResultados(); // Actualizar resultados
         break;
     case SECCION_FILTRO_CATEGORIAS:
         {
             int inicioIndice = _paginaCategoriaActual * MAX_CATEGORIAS_VISIBLES;
             _categoriaSeleccionada = inicioIndice + _elementoActual;
+			_aplicarFiltroTipos();
             _renderizarFiltroCategorias(); // Actualizar visual
+			_renderizarResultados(); // Actualizar resultados
         }
         break;
     case SECCION_RESULTADOS:

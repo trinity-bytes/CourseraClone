@@ -1,12 +1,11 @@
 #include <vector>
-#include <list>
-#include <utility>
-#include <functional>
+#include <utility>// para std::pair
+#include <functional> // para std::hash
 
 template <typename K, typename T>
 class HashTable {
 private:
-    std::vector<std::list<std::pair<K, T>>> table;
+    std::vector<std::vector<std::pair<K, T>>> table;
     size_t currentSize;
 
     size_t hashFunction(const K& key) const {
@@ -18,21 +17,21 @@ public:
 
     void insert(const K& key, const T& value) {
         size_t index = hashFunction(key);
-        auto& chain = table[index];
-        for (auto& pair : chain) {
+        auto& bucket = table[index];
+        for (auto& pair : bucket) {
             if (pair.first == key) {
                 pair.second = value;
                 return;
             }
         }
-        chain.emplace_back(key, value);
+        bucket.emplace_back(key, value);
         ++currentSize;
     }
 
     bool find(const K& key, T& value) const {
         size_t index = hashFunction(key);
-        const auto& chain = table[index];
-        for (const auto& pair : chain) {
+        const auto& bucket = table[index];
+        for (const auto& pair : bucket) {
             if (pair.first == key) {
                 value = pair.second;
                 return true;
@@ -41,22 +40,9 @@ public:
         return false;
     }
 
-    void add(const K& key, const T& delta) {
-        size_t idx = hashFunction(key);
-        auto& bucket = table[idx];
-        for (auto& kv : bucket) {
-            if (kv.first == key) {
-                kv.second += delta;   // acumula
-                return;
-            }
-        }
-        bucket.emplace_back(key, delta);
-        ++currentSize;
-    }
-
     void clear() {
-        for (auto& chain : table) {
-            chain.clear();
+        for (auto& bucket : table) {
+            bucket.clear();
         }
         currentSize = 0;
     }
@@ -68,8 +54,8 @@ public:
     // -------------------- ITERADOR PERSONALIZADO --------------------
     class iterator {
     private:
-        using OuterIter = typename std::vector<std::list<std::pair<K, T>>>::iterator;
-        using InnerIter = typename std::list<std::pair<K, T>>::iterator;
+        using OuterIter = typename std::vector<std::vector<std::pair<K, T>>>::iterator;
+        using InnerIter = typename std::vector<std::pair<K, T>>::iterator;
 
         OuterIter outer;
         OuterIter outerEnd;
@@ -116,3 +102,4 @@ public:
         return iterator(table.end(), table.end());
     }
 };
+

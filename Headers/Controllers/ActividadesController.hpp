@@ -214,7 +214,7 @@ inline std::vector<std::pair<std::string, double>> ActividadesController::report
 	HashTable<std::string, double> dineroTrimestres;
 	for (RawComprobanteData comprobante : comprobantes) {
 		std::string fechaTrimestre = DateTime::toTrimestreString(comprobante.fechaEmision);
-		dineroTrimestres.add(fechaTrimestre, comprobante.montoPagado);
+		dineroTrimestres.insert(fechaTrimestre, comprobante.montoPagado);
 	}
 
 	
@@ -251,7 +251,7 @@ inline std::vector<std::pair<std::string, int>> ActividadesController::reportarA
 	for (InscripcionBinaria inscripcion : inscripciones) {
 		std::string fechaEmision = std::string(inscripcion.fechaInicio, strnlen(inscripcion.fechaInicio, MAX_DATE_LEN_INS));
 		std::string fechaMes = DateTime::toMesString(fechaEmision);
-		estudiantesMeses.add(fechaMes, 1);
+		estudiantesMeses.insert(fechaMes, 1);
 	}
 
 	for (std::string mes : meses) {
