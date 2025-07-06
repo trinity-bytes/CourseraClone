@@ -38,6 +38,7 @@ public:
 	inline FileOperationResult pagarActividad(TipoActividad tipo, int id);
 	inline FileOperationResult inscribirEspecializacion(int idEspecializacion);
 	inline std::vector<std::pair<std::string, int>> getConteoCategoria(std::vector<std::string> categoriasInicio);
+	inline std::vector<InscripcionContenido> getInscripcionesContenido();
 	inline bool verificarCurso(int idCurso);
 	inline bool verificarEspecializacion(int idEspecializacion);
 	inline void mostrarCursos();
@@ -323,6 +324,23 @@ inline std::vector<std::pair<std::string, int>> InscripcionesController::getCont
 	insertionSort(conteo, ordenar);
 
 	return conteo;
+}
+
+inline std::vector<InscripcionContenido> InscripcionesController::getInscripcionesContenido() {
+	std::vector<InscripcionContenido> inscripcionesContenido;
+	int cantidadCursos = inscripcionesCursos.getTamano();
+	for (int i = 0; i < cantidadCursos; i++) {
+		Inscripcion& inscripcion = inscripcionesCursos.get(i);
+		RawCursoData cursoDatos = ContentManager::getInstance().obtenerCursoDatos(inscripcion.getIdActividad());
+		inscripcionesContenido.push_back(InscripcionContenido(cursoDatos.titulo, inscripcion.getIdActividad(), inscripcion.getCompletado(), inscripcion.getEstadoPago(), false));
+	}
+	int cantidadEspecializaciones = inscripcionesEspecialidades.getTamano();
+	for (int i = 0; i < cantidadEspecializaciones; i++) {
+		Inscripcion& inscripcion = inscripcionesEspecialidades.get(i);
+		RawEspecializacionData especializacionDatos = ContentManager::getInstance().obtenerEspecializacionDatos(inscripcion.getIdActividad());
+		inscripcionesContenido.push_back(InscripcionContenido(especializacionDatos.titulo, inscripcion.getIdActividad(), inscripcion.getCompletado(), inscripcion.getEstadoPago(), true));
+	}
+	return inscripcionesContenido;
 }
 
 inline bool InscripcionesController::verificarCurso(int idCurso) {
