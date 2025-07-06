@@ -181,26 +181,6 @@ public:
      */
     Especializacion* obtenerEspecializacion(int id);
 
-    /**
-     * @brief Busca cursos por categoría
-     * @param categoria Categoría a buscar
-     * @return Vector con punteros a los cursos encontrados
-     */
-    std::vector<Curso*> buscarCursosPorCategoria(const std::string& categoria) const;
-
-    /**
-     * @brief Busca especializaciones por categoría
-     * @param categoria Categoría a buscar
-     * @return Vector con punteros a las especializaciones encontradas
-     */
-    std::vector<Especializacion*> buscarEspecializacionesPorCategoria(const std::string& categoria) const;
-
-    /**
-     * @brief Obtiene actividades de una empresa específica
-     * @param idEmpresa ID de la empresa
-     * @return Par con vectores de cursos y especializaciones
-     */
-    std::pair<std::vector<Curso*>, std::vector<Especializacion*>> obtenerActividadesPorEmpresa(int idEmpresa) const;
 
     /**
      * @brief Obtiene las inscripciones de un estudiante

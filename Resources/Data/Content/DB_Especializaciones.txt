@@ -40,7 +40,7 @@ Potencia tu presencia digital y aumenta tus ventas
 40.0
 2
 18,19
-5
+40
 %%%
 4
 1
@@ -49,7 +49,7 @@ CIENCIA_DE_DATOS
 Como Cazar OTORONGOS UwU*r
 jSJSJSJSJSJS xd
 40.0
-1
-20
-2
+3
+1,2,3
+60
 %%%

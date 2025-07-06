@@ -142,6 +142,7 @@ inline std::vector<ContenidoCreado> ActividadesController::getContenidoCreado() 
 			contenido.categoria = RawActividadData::categoriaToString(curso->getCategoria());
 			contenido.precio = curso->getPrecio();
 			contenido.estudiantesInscritos = curso->getCantidad();
+			contenido.esEspecializacion = false;
 			resultado.push_back(contenido);
 		}
 	}
@@ -157,6 +158,7 @@ inline std::vector<ContenidoCreado> ActividadesController::getContenidoCreado() 
 			contenido.categoria = RawActividadData::categoriaToString(especializacion->getCategoria());
 			contenido.precio = especializacion->getPrecio();
 			contenido.estudiantesInscritos = especializacion->getCantidad();
+			contenido.esEspecializacion = true;
 			resultado.push_back(contenido);
 		}
 	}
