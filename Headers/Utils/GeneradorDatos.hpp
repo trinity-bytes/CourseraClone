@@ -13,6 +13,7 @@ public:
     inline std::vector<std::string> generarNombres();
     inline std::vector<std::string> generarNombres(int n);
     inline void generarUsuarios(int n = 2);
+    inline void generarTodo();
 
 };
 
@@ -20,9 +21,13 @@ inline std::vector<std::string> GeneradorDatos::generarNombres(int n) {
     // Backtracking
     std::vector<std::string> nombres;
     std::string current = "";
+    for (int i = 0; i < n; i++) {
+        current += 'a';
+    }
 
     auto backtrack = [&](auto&& self, int pos) -> void {
         if (pos == n) {
+            std::cout << current;
             nombres.push_back(current);
             return;
         }
@@ -61,6 +66,10 @@ inline void GeneradorDatos::generarUsuarios(int n) {
         }
     }
 
+}
+
+inline void GeneradorDatos::generarTodo() {
+    generarUsuarios(2);
 }
 
 #endif // COURSERACLONE_HEADERS_UTILS_GENERADORDATOS_HPP
