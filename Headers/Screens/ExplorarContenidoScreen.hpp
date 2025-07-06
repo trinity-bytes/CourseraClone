@@ -161,7 +161,7 @@ inline void ExplorarContenidoScreen::_inicializarDatos()
 	else {
 		_cargarDatosSinRecomendacion(); // No hay sesión activa o el usuario no tiene inscripciones
 	}
-    //_cargarDatosSinRecomendacion();*/
+    //_cargarDatosSinRecomendacion();
     
     _textosFiltroTipos = {
         " TODOS ",
