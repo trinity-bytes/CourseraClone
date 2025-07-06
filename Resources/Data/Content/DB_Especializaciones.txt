@@ -4,8 +4,9 @@ Microsoft Learning
 PROGRAMACION
 Desarrollo .NET Full Stack
 Programa completo para convertirte en desarrollador .NET y Angular
-6
-1,4,3,1,4,2
+40.0
+4
+1,4,3,2
 100
 %%%
 1
@@ -14,8 +15,9 @@ Google Academy
 MARKETING_DIGITAL
 Marketing Digital
 Programa completo para dominar estrategias de marketing online
-6
-1,4,3,1,4,2
+40.0
+4
+5,6,7,1
 80
 %%%
 2
@@ -24,8 +26,9 @@ Amazon Web Services
 DEVOPS
 DevOps
 Programa integral para implementar metodologías DevOps en tu organización
-6
-1,4,3,1,4,2
+40.0
+4
+1,4,3,2
 120
 %%%
 3
@@ -34,6 +37,7 @@ coursera
 MARKETING_DIGITAL
 Marketing de Contenidos
 Potencia tu presencia digital y aumenta tus ventas
+40.0
 2
 18,19
 5
@@ -44,6 +48,7 @@ coursera
 CIENCIA_DE_DATOS
 Como Cazar OTORONGOS UwU*r
 jSJSJSJSJSJS xd
+40.0
 1
 20
 2

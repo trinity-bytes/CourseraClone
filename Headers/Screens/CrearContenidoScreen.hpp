@@ -417,6 +417,7 @@ inline void CrearContenidoScreen::_crearCursoConDatos()
             datosGenerados.idEmpresa,
             datosGenerados.titulo,
             datosGenerados.nombreEmpresa,
+            datosGenerados.precio,
             datosGenerados.instructor,
             datosGenerados.descripcion,
             titulosClases,
@@ -453,6 +454,7 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
         RawEspecializacionData datosGenerados = ContentGenerator::generarEspecializacion(
             _titulo,
             _descripcion,
+            _precio,
             _duracion
         );
         
@@ -485,6 +487,7 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
                 cursoDatos.idEmpresa,
                 cursoDatos.titulo,
                 cursoDatos.nombreEmpresa,
+                cursoDatos.precio,
                 cursoDatos.instructor,
                 cursoDatos.descripcion,
                 titulosClases,

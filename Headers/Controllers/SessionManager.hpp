@@ -6,7 +6,8 @@
 #include <memory>
 #include <string>
 
-#include "../Entities/Usuario.hpp"
+#include "../Entities/Estudiante.hpp"
+#include "../Entities/Empresa.hpp"
 #include "InscripcionesController.hpp"
 #include "ActividadesController.hpp"
 #include "FilesManager.hpp"
@@ -123,11 +124,14 @@ inline LoginStatus SessionManager::login(const std::string& username, const std:
     }
 
     // Mantener sesión activa
+    
     _currentUser = std::move(userPtr);
     if (tipoUsuario == TipoUsuario::ESTUDIANTE) {
+        _currentUser = std::move(std::make_unique<Estudiante>(offset));
         _inscripcionesCtrl = std::make_unique<InscripcionesController>(_currentUser->getId());
     }
     else {
+        _currentUser = std::move(std::make_unique<Empresa>(offset));
         _actividadesCtrl = std::make_unique<ActividadesController>(_currentUser->getId());
     }
     

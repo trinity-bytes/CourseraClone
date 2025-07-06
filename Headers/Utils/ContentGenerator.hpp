@@ -37,6 +37,7 @@ public:
     static RawEspecializacionData generarEspecializacion(
         const std::string& tituloUsuario,
         const std::string& descripcionUsuario,
+        const std::string& precioUsuario,
         const std::string& duracionUsuario
     );
 
@@ -282,6 +283,7 @@ inline RawCursoData ContentGenerator::generarCurso(
     datos.titulo = titulo;
     datos.descripcion = descripcion;
     datos.instructor = instructor;
+    datos.precio = precio;
     datos.cantidadClases = static_cast<int>(clases.size());
     datos.duracionEstimada = duracion * 60; // Convertir horas a minutos
     
@@ -294,6 +296,7 @@ inline RawCursoData ContentGenerator::generarCurso(
 inline RawEspecializacionData ContentGenerator::generarEspecializacion(
     const std::string& tituloUsuario,
     const std::string& descripcionUsuario,
+    const std::string& precioUsuario,
     const std::string& duracionUsuario)
 {
     // Seleccionar categoría aleatoria
@@ -315,6 +318,8 @@ inline RawEspecializacionData ContentGenerator::generarEspecializacion(
         categoria, idEmpresa, nombreEmpresa, titulo, cantidadCursos
     );
     
+	double precio = generarPrecio(precioUsuario) + 40;
+
     // Crear estructura de datos
     RawEspecializacionData datos;
     datos.id = 0; // Se asignará automáticamente
@@ -322,6 +327,7 @@ inline RawEspecializacionData ContentGenerator::generarEspecializacion(
     datos.nombreEmpresa = nombreEmpresa;
     datos.categoria = categoria;
     datos.titulo = titulo;
+	datos.precio = precio;
     datos.descripcion = descripcion;
     datos.cantidadCursos = cantidadCursos;
     datos.idsCursos = idsCursos;
@@ -394,7 +400,7 @@ inline double ContentGenerator::generarPrecio(const std::string& precioUsuario)
     }
     
     // Generar precio entre 50 y 500 soles
-    return static_cast<double>(randomInt(50, 500));
+    return static_cast<double>(randomInt(20, 40));
 }
 
 inline int ContentGenerator::generarDuracion(const std::string& duracionUsuario, bool esCurso)

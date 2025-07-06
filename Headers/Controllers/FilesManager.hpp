@@ -157,20 +157,12 @@ public:
 	/// @return Cantidad de usuarios del tipo especificado
     int cantidadUsuarios(TipoUsuario _tipoUsuario);
 
-    /// @brief Actualiza el estado de pago de una inscripción
-    /// @param posicion Posición del registro en el archivo
-    /// @param estado Nuevo estado de pago
-    /// @return Resultado de la operación
-    FileOperationResult actualizarPagoInscripcion(int posicion, bool estado);
 
     /// @brief Lee todas las inscripciones del sistema
     /// @return Vector con todas las inscripciones
     std::vector<InscripcionBinaria> leerDatosInscripciones();
 
-    /// @brief Elimina una inscripción por posición
-    /// @param posicion Posición del registro a eliminar
-    /// @return Resultado de la operación
-    FileOperationResult eliminarInscripcion(int posicion);
+
       // ========== DOMINIO CONTENT (Cursos y Especializaciones) ==========
     /// @brief Lee todos los cursos del sistema
     /// @param vectorCursoAnadir Vector donde se almacenarán los cursos leídos
@@ -193,12 +185,6 @@ public:
     /// @param especializacion Datos de la especialización
     /// @return Resultado de la operación
     FileOperationResult guardarEspecializacion(const RawEspecializacionData& especializacion);
-
-    /// @brief Actualiza los datos de una actividad
-    /// @param id ID de la actividad
-    /// @param nuevosDatos Nuevos datos en formato texto
-    /// @return Resultado de la operación
-    FileOperationResult actualizarActividad(int id, const std::string& nuevosDatos);
     
     /// @brief Busca un curso por su ID
     /// @param id ID del curso a buscar
@@ -247,17 +233,6 @@ public:
     /// @param datosComprobante Datos del comprobante
     /// @return Resultado de la operación
     FileOperationResult generarComprobantePago(int idPago, const std::string& datosComprobante);
-
-    /// @brief Obtiene el historial de pagos de un usuario
-    /// @param idUsuario ID del usuario
-    /// @return Vector con el historial de pagos
-    std::vector<std::string> obtenerHistorialPagos(int idUsuario);
-
-    /// @brief Procesa un reembolso
-    /// @param idPago ID del pago a reembolsar
-    /// @param motivo Motivo del reembolso
-    /// @return Resultado de la operación
-    FileOperationResult procesarReembolso(int idPago, const std::string& motivo);
     
     // ========== UTILIDADES GENERALES ==========
     /// @brief Crea un backup completo del sistema
@@ -1092,11 +1067,19 @@ inline void FilesManager::leerDatoCurso(std::vector<RawCursoData>& vectorCursoAn
                     break;
                 }
 
-                // Read number of classes (next line)
                 if (!std::getline(archivo, linea)) {
                     escribirDebugLog("Error: EOF inesperado después de instructor");
+                    enCurso = false;
+                    continue;
+                }
+                cursoData.precio = std::stod(linea);
+
+                // Read number of classes (next line)
+                if (!std::getline(archivo, linea)) {
+                    escribirDebugLog("Error: EOF inesperado después de precio");
                     break;
                 }
+
 
                 try {
                     clasesPorLeer = std::stoi(linea);
@@ -1278,6 +1261,11 @@ inline void FilesManager::leerDatoEspecializacion(std::vector<RawEspecializacion
         especializacion.descripcion = linea;
         escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - Descripcion leida: '" + especializacion.descripcion + "'");
 
+        if (!std::getline(file, linea)) { logError("Leer especializaciones", filePath, "EOF inesperado antes de leer precio para ESP ID: " + std::to_string(especializacion.id)); break;}
+        especializacion.precio = std::stod(linea);
+		escribirDebugLog("Esp ID " + std::to_string(especializacion.id) + " - Precio leido: " + std::to_string(especializacion.precio));
+       
+
         if (!std::getline(file, linea)) { 
             logError("Leer especializaciones", filePath, "EOF inesperado antes de numCursos para Esp ID: " + std::to_string(especializacion.id));
             break; 
@@ -1448,6 +1436,7 @@ inline FileOperationResult FilesManager::guardarCurso(const RawCursoData& curso)
 			<< curso.descripcion << "\n"
 			<< RawActividadData::categoriaToString(curso.categoria) << "\n"
 			<< curso.instructor << "\n"
+			<< curso.precio << "\n"
 			<< curso.cantidadClases << "\n";
 
 		for (int i = 0; i < static_cast<int>(curso.descripcionClases.size()); i++) {
@@ -1488,6 +1477,7 @@ inline FileOperationResult FilesManager::guardarEspecializacion(const RawEspecia
 			<< RawActividadData::categoriaToString(especializacion.categoria) << "\n"
 			<< especializacion.titulo << "\n"
 			<< especializacion.descripcion << "\n"
+			<< especializacion.precio << "\n"
 			<< especializacion.cantidadCursos << "\n";
 
 		// Guardar IDs de cursos separados por comas

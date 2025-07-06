@@ -33,9 +33,10 @@ public:
         const std::string& descripcion,
         const std::string& instructor,
         int cantidadClases,
-        std::vector<std::pair<std::string, std::string>> descripcionClase
+        std::vector<std::pair<std::string, std::string>> descripcionClase,
+		double precio = 20.0
 
-    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion, TipoActividad::CURSO),
+    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion, TipoActividad::CURSO, precio),
         _instructor(instructor),
         _cantidadClases(cantidadClases) 
     {
@@ -97,6 +98,7 @@ public:
 			std::cout << "Categoría: " << static_cast<int>(curso.categoria) << "\n";
 			std::cout << "Cantidad de Clases: " << curso.cantidadClases << "\n";
 			std::cout << "Empresa: " << curso.nombreEmpresa << " (ID: " << curso.idEmpresa << ")\n";
+			std::cout << "Precio: " << curso.precio << "\n";
         }
         else {
             std::cout << "No se encontró un curso con ese nombre.\n";

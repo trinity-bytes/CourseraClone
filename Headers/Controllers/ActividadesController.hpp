@@ -27,6 +27,7 @@ public:
 
 	inline int calcularCantidad();
 	inline void reportarDatosMostrarActividad(std::string& _cantidadRecaudada, std::string& _cantidadAlumnos, std::string& _porcentajeCompletado, TipoActividad _tipo, int id);
+	inline std::vector<ContenidoCreado> getContenidoCreado();
 	inline std::vector<RawComprobanteData> boletasEmpresa();
 	inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, int maximo = 5);
 	inline double reportarTotal(std::vector<RawComprobanteData>& comprobantes);
@@ -125,6 +126,43 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 	_cantidadRecaudada = "S/" + textoDouble(ingreso);
 	_cantidadAlumnos = std::to_string(cantidad);
 	_porcentajeCompletado = textoDouble(porcentaje) + "%";
+}
+
+inline std::vector<ContenidoCreado> ActividadesController::getContenidoCreado() {
+	std::vector<ContenidoCreado> resultado;
+	// Obtener cursos
+	for (auto it = idCursos.begin(); it != idCursos.end(); it++) {
+		int idCurso = *it;
+		Curso* curso = ContentManager::getInstance().obtenerCurso(idCurso);
+		if (curso != nullptr) {
+			ContenidoCreado contenido;
+			contenido.id = curso->getId();
+			contenido.nombre = curso->getTitulo();
+			contenido.tipo = "Curso";
+			contenido.categoria = RawActividadData::categoriaToString(curso->getCategoria());
+			contenido.precio = curso->getPrecio();
+			contenido.estudiantesInscritos = curso->getCantidad();
+			resultado.push_back(contenido);
+		}
+	}
+
+	for (auto it = idEspecializaciones.begin(); it != idEspecializaciones.end(); it++) {
+		int idEspecializacion = *it;
+		Especializacion* especializacion = ContentManager::getInstance().obtenerEspecializacion(idEspecializacion);
+		if (especializacion != nullptr) {
+			ContenidoCreado contenido;
+			contenido.id = especializacion->getId();
+			contenido.nombre = especializacion->getTitulo();
+			contenido.tipo = "Especialización";
+			contenido.categoria = RawActividadData::categoriaToString(especializacion->getCategoria());
+			contenido.precio = especializacion->getPrecio();
+			contenido.estudiantesInscritos = especializacion->getCantidad();
+			resultado.push_back(contenido);
+		}
+	}
+
+
+	return resultado;
 }
 
 inline std::vector<RawComprobanteData> ActividadesController::boletasEmpresa() {

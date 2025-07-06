@@ -32,17 +32,7 @@ private:
     int _totalContenidos;
     int _paginaActual;
     int _contenidosPorPagina;
-    
-    // Estructura de datos para contenido (simplificada)
-    struct ContenidoCreado {
-        int id;
-        std::string nombre;
-        std::string tipo; // "Curso" o "Especialización"
-        std::string categoria;
-        double precio;
-        int estudiantesInscritos;
-        bool esEspecializacion;
-    };
+   
     
     std::vector<ContenidoCreado> _contenidos;
     
@@ -226,74 +216,12 @@ inline void ListarContenidoScreen::_cargarContenidoOrganizacion()
         auto& actividadesController = SessionManager::getInstance().getActividadesController();
         
         // Cargar cursos de la organización
-        std::vector<ElementoMenu> cursosOrganizacion = actividadesController.getElementosDashboard(TipoActividad::CURSO);
+        _contenidos.clear();
+        _contenidos = actividadesController.getContenidoCreado();
         
-        for (const auto& curso : cursosOrganizacion) {
-            ContenidoCreado contenido;
-            contenido.id = curso.id;
-            contenido.nombre = curso.titulo;
-            contenido.tipo = "Curso";
-            contenido.esEspecializacion = false;
-            
-            // Obtener datos adicionales del curso si están disponibles
-            try {
-                // Intentar obtener datos más detallados del ContentManager
-                auto* cursoDetallado = ContentManager::getInstance().obtenerCurso(curso.id);
-                if (cursoDetallado) {
-                    // Aquí podrías extraer más información si está disponible
-                    contenido.categoria = "Programación"; // Por ahora usar valor por defecto
-                    contenido.precio = 99.90; // Valor por defecto
-                    contenido.estudiantesInscritos = 0; // Por ahora 0
-                } else {
-                    // Valores por defecto si no se puede obtener información detallada
-                    contenido.categoria = "General";
-                    contenido.precio = 89.90;
-                    contenido.estudiantesInscritos = 0;
-                }
-            } catch (...) {
-                // Valores seguros en caso de error
-                contenido.categoria = "General";
-                contenido.precio = 89.90;
-                contenido.estudiantesInscritos = 0;
-            }
-            
-            _contenidos.push_back(contenido);
-        }
         
-        // Cargar especializaciones de la organización
-        std::vector<ElementoMenu> especializacionesOrganizacion = actividadesController.getElementosDashboard(TipoActividad::ESPECIALIZACION);
-        
-        for (const auto& especializacion : especializacionesOrganizacion) {
-            ContenidoCreado contenido;
-            contenido.id = especializacion.id;
-            contenido.nombre = especializacion.titulo;
-            contenido.tipo = "Especialización";
-            contenido.esEspecializacion = true;
-            
-            // Obtener datos adicionales de la especialización si están disponibles
-            try {
-                auto* especializacionDetallada = ContentManager::getInstance().obtenerEspecializacion(especializacion.id);
-                if (especializacionDetallada) {
-                    contenido.categoria = "Especializada";
-                    contenido.precio = 299.99; // Valor por defecto para especializaciones
-                    contenido.estudiantesInscritos = 0;
-                } else {
-                    contenido.categoria = "General";
-                    contenido.precio = 299.99;
-                    contenido.estudiantesInscritos = 0;
-                }
-            } catch (...) {
-                contenido.categoria = "General";
-                contenido.precio = 299.99;
-                contenido.estudiantesInscritos = 0;
-            }
-            
-            _contenidos.push_back(contenido);
-        }
-        
-        // Si no hay contenido, usar datos de ejemplo
         if (_contenidos.empty()) {
-            _cargarContenidoEjemplo();
+            //_cargarContenidoEjemplo();
         } else {
             _totalContenidos = _contenidos.size();
         }

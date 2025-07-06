@@ -5,6 +5,7 @@ Introducción a la Programación en C++
 Curso fundamental para aprender programación orientada a objetos con C++
 PROGRAMACION
 Julia Rodriguez
+20.0
 5
 Fundamentos y sintaxis básica
 Aprende las estructuras fundamentales de C++ y su sintaxis básica
@@ -24,6 +25,7 @@ Python para Ciencia de Datos
 Curso práctico para análisis de datos y machine learning con Python
 CIENCIA_DE_DATOS
 Carlos Martinez
+20.0
 4
 NumPy y Pandas
 Manipulación eficiente de datos con las bibliotecas principales
@@ -41,6 +43,7 @@ Cloud Computing con AWS
 Aprende a desplegar y gestionar aplicaciones en la nube de Amazon
 CLOUD_COMPUTING
 Sarah Johnson
+20.0
 3
 Fundamentos de AWS
 Introducción a los servicios básicos y la consola de AWS
@@ -56,6 +59,7 @@ Desarrollo Frontend con React
 Crea interfaces modernas y reactivas usando la biblioteca de Facebook
 2
 Mark Williams
+20.0
 5
 Introducción a React
 Componentes, props y JSX para crear interfaces
@@ -75,6 +79,7 @@ Bases de datos SQL
 Diseño e implementación de bases de datos relacionales con Oracle
 9
 Laura Chen
+20.0
 3
 Fundamentos de SQL
 Comandos básicos y consultas simples
@@ -90,6 +95,7 @@ Fundamentos de Redes
 Conceptos básicos para el diseño e implementación de redes informáticas
 8
 Manuel López
+20.0
 4
 Modelos de red OSI y TCP/IP
 Estructura y capas de los modelos de comunicación
@@ -107,6 +113,7 @@ SEO y Posicionamiento Web
 Estrategias para aumentar la visibilidad en motores de búsqueda
 2
 Ana Rodríguez
+20.0
 3
 Fundamentos del SEO
 Factores on-page y off-page que afectan el posicionamiento
@@ -122,6 +129,7 @@ Diseño de Experiencia de Usuario (UX)
 Crea productos digitales centrados en las necesidades del usuario
 18
 David Kim
+20.0
 4
 Investigación de usuarios
 Métodos para comprender a tu audiencia objetivo
@@ -138,6 +146,7 @@ Full Stack Web Development
 Aprende las tecnologías web más demandadas del mercado
 DESARROLLO_WEB
 Ing. Alejandra Díaz
+20.0
 5
 HTML básico y semántico
 Estructura tu contenido web
@@ -157,6 +166,7 @@ JavaScript Moderno
 Conviértete en desarrollador web full-stack
 DESARROLLO_WEB
 Ing. Diego Martínez
+20.0
 5
 HTML básico y semántico
 Estructura tu contenido web
@@ -176,6 +186,7 @@ Liderazgo y Gestión
 Desarrolla habilidades empresariales y de liderazgo
 NEGOCIOS
 Dr. Roberto Silva
+20.0
 5
 Planificación estratégica
 Define objetivos y metas
@@ -195,6 +206,7 @@ Marketing en Redes Sociales
 Potencia tu presencia digital y aumenta tus ventas
 MARKETING_DIGITAL
 Prof. Camila Jiménez
+20.0
 5
 Estrategia digital
 Planifica tu presencia online
@@ -214,6 +226,7 @@ Desarrollo Backend con Node.js
 Aprende las tecnologías web más demandadas del mercado
 DESARROLLO_WEB
 Dra. Elena Vásquez
+20.0
 5
 HTML básico y semántico
 Estructura tu contenido web
@@ -233,6 +246,7 @@ Computer Vision
 Introducción práctica al mundo de la inteligencia artificial
 INTELIGENCIA_ARTIFICIAL
 Prof. Gabriel Romero
+20.0
 5
 Introducción a la IA
 Conceptos y aplicaciones
@@ -252,6 +266,7 @@ Full Stack Web Development - Módulo 1
 Desarrolla soluciones inteligentes con IA
 DESARROLLO_WEB
 Dr. Fernando Morales
+20.0
 5
 Introducción a la IA
 Conceptos y aplicaciones
@@ -271,6 +286,7 @@ Full Stack Web Development - Módulo 2
 Domina las herramientas de análisis de datos más populares
 DESARROLLO_WEB
 Ing. Sofia Torres
+20.0
 5
 Pandas y manipulación de datos
 Limpia y transforma datos
@@ -290,6 +306,7 @@ Full Stack Web Development - Módulo 3
 Domina las herramientas de diseño más utilizadas
 DESARROLLO_WEB
 Prof. Camila Jiménez
+20.0
 5
 Principios de diseño
 Teoría del color y composición
@@ -309,6 +326,7 @@ Fundamentos de Python
 Domina los conceptos fundamentales del desarrollo de software
 PROGRAMACION
 Prof. Carlos Mendoza
+20.0
 5
 Variables y tipos de datos
 Aprende los conceptos básicos de variables
@@ -328,6 +346,7 @@ Marketing de Contenidos - Módulo 1
 Desarrolla habilidades empresariales y de liderazgo
 MARKETING_DIGITAL
 Ing. Diego Martínez
+20.0
 5
 Planificación estratégica
 Define objetivos y metas
@@ -347,6 +366,7 @@ Marketing de Contenidos - Módulo 2
 Conviértete en desarrollador web full-stack
 MARKETING_DIGITAL
 Prof. Camila Jiménez
+20.0
 5
 HTML básico y semántico
 Estructura tu contenido web
@@ -366,6 +386,7 @@ Como Cazar OTORONGOS UwU*r - Módulo 1
 Domina las herramientas de análisis de datos más populares
 CIENCIA_DE_DATOS
 Ing. Pedro Ramírez
+20.0
 5
 Pandas y manipulación de datos
 Limpia y transforma datos

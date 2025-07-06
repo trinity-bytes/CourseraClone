@@ -125,6 +125,7 @@ public:
         int idEmpresa,
         const std::string& titulo,
         const std::string& nombreEmpresa,
+		double precio,
         const std::string& instructor,
         const std::string& descripcion,
         const std::vector<std::string>& titulosClases,
@@ -132,20 +133,6 @@ public:
         const std::string& categoria = ""
     );
 
-    /**
-     * @brief Actualiza un curso existente
-     * @param idCurso ID del curso a actualizar
-     * @param nuevosDatos Nuevos datos del curso
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult actualizarCurso(int idCurso, const RawCursoData& nuevosDatos);
-
-    /**
-     * @brief Elimina un curso del sistema
-     * @param idCurso ID del curso a eliminar
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult eliminarCurso(int idCurso);
 
     ElementoInscripcion cargarDatosInscripcionDash(RawInscripcionElementoDash data);
 
@@ -168,24 +155,6 @@ public:
         const std::vector<int>& idsCursos,
         const std::string& categoria = ""
     );
-
-
-    // ========== GESTIÓN DE INSCRIPCIONES ==========    
-    /**
-     * @brief Inscribe un estudiante a un curso
-     * @param idEstudiante ID del estudiante
-     * @param idCurso ID del curso
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult inscribirEstudianteACurso(int idEstudiante, int idCurso);
-
-    /**
-     * @brief Inscribe un estudiante a una especialización
-     * @param idEstudiante ID del estudiante
-     * @param idEspecializacion ID de la especialización
-     * @return ContentOperationResult resultado de la operación
-     */
-    ContentOperationResult inscribirEstudianteAEspecializacion(int idEstudiante, int idEspecializacion);
 
 
     // ========== BÚSQUEDAS Y CONSULTAS ==========
@@ -242,11 +211,7 @@ public:
 
     // ========== ESTADÍSTICAS Y REPORTES ==========
 
-    /**
-     * @brief Obtiene estadísticas generales del sistema
-     * @return Mapa con estadísticas
-     */
-    std::map<std::string, int> obtenerEstadisticasGenerales() const;
+
 
     /**
 
@@ -259,12 +224,6 @@ public:
     */
     std::vector<ElementoMenu> elegirObtenerActividadesPopulares(TipoActividad tipo, int limite = 3);
 
-    /**
-     * @brief Obtiene las especializaciones más populares
-     * @param limite Número máximo de especializaciones a retornar
-     * @return Vector con las especializaciones más populares
-     */
-    std::vector<Especializacion*> obtenerEspecializacionesMasPopulares(int limite = 3) const;
 
     // ========== PERSISTENCIA ==========    
     /**
@@ -559,7 +518,8 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 cursoData.descripcion,
                 cursoData.instructor,
                 cursoData.cantidadClases,
-                cursoData.descripcionClases
+                cursoData.descripcionClases,
+                cursoData.precio
             );
 
             _cursos.agregarAlFinal(curso);
@@ -580,7 +540,8 @@ inline ContentOperationResult ContentManager::cargarDesdeDatos(
                 espData.titulo,
                 espData.descripcion,
                 espData.idsCursos,
-                espData.duracionEstimada
+                espData.duracionEstimada,
+				espData.precio
             );
 
             _especializaciones.agregarAlFinal(std::move(especializacion));
@@ -736,6 +697,7 @@ inline ContentOperationResult ContentManager::crearCurso(
     int idEmpresa,
     const std::string& titulo,
     const std::string& nombreEmpresa,
+    double precio,
     const std::string& instructor,
     const std::string& descripcion,
     const std::vector<std::string>& titulosClases,

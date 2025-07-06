@@ -27,6 +27,7 @@ protected:
     int _cantidadCompletados;
     double _montoRecaudado;
     double _progresoTotal;
+    double _precio;
 
 public:
     Actividad() : _id(0),
@@ -50,7 +51,8 @@ public:
         CategoriaActividad categoria,
         const std::string& titulo,
         const std::string& descripcion,
-        TipoActividad tipo
+        TipoActividad tipo,
+		double precio = 0.0
     ) : _id(id),
         _idEmpresa(idEmpresa),
         _nombreEmpresa(nombreEmpresa),
@@ -61,7 +63,8 @@ public:
         _cantidadAlumnos(0),
         _cantidadCompletados(0),
         _montoRecaudado(0),
-        _progresoTotal(0.0)
+        _progresoTotal(0.0),
+		_precio(precio)
     {
     }
 
@@ -88,8 +91,9 @@ public:
     const std::string& getTitulo() const { return _titulo; }
     const std::string& getDescripcion() const { return _descripcion; }
     const int getCantidad() const { return _cantidadAlumnos; }
-    const TipoActividad getTipo() const { return _tipo; }
+    const TipoActividad getTipo() const { return _tipo; } 
     const double getMontoRecaudado() const { return _montoRecaudado; }
+    const double getPrecio() const { return _precio; }
     double getProgresoTotal() {
         calcularProgreso();
         return _progresoTotal;

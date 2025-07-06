@@ -4,9 +4,6 @@
 #ifndef COURSERACLONE_DATASTRUCTURES_QUEUE_HPP
 #define COURSERACLONE_DATASTRUCTURES_QUEUE_HPP
 
-// Includes del sistema
-#include <stdexcept>
-
 // Includes del proyecto
 #include "Nodo.hpp"
 

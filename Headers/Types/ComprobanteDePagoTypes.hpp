@@ -29,5 +29,9 @@ struct RawComprobanteData {
     std::string fechaEmision;
     std::string horaEmision;
     double montoPagado;
+
+    bool operator<(const RawComprobanteData& o) const {
+        return fechaEmision < o.fechaEmision;
+    }
 };
 #endif // !COURSERACLONE_PERSISTENCE_BOLETATYPES_HPP

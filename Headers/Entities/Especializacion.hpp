@@ -37,8 +37,9 @@ public:
         const std::string& titulo,
         const std::string& descripcion,
 		const std::vector<int>& idsCursos,
-        int duracionEstimada
-    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion, TipoActividad::ESPECIALIZACION), 
+        int duracionEstimada,
+        double precio = 40.0
+    ) : Actividad(id, idEmpresa, nombreEmpresa, categoria, titulo, descripcion, TipoActividad::ESPECIALIZACION, precio), 
         _idsCursos(idsCursos), 
         _duracionEstimada(duracionEstimada) 
     {}
@@ -61,6 +62,7 @@ public:
         datos.categoria = this->getCategoria();
         datos.titulo = this->getTitulo();
         datos.descripcion = this->getDescripcion();
+		datos.precio = this->getPrecio();
         //datos.idsCursos = this->_idsCursos;
 		for (int i = 0; i < 4; i++) datos.idsCursos.push_back(this->_idsCursos[i]);
         datos.duracionEstimada = this->_duracionEstimada;

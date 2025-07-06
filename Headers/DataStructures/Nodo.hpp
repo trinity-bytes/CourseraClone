@@ -4,9 +4,6 @@
 #ifndef COURSERACLONE_DATASTRUCTURES_NODO_HPP
 #define COURSERACLONE_DATASTRUCTURES_NODO_HPP
 
-// Includes librerías estándar
-#include <utility>
-
 template <typename T>
 struct Nodo
 {

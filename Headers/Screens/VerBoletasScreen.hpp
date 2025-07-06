@@ -9,6 +9,7 @@
 #include <conio.h>
 #include <fstream>
 #include <algorithm>
+#include "../DataStructures/algoritmosOrdenamiento.hpp"
 
 // Headers propios
 #include "../Utils/SystemUtils.hpp"
@@ -184,12 +185,13 @@ inline void VerBoletasScreen::_cargarComprobantesReales(int idEstudiante)
         archivo.close();
         
         // Ordenar comprobantes por fecha (más recientes primero)
-        std::sort(_comprobantes.begin(), _comprobantes.end(), 
-            [](const ComprobanteDePago& a, const ComprobanteDePago& b) {
-                RawComprobanteData dataA = const_cast<ComprobanteDePago&>(a).obtenerDatosCrudosComprobante();
-                RawComprobanteData dataB = const_cast<ComprobanteDePago&>(b).obtenerDatosCrudosComprobante();
-                return dataA.fechaEmision > dataB.fechaEmision; // Más recientes primero
-            });
+        auto ordenar = [](const ComprobanteDePago& a, const ComprobanteDePago& b) {
+            RawComprobanteData dataA = const_cast<ComprobanteDePago&>(a).obtenerDatosCrudosComprobante();
+            RawComprobanteData dataB = const_cast<ComprobanteDePago&>(b).obtenerDatosCrudosComprobante();
+            return dataA.fechaEmision > dataB.fechaEmision; // Más recientes primero
+            };
+        
+        quickSort(_comprobantes, ordenar);
             
     } catch (const std::exception& e) {
         // Si hay error al cargar, usar datos de ejemplo

@@ -213,6 +213,7 @@ struct RawCursoData {
     std::string titulo;
     std::string descripcion;
     std::string instructor;
+    double precio;
     CategoriaActividad categoria;
     std::vector<std::pair<std::string, std::string>> descripcionClases;
     int cantidadClases;
@@ -225,6 +226,7 @@ struct RawEspecializacionData {
     int idEmpresa;
     std::string nombreEmpresa;
     CategoriaActividad categoria;
+    double precio;
     std::string titulo;
     std::string descripcion;
     int cantidadCursos;
@@ -250,6 +252,17 @@ struct RawLandingData {
     int id;
     TipoActividad tipo;
     int cantidad;
+};
+
+// Estructura de datos para contenido (simplificada)
+struct ContenidoCreado {
+    int id;
+    std::string nombre;
+    std::string tipo; // "Curso" o "Especialización"
+    std::string categoria;
+    double precio;
+    int estudiantesInscritos;
+    bool esEspecializacion;
 };
 
 

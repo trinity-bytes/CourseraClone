@@ -42,12 +42,13 @@ public:
 
     void guardar();
     RawComprobanteData obtenerDatosCrudosComprobante();
-    void mostrarComprobantePorNombreCurso(const std::string& nombreCurso);
     
     // Método para establecer fecha personalizada (útil para datos de ejemplo)
     inline void establecerFechaEmision(const std::string& fecha) {
         _fechaEmision = fecha;
     }
+
+    bool operator<(ComprobanteDePago& otro);
 };
 
 ComprobanteDePago::ComprobanteDePago() : 
@@ -72,6 +73,13 @@ ComprobanteDePago::ComprobanteDePago(
     _horaEmision(obtenerHoraActual()), 
     _montoPagado(montoPagado)
 {}
+
+// Permiter ordenar en caso de error automatico
+bool ComprobanteDePago::operator<( ComprobanteDePago& otro) {
+    RawComprobanteData da = this->obtenerDatosCrudosComprobante();
+    auto db = otro.obtenerDatosCrudosComprobante();
+    return da.fechaEmision < db.fechaEmision;
+}
 
 // ---- Funciones privadas ----
 std::string ComprobanteDePago::obtenerFechaActual(){
@@ -121,28 +129,5 @@ inline RawComprobanteData ComprobanteDePago::obtenerDatosCrudosComprobante(){
 
     return data;
 }
-
-/*
-inline void ComprobanteDePago::mostrarComprobantePorNombreCurso(const std::string& nombreCurso) {
-    int idCurso = FilesManager::getInstance().obtenerIdCursoPorNombre(nombreCurso);
-    if (idCurso == -1) {
-        std::cerr << "No se encontr� un curso con el nombre: " << nombreCurso << std::endl;
-        return;
-    }
-    RawComprobanteData comprobante;
-    if (FilesManager::getInstance().buscarComprobantePorIdHash(idCurso, comprobante)) {
-        std::cout << "Comprobante ID: " << comprobante.id << std::endl;
-        std::cout << "Estudiante ID: " << comprobante.idEstudiante << std::endl;
-        std::cout << "Actividad ID: " << comprobante.idActividad << std::endl;
-        std::cout << "Tipo de Actividad: " << static_cast<int>(comprobante.tipoActividad) << std::endl;
-        std::cout << "Fecha de Emisi�n: " << comprobante.fechaEmision << std::endl;
-        std::cout << "Hora de Emisi�n: " << comprobante.horaEmision << std::endl;
-        std::cout << "Monto Pagado: " << comprobante.montoPagado << std::endl;
-    }
-    else {
-        std::cerr << "No se encontr� comprobante para el curso: " << nombreCurso << std::endl;
-    }
-}
-*/
 
 #endif // COURSERACLONE_ENTITIES_BOLETA_HPP
