@@ -225,6 +225,7 @@
     <ClInclude Include="Headers\Screens\GestionarOfertasScreen.hpp" />
     <ClInclude Include="Headers\Screens\LandingPageScreen.hpp" />
     <ClInclude Include="Headers\Screens\ListarContenidoScreen.hpp" />
+    <ClInclude Include="Headers\Screens\ListarMisInscripciones.hpp" />
     <ClInclude Include="Headers\Screens\LoginScreen.hpp" />
     <ClInclude Include="Headers\Screens\MostrarCursoScreen.hpp" />
     <ClInclude Include="Headers\Screens\MostrarEspecialidadScreen.hpp" />
