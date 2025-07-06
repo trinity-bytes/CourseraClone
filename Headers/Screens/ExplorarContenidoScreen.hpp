@@ -157,6 +157,7 @@ inline void ExplorarContenidoScreen::_inicializarDatos()
     
 	if (SessionManager::getInstance().isLoggedIn()) {
 		_cargarCategoriasRecomendacion();
+        _cargarDatosSinRecomendacion();
 	}
 	else {
 		_cargarDatosSinRecomendacion(); // No hay sesión activa o el usuario no tiene inscripciones

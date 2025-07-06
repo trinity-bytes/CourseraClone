@@ -141,6 +141,9 @@ inline FileOperationResult InscripcionesController::completarEspecializacion(int
 	if (todosCompletados) {
 		inscripcionEspecializacion.completar();
 		inscripcionEspecializacion.actualizar();
+		if (idEspecializacion == -1) {
+			idEspecializacion = inscripcionEspecializacion.getIdActividad();
+		}
 		ContentManager::getInstance().obtenerEspecializacion(idEspecializacion)->aumentarAlumnoCompletado();
 	}
 	else {
@@ -165,7 +168,7 @@ inline FileOperationResult InscripcionesController::completarActividad(TipoActiv
 
 			int tamano = inscripcionesEspecialidades.getTamano();
 			for (int i = 0; i < tamano; i++) {
-				completarEspecializacion(i);
+				completarEspecializacion(i, -1);
 
 			}
 
@@ -194,6 +197,7 @@ inline FileOperationResult InscripcionesController::completarActividad(TipoActiv
 inline FileOperationResult InscripcionesController::pagarActividad(TipoActividad tipo, int id) {
 	Inscripcion& actual = getInscripcion(tipo, id);
 	if (!actual.getEstadoPago()) {
+
 		actual.marcarComoPagada();
 		actual.actualizar();
 
@@ -356,7 +360,7 @@ inline void InscripcionesController::reportarDatosInscripcion(bool& _yaInscrito,
 
 inline Inscripcion& InscripcionesController::getInscripcion(TipoActividad tipo, int id) {
 	auto igualarId = [](const Inscripcion& i) {
-		return i.getId();
+		return i.getIdActividad();
 		};
 
 	if (tipo == TipoActividad::CURSO) {

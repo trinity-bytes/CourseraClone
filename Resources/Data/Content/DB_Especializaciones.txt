@@ -1,6 +1,6 @@
 0
 1
-Microsoft Learning
+Coursera
 PROGRAMACION
 Desarrollo .NET Full Stack
 Programa completo para convertirte en desarrollador .NET y Angular
@@ -10,8 +10,8 @@ Programa completo para convertirte en desarrollador .NET y Angular
 100
 %%%
 1
-2
-Google Academy
+1
+Coursera
 MARKETING_DIGITAL
 Marketing Digital
 Programa completo para dominar estrategias de marketing online
@@ -21,8 +21,8 @@ Programa completo para dominar estrategias de marketing online
 80
 %%%
 2
-3
-Amazon Web Services
+1
+Coursera
 DEVOPS
 DevOps
 Programa integral para implementar metodologías DevOps en tu organización

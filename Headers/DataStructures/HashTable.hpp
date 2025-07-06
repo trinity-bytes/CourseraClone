@@ -1,6 +1,5 @@
 #include <vector>
 #include <utility>// para std::pair
-#include <functional> // para std::hash
 
 template <typename K, typename T>
 class HashTable {
@@ -25,6 +24,19 @@ public:
             }
         }
         bucket.emplace_back(key, value);
+        ++currentSize;
+    }
+
+    void add(const K& key, T delta) {
+        size_t idx = hashFunction(key);
+        auto& bucket = table[idx];
+        for (auto& kv : bucket) {
+            if (kv.first == key) {
+                kv.second += delta;   // acumula
+                return;
+            }
+        }
+        bucket.emplace_back(key, delta);
         ++currentSize;
     }
 

@@ -37,8 +37,8 @@ Proyecto final integrador
 Desarrolla un proyecto completo de ciencia de datos
 %%%
 2
-3
-Amazon Web Services
+1
+Coursera
 Cloud Computing con AWS
 Aprende a desplegar y gestionar aplicaciones en la nube de Amazon
 CLOUD_COMPUTING
@@ -53,8 +53,8 @@ Redes y seguridad
 VPC, grupos de seguridad y buenas prácticas de protección
 %%%
 3
-4
-Meta Developers
+1
+Coursera
 Desarrollo Frontend con React
 Crea interfaces modernas y reactivas usando la biblioteca de Facebook
 2
@@ -73,8 +73,8 @@ Redux y gestión de estado
 Manejo escalable del estado en aplicaciones complejas
 %%%
 4
-5
-Oracle Academy
+1
+Coursera
 Bases de datos SQL
 Diseño e implementación de bases de datos relacionales con Oracle
 9
@@ -89,8 +89,8 @@ Optimización de consultas
 Indices y técnicas para mejorar el rendimiento
 %%%
 5
-6
-Cisco Networking
+1
+Coursera
 Fundamentos de Redes
 Conceptos básicos para el diseño e implementación de redes informáticas
 8
@@ -107,8 +107,8 @@ Protocolos de comunicación
 Análisis de los protocolos más comunes en redes actuales
 %%%
 6
-7
-Google Academy
+1
+Coursera
 SEO y Posicionamiento Web
 Estrategias para aumentar la visibilidad en motores de búsqueda
 2
@@ -123,8 +123,8 @@ Analítica web y SEO
 Medición y optimización de resultados con Google Analytics
 %%%
 7
-8
-Meta Developers
+1
+Coursera
 Diseño de Experiencia de Usuario (UX)
 Crea productos digitales centrados en las necesidades del usuario
 18
@@ -139,9 +139,10 @@ Prototipado y wireframing
 Creación de modelos para validar soluciones
 Test de usabilidad
 Evaluación y mejora de la experiencia del usuario
-%%%8
+%%%
+8
 1
-Tech Education Corp
+Coursera
 Full Stack Web Development
 Aprende las tecnologías web más demandadas del mercado
 DESARROLLO_WEB
@@ -161,7 +162,7 @@ Publica tu sitio web
 %%%
 9
 1
-Tech Education Corp
+Coursera
 JavaScript Moderno
 Conviértete en desarrollador web full-stack
 DESARROLLO_WEB
@@ -181,7 +182,7 @@ Publica tu sitio web
 %%%
 10
 1
-Tech Education Corp
+Coursera
 Liderazgo y Gestión
 Desarrolla habilidades empresariales y de liderazgo
 NEGOCIOS

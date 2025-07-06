@@ -638,13 +638,13 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
                     restablecer();
                 }
             } else if (!_yaCompletado) {
-                _yaCompletado = true;
-                SessionManager::getInstance().getInscripcionesController().completarActividad(TipoActividad::ESPECIALIZACION, _idEspecializacion);
-                _renderizarBotonInscribirse(true);
+                //_yaCompletado = true;
+                //SessionManager::getInstance().getInscripcionesController().completarActividad(TipoActividad::ESPECIALIZACION, _idEspecializacion);
+        
 
                 gotoXY(30, 29);
                 setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
-                std::cout << "[EXITO]: Curso Completado";
+                std::cout << "[INFO]: Debe Completar Los Cursos";
                 restablecer();
             }
             else {
@@ -662,7 +662,7 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
             restablecer();
         }
 
-
+        /*
         if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
             _yaInscrito = true;
 			SessionManager::getInstance().getInscripcionesController().inscribirEspecializacion(_idEspecializacion);
@@ -692,6 +692,7 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
             gotoXY(30, 29);
             std::cout << "                                  ";
         }
+        */
         // Si ya está inscrito, no hacer nada
     } else {
         // Ir al curso seleccionado

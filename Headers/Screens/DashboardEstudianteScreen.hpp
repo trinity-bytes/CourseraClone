@@ -456,6 +456,8 @@ inline ResultadoPantalla DashboardEstudianteScreen::_procesarSeleccion()
         if (_elementoActual < _especializacionesInscritas.size())
         {
             // TODO: Aquí se podría pasar el ID de la especialización seleccionada
+			int idEspecializacion = _especializacionesInscritas[_elementoActual].idActividad;
+            ContentManager::getInstance().setEspecializacionIdMostar(idEspecializacion);
             return ResultadoPantalla(AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION);
         }
         break;
