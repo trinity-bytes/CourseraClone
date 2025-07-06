@@ -28,6 +28,7 @@
 #include "../Screens/VerCertificadosScreen.hpp"
 #include "../Screens/ListarContenidoScreen.hpp"
 #include "../Screens/GestionarOfertasScreen.hpp"
+#include "../Screens/ListarMisInscripciones.hpp"
 #include "../Controllers/SessionManager.hpp"
 #include "../Utils/ScreenSystem.hpp"
 
@@ -64,6 +65,7 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaVerCertificados();
     inline std::unique_ptr<PantallaBase> crearPantallaListarContenido();
     inline std::unique_ptr<PantallaBase> crearPantallaGestionarOfertas();
+    inline std::unique_ptr<PantallaBase> crearPantallaListarMisInscripciones();
     
     /// @brief Métodos del sistema de navegación
     inline void _procesarNavegacion(const ResultadoPantalla& resultado);
@@ -221,6 +223,12 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaGestionarOfert
     return std::make_unique<GestionarOfertasScreen>();
 }
 
+/// @brief Crea una nueva instancia de la pantalla listar mis inscripciones
+inline std::unique_ptr<PantallaBase> MainController::crearPantallaListarMisInscripciones()
+{
+    return std::make_unique<ListarMisInscripcionesScreen>();
+}
+
 // ---- SISTEMA DE NAVEGACIÓN INTELIGENTE ----
 
 /// @brief Procesa la navegación con historial inteligente
@@ -348,6 +356,9 @@ inline std::unique_ptr<PantallaBase> MainController::_crearPantallaConHistorial(
     case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
         return std::make_unique<GestionarOfertasScreen>(pantallaAnterior);
         
+    case AccionPantalla::IR_A_LISTAR_MIS_INSCRIPCIONES:
+        return std::make_unique<ListarMisInscripcionesScreen>(pantallaAnterior);
+        
     case AccionPantalla::IR_A_VER_CERTIFICADOS:
         return std::make_unique<VerCertificadosScreen>(pantallaAnterior);
         
@@ -474,6 +485,10 @@ inline void MainController::run()
             break;
 
         case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
+            break;
+
+        case AccionPantalla::IR_A_LISTAR_MIS_INSCRIPCIONES:
             _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 

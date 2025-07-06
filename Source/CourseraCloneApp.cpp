@@ -10,13 +10,6 @@
 #include "../Headers/Controllers/FilesManager.hpp"
 #include "../Headers/Controllers/ContentManager.hpp"
 #include "../Headers/Controllers/SessionManager.hpp"
-#include "../Headers/Utils/QR/QRDemo.hpp"
-
-// Declaración de función externa para test de capacidad
-extern int qrCapacityMain();
-
-// Declaración de función externa para test de QR autocontenidos
-extern int testAutocontainedQRMain();
 
 // maquetación de funciones
 void SecuenciaInicializacion();
@@ -25,41 +18,6 @@ void SecuenciaInicializacion();
 int main()
 {
 	SecuenciaInicializacion();
-
-	// Demo rápido del generador QR
-	std::cout << "¿Desea ejecutar el demo del generador QR? (s/n): ";
-	char response;
-	std::cin >> response;
-	
-	if (response == 's' || response == 'S') {
-		std::cout << "\n=== DEMO QR COURSERA ===\n";
-		CourseraClone::QR::QRDemo::quickDemo();
-		std::cout << "\nPresione Enter para continuar al sistema principal...";
-		std::cin.ignore();
-		std::cin.get();
-	}
-
-	// Test de capacidad de datos QR
-	std::cout << "\n¿Desea ejecutar el análisis de capacidad de datos QR? (s/n): ";
-	std::cin >> response;
-	
-	if (response == 's' || response == 'S') {
-		qrCapacityMain();
-		std::cout << "\nPresione Enter para continuar al sistema principal...";
-		std::cin.ignore();
-		std::cin.get();
-	}
-
-	// Test de QR autocontenidos para web
-	std::cout << "\n¿Desea probar los QR autocontenidos para web? (s/n): ";
-	std::cin >> response;
-	
-	if (response == 's' || response == 'S') {
-		testAutocontainedQRMain();
-		std::cout << "\nPresione Enter para continuar al sistema principal...";
-		std::cin.ignore();
-		std::cin.get();
-	}
 
 	try
 	{
