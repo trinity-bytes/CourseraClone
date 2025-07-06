@@ -27,6 +27,7 @@ public:
 
 	inline int calcularCantidad();
 	inline void reportarDatosMostrarActividad(std::string& _cantidadRecaudada, std::string& _cantidadAlumnos, std::string& _porcentajeCompletado, TipoActividad _tipo, int id);
+	inline void anadirActividad(TipoActividad tipo, int id);
 	inline std::vector<ContenidoCreado> getContenidoCreado();
 	inline std::vector<RawComprobanteData> boletasEmpresa();
 	inline std::vector<std::pair<std::string, double>> reportarIngresosTrimestrales(std::vector<RawComprobanteData>& comprobantes, int maximo = 5);
@@ -126,6 +127,15 @@ inline void ActividadesController::reportarDatosMostrarActividad(std::string& _c
 	_cantidadRecaudada = "S/" + textoDouble(ingreso);
 	_cantidadAlumnos = std::to_string(cantidad);
 	_porcentajeCompletado = textoDouble(porcentaje) + "%";
+}
+
+inline void ActividadesController::anadirActividad(TipoActividad tipo, int id) {
+	if (tipo == TipoActividad::CURSO) {
+		idCursos.agregarAlFinal(id);
+	}
+	else if (tipo == TipoActividad::ESPECIALIZACION) {
+		idEspecializaciones.agregarAlFinal(id);
+	}
 }
 
 inline std::vector<ContenidoCreado> ActividadesController::getContenidoCreado() {

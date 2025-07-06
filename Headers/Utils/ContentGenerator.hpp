@@ -285,7 +285,7 @@ inline RawCursoData ContentGenerator::generarCurso(
     datos.instructor = instructor;
     datos.precio = precio;
     datos.cantidadClases = static_cast<int>(clases.size());
-    datos.duracionEstimada = duracion * 60; // Convertir horas a minutos
+    datos.duracionEstimada = duracion;
     
     // Asignar directamente las clases como pares (título, descripción)
     datos.descripcionClases = clases;
@@ -310,15 +310,14 @@ inline RawEspecializacionData ContentGenerator::generarEspecializacion(
     std::string descripcion = generarDescripcion(descripcionUsuario, categoria);
     int duracion = generarDuracion(duracionUsuario, false);
     
-    // Generar cursos para la especialización (1 a 4 cursos)
-    int cantidadCursos = randomInt(1, 4);
+    int cantidadCursos = 4;
     
     // Crear cursos usando el método auxiliar
     std::vector<int> idsCursos = crearCursosParaEspecializacion(
         categoria, idEmpresa, nombreEmpresa, titulo, cantidadCursos
     );
     
-	double precio = generarPrecio(precioUsuario) + 40;
+	double precio = generarPrecio(precioUsuario);
 
     // Crear estructura de datos
     RawEspecializacionData datos;

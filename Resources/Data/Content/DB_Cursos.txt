@@ -399,3 +399,63 @@ Algoritmos de clasificación
 Proyectos prácticos
 Aplica lo aprendido
 %%%
+21
+1
+coursera
+Funciona
+prueba de que funciona
+CIENCIA_DE_DATOS
+Dr. Mario García
+4.6327e-313
+5
+Pandas y manipulación de datos
+Limpia y transforma datos
+Visualización con matplotlib
+Crea gráficos informativos
+Estadística descriptiva
+Analiza y resume datos
+Machine Learning básico
+Algoritmos de clasificación
+Proyectos prácticos
+Aplica lo aprendido
+%%%
+22
+1
+coursera
+sisi
+vamos
+DISENO
+Dr. Andrés Guerrero
+3.26254e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+23
+1
+coursera
+nuevo
+nuevo curso prueba
+DISENO
+Ing. Sofia Torres
+2.9289e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%

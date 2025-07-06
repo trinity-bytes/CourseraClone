@@ -130,6 +130,7 @@ public:
         const std::string& descripcion,
         const std::vector<std::string>& titulosClases,
         const std::vector<std::string>& descripcionesClases,
+        int& res,
         const std::string& categoria = ""
     );
 
@@ -153,7 +154,10 @@ public:
         const std::string& titulo,
         const std::string& descripcion,
         const std::vector<int>& idsCursos,
+        double precio,
+        int& res,
         const std::string& categoria = ""
+        
     );
 
 
@@ -254,7 +258,6 @@ public:
     void setCursoIdMostrar(int _idNuevo) { idCursoMostrar = _idNuevo; }
     void setEspecializacionIdMostar(int _idNuevo) { idEspecializacionMostrar = _idNuevo; }
 
-    double obtenerProgreso(int idEstudiante, int idActividad) const;
 };
 
 // Inicialización de los miembros estáticos en el archivo de implementación (o en este caso, el mismo header)
@@ -682,7 +685,9 @@ inline ContentOperationResult ContentManager::crearCurso(
     const std::string& descripcion,
     const std::vector<std::string>& titulosClases,
     const std::vector<std::string>& descripcionesClases,
-    const std::string& categoria)
+    int& res,
+    const std::string& categoria
+)
 {
     try {
         // Validar datos básicos
@@ -718,7 +723,8 @@ inline ContentOperationResult ContentManager::crearCurso(
             descripcion,
             instructor,
             static_cast<int>(titulosClases.size()),
-            descripcionClases
+            descripcionClases,
+            precio
         );
 
         // Agregar a la lista
@@ -734,6 +740,7 @@ inline ContentOperationResult ContentManager::crearCurso(
         }
 
         logOperation("CrearCurso", "Curso '" + titulo + "' creado exitosamente con ID " + std::to_string(nuevoCurso.getId()));
+		res = _nextCursoId - 1; // Retornar el ID del nuevo curso
         return ContentOperationResult::SUCCESS;
 
     } catch (const std::exception& e) {
@@ -748,7 +755,10 @@ inline ContentOperationResult ContentManager::crearEspecializacion(
     const std::string& titulo,
     const std::string& descripcion,
     const std::vector<int>& idsCursos,
-    const std::string& categoria)
+    double precio,
+    int& res,
+    const std::string& categoria
+    )
 {
     try {
         // Validar datos básicos
@@ -790,7 +800,8 @@ inline ContentOperationResult ContentManager::crearEspecializacion(
             titulo,
             descripcion,
             idsCursos,
-            duracionEstimada
+            duracionEstimada,
+            precio
         );
 
         // Agregar a la lista
@@ -810,6 +821,7 @@ inline ContentOperationResult ContentManager::crearEspecializacion(
         rawData.cantidadCursos = static_cast<int>(idsCursos.size());
         rawData.idsCursos = idsCursos;
         rawData.duracionEstimada = duracionEstimada;
+		rawData.precio = precio;
 
         FileOperationResult resultado = FilesManager::getInstance().guardarEspecializacion(rawData);
         if (resultado != FileOperationResult::SUCCESS) {

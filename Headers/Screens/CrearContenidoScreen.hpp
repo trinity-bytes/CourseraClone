@@ -108,8 +108,8 @@ private:
     
     /// @brief Métodos de procesamiento
     inline ResultadoPantalla _procesarSeleccion();
-    inline void _crearCursoConDatos();
-    inline void _crearEspecializacionConDatos();
+    inline void _crearCursoConDatos(int& nuevoId);
+    inline void _crearEspecializacionConDatos(int& nuevoId);
     inline void _limpiarCampos();
     inline void _mostrarPreviewCurso(const RawCursoData& datos, int idGenerado);
     inline void _mostrarPreviewEspecializacion(const RawEspecializacionData& datos, int idGenerado);
@@ -262,15 +262,24 @@ inline ResultadoPantalla CrearContenidoScreen::_procesarSeleccion()
     
     if (_esBoton(_elementoActual)) {
         int indiceBoton = _obtenerIndiceBoton(_elementoActual);
-        
+        int nuevoIdCurso = -1;
+
         switch (static_cast<OpcionMenu>(indiceBoton)) {
         case OpcionMenu::CREAR_CURSO:
-            _crearCursoConDatos();
+			
+            _crearCursoConDatos(nuevoIdCurso);
+            if (nuevoIdCurso != -1) {
+				SessionManager::getInstance().getActividadesController().anadirActividad(TipoActividad::CURSO, nuevoIdCurso);
+            }
+			
             // No establecer _primeraRenderizacion aquí, se hace después del preview
             break;
             
         case OpcionMenu::CREAR_ESPECIALIZACION:
-            _crearEspecializacionConDatos();
+            _crearEspecializacionConDatos(nuevoIdCurso);
+			if (nuevoIdCurso != -1) {
+				SessionManager::getInstance().getActividadesController().anadirActividad(TipoActividad::ESPECIALIZACION, nuevoIdCurso);
+			}
             // No establecer _primeraRenderizacion aquí, se hace después del preview
             break;
         }
@@ -392,8 +401,9 @@ inline int CrearContenidoScreen::_obtenerMaxLength(int indiceCampo)
 }
 
 // Crear curso con datos opcionales
-inline void CrearContenidoScreen::_crearCursoConDatos()
+inline void CrearContenidoScreen::_crearCursoConDatos(int& nuevoId)
 {
+    nuevoId = -1;
     try {
         // Generar datos completos usando ContentGenerator
         RawCursoData datosGenerados = ContentGenerator::generarCurso(
@@ -422,7 +432,9 @@ inline void CrearContenidoScreen::_crearCursoConDatos()
             datosGenerados.descripcion,
             titulosClases,
             descripcionesClases,
+            nuevoId,
             RawActividadData::categoriaToString(datosGenerados.categoria)
+            
         );
         
         if (resultado == ContentOperationResult::SUCCESS) {
@@ -447,9 +459,11 @@ inline void CrearContenidoScreen::_crearCursoConDatos()
 }
 
 // Crear especialización con datos opcionales
-inline void CrearContenidoScreen::_crearEspecializacionConDatos()
+inline void CrearContenidoScreen::_crearEspecializacionConDatos(int& nuevoId)
 {
+    nuevoId = -1;
     try {
+        
         // Generar datos completos usando ContentGenerator
         RawEspecializacionData datosGenerados = ContentGenerator::generarEspecializacion(
             _titulo,
@@ -458,11 +472,13 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
             _duracion
         );
         
+        
         // Primero crear los cursos individualmente para la especialización
         ContentManager& contentManager = ContentManager::getInstance();
         std::vector<int> idsReales;
         
         // Crear cada curso de la especialización
+        int prueba = 1;
         for (int i = 0; i < datosGenerados.cantidadCursos; i++) {
             // Generar datos del curso usando ContentGenerator
             std::string tituloCurso = datosGenerados.titulo + " - Módulo " + std::to_string(i + 1);
@@ -492,6 +508,7 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
                 cursoDatos.descripcion,
                 titulosClases,
                 descripcionesClases,
+                prueba,
                 RawActividadData::categoriaToString(cursoDatos.categoria)
             );
             
@@ -525,6 +542,7 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
         datosGenerados.idsCursos = idsReales;
         datosGenerados.cantidadCursos = static_cast<int>(idsReales.size());
         
+        nuevoId = -1;
         // Crear especialización con los IDs reales de los cursos
         ContentOperationResult resultado = contentManager.crearEspecializacion(
             datosGenerados.idEmpresa,
@@ -532,8 +550,11 @@ inline void CrearContenidoScreen::_crearEspecializacionConDatos()
             datosGenerados.titulo,
             datosGenerados.descripcion,
             datosGenerados.idsCursos,
+			datosGenerados.precio,
+            nuevoId,
             RawActividadData::categoriaToString(datosGenerados.categoria)
         );
+ 
         
         if (resultado == ContentOperationResult::SUCCESS) {
             // Mostrar preview de la especialización creada
