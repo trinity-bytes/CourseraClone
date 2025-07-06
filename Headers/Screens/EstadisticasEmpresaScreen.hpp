@@ -13,6 +13,7 @@
 #include "../Utils/ScreenSystem.hpp"
 #include "../Utils/UI_Ascii.hpp"
 #include "../Types/UsuarioTypes.hpp"
+#include "../Entities/Estadistica.hpp"
 
 /// Pantalla para mostrar estadísticas de empresa/organización
 class EstadisticasEmpresaScreen : public PantallaBase
@@ -33,17 +34,8 @@ private:
     std::string _tituloAnterior;
     std::vector<std::string> _nombresAnteriores;
     std::vector<std::string> _numerosAnteriores;
-    
-    // Estadísticas generales
-    struct EstadisticasGenerales {
-        int totalCursos;
-        int totalEspecializaciones;
-        int totalInscripciones;
-        double ingresosTotal;
-        double ingresosMes;
-        int cursosPopulares;
-        int nuevosEstudiantes;
-    } _stats;
+   
+    Estadistica _stats;
     
     // Datos para gráficos (simulados)
     std::vector<std::pair<std::string, int>> _datosCursos;
@@ -145,14 +137,13 @@ inline void EstadisticasEmpresaScreen::_cargarDatosDummy()
     _nombreEmpresa = "Universidad Peruana de Ciencias Aplicadas";
     
     // Estadísticas generales (simuladas)
-    _stats.totalCursos = 45;
-    _stats.totalEspecializaciones = 12;
-    _stats.totalInscripciones = 5692;
-    _stats.ingresosTotal = 125640.50;
-    _stats.ingresosMes = 18320.25;
-    _stats.cursosPopulares = 8;
-    _stats.nuevosEstudiantes = 156;
     
+    _stats.setTotalCursos(45);
+    _stats.setTotalEspecializaciones(12);
+	_stats.setTotalInscripciones(5692);
+	_stats.setIngresosTotal(125640.50);
+
+   
     // Datos para gráfico de cursos más populares
     _datosCursos.clear();
     _datosCursos.push_back({"Fundamentos de Prog.", 420});
@@ -192,16 +183,17 @@ inline void EstadisticasEmpresaScreen::_cargarDatos() {
     _stats.nuevosEstudiantes = 156;
     */
  
-    _stats.totalCursos = sm.getActividadesController().getCantidadCursos();
-    _stats.totalEspecializaciones = sm.getActividadesController().getCantidadEspecializaciones();
-    _stats.totalInscripciones = sm.getActividadesController().getCantidadInscritos();
-    _nombreEmpresa = sm.getCurrentUser().getNombreCompleto();
-    
+    _stats.setTotalCursos(sm.getActividadesController().getCantidadCursos());
+    _stats.setTotalEspecializaciones(sm.getActividadesController().getCantidadEspecializaciones());
+	_stats.setTotalInscripciones(sm.getActividadesController().getCantidadInscritos());
+	_nombreEmpresa = sm.getCurrentUser().getNombreCompleto();
+
 
     _datosCursos.clear();
     _datosCursos = sm.getActividadesController().getOrdenadoInscripciones(5);
-    sm.getActividadesController().reportarEstadisticas(_datosIngresos, _datosEstudiantes, _stats.ingresosTotal, 5);
-    
+    double total = 0;
+    sm.getActividadesController().reportarEstadisticas(_datosIngresos, _datosEstudiantes, total, 5);
+	_stats.setIngresosTotal(total);
 }
 
 // Dibujar interfaz completa
@@ -236,16 +228,16 @@ inline void EstadisticasEmpresaScreen::_renderizarEstadisticasGenerales()
     // Cursos y Especializaciones
     gotoXY(_coordStatsGenerales.X + 55, _coordStatsGenerales.Y);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << formatearNumero(_stats.totalCursos);
+    std::cout << formatearNumero(_stats.getTotalCursos());
     
     gotoXY(_coordStatsGenerales.X + 82, _coordStatsGenerales.Y);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << formatearNumero(_stats.totalEspecializaciones);
+    std::cout << formatearNumero(_stats.getTotalEspecializaciones());
     
     // Estudiantes e Inscripciones
     gotoXY(_coordStatsGenerales.X, _coordStatsGenerales.Y);
     setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << formatearNumero(_stats.totalInscripciones);
+    std::cout << formatearNumero(_stats.getTotalInscripciones());
     
     //gotoXY(_coordStatsGenerales.X, _coordStatsGenerales.Y);
     //setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
@@ -254,7 +246,7 @@ inline void EstadisticasEmpresaScreen::_renderizarEstadisticasGenerales()
     // Ingresos
     gotoXY(_coordStatsGenerales.X + 25, _coordStatsGenerales.Y);
     setConsoleColor(ColorIndex::ERROR_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << formatearDinero(_stats.ingresosTotal);
+    std::cout << formatearDinero(_stats.getIngresosTotal());
     
     //gotoXY(_coordStatsGenerales.X + 25, _coordStatsGenerales.Y);
     //setConsoleColor(ColorIndex::ERROR_COLOR, ColorIndex::FONDO_PRINCIPAL);
