@@ -121,7 +121,7 @@ void selectionSort(vector<T>& arr, Comp comp = menorDefecto<T>) {
 		if (idxMin != i) {
 			T tmp = arr[i];
 			arr[i] = arr[idxMin];
-			arr[idxMin] = arr[i];
+			arr[idxMin] = tmp;
 		}
 	}
 }

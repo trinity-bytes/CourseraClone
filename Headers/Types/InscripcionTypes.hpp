@@ -49,6 +49,12 @@ struct InscripcionContenido {
 	InscripcionContenido(const std::string& _nombre, int _idActividad = -1, bool _completado = false, bool _pagado = false, bool _esEspecializacion = false)
 		: nombre(_nombre), idActividad(_idActividad), completado(_completado), pagado(_pagado), esEspecializacion(_esEspecializacion) {
 	}
+
+    bool operator<(const InscripcionContenido& otro) const{
+        if (idActividad != otro.idActividad)
+            return idActividad < otro.idActividad;
+        return nombre < otro.nombre;
+    }
 };
 
 // Estructura para índice de inscripciones en disco (.dat)

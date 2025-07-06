@@ -340,6 +340,15 @@ inline std::vector<InscripcionContenido> InscripcionesController::getInscripcion
 		RawEspecializacionData especializacionDatos = ContentManager::getInstance().obtenerEspecializacionDatos(inscripcion.getIdActividad());
 		inscripcionesContenido.push_back(InscripcionContenido(especializacionDatos.titulo, inscripcion.getIdActividad(), inscripcion.getCompletado(), inscripcion.getEstadoPago(), true));
 	}
+
+	auto ordenar = [](InscripcionContenido a, InscripcionContenido b) {
+		if (a.completado != b.completado) {
+			return a.completado < b.completado; // Completados primero
+		};
+		return a.pagado < b.pagado;
+		};
+
+	selectionSort(inscripcionesContenido, ordenar);
 	return inscripcionesContenido;
 }
 
