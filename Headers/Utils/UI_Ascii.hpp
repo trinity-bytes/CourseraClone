@@ -291,9 +291,6 @@ inline void UI_StudentDashboard()
         }
     }
 
-    gotoXY(22, 5); std::cout << "Te damos la bienvenida";
-    gotoXY(22, 6); std::cout << "RECUERDA:";
-
 	resetColor();
 }
 
