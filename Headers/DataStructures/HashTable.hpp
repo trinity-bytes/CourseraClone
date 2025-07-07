@@ -1,5 +1,6 @@
+#ifndef COURSERACLONE_DATASTRUCTURES_HASHTABLE_HPP
+#define COURSERACLONE_DATASTRUCTURES_HASHTABLE_HPP
 #include <vector>
-#include <utility>// para std::pair
 
 template <typename K, typename T>
 class HashTable {
@@ -115,3 +116,4 @@ public:
     }
 };
 
+#endif // COURSERACLONE_DATASTRUCTURES_HASHTABLE_HPP

@@ -162,11 +162,11 @@ inline ExplorarContenidoScreen::ExplorarContenidoScreen(AccionPantalla pantallaA
 inline void ExplorarContenidoScreen::_inicializarDatos()
 {
     _cargarCategorias();
-  
+    _cargarDatosSinRecomendacion();
     
 	if (SessionManager::getInstance().isLoggedIn()) {
-		_cargarCategoriasRecomendacion();
-        _cargarDatosSinRecomendacion();
+		if (SessionManager::getInstance().getCurrentUser().getTipoUsuario() == TipoUsuario::ESTUDIANTE) _cargarCategoriasRecomendacion();
+        
 	}
 	else {
 		_cargarDatosSinRecomendacion(); // No hay sesión activa o el usuario no tiene inscripciones
