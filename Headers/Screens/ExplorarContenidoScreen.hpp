@@ -950,7 +950,7 @@ inline ResultadoPantalla ExplorarContenidoScreen::ejecutar()
             break;        
         case KEY_ESCAPE: // ESC - Regresar
             _ocultarCursor(); // Ocultar cursor antes de salir
-            res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+            res.accion = AccionPantalla::VOLVER_ANTERIOR;  // ✅ USAR HISTORIAL AUTOMÁTICO
             return res;        
         case KEY_ENTER: // Enter - Procesar selección
             res = _procesarSeleccion();

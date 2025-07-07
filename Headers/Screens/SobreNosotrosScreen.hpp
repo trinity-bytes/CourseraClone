@@ -34,7 +34,7 @@ private:
 		" Ver perfil de GitHub ",
 		" Ver perfil de GitHub ",
 		" IR AL REPOSITORIO DE GITHUB ",
-		" IR A LA DOCUMENTACIÓN "
+		" GENERADOR DE QR "
 	};
 
 	/// @brief URLs correspondientes a cada botón (para futuro uso)
@@ -42,8 +42,8 @@ private:
 		"https://github.com/Santi2007939",             // GitHub Fabrizio
 		"https://github.com/mau-tz",                   // GitHub Mauricio
 		"https://github.com/trinity-bytes",            // GitHub Jahat
-		"https://github.com/CourseraClone/proyecto",   /// @TODO URL del repositorio
-		"https://github.com/CourseraClone/proyecto"    /// @TODO URL de la crpeta de documentacion del repositorio
+		"https://github.com/trinity-bytes/CourseraClone",   /// url repo del proyecto
+		"https://github.com/nayuki/QR-Code-generator/tree/master/cpp"    /// url repo generador qr
 	};
 
 	// ---- METODOS PRIVADOS ----

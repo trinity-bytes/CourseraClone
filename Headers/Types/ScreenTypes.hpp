@@ -25,6 +25,7 @@ enum class AccionPantalla{
     IR_A_VER_CERTIFICADOS,
     IR_A_LISTAR_CONTENIDO,
     IR_A_LISTAR_MIS_INSCRIPCIONES,
+    VOLVER_ANTERIOR,  // ✅ NUEVA ACCIÓN para manejar historial automáticamente
     SALIR
 };
 

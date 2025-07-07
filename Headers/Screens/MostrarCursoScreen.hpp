@@ -702,7 +702,7 @@ inline ResultadoPantalla MostrarCursoScreen::ejecutar()
         case 27: // ESC - Regresar a pantalla anterior
         {
             ResultadoPantalla res;
-            res.accion = _pantallaAnterior;
+            res.accion = AccionPantalla::VOLVER_ANTERIOR;  // ✅ USAR HISTORIAL AUTOMÁTICO
             return res;
         }
 
