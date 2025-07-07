@@ -507,6 +507,66 @@ inline void MainController::run()
             _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
+        case AccionPantalla::VOLVER_ANTERIOR:
+            // ✅ NUEVO CASO: Manejar navegación hacia atrás usando el historial
+            {
+                AccionPantalla pantallaAnterior = _popHistorial();
+                
+                // Crear la pantalla anterior usando el sistema de historial
+                switch (pantallaAnterior) {
+                case AccionPantalla::IR_A_LANDING_PAGE:
+                    _pantallaActualPtr = crearPantallaLandingPage();
+                    break;
+                case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+                    _pantallaActualPtr = crearPantallaDashboardEstudiante();
+                    break;
+                case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
+                    _pantallaActualPtr = crearPantallaDashboardOrganizacion();
+                    break;
+                case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_MOSTRAR_CURSO:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_LISTAR_CONTENIDO:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_LISTAR_MIS_INSCRIPCIONES:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_VER_CERTIFICADOS:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_VER_ESTADISTICAS:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_SOBRE_NOSOTROS:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_VER_BOLETAS:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_CREAR_CONTENIDO:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                case AccionPantalla::IR_A_EDITAR_PERFIL:
+                    _pantallaActualPtr = _crearPantallaConHistorial(pantallaAnterior);
+                    break;
+                default:
+                    // Si no hay historial válido, ir a pantalla por defecto
+                    _pantallaActualPtr = crearPantallaLandingPage();
+                    break;
+                }
+                
+                // Actualizar pantalla actual para el historial
+                _pantallaActual = pantallaAnterior;
+            }
+            break;
+
         case AccionPantalla::SALIR:
             _ejecutando = false;
             system("cls");

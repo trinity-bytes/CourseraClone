@@ -127,6 +127,7 @@ private:
     // --- Métodos de procesamiento ---
     inline ResultadoPantalla _procesarSeleccion();
     inline void procesarSeleccionCursoEspecialidad(ResultadoPantalla& resultado);
+    inline void _limpiarZonaResultados();
 
 public:
     inline ExplorarContenidoScreen();
@@ -501,20 +502,31 @@ inline void ExplorarContenidoScreen::_renderizarElementoCategoria(int indice, bo
 // Renderizar resultados
 inline void ExplorarContenidoScreen::_renderizarResultados()
 {
+    _limpiarZonaResultados();
     int elementosVisibles = _obtenerElementosVisiblesResultados();
-    
+    int inicio = _paginaResultadosActual * MAX_RESULTADOS_VISIBLES;
+
     for (int i = 0; i < elementosVisibles; ++i) {
         _renderizarElementoResultado(i, _seccionActual == SECCION_RESULTADOS && _elementoActual == i);
     }
 }
 
+inline void ExplorarContenidoScreen::_limpiarZonaResultados()
+{
+    int filas = MAX_RESULTADOS_VISIBLES;
+    for (int i = 0; i < filas; ++i) {
+        gotoXY(_coordResultados.X, _coordResultados.Y + i);
+        std::cout << std::string(50, ' ');
+    }
+}
 // Renderizar elemento de resultado
 inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bool seleccionado)
 {
-    if (indice >= _resultados.size()) return;
-    
+    int indiceReal = _paginaResultadosActual * MAX_RESULTADOS_VISIBLES + indice;
+    if (indiceReal >= _resultados.size()) return;
+
     gotoXY(_coordResultados.X, _coordResultados.Y + indice);
-    
+
     const int anchoLinea = 50;
     std::cout << std::string(anchoLinea, ' ');
 
@@ -527,12 +539,12 @@ inline void ExplorarContenidoScreen::_renderizarElementoResultado(int indice, bo
         setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     }
 
-    std::string titulo = _resultados[indice].titulo;
+    std::string titulo = _resultados[indiceReal].titulo;
     if (titulo.length() > anchoLinea - 2) {
         titulo = titulo.substr(0, anchoLinea - 5) + "...";
     }
     std::string texto = "- " + titulo;
-    texto.resize(anchoLinea, ' '); // Rellenar para evitar residuos
+    texto.resize(anchoLinea, ' ');
 
     std::cout << texto;
     resetColor();
@@ -895,8 +907,13 @@ inline ResultadoPantalla ExplorarContenidoScreen::_procesarSeleccion()
         // Cambiar página
         if (_elementoActual == 0 && _paginaResultadosActual > 0) {
             _paginaResultadosActual--;
-        } else if (_elementoActual == 1 && _paginaResultadosActual < _totalPaginas - 1) {
+            _elementoActual = 0; // Selección al primer elemento de la nueva página
+            _renderizarResultados();
+        }
+        else if (_elementoActual == 1 && _paginaResultadosActual < _totalPaginas - 1) {
             _paginaResultadosActual++;
+            _elementoActual = 0; // Selección al primer elemento de la nueva página
+            _renderizarResultados();
         }
         break;
 	case SECCION_BUSCADOR:
@@ -950,7 +967,7 @@ inline ResultadoPantalla ExplorarContenidoScreen::ejecutar()
             break;        
         case KEY_ESCAPE: // ESC - Regresar
             _ocultarCursor(); // Ocultar cursor antes de salir
-            res.accion = AccionPantalla::IR_A_LANDING_PAGE;
+            res.accion = AccionPantalla::VOLVER_ANTERIOR;  // ✅ USAR HISTORIAL AUTOMÁTICO
             return res;        
         case KEY_ENTER: // Enter - Procesar selección
             res = _procesarSeleccion();
