@@ -1121,7 +1121,7 @@ inline void UI_AboutUs()
              │                              │ • Ordenamiento: Quick, Merge   │ Fecha: Julio 2025        │
              └──────────────────────────────┴────────────────────────────────┴──────────────────────────┘
 
-                                IR AL REPOSITORIO DE GITHUB         IR A LA DOCUMENTACIÓN                        
+                                IR AL REPOSITORIO DE GITHUB                                
                                 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯         ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯        
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  Usa las flechas de dirección (ARRIBA, ABAJO) para navegar. ENTER para seleccionar, ESC para regresar.)";

@@ -426,15 +426,8 @@ inline ResultadoPantalla EditarPerfilScreen::ejecutar()
 
             case 27: // ESC - Regresar sin guardar
                 _configurarCursor(false);
-                // Regresar según el tipo de usuario
-                if (tipoUsuario == TipoUsuario::ESTUDIANTE)
-                {
-                    return ResultadoPantalla(AccionPantalla::IR_A_PERFIL_ESTUDIANTE);
-                }
-                else
-                {
-                    return ResultadoPantalla(AccionPantalla::IR_A_PERFIL_ORGANIZACION);
-                }
+                // Usar VOLVER_ANTERIOR para que el sistema de navegación maneje el retorno
+                return ResultadoPantalla(AccionPantalla::VOLVER_ANTERIOR);
 
             default:
                 _manejarEntradaTexto(tecla);
