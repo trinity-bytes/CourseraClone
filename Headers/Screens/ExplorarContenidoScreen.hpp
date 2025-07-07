@@ -48,7 +48,7 @@ private:
     COORD _coordFiltroTipos = {94, 8};
     COORD _coordFiltroCategorias = {94, 13};
     COORD _coordResultados = {4, 9};
-    COORD _coordNavegacionPaginas = {44, 28};
+    COORD _coordNavegacionPaginas = {44, 29};
 
     // --- Estado de navegación ---
     int _seccionActual;

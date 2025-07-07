@@ -661,38 +661,6 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
             std::cout << "[ERROR]: Curso Finalizado";
             restablecer();
         }
-
-        /*
-        if (!_yaInscrito && SessionManager::getInstance().isLoggedIn()) {
-            _yaInscrito = true;
-			SessionManager::getInstance().getInscripcionesController().inscribirEspecializacion(_idEspecializacion);
-            for (int _idCurso : _idCursos) SessionManager::getInstance().getInscripcionesController().inscribirCurso(_idCurso);
-                
-            // Actualizar el botón inmediatamente
-            _renderizarBotonInscribirse(true);
-            
-            gotoXY(8, 28);
-            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::EXITO_COLOR);
-            std::cout << "[ÉXITO]: Te has inscrito a la especialización";
-            resetColor();
-            _getch(); // Pausa para mostrar mensaje
-            
-            // Limpiar mensaje
-            gotoXY(8, 28);
-            std::cout << "                                                ";
-        }
-        else {
-            gotoXY(30, 29);
-            setConsoleColor(ColorIndex::BLANCO_PURO, ColorIndex::ERROR_COLOR);
-            std::cout << "[ERROR]: Especializacion ya inscrita";
-            resetColor();
-            _getch(); // Pausa para mostrar mensaje
-
-            // Limpiar mensaje
-            gotoXY(30, 29);
-            std::cout << "                                  ";
-        }
-        */
         // Si ya está inscrito, no hacer nada
     } else {
         // Ir al curso seleccionado
@@ -702,6 +670,8 @@ inline ResultadoPantalla MostrarEspecialidadScreen::_procesarSeleccion()
             ContentManager::getInstance().setCursoIdMostrar(idCursoSeleccionado);
             res.accion = AccionPantalla::IR_A_MOSTRAR_CURSO;
             res.idCursoSeleccionado = _cursos[indiceCurso].id;
+            // ✅ ESTE ES EL FIX CRÍTICO: Establecer accionAnterior para evitar bucles
+            res.accionAnterior = AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION;
         }
     }
     
