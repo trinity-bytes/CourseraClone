@@ -612,11 +612,9 @@ inline void DashboardEstudianteScreen::_renderizarElementoCurso(int indice, bool
             std::string tituloTruncado = _truncarTitulo(_cursosInscritos[cursoIndex].titulo, MAX_ANCHO_CARACTERES_CUADRO);
             std::cout << tituloTruncado;
             
-            // Renderizar descripción
-            gotoXY(_coordsDescCursos[indice].X, _coordsDescCursos[indice].Y);
+            // Renderizar descripción usando el método que maneja correctamente las líneas múltiples
             setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-            std::string descFormateada = _formatearDescripcion(_cursosInscritos[cursoIndex].descripcion, MAX_ANCHO_CARACTERES_CUADRO, MAX_ALTO_CARACTERES_CUADRO);
-            std::cout << descFormateada;
+            _mostrarDescripcionFormateada(_coordsDescCursos[indice], _cursosInscritos[cursoIndex].descripcion);
         }
     }
     
@@ -653,11 +651,9 @@ inline void DashboardEstudianteScreen::_renderizarElementoEspecializacion(int in
             std::string tituloTruncado = _truncarTitulo(_especializacionesInscritas[espIndex].titulo, MAX_ANCHO_CARACTERES_CUADRO);
             std::cout << tituloTruncado;
             
-            // Renderizar descripción
-            gotoXY(_coordsDescEspecializaciones[indice].X, _coordsDescEspecializaciones[indice].Y);
+            // Renderizar descripción usando el método que maneja correctamente las líneas múltiples
             setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-            std::string descFormateada = _formatearDescripcion(_especializacionesInscritas[espIndex].descripcion, MAX_ANCHO_CARACTERES_CUADRO, MAX_ALTO_CARACTERES_CUADRO);
-            std::cout << descFormateada;
+            _mostrarDescripcionFormateada(_coordsDescEspecializaciones[indice], _especializacionesInscritas[espIndex].descripcion);
         }
     }
     
