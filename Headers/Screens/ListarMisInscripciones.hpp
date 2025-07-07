@@ -51,9 +51,9 @@ private:
     /// @brief Coordenadas para cada campo de la inscripción
     COORD _coordsID = {COL_LISTA_BASE, 0}; // Y será calculado dinámicamente
     COORD _coordsNombre = {COL_LISTA_BASE + 4, 0};
-    COORD _coordsTipo = {COL_LISTA_BASE + 45, 0};
-    COORD _coordsCompletado = {COL_LISTA_BASE + 63, 0};
-    COORD _coordsPagado = {COL_LISTA_BASE + 82, 0};
+    COORD _coordsTipo = {COL_LISTA_BASE + 50, 0};
+    COORD _coordsCompletado = {COL_LISTA_BASE + 68, 0};
+    COORD _coordsPagado = {COL_LISTA_BASE + 87, 0};
     
     /// @brief Coordenadas para elementos de navegación
     COORD _coordsNavegacion = {40, 28};
