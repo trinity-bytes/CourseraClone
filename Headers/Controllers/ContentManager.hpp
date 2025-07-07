@@ -4,7 +4,6 @@
 // Headers estándar
 #include <memory>    // Para std::unique_ptr
 #include <vector>    // Para std::vector
-#include <map>       // Para std::map
 #include <string>    // Para std::string
 #include <stdexcept> // Para excepciones
 #include <iostream>  // Para logging

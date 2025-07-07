@@ -2,7 +2,7 @@
 // Grafo, permite conexiones de nodos
 
 #ifndef COURSERACLONE_DATASTRUCTURES_GRAFO_HPP
-#define COURSERACLONE_DATASTRUCTURES_GRADO_HPP
+#define COURSERACLONE_DATASTRUCTURES_GRAFO_HPP
 
 #include <vector>
 #include "Queue.hpp"
