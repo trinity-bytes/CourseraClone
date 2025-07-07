@@ -3,8 +3,10 @@
 
 // Headers del sistema
 #include <memory>
-#include <stack>
 #include "../Utils/GeneradorDatos.hpp"
+
+// Headers de estructuras de datos propias
+#include "../DataStructures/Stack.hpp"
 
 // Headers propios del proyecto
 #include "../Screens/LandingPageScreen.hpp"
@@ -22,13 +24,8 @@
 #include "../Screens/ExplorarContenidoScreen.hpp"
 #include "../Screens/VerBoletasScreen.hpp"
 #include "../Screens/CrearContenidoScreen.hpp"
-#include "../Screens/CrearOfertaScreen.hpp"
-#include "../Screens/VerOfertasScreen.hpp"
-#include "../Screens/AgregarMetodoPagoScreen.hpp"
-#include "../Screens/ProcesarPagoScreen.hpp"
 #include "../Screens/VerCertificadosScreen.hpp"
 #include "../Screens/ListarContenidoScreen.hpp"
-#include "../Screens/GestionarOfertasScreen.hpp"
 #include "../Screens/ListarMisInscripciones.hpp"
 #include "../Controllers/SessionManager.hpp"
 #include "../Utils/ScreenSystem.hpp"
@@ -39,9 +36,12 @@ private:
     /// @brief Estado de la aplicación
     bool _ejecutando;
     
-    /// @brief Sistema de navegación con historial
-    std::stack<AccionPantalla> _historialNavegacion;
+    /// @brief Sistema de navegación con historial usando estructura propia
+    Stack<AccionPantalla> _historialNavegacion;
     AccionPantalla _pantallaActual;
+    
+    /// @brief Configuración del historial
+    static const int MAX_HISTORIAL = 20; // Evitar crecimiento infinito
     
     /// @brief Métodos privados de navegación
     inline std::unique_ptr<PantallaBase> crearPantallaLandingPage();
@@ -59,23 +59,21 @@ private:
     inline std::unique_ptr<PantallaBase> crearPantallaExplorarContenido();
     inline std::unique_ptr<PantallaBase> crearPantallaVerBoletas();
     inline std::unique_ptr<PantallaBase> crearPantallaCrearContenido();
-    inline std::unique_ptr<PantallaBase> crearPantallaCrearOferta();
-    inline std::unique_ptr<PantallaBase> crearPantallaVerOfertas();
-    inline std::unique_ptr<PantallaBase> crearPantallaAgregarMetodoPago();
-    inline std::unique_ptr<PantallaBase> crearPantallaProcesarPago();
     inline std::unique_ptr<PantallaBase> crearPantallaVerCertificados();
     inline std::unique_ptr<PantallaBase> crearPantallaListarContenido();
-    inline std::unique_ptr<PantallaBase> crearPantallaGestionarOfertas();
     inline std::unique_ptr<PantallaBase> crearPantallaListarMisInscripciones();
     
-    /// @brief Métodos del sistema de navegación
+    /// @brief Métodos del sistema de navegación mejorados
     inline void _procesarNavegacion(const ResultadoPantalla& resultado);
     inline void _pushHistorial(AccionPantalla accion);
     inline AccionPantalla _popHistorial();
     inline bool _esPantallaConHistorial(AccionPantalla accion);
     inline bool _esPantallaQueResetea(AccionPantalla accion);
+    inline bool _evitarBucleHistorial(AccionPantalla accion);
     inline AccionPantalla _resolverPantallaAnterior();
     inline std::unique_ptr<PantallaBase> _crearPantallaConHistorial(AccionPantalla accion);
+    inline void _limpiarHistorialCompleto();
+    inline void _limitarTamañoHistorial();
 
 public:
     /// @brief Constructor y destructor
@@ -180,30 +178,6 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaCrearContenido
     return std::make_unique<CrearContenidoScreen>();
 }
 
-/// @brief Crea una nueva instancia de la pantalla crear oferta
-inline std::unique_ptr<PantallaBase> MainController::crearPantallaCrearOferta()
-{
-    return std::make_unique<CrearOfertaScreen>();
-}
-
-/// @brief Crea una nueva instancia de la pantalla ver ofertas
-inline std::unique_ptr<PantallaBase> MainController::crearPantallaVerOfertas()
-{
-    return std::make_unique<VerOfertasScreen>();
-}
-
-/// @brief Crea una nueva instancia de la pantalla agregar método de pago
-inline std::unique_ptr<PantallaBase> MainController::crearPantallaAgregarMetodoPago()
-{
-    return std::make_unique<AgregarMetodoPagoScreen>();
-}
-
-/// @brief Crea una nueva instancia de la pantalla procesar pago
-inline std::unique_ptr<PantallaBase> MainController::crearPantallaProcesarPago()
-{
-    return std::make_unique<ProcesarPagoScreen>();
-}
-
 /// @brief Crea una nueva instancia de la pantalla ver certificados
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaVerCertificados()
 {
@@ -218,48 +192,45 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaListarContenid
     return std::make_unique<ListarContenidoScreen>();
 }
 
-/// @brief Crea una nueva instancia de la pantalla gestionar ofertas
-inline std::unique_ptr<PantallaBase> MainController::crearPantallaGestionarOfertas()
-{
-    return std::make_unique<GestionarOfertasScreen>();
-}
-
 /// @brief Crea una nueva instancia de la pantalla listar mis inscripciones
 inline std::unique_ptr<PantallaBase> MainController::crearPantallaListarMisInscripciones()
 {
     return std::make_unique<ListarMisInscripcionesScreen>();
 }
 
-// ---- SISTEMA DE NAVEGACIÓN INTELIGENTE ----
+// ---- SISTEMA DE NAVEGACIÓN INTELIGENTE CON STACK PERSONALIZADO ----
 
-/// @brief Procesa la navegación con historial inteligente
+/// @brief Procesa la navegación con historial inteligente y prevención de bucles
 inline void MainController::_procesarNavegacion(const ResultadoPantalla& resultado)
 {
     // Si la pantalla especifica una acción anterior, la guardamos en el historial
     if (resultado.accionAnterior != AccionPantalla::NINGUNA) {
         _pushHistorial(resultado.accionAnterior);
     } else if (_esPantallaConHistorial(resultado.accion)) {
-        // Para pantallas que necesitan historial, guardamos la actual
-        _pushHistorial(_pantallaActual);
+        // Para pantallas que necesitan historial, guardamos la actual solo si no crea bucle
+        if (!_evitarBucleHistorial(_pantallaActual)) {
+            _pushHistorial(_pantallaActual);
+        }
     }
     
     // Actualizar la pantalla actual
     _pantallaActual = resultado.accion;
 }
 
-/// @brief Agrega una pantalla al historial si es apropiado
+/// @brief Agrega una pantalla al historial si es apropiado, usando Stack personalizado
 inline void MainController::_pushHistorial(AccionPantalla accion)
 {
     // No agregar pantallas que resetean el historial o son temporales
     if (!_esPantallaQueResetea(accion) && accion != AccionPantalla::NINGUNA) {
         _historialNavegacion.push(accion);
+        _limitarTamañoHistorial();
     }
 }
 
-/// @brief Obtiene la pantalla anterior del historial
+/// @brief Obtiene la pantalla anterior del historial usando Stack personalizado
 inline AccionPantalla MainController::_popHistorial()
 {
-    if (!_historialNavegacion.empty()) {
+    if (!_historialNavegacion.estaVacio()) {
         AccionPantalla anterior = _historialNavegacion.top();
         _historialNavegacion.pop();
         return anterior;
@@ -269,7 +240,7 @@ inline AccionPantalla MainController::_popHistorial()
     return _resolverPantallaAnterior();
 }
 
-/// @brief Determina si una pantalla necesita manejo de historial
+/// @brief Determina si una pantalla necesita manejo de historial - EXPANDIDO
 inline bool MainController::_esPantallaConHistorial(AccionPantalla accion)
 {
     switch (accion) {
@@ -278,8 +249,12 @@ inline bool MainController::_esPantallaConHistorial(AccionPantalla accion)
     case AccionPantalla::IR_A_VER_BOLETAS:
     case AccionPantalla::IR_A_EDITAR_PERFIL:
     case AccionPantalla::IR_A_VER_CERTIFICADOS:
-    case AccionPantalla::IR_A_PROCESAR_PAGO:
-    case AccionPantalla::IR_A_AGREGAR_METODO_PAGO:
+    case AccionPantalla::IR_A_LISTAR_CONTENIDO:
+    case AccionPantalla::IR_A_CREAR_CONTENIDO:
+    case AccionPantalla::IR_A_LISTAR_MIS_INSCRIPCIONES:
+    case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
+    case AccionPantalla::IR_A_VER_ESTADISTICAS:
+    case AccionPantalla::IR_A_SOBRE_NOSOTROS:
         return true;
     default:
         return false;
@@ -300,6 +275,40 @@ inline bool MainController::_esPantallaQueResetea(AccionPantalla accion)
     }
 }
 
+/// @brief Evita bucles detectando si la acción ya está en el historial reciente
+inline bool MainController::_evitarBucleHistorial(AccionPantalla accion)
+{
+    // Si el historial está vacío, no hay riesgo de bucle
+    if (_historialNavegacion.estaVacio()) {
+        return false;
+    }
+    
+    // Verificar si la acción es igual a la última en el historial
+    AccionPantalla ultimaAccion = _historialNavegacion.top();
+    if (ultimaAccion == accion) {
+        return true; // Evitar bucle inmediato
+    }
+    
+    // Para pantallas de contenido específico, verificar bucles más profundos
+    if (accion == AccionPantalla::IR_A_MOSTRAR_CURSO || 
+        accion == AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION) {
+        
+        // Verificar las últimas 3 entradas del historial para detectar patrones
+        int contadorVerificaciones = 0;
+        const int maxVerificaciones = 3;
+        
+        for (int i = 0; i < _historialNavegacion.getTamano() && contadorVerificaciones < maxVerificaciones; ++i) {
+            AccionPantalla accionHistorial = _historialNavegacion.get(i);
+            if (accionHistorial == accion) {
+                return true; // Detectado patrón de bucle
+            }
+            contadorVerificaciones++;
+        }
+    }
+    
+    return false;
+}
+
 /// @brief Resuelve una pantalla anterior por defecto cuando no hay historial
 inline AccionPantalla MainController::_resolverPantallaAnterior()
 {
@@ -316,7 +325,23 @@ inline AccionPantalla MainController::_resolverPantallaAnterior()
     return AccionPantalla::IR_A_LANDING_PAGE;
 }
 
-/// @brief Crea una pantalla pasando el historial como contexto
+/// @brief Limpia completamente el historial de navegación
+inline void MainController::_limpiarHistorialCompleto()
+{
+    _historialNavegacion.clear();
+}
+
+/// @brief Limita el tamaño del historial para evitar crecimiento infinito
+inline void MainController::_limitarTamañoHistorial()
+{
+    while (_historialNavegacion.getTamano() > MAX_HISTORIAL) {
+        // Remover el elemento más antiguo (fondo de la pila)
+        // Usamos el método eliminarPosicion para remover desde el fondo
+        _historialNavegacion.eliminarPosicion(_historialNavegacion.getTamano());
+    }
+}
+
+/// @brief Crea una pantalla pasando el historial como contexto con prevención de bucles
 inline std::unique_ptr<PantallaBase> MainController::_crearPantallaConHistorial(AccionPantalla accion)
 {
     AccionPantalla pantallaAnterior = _popHistorial();
@@ -337,7 +362,7 @@ inline std::unique_ptr<PantallaBase> MainController::_crearPantallaConHistorial(
     
     case AccionPantalla::IR_A_MOSTRAR_CURSO:
     {
-        // Similar para MostrarCursoScreen cuando tengamos el constructor actualizado
+        // Obtener ID y tipo de usuario para MostrarCursoScreen
         int idCurso = 1; // Valor por defecto
         TipoUsuario tipoUsuario = TipoUsuario::DEFAULT;
         
@@ -354,22 +379,35 @@ inline std::unique_ptr<PantallaBase> MainController::_crearPantallaConHistorial(
     case AccionPantalla::IR_A_CREAR_CONTENIDO:
         return std::make_unique<CrearContenidoScreen>(pantallaAnterior);
         
-    case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
-        return std::make_unique<GestionarOfertasScreen>(pantallaAnterior);
-        
     case AccionPantalla::IR_A_LISTAR_MIS_INSCRIPCIONES:
         return std::make_unique<ListarMisInscripcionesScreen>(pantallaAnterior);
         
     case AccionPantalla::IR_A_VER_CERTIFICADOS:
         return std::make_unique<VerCertificadosScreen>(pantallaAnterior);
         
+    case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
+        return std::make_unique<ExplorarContenidoScreen>(pantallaAnterior);
+        
+    case AccionPantalla::IR_A_VER_ESTADISTICAS:
+        return std::make_unique<EstadisticasEmpresaScreen>(pantallaAnterior);
+        
+    case AccionPantalla::IR_A_SOBRE_NOSOTROS:
+        return std::make_unique<SobreNosotrosScreen>(pantallaAnterior);
+        
+    case AccionPantalla::IR_A_VER_BOLETAS:
+        return std::make_unique<VerBoletasScreen>(pantallaAnterior);
+        
+    case AccionPantalla::IR_A_EDITAR_PERFIL:
+        return std::make_unique<EditarPerfilScreen>(pantallaAnterior);
+        
     default:
-        // Para pantallas que no necesitan historial, usar factory method normal
+        // Para pantallas que no necesitan historial específico, usar resolución inteligente
+        AccionPantalla pantallaFallback = _resolverPantallaAnterior();
         switch (accion) {
         case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
-            return crearPantallaMostrarEspecializacion();
+            return std::make_unique<MostrarEspecialidadScreen>(1, TipoUsuario::DEFAULT, pantallaFallback);
         case AccionPantalla::IR_A_MOSTRAR_CURSO:
-            return crearPantallaMostrarCurso();
+            return std::make_unique<MostrarCursoScreen>(1, TipoUsuario::DEFAULT, pantallaFallback);
         default:
             return crearPantallaLandingPage();
         }
@@ -393,17 +431,13 @@ inline void MainController::run()
         {
         case AccionPantalla::IR_A_LANDING_PAGE:
             // Limpiar historial en landing page
-            while (!_historialNavegacion.empty()) {
-                _historialNavegacion.pop();
-            }
+            _limpiarHistorialCompleto();
             _pantallaActualPtr = crearPantallaLandingPage();
             break;
 
         case AccionPantalla::IR_A_LOGIN:
             // Limpiar historial en login
-            while (!_historialNavegacion.empty()) {
-                _historialNavegacion.pop();
-            }
+            _limpiarHistorialCompleto();
             _pantallaActualPtr = crearPantallaLogin();
 			break;        
         
@@ -428,7 +462,7 @@ inline void MainController::run()
             break;        
         
         case AccionPantalla::IR_A_EDITAR_PERFIL:
-            _pantallaActualPtr = crearPantallaEditarPerfil();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;        
         
         case AccionPantalla::IR_A_MOSTRAR_ESPECIALIZACION:
@@ -442,39 +476,23 @@ inline void MainController::run()
             break;
 
         case AccionPantalla::IR_A_VER_ESTADISTICAS:
-            _pantallaActualPtr = crearPantallaEstadisticasEmpresa();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
 		case AccionPantalla::IR_A_SOBRE_NOSOTROS:
-            _pantallaActualPtr = crearPantallaSobreNosotros();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
 			break;
 
         case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
-            _pantallaActualPtr = crearPantallaExplorarContenido();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::IR_A_VER_BOLETAS:
-            _pantallaActualPtr = crearPantallaVerBoletas();
+            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 
         case AccionPantalla::IR_A_CREAR_CONTENIDO:
             _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
-            break;
-
-        case AccionPantalla::IR_A_CREAR_OFERTA:
-            _pantallaActualPtr = crearPantallaCrearOferta();
-            break;
-
-        case AccionPantalla::IR_A_VER_OFERTAS:
-            _pantallaActualPtr = crearPantallaVerOfertas();
-            break;
-
-        case AccionPantalla::IR_A_AGREGAR_METODO_PAGO:
-            _pantallaActualPtr = crearPantallaAgregarMetodoPago();
-            break;
-
-        case AccionPantalla::IR_A_PROCESAR_PAGO:
-            _pantallaActualPtr = crearPantallaProcesarPago();
             break;
 
         case AccionPantalla::IR_A_VER_CERTIFICADOS:
@@ -482,10 +500,6 @@ inline void MainController::run()
             break;
 
         case AccionPantalla::IR_A_LISTAR_CONTENIDO:
-            _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
-            break;
-
-        case AccionPantalla::IR_A_GESTIONAR_OFERTAS:
             _pantallaActualPtr = _crearPantallaConHistorial(_resultado.accion);
             break;
 

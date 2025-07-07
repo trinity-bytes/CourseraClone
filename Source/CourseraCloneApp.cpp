@@ -10,7 +10,7 @@
 #include "../Headers/Controllers/FilesManager.hpp"
 #include "../Headers/Controllers/ContentManager.hpp"
 #include "../Headers/Controllers/SessionManager.hpp"
-#include "./Utils/GeneradorDatos.hpp"
+#include "../Headers/Utils/GeneradorDatos.hpp"
 
 // maquetación de funciones
 void SecuenciaInicializacion();

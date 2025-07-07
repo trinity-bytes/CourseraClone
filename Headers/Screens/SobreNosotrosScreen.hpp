@@ -76,6 +76,7 @@ private:
 
 public:
 	inline SobreNosotrosScreen();
+	inline SobreNosotrosScreen(AccionPantalla pantallaAnterior);
 	inline ~SobreNosotrosScreen() = default;
 
 	inline ResultadoPantalla ejecutar() override;
@@ -84,9 +85,16 @@ public:
 
 // ---- IMPLEMENTACIONES INLINE ----
 
-// Constructor
+// Constructor por defecto
 inline SobreNosotrosScreen::SobreNosotrosScreen() : PantallaBase(),
 	_campoActual(0), _campoAnterior(0), _primeraRenderizacion(true) {}
+
+// Constructor con pantalla anterior
+inline SobreNosotrosScreen::SobreNosotrosScreen(AccionPantalla pantallaAnterior) : PantallaBase(),
+	_campoActual(0), _campoAnterior(0), _primeraRenderizacion(true) 
+{
+	// Podemos usar pantallaAnterior para regresar con ESC
+}
 
 // Limpia el estado interno
 inline void SobreNosotrosScreen::_limpiarEstado()

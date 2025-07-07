@@ -1,6 +1,3 @@
-// Descripcion: Pantalla que permite a los usuarios explorar, navegar y seleccionar
-//              cursos y especializaciones disponibles en el sistema.
-
 #ifndef COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP
 #define COURSERACLONE_SCREENS_EXPLORARCONTENIDOSCREEN_HPP
 
@@ -133,6 +130,7 @@ private:
 
 public:
     inline ExplorarContenidoScreen();
+    inline ExplorarContenidoScreen(AccionPantalla pantallaAnterior);
     inline ~ExplorarContenidoScreen() = default;
     
     inline ResultadoPantalla ejecutar() override;
@@ -140,13 +138,23 @@ public:
 
 // --- IMPLEMENTACIONES INLINE ---
 
-// Constructor
+// Constructor por defecto
 inline ExplorarContenidoScreen::ExplorarContenidoScreen() : PantallaBase(),
     _seccionActual(0), _elementoActual(0), _seccionAnterior(0), _elementoAnterior(0),
     _primeraRenderizacion(true), _tipoSeleccionado(0), _categoriaSeleccionada(0),
     _paginaCategoriaActual(0), _paginaResultadosActual(0), _totalPaginas(3)
 {
     _inicializarDatos();
+}
+
+// Constructor con pantalla anterior
+inline ExplorarContenidoScreen::ExplorarContenidoScreen(AccionPantalla pantallaAnterior) : PantallaBase(),
+    _seccionActual(0), _elementoActual(0), _seccionAnterior(0), _elementoAnterior(0),
+    _primeraRenderizacion(true), _tipoSeleccionado(0), _categoriaSeleccionada(0),
+    _paginaCategoriaActual(0), _paginaResultadosActual(0), _totalPaginas(3)
+{
+    _inicializarDatos();
+    // Podemos usar pantallaAnterior en el futuro para regresar con ESC
 }
 
 // Inicializar datos de ejemplo

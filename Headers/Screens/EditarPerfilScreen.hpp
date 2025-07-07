@@ -78,19 +78,30 @@ private:
 
 public:
     inline EditarPerfilScreen();
+    inline EditarPerfilScreen(AccionPantalla pantallaAnterior);
     
     inline ResultadoPantalla ejecutar() override;
 };
 
 // --- IMPLEMENTACIONES INLINE ---
 
-// Constructor
+// Constructor por defecto
 inline EditarPerfilScreen::EditarPerfilScreen() : PantallaBase(),
     idUsuario(1), tipoUsuario(TipoUsuario::ESTUDIANTE),
     nombreOriginal(""), emailOriginal(""), passwordOriginal(""),
     campoActual(0), campoAnterior(-1), primeraRenderizacion(true), error(false)
 {
     _cargarDatosDummy();
+}
+
+// Constructor con pantalla anterior
+inline EditarPerfilScreen::EditarPerfilScreen(AccionPantalla pantallaAnterior) : PantallaBase(),
+    idUsuario(1), tipoUsuario(TipoUsuario::ESTUDIANTE),
+    nombreOriginal(""), emailOriginal(""), passwordOriginal(""),
+    campoActual(0), campoAnterior(-1), primeraRenderizacion(true), error(false)
+{
+    _cargarDatosDummy();
+    // Podemos usar pantallaAnterior para regresar dinámicamente
 }
 
 // Limpiar estado
