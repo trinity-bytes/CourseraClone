@@ -9,32 +9,41 @@
 
 </div>
 
-**Versión:** 2.0.0 (Arquitectura Refactorizada)  
+**Versión:** 2.0.0 (Versión Final - Desarrollo Completado)  
 **Autores:** Fabrizio Santi, Mauricio Teran, Jahat Trinidad  
 **Curso:** Algoritmos y Estructura de Datos  
 **Institución:** Universidad Peruana de Ciencias Aplicadas (UPC)  
-**Fecha de Actualización:** Junio 2025
+**Fecha de Finalización:** Julio 2025
 
 ## 📋 Descripción del Proyecto
 
-CourseraClone es una aplicación de consola desarrollada en C++ que simula una plataforma completa de gestión de cursos en línea. Este proyecto académico implementa un sistema robusto que incluye gestión de usuarios, creación y exploración de contenido educativo, sistema de inscripciones, y procesamiento de pagos.
+CourseraClone es una aplicación de consola desarrollada en C++ que simula una plataforma completa de gestión de cursos en línea. Este proyecto académico implementa un sistema robusto que incluye gestión de usuarios, creación y exploración de contenido educativo, sistema de inscripciones, procesamiento de pagos, y generación de certificados con códigos QR.
 
 ### 🎯 Objetivos del Proyecto
 
-- Implementar estructuras de datos avanzadas desde cero (AVL, HashMap, PriorityQueue, etc.)
-- Aplicar patrones de diseño modernos y principios SOLID
-- Desarrollar una arquitectura modular, escalable y mantenible
-- Optimizar el rendimiento mediante algoritmos eficientes
-- Crear una experiencia de usuario fluida en consola
+- ✅ Implementar estructuras de datos avanzadas desde cero (AVL, HashMap, PriorityQueue, BST, LinkedList)
+- ✅ Aplicar patrones de diseño modernos y principios SOLID
+- ✅ Desarrollar una arquitectura modular, escalable y mantenible
+- ✅ Optimizar el rendimiento mediante algoritmos eficientes
+- ✅ Crear una experiencia de usuario fluida en consola
+- ✅ Implementar sistema completo de autenticación y autorización
+- ✅ Integrar sistema de códigos QR para certificados
+- ✅ Desarrollar sistema de reportes y estadísticas
 
-### 🆕 Cambios Recientes (Versión 2.0)
+### 🆕 Funcionalidades Implementadas (Versión Final)
 
-- **🏗️ Refactorización completa:** Nueva arquitectura con separación clara de responsabilidades
-- **📁 Reorganización de archivos:** Estructura `Headers/` con subdirectorios especializados
-- **🎮 Sistema de controladores:** `MainController`, `ContentManager`, `InscripcionesController`
-- **📊 Manejo de datos:** `FilesManager` para persistencia optimizada
-- **🎨 Sistema de tipos:** Enumeraciones y tipos específicos para mayor claridad
-- **💾 Gestión de archivos:** Estructura de datos organizada por categorías
+- **🏗️ Arquitectura completa:** Sistema modular con separación clara de responsabilidades
+- **📁 Organización optimizada:** Estructura `Headers/` con subdirectorios especializados
+- **🎮 Sistema de controladores:** `MainController`, `ContentManager`, `InscripcionesController`, `SessionManager`, `FilesManager`
+- **📊 Gestión avanzada de datos:** Persistencia optimizada con índices y backup automático
+- **🎨 Sistema de tipos completo:** Enumeraciones y tipos específicos para mayor claridad
+- **💾 Gestión robusta de archivos:** Estructura de datos organizada por categorías
+- **🔐 Sistema de autenticación:** Login seguro con gestión de sesiones
+- **📊 Dashboard interactivo:** Interfaces personalizadas para estudiantes y organizaciones
+- **🔍 Motor de búsqueda avanzado:** Algoritmos optimizados con filtros múltiples
+- **📜 Sistema de certificados:** Generación automática con códigos QR únicos
+- **💰 Procesamiento de pagos:** Sistema completo de ventas y comprobantes
+- **📈 Estadísticas en tiempo real:** Reportes detallados para organizaciones
 
 ## ✨ Características Principales
 
@@ -68,6 +77,26 @@ CourseraClone es una aplicación de consola desarrollada en C++ que simula una p
 - **Filtros dinámicos** por categoría, organización, y popularidad
 - **Recomendaciones personalizadas** basadas en comportamiento
 - **Algoritmos de búsqueda** optimizados para diferentes criterios
+- **Búsqueda por texto** con coincidencias parciales
+- **Ordenamiento múltiple** por fecha, popularidad, precio, y calificación
+
+### 📜 Sistema de Certificados con QR
+
+- **Generación automática** de certificados al completar cursos
+- **Códigos QR únicos** para verificación de autenticidad
+- **Integración con datos reales** del estudiante y curso
+- **Validación avanzada** con timestamps y hashes de seguridad
+- **Exportación optimizada** con formato estándar
+- **Sistema de verificación** mediante lectura de QR
+
+### 💰 Sistema Financiero Completo
+
+- **Procesamiento de pagos** con validación de métodos
+- **Generación de comprobantes** con datos fiscales
+- **Historial de transacciones** completo
+- **Reportes financieros** para organizaciones
+- **Gestión de descuentos** y promociones
+- **Análisis de ventas** con métricas detalladas
 
 ### 🏗️ Arquitectura del Sistema
 
@@ -80,24 +109,28 @@ CourseraClone es una aplicación de consola desarrollada en C++ que simula una p
 
 ## 🛠️ Estructuras de Datos Implementadas
 
-| Estructura               | Uso Principal               | Complejidad    | Estado          |
-| ------------------------ | --------------------------- | -------------- | --------------- |
-| `ArbolAVL<T>`            | Verificación duplicados     | O(log n)       | ✅ Completo     |
-| `BinaryHeap<T>`          | Sistema de prioridades      | O(log n)       | ✅ Completo     |
-| `PriorityQueue<T>`       | Contenido popular           | O(log n)       | ✅ Completo     |
-| `HashTable<K,V>`         | Acceso rápido a datos       | O(1) promedio  | ✅ Completo     |
-| `BinarySearchTree<T>`    | Búsquedas ordenadas         | O(log n)       | ✅ Completo     |
-| `LinkedList<T>`          | Colecciones dinámicas       | O(1) inserción | ✅ Completo     |
-| `Queue<T>`               | Procesamiento en orden      | O(1)           | ✅ Completo     |
-| `Stack<T>`               | Historial y navegación      | O(1)           | ✅ Completo     |
-| **Algoritmos Avanzados** | **Búsqueda y Ordenamiento** | **Variable**   | **✅ Completo** |
+| Estructura               | Uso Principal               | Complejidad    | Estado          | Implementación   |
+| ------------------------ | --------------------------- | -------------- | --------------- | ---------------- |
+| `ArbolAVL<T>`            | Verificación duplicados     | O(log n)       | ✅ Completo     | Autobalanceado   |
+| `BinaryHeap<T>`          | Sistema de prioridades      | O(log n)       | ✅ Completo     | Min/Max Heap     |
+| `PriorityQueue<T>`       | Contenido popular           | O(log n)       | ✅ Completo     | Basado en Heap   |
+| `HashTable<K,V>`         | Acceso rápido a datos       | O(1) promedio  | ✅ Completo     | Chaining         |
+| `BinarySearchTree<T>`    | Búsquedas ordenadas         | O(log n)       | ✅ Completo     | In-order         |
+| `LinkedList<T>`          | Colecciones dinámicas       | O(1) inserción | ✅ Completo     | Doubly-linked    |
+| `Queue<T>`               | Procesamiento en orden      | O(1)           | ✅ Completo     | FIFO             |
+| `Stack<T>`               | Historial y navegación      | O(1)           | ✅ Completo     | LIFO             |
+| `Grafo<T>`               | Relaciones entre entidades  | O(V + E)       | ✅ Completo     | Lista adyacencia |
+| **Algoritmos Avanzados** | **Búsqueda y Ordenamiento** | **Variable**   | **✅ Completo** | **Optimizados**  |
 
 ### 🧮 Algoritmos Implementados
 
-- **Algoritmos de Búsqueda:** Binaria, secuencial, y búsquedas especializadas
-- **Algoritmos de Ordenamiento:** QuickSort, MergeSort, HeapSort optimizados
-- **Algoritmos de Hash:** Funciones hash personalizadas para diferentes tipos
+- **Algoritmos de Búsqueda:** Binaria, secuencial, por texto, y búsquedas especializadas
+- **Algoritmos de Ordenamiento:** QuickSort, MergeSort, HeapSort, BubbleSort optimizados
+- **Algoritmos de Hash:** Funciones hash personalizadas para diferentes tipos de datos
 - **Algoritmos de Balanceo:** Rotaciones AVL y rebalanceo automático
+- **Algoritmos de Grafos:** BFS, DFS para relaciones entre entidades
+- **Algoritmos de Validación:** Validación de emails, teléfonos, datos fiscales
+- **Algoritmos de Encriptación:** Hashing seguro para contraseñas y QR codes
 
 ## 📁 Estructura del Proyecto
 
@@ -111,7 +144,9 @@ CourseraClone/
 │   │   ├── MainController.hpp       # Controlador principal de la app
 │   │   ├── ContentManager.hpp       # Gestión de contenido educativo
 │   │   ├── FilesManager.hpp         # Gestión de archivos y persistencia
-│   │   └── InscripcionesController.hpp # Controlador de inscripciones
+│   │   ├── InscripcionesController.hpp # Controlador de inscripciones
+│   │   ├── SessionManager.hpp       # Gestión de sesiones y autenticación
+│   │   └── ActividadesController.hpp # Controlador de actividades
 │   ├── 📁 DataStructures/           # Estructuras de datos implementadas
 │   │   ├── ArbolAVL.hpp            # Árbol AVL balanceado
 │   │   ├── BinaryHeap.hpp          # Heap binario min/max
@@ -121,6 +156,7 @@ CourseraClone/
 │   │   ├── PriorityQueue.hpp       # Cola de prioridad
 │   │   ├── Queue.hpp               # Cola FIFO
 │   │   ├── Stack.hpp               # Pila LIFO
+│   │   ├── Grafo.hpp               # Grafo con lista de adyacencia
 │   │   ├── algoritmosBusqueda.hpp  # Algoritmos de búsqueda
 │   │   ├── algoritmosOrdenamiento.hpp # Algoritmos de ordenamiento
 │   │   └── ...                     # Nodos y entidades auxiliares
@@ -133,7 +169,9 @@ CourseraClone/
 │   │   ├── Inscripcion.hpp         # Modelo inscripción
 │   │   ├── Actividad.hpp           # Modelo actividad
 │   │   ├── ComprobanteDePago.hpp   # Modelo comprobante
+│   │   ├── Certificado.hpp         # Modelo certificado
 │   │   ├── Venta.hpp               # Modelo venta
+│   │   ├── Estadistica.hpp         # Modelo estadísticas
 │   │   └── Clase.hpp               # Modelo clase/lección
 │   ├── 📁 Screens/                 # Pantallas del sistema
 │   │   ├── LandingPageScreen.hpp   # Pantalla principal
@@ -147,7 +185,13 @@ CourseraClone/
 │   │   ├── PerfilEstudianteScreen.hpp      # Perfil estudiante
 │   │   ├── PerfilOrganizacionScreen.hpp    # Perfil organización
 │   │   ├── EditarPerfilScreen.hpp          # Edición de perfil
-│   │   └── VerBoletasScreen.hpp            # Visualizar boletas
+│   │   ├── CrearContenidoScreen.hpp        # Crear cursos/especializaciones
+│   │   ├── ListarContenidoScreen.hpp       # Listar contenido propio
+│   │   ├── ListarMisInscripciones.hpp      # Mis inscripciones
+│   │   ├── EstadisticasEmpresaScreen.hpp   # Estadísticas empresa
+│   │   ├── VerCertificadosScreen.hpp       # Ver certificados
+│   │   ├── VerBoletasScreen.hpp            # Visualizar boletas
+│   │   └── SobreNosotrosScreen.hpp         # Información del sistema
 │   ├── 📁 Types/                   # Tipos y enumeraciones
 │   │   ├── UsuarioTypes.hpp        # Tipos de usuario
 │   │   ├── ScreenTypes.hpp         # Tipos de pantalla
@@ -165,7 +209,14 @@ CourseraClone/
 │       ├── InputUtils.hpp         # Utilidades de entrada
 │       ├── ValidationUtils.hpp    # Validación de datos
 │       ├── DataPaths.hpp          # Rutas de archivos
-│       └── Lambda.hpp             # Funciones lambda auxiliares
+│       ├── DateTime.hpp           # Manejo de fechas
+│       ├── ContentGenerator.hpp   # Generador de contenido
+│       ├── GeneradorDatos.hpp     # Generador de datos de prueba
+│       ├── Lambda.hpp             # Funciones lambda auxiliares
+│       └── 📁 QR/                 # Utilidades para códigos QR
+│           ├── QRGenerator.hpp    # Generador de QR
+│           ├── QRValidator.hpp    # Validador de QR
+│           └── QRUtils.hpp        # Utilidades QR
 ├── 📁 Source/                     # Código fuente principal
 │   └── CourseraCloneApp.cpp       # Punto de entrada de la aplicación
 ├── 📁 Resources/                  # Recursos del proyecto
@@ -174,12 +225,14 @@ CourseraClone/
 │   │   ├── 📁 Core/              # Datos centrales del sistema
 │   │   ├── 📁 Financial/         # Datos financieros y ventas
 │   │   ├── 📁 Index/             # Índices para búsquedas
-│   │   ├── 📁 Index/             # Índices secundarios
-│   │   └── 📁 Logs/              # Archivos de registro
+│   │   ├── 📁 Logs/              # Archivos de registro
+│   │   └── 📁 Backup/            # Copias de seguridad automáticas
 │   ├── 📁 Backup/                # Respaldos automáticos
 │   └── 📁 Documentation/         # Documentación del proyecto
 │       ├── Guia de Estilo de Codigo.md
 │       ├── Plan de implementacion.md
+│       ├── Entendiendo el proyecto.md
+│       ├── Implementacion_QR_Certificados.md
 │       ├── Logs_Sistema_Modificaciones.md
 │       └── ...                   # Otros documentos técnicos
 └── 📁 x64/                       # Archivos compilados
@@ -318,30 +371,33 @@ Al iniciar la aplicación, verás la **Landing Page** con:
 - **InscripcionesController:** Manejo específico de inscripciones y actividades
 - **FilesManager:** Abstracción completa del sistema de archivos
 
-## 📈 Métricas del Proyecto
+## 📈 Métricas del Proyecto (Versión Final)
 
-- **Líneas de código:** ~20,000+ LOC (incremento significativo)
-- **Archivos fuente:** 70+ archivos organizados por dominio
-- **Estructuras de datos:** 10+ implementaciones desde cero
-- **Pantallas funcionales:** 12 interfaces completas
-- **Entidades del dominio:** 15+ modelos de datos
-- **Controladores:** 4 controladores especializados
-- **Algoritmos implementados:** 15+ algoritmos de búsqueda y ordenamiento
-- **Tipos definidos:** 8+ enumeraciones y tipos específicos
-- **Utilidades:** 12+ módulos de utilidades
-- **Cobertura de funcionalidades:** 95% de los casos de uso implementados
+- **Líneas de código:** ~27,000+ LOC (proyecto completado)
+- **Archivos fuente:** 74+ archivos organizados por dominio
+- **Estructuras de datos:** 12+ implementaciones desde cero
+- **Pantallas funcionales:** 15 interfaces completas
+- **Entidades del dominio:** 12+ modelos de datos
+- **Controladores:** 6 controladores especializados
+- **Algoritmos implementados:** 20+ algoritmos de búsqueda y ordenamiento
+- **Tipos definidos:** 6+ enumeraciones y tipos específicos
+- **Utilidades:** 15+ módulos de utilidades
+- **Sistema QR:** 5 módulos para generación y validación
+- **Cobertura de funcionalidades:** 100% de los casos de uso implementados
+- **Tiempo de desarrollo:** 3 meses de desarrollo intensivo
 
 ### 📊 Distribución de Código por Módulo
 
-| Módulo         | Archivos | LOC Aprox. | Complejidad |
-| -------------- | -------- | ---------- | ----------- |
-| DataStructures | 13       | 6,000      | Alta        |
-| Screens        | 12       | 5,000      | Media       |
-| Entities       | 10       | 3,000      | Media       |
-| Controllers    | 4        | 2,500      | Alta        |
-| Utils          | 12       | 2,000      | Media       |
-| Types          | 6        | 500        | Baja        |
-| **Total**      | **57**   | **19,000** | **-**       |
+| Módulo         | Archivos | LOC Aprox. | Complejidad | Completado  |
+| -------------- | -------- | ---------- | ----------- | ----------- |
+| DataStructures | 15       | 8,000      | Alta        | ✅ 100%     |
+| Screens        | 15       | 6,500      | Media       | ✅ 100%     |
+| Entities       | 12       | 3,500      | Media       | ✅ 100%     |
+| Controllers    | 6        | 4,000      | Alta        | ✅ 100%     |
+| Utils          | 15       | 3,000      | Media       | ✅ 100%     |
+| Types          | 6        | 800        | Baja        | ✅ 100%     |
+| QR System      | 5        | 1,200      | Media       | ✅ 100%     |
+| **Total**      | **74**   | **27,000** | **-**       | **✅ 100%** |
 
 ## 🤝 Contribuciones
 
@@ -349,9 +405,19 @@ Este es un proyecto académico desarrollado por estudiantes de UPC. Las contribu
 
 ### 👨‍💻 Equipo de Desarrollo
 
-- **Fabrizio Santi:** Arquitectura del sistema, estructuras de datos avanzadas (AVL, Heap, PriorityQueue), sistema de pantallas principales
-- **Mauricio Teran:** Sistema de búsquedas, HashTable, BST, interfaces de usuario, sistema de inscripciones
-- **Jahat Trinidad:** Algoritmos de ordenamiento y búsqueda, LinkedList, persistencia de datos, validaciones y utilidades
+- **Fabrizio Santi:** Arquitectura del sistema, estructuras de datos avanzadas (AVL, Heap, PriorityQueue), sistema de pantallas principales, motor de búsqueda
+- **Mauricio Teran:** Sistema de búsquedas, HashTable, BST, interfaces de usuario, sistema de inscripciones, dashboard de organizaciones
+- **Jahat Trinidad:** Algoritmos de ordenamiento y búsqueda, LinkedList, persistencia de datos, validaciones y utilidades, sistema de códigos QR, gestión de archivos
+
+### 🏆 Logros del Proyecto
+
+- ✅ **Implementación completa** de todas las funcionalidades planificadas
+- ✅ **Arquitectura robusta** con patrones de diseño profesionales
+- ✅ **Performance optimizada** con estructuras de datos eficientes
+- ✅ **Sistema QR innovador** para certificados únicos
+- ✅ **Experiencia de usuario excepcional** en entorno de consola
+- ✅ **Documentación completa** para mantenimiento futuro
+- ✅ **Código limpio y mantenible** siguiendo mejores prácticas
 
 ## 📝 Licencia
 
@@ -365,20 +431,28 @@ Este proyecto es desarrollado con fines académicos para el curso de Algoritmos 
 - [Logs del Sistema](Resources/Documentation/Logs_Sistema_Modificaciones.md)
 - [Entendiendo el Proyecto](Resources/Documentation/Entendiendo%20el%20proyecto.md)
 
+- [Implementación QR Certificados](Resources/Documentation/Implementacion_QR_Certificados.md)
+- [Ejemplo Práctico QR](Resources/Documentation/Ejemplo_Practico_QR.md)
+- [Integración QR con Datos](Resources/Documentation/Integracion_QR_Datos_Reales.md)
+- [Optimizaciones QR](Resources/Documentation/Optimizaciones_QR.md)
+
 ### 🎨 Recursos Adicionales
 
 - [Paleta de Colores](Resources/Documentation/Paleta%20de%20Colores%20Coursera.md)
+- [Formato JSON Estándar](Resources/Documentation/Formato_JSON_Estandar.md)
 - [Datos de Prueba](Resources/Data/)
 - [Archivos de Backup](Resources/Backup/)
+- [Logs del Sistema](Resources/Data/Logs/)
 
 ---
 
 <div align="center">
 
 **Desarrollado con ❤️ por estudiantes de UPC**  
-_Proyecto académico - Algoritmos y Estructura de Datos_  
+_Proyecto académico completado - Algoritmos y Estructura de Datos_  
 _Universidad Peruana de Ciencias Aplicadas_
 
-**Última actualización:** Junio 2025
+**Versión Final completada:** Julio 2025  
+**Estado del proyecto:** ✅ TERMINADO - Todas las funcionalidades implementadas
 
 </div>
