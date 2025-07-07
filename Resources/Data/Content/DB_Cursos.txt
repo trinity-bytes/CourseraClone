@@ -627,7 +627,7 @@ prueba precio
 debe ser 20
 DISENO
 Ing. Miguel Ángel Castro
-4.40351e-312
+20
 5
 Principios de diseño
 Teoría del color y composición
@@ -647,7 +647,7 @@ prueba precio especializacion - Módulo 1
 Crea diseños impactantes y profesionales
 DISENO
 Dra. Carmen Flores
-4.40351e-312
+20
 5
 Principios de diseño
 Teoría del color y composición
@@ -667,7 +667,7 @@ prueba precio especializacion - Módulo 2
 Crea diseños impactantes y profesionales
 DISENO
 Dra. Carmen Flores
-4.40351e-312
+20
 5
 Principios de diseño
 Teoría del color y composición
@@ -687,7 +687,7 @@ prueba precio especializacion - Módulo 3
 Crea diseños impactantes y profesionales
 DISENO
 Dra. Carmen Flores
-4.40351e-312
+20
 5
 Principios de diseño
 Teoría del color y composición
@@ -707,7 +707,7 @@ prueba precio especializacion - Módulo 4
 Crea diseños impactantes y profesionales
 DISENO
 Dra. Carmen Flores
-4.40351e-312
+20
 5
 Principios de diseño
 Teoría del color y composición
@@ -727,7 +727,7 @@ otra prueba precio - Módulo 1
 Domina las plataformas digitales para hacer crecer tu negocio
 MARKETING_DIGITAL
 Prof. Lucia Santos
-4.40351e-312
+20
 5
 Estrategia digital
 Planifica tu presencia online
@@ -747,7 +747,7 @@ otra prueba precio - Módulo 2
 Domina las plataformas digitales para hacer crecer tu negocio
 MARKETING_DIGITAL
 Prof. Lucia Santos
-4.40351e-312
+20
 5
 Estrategia digital
 Planifica tu presencia online
@@ -767,7 +767,7 @@ otra prueba precio - Módulo 3
 Domina las plataformas digitales para hacer crecer tu negocio
 MARKETING_DIGITAL
 Prof. Lucia Santos
-4.40351e-312
+20
 5
 Estrategia digital
 Planifica tu presencia online
@@ -787,7 +787,7 @@ otra prueba precio - Módulo 4
 Domina las plataformas digitales para hacer crecer tu negocio
 MARKETING_DIGITAL
 Prof. Lucia Santos
-4.40351e-312
+44
 5
 Estrategia digital
 Planifica tu presencia online
@@ -799,4 +799,1604 @@ Google Ads
 Publicidad pagada efectiva
 Analítica web
 Mide y optimiza resultados
+%%%
+41
+2492
+courClone
+Prueba1 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+42
+2492
+courClone
+Prueba1 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+43
+2492
+courClone
+Prueba1 - M�dulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+44
+2492
+courClone
+Prueba1 - M�dulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+45
+2492
+courClone
+Prueba2 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+46
+2492
+courClone
+Prueba2 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+47
+2492
+courClone
+Prueba2 - M�dulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+48
+2492
+courClone
+Prueba2 - M�dulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+49
+2492
+courClone
+Prueba3 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+50
+2492
+courClone
+Prueba3 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+51
+2492
+courClone
+Prueba3 - M�dulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+52
+2492
+courClone
+Prueba3 - M�dulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+53
+2492
+courClone
+Prueba4 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+54
+2492
+courClone
+Prueba4 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+55
+2492
+courClone
+Prueba4 - M�dulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+56
+2492
+courClone
+Prueba4 - M�dulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+57
+2492
+courClone
+Prueba5 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+58
+2492
+courClone
+Prueba5 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+59
+2492
+courClone
+Prueba5 - M�dulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+60
+2492
+courClone
+Prueba5 - M�dulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+61
+2492
+courClone
+Prueba6 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+62
+2492
+courClone
+Prueba6 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+63
+2492
+courClone
+Prueba6 - M�dulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+64
+2492
+courClone
+Prueba6 - M�dulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+65
+2492
+courClone
+Prueba7 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+66
+2492
+courClone
+Prueba7 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+67
+2492
+courClone
+Prueba7 - M�dulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+68
+2492
+courClone
+Prueba7 - M�dulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+69
+2492
+courClone
+Prueba8 - M�dulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dra. Elena Vásquez
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+70
+2492
+courClone
+Prueba8 - M�dulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dr. Roberto Silva
+3.07197e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+71
+2492
+courClone
+Prueba8 - M�dulo 3
+Aprende las tecnologías web más demandadas del mercado
+MARKETING_DIGITAL
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+72
+2492
+courClone
+Prueba8 - M�dulo 4
+Aprende las tecnologías web más demandadas del mercado
+MARKETING_DIGITAL
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+73
+2492
+courClone
+Prueba9 - M�dulo 1
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+74
+2492
+courClone
+Prueba9 - M�dulo 2
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+75
+2492
+courClone
+Prueba9 - M�dulo 3
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+76
+2492
+courClone
+Prueba9 - M�dulo 4
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+77
+2492
+courClone
+Prueba10 - M�dulo 1
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+78
+2492
+courClone
+Prueba10 - M�dulo 2
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+79
+2492
+courClone
+Prueba10 - M�dulo 3
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+80
+2492
+courClone
+Prueba10 - M�dulo 4
+Aprende las tecnologías web más demandadas del mercado
+DESARROLLO_WEB
+Dr. Roberto Silva
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+81
+2486
+platClone
+Prueba1 - M�dulo 1
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+82
+2486
+platClone
+Prueba1 - M�dulo 2
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+83
+2486
+platClone
+Prueba1 - M�dulo 3
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+84
+2486
+platClone
+Prueba1 - M�dulo 4
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+85
+2486
+platClone
+Prueba2 - M�dulo 1
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+86
+2486
+platClone
+Prueba2 - M�dulo 2
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+87
+2486
+platClone
+Prueba2 - M�dulo 3
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+88
+2486
+platClone
+Prueba2 - M�dulo 4
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+89
+2486
+platClone
+Prueba3 - M�dulo 1
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+90
+2486
+platClone
+Prueba3 - M�dulo 2
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+91
+2486
+platClone
+Prueba3 - M�dulo 3
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+92
+2486
+platClone
+Prueba3 - M�dulo 4
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+93
+2486
+platClone
+Prueba4 - M�dulo 1
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+94
+2486
+platClone
+Prueba4 - M�dulo 2
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+95
+2486
+platClone
+Prueba4 - M�dulo 3
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+96
+2486
+platClone
+Prueba4 - M�dulo 4
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+97
+2486
+platClone
+Prueba5 - M�dulo 1
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+98
+2486
+platClone
+Prueba5 - M�dulo 2
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+99
+2486
+platClone
+Prueba5 - M�dulo 3
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+100
+2486
+platClone
+Prueba5 - M�dulo 4
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+101
+2486
+platClone
+Prueba6 - M�dulo 1
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+102
+2486
+platClone
+Prueba6 - M�dulo 2
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+103
+2486
+platClone
+Prueba6 - M�dulo 3
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+104
+2486
+platClone
+Prueba6 - M�dulo 4
+Conviértete en desarrollador web full-stack
+DESARROLLO_WEB
+Dra. Isabella Cruz
+3.07197e-312
+5
+HTML básico y semántico
+Estructura tu contenido web
+CSS y diseño responsivo
+Estiliza y adapta tu sitio
+JavaScript fundamentals
+Interactividad en el navegador
+Frameworks modernos
+React, Vue o Angular
+Deploy y hosting
+Publica tu sitio web
+%%%
+105
+2486
+platClone
+Prueba7 - M�dulo 1
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+106
+2486
+platClone
+Prueba7 - M�dulo 2
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+107
+2486
+platClone
+Prueba7 - M�dulo 3
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+108
+2486
+platClone
+Prueba7 - M�dulo 4
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+109
+2486
+platClone
+Prueba8 - M�dulo 1
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+110
+2486
+platClone
+Prueba8 - M�dulo 2
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+111
+2486
+platClone
+Prueba8 - M�dulo 3
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+112
+2486
+platClone
+Prueba8 - M�dulo 4
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+113
+2486
+platClone
+Prueba9 - M�dulo 1
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+114
+2486
+platClone
+Prueba9 - M�dulo 2
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+115
+2486
+platClone
+Prueba9 - M�dulo 3
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+116
+2486
+platClone
+Prueba9 - M�dulo 4
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+117
+2486
+platClone
+Prueba10 - M�dulo 1
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+118
+2486
+platClone
+Prueba10 - M�dulo 2
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+119
+2486
+platClone
+Prueba10 - M�dulo 3
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+120
+2486
+platClone
+Prueba10 - M�dulo 4
+Domina las herramientas de diseño más utilizadas
+DISENO
+Dr. Andrés Guerrero
+3.07197e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
 %%%

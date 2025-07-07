@@ -10,6 +10,7 @@
 #include "../Headers/Controllers/FilesManager.hpp"
 #include "../Headers/Controllers/ContentManager.hpp"
 #include "../Headers/Controllers/SessionManager.hpp"
+#include "./Utils/GeneradorDatos.hpp"
 
 // maquetación de funciones
 void SecuenciaInicializacion();
@@ -24,6 +25,9 @@ int main()
 		FilesManager::getInstance();
 		ContentManager::getInstance();
 		SessionManager::getInstance();
+	
+		//GeneradorDatos generador;
+		//generador.generarTodo();
 
 		MainController app;
 		app.run();

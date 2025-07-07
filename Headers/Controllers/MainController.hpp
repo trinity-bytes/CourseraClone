@@ -4,6 +4,7 @@
 // Headers del sistema
 #include <memory>
 #include <stack>
+#include "../Utils/GeneradorDatos.hpp"
 
 // Headers propios del proyecto
 #include "../Screens/LandingPageScreen.hpp"
