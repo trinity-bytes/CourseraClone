@@ -246,9 +246,22 @@ inline double ActividadesController::reportarTotal(std::vector<RawComprobanteDat
 inline std::vector<std::pair<std::string, int>> ActividadesController::reportarAlumnosMensuales(std::vector<InscripcionBinaria>& inscripciones, int maximo) {
 	std::vector<std::pair<std::string, int>> resultadoMomentaneo, resultado;
 
+	vector<int> idTodosCursos, idTodosEspecialidades;
+	idTodosCursos = idCursos.extraerTodo();
+	idTodosEspecialidades = idEspecializaciones.extraerTodo();
+
+
+	ArbolAVL<int> idCursosUnicos(idTodosCursos), idEspecialidadesUnicas(idTodosEspecialidades);
 
 	HashTable<std::string, int> estudiantesMeses;
 	for (InscripcionBinaria inscripcion : inscripciones) {
+		if (inscripcion.tipoActividad == int(TipoActividad::CURSO) && !idCursosUnicos.Buscar(inscripcion.idActividad)) {
+			continue; // Si es curso y no está en los cursos únicos, saltar
+		}
+		if (inscripcion.tipoActividad == int(TipoActividad::ESPECIALIZACION) && !idEspecialidadesUnicas.Buscar(inscripcion.idActividad)) {
+			continue; // Si es especialización y no está en las especializaciones únicas, saltar
+		}
+
 		std::string fechaEmision = std::string(inscripcion.fechaInicio, strnlen(inscripcion.fechaInicio, MAX_DATE_LEN_INS));
 		std::string fechaMes = DateTime::toMesString(fechaEmision);
 		estudiantesMeses.add(fechaMes, 1);

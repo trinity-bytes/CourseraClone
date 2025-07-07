@@ -25,7 +25,7 @@ int main()
 		FilesManager::getInstance();
 		ContentManager::getInstance();
 		SessionManager::getInstance();
-
+	
 		//GeneradorDatos generador;
 		//generador.generarTodo();
 
