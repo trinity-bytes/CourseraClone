@@ -203,10 +203,19 @@ inline std::unique_ptr<PantallaBase> MainController::crearPantallaListarMisInscr
 /// @brief Procesa la navegación con historial inteligente y prevención de bucles
 inline void MainController::_procesarNavegacion(const ResultadoPantalla& resultado)
 {
+    // No hacer nada si la acción es VOLVER_ANTERIOR (ya se manejó en el switch principal)
+    if (resultado.accion == AccionPantalla::VOLVER_ANTERIOR) {
+        return;
+    }
+
     // Si la pantalla especifica una acción anterior, la guardamos en el historial
     if (resultado.accionAnterior != AccionPantalla::NINGUNA) {
         _pushHistorial(resultado.accionAnterior);
-    } else if (_esPantallaConHistorial(resultado.accion)) {
+    } 
+    // Solo agregar al historial si es una pantalla que debe estar en él y no es la pantalla actual
+    else if (_esPantallaConHistorial(_pantallaActual) && 
+             _pantallaActual != AccionPantalla::NINGUNA &&
+             _pantallaActual != resultado.accion) {
         // Para pantallas que necesitan historial, guardamos la actual solo si no crea bucle
         if (!_evitarBucleHistorial(_pantallaActual)) {
             _pushHistorial(_pantallaActual);
@@ -255,6 +264,10 @@ inline bool MainController::_esPantallaConHistorial(AccionPantalla accion)
     case AccionPantalla::IR_A_EXPLORAR_CURSOS_Y_ESPECIALIDADES:
     case AccionPantalla::IR_A_VER_ESTADISTICAS:
     case AccionPantalla::IR_A_SOBRE_NOSOTROS:
+    case AccionPantalla::IR_A_PERFIL_ESTUDIANTE:
+    case AccionPantalla::IR_A_PERFIL_ORGANIZACION:
+    case AccionPantalla::IR_A_DASHBOARD_ESTUDIANTE:
+    case AccionPantalla::IR_A_DASHBOARD_ORGANIZACION:
         return true;
     default:
         return false;

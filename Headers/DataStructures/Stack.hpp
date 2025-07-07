@@ -114,31 +114,39 @@ public:
     // Operaciones avanzadas
     bool eliminarPosicion(int _posicion)
     {
-        if (_posicion < 1 || _posicion > _tamano || _head == nullptr)
+        if (_posicion < 0 || _posicion >= _tamano || _head == nullptr)
         {
             return false;
         }
 
-        Stack<T> temporal;
-
-        // Mover elementos hasta la posición a eliminar
-        for (int i = 1; i < _posicion; ++i)
-        {
-            temporal.push(top());
-            pop();
+        // Caso especial: eliminar el primer elemento
+        if (_posicion == 0) {
+            Nodo<T>* temp = _head;
+            _head = _head->next;
+            delete temp;
+            _tamano--;
+            return true;
         }
 
-        // Eliminar el elemento en la posición deseada
-        pop();
-
-        // Restaurar elementos desde la pila temporal
-        while (!temporal.estaVacio())
-        {
-            push(temporal.top());
-            temporal.pop();
+        // Para posiciones mayores a 0
+        Nodo<T>* actual = _head;
+        Nodo<T>* anterior = nullptr;
+        
+        // Avanzar hasta la posición deseada
+        for (int i = 0; i < _posicion && actual != nullptr; ++i) {
+            anterior = actual;
+            actual = actual->next;
         }
 
-        return true;
+        // Si llegamos a la posición correcta, eliminar el nodo
+        if (actual != nullptr) {
+            anterior->next = actual->next;
+            delete actual;
+            _tamano--;
+            return true;
+        }
+
+        return false;
     }
 
     // Filtrar elementos usando predicado

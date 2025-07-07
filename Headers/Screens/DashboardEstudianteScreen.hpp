@@ -6,6 +6,8 @@
 #include <sstream>    // Para std::stringstream
 #include <string>
 #include <vector>
+#include <random>     // Para generación de números aleatorios
+#include <chrono>     // Para semilla temporal
 
 // Headers propios del proyecto
 #include "../Controllers/ContentManager.hpp"
@@ -43,6 +45,10 @@ private:
     std::string _nombreEstudiante;
     int _idEstudiante;
 
+    /// @brief Sistema de frases motivacionales
+    std::string _fraseMotivacional;
+    std::string _autorFrase;
+
     /// @brief Estado de navegación
     int _seccionActual;
     int _elementoActual;
@@ -61,6 +67,11 @@ private:
     COORD _coordsElementosMenu[MAX_ELEMENTOS_MENU_SUPERIOR] = {
         {7, 8}
     };
+
+    /// @brief Coordenadas para el nombre del estudiante y frase motivacional
+    COORD _coordNombreEstudiante = {15, 5};        // Posición del saludo personalizado
+    COORD _coordFraseMotivacional = {50, 5};       // Posición de la frase motivacional
+    COORD _coordAutorFrase = {80, 7};              // Posición del autor (más a la derecha)
 
     /// @brief Coordenadas para títulos y descripciones de cursos
     COORD _coordsTituloCursos[MAX_ELEMENTOS_CURSOS] = {
@@ -91,11 +102,27 @@ private:
         " EXPLORAR CURSOS Y ESPECIALIDADES "
     };
 
+    /// @brief Frases motivacionales con sus autores
+    std::vector<std::pair<std::string, std::string>> _frasesMotivacionales = {
+        {"\"El éxito es la suma de pequeños esfuerzos repetidos día tras día.\"", "Robert Collier"},
+        {"\"La educación es el arma más poderosa que puedes usar para cambiar el mundo.\"", "Nelson Mandela"},
+        {"\"El aprendizaje nunca agota la mente.\"", "Leonardo da Vinci"},
+        {"\"Invierte en tu educación, es la mejor inversión que puedes hacer.\"", "Benjamin Franklin"},
+        {"\"El conocimiento es poder.\"", "Francis Bacon"},
+        {"\"No dejes que lo que no puedes hacer interfiera con lo que puedes hacer.\"", "John Wooden"},
+        {"\"El único modo de hacer un gran trabajo es amar lo que haces.\"", "Steve Jobs"},
+        {"\"La perseverancia es la base de todas las acciones.\"", "Lao Tzu"},
+        {"\"Cada día es una nueva oportunidad para aprender algo nuevo.\"", "Anónimo"},
+        {"\"El futuro pertenece a quienes creen en la belleza de sus sueños.\"", "Eleanor Roosevelt"}
+    };
+
 	// ---- METODOS PRIVADOS ----
 
     /// @brief Métodos de inicialización
     inline void _limpiarEstado();
     inline void _cargarDatosDummy();
+    inline void _cargarDatosUsuario();
+    inline void _seleccionarFraseAleatoria();
 
     /// @brief Métodos de renderizado
     inline void _dibujarInterfazCompleta();
@@ -103,6 +130,7 @@ private:
     inline void _renderizarMenuSuperior();
     inline void _renderizarCursos();
     inline void _renderizarEspecializaciones();
+    inline void _renderizarInformacionPersonal();
     inline void _actualizarSeleccion();
 
     /// @brief Métodos de renderizado específicos
@@ -138,9 +166,11 @@ public:
 
 // ---- CONSTRUCTORES INLINE ----
 inline DashboardEstudianteScreen::DashboardEstudianteScreen() : PantallaBase(), 
-    _nombreEstudiante("Juan Estudiante"), _idEstudiante(1),
+    _nombreEstudiante("Estudiante"), _idEstudiante(1),
     _seccionActual(0), _elementoActual(0), _seccionAnterior(-1), _elementoAnterior(-1),
     _primeraRenderizacion(true), _indCursoVisible(0), _indEspVisible(0) {
+    _cargarDatosUsuario();
+    _seleccionarFraseAleatoria();
 }
 
 // ---- METODOS PRIVADOS ----
@@ -183,12 +213,41 @@ inline void DashboardEstudianteScreen::_cargarDatosDummy()
     */
 }
 
+inline void DashboardEstudianteScreen::_cargarDatosUsuario()
+{
+    // Cargar datos del usuario desde SessionManager si está logueado
+    if (SessionManager::getInstance().isLoggedIn()) {
+        Usuario& currentUser = SessionManager::getInstance().getCurrentUser();
+        _nombreEstudiante = currentUser.getNombreCompleto();
+        _idEstudiante = currentUser.getId();
+    } else {
+        // Datos por defecto si no hay sesión
+        _nombreEstudiante = "Estudiante Invitado";
+        _idEstudiante = 0;
+    }
+}
+
+inline void DashboardEstudianteScreen::_seleccionarFraseAleatoria()
+{
+    // Usar generador de números aleatorios para seleccionar una frase
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, _frasesMotivacionales.size() - 1);
+    
+    int indiceAleatorio = dis(gen);
+    _fraseMotivacional = _frasesMotivacionales[indiceAleatorio].first;
+    _autorFrase = "- " + _frasesMotivacionales[indiceAleatorio].second;
+}
+
 inline void DashboardEstudianteScreen::_dibujarInterfazCompleta()
 {
     system("cls");
     UI_StudentDashboard();
 
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+
+    // Renderizar información personal del estudiante
+    _renderizarInformacionPersonal();
 
     // Renderizar todas las secciones
     _renderizarHeader();
@@ -239,6 +298,46 @@ inline void DashboardEstudianteScreen::_renderizarEspecializaciones()
     for (int i = 1; i < MAX_ELEMENTOS_ESPECIALIZACIONES && i <= _especializacionesInscritas.size(); ++i) {
         _renderizarElementoEspecializacion(i, _seccionActual == SECCION_ESPECIALIZACIONES && _elementoActual == i);
     }
+}
+
+inline void DashboardEstudianteScreen::_renderizarInformacionPersonal()
+{
+    // Renderizar saludo personalizado
+    gotoXY(_coordNombreEstudiante.X, _coordNombreEstudiante.Y);
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_AZUL_SUAVE);
+    std::cout << "¡Bienvenid@, " << _nombreEstudiante << "!";
+    
+    // Renderizar frase motivacional
+    gotoXY(_coordFraseMotivacional.X, _coordFraseMotivacional.Y);
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    
+    // Formatear la frase para que no exceda el ancho de pantalla
+    std::string fraseFormateada = _fraseMotivacional;
+    const int MAX_ANCHO_FRASE = 50; // Ancho máximo para la frase
+    
+    if (fraseFormateada.length() > MAX_ANCHO_FRASE) {
+        // Buscar el último espacio antes del límite
+        size_t puntoCorte = fraseFormateada.find_last_of(' ', MAX_ANCHO_FRASE);
+        if (puntoCorte != std::string::npos) {
+            std::string primeraLinea = fraseFormateada.substr(0, puntoCorte);
+            std::string segundaLinea = fraseFormateada.substr(puntoCorte + 1);
+            
+            std::cout << primeraLinea;
+            gotoXY(_coordFraseMotivacional.X, _coordFraseMotivacional.Y + 1);
+            std::cout << segundaLinea;
+        } else {
+            std::cout << fraseFormateada;
+        }
+    } else {
+        std::cout << fraseFormateada;
+    }
+    
+    // Renderizar autor
+    gotoXY(_coordAutorFrase.X, _coordAutorFrase.Y);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_AZUL_SUAVE);
+    std::cout << _autorFrase;
+    
+    resetColor();
 }
 
 inline void DashboardEstudianteScreen::_actualizarSeleccion()
@@ -508,6 +607,7 @@ inline ResultadoPantalla DashboardEstudianteScreen::_procesarSeleccion()
 inline ResultadoPantalla DashboardEstudianteScreen::ejecutar()
 {
     _limpiarEstado();
+    _cargarDatosUsuario();  // Actualizar datos del usuario
     _cargarDatosDummy();
     
     if (_primeraRenderizacion)
