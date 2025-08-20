@@ -6,6 +6,7 @@
 ![Windows](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)
 ![VS](https://img.shields.io/badge/IDE-Visual%20Studio%202022-purple.svg)
 ![Status](https://img.shields.io/badge/Status-Final-green.svg)
+![License](https://img.shields.io/badge/License-Noncommercial-blue.svg)
 
 </div>
 
@@ -15,6 +16,18 @@ Aplicación de consola en C++ que simula una plataforma educativa: gestión de c
 **Autores:** Fabrizio Santi, Mauricio Teran, Jahat Trinidad  
 **Curso:** Algoritmos y Estructura de Datos — UPC  
 **Finalizado:** Jul 2025
+
+Licencias: Código bajo [Polyform Noncommercial 1.0.0](LICENSE). Documentación e imágenes bajo [CC BY-NC-SA 4.0](LICENSE-docs).
+
+## ⚠️ Disclaimer / Integridad académica
+
+Este repositorio es público con fines educativos y de referencia.
+
+- Se prohíbe el plagio total o parcial y cualquier uso que vulnere el Código de Integridad/Probidad Académica de la UPC o de cualquier otra institución educativa.
+- Puedes estudiar el código y reutilizar ideas o fragmentos no evaluados citando la fuente. Todo trabajo evaluable debe ser de autoría propia.
+- Los autores no asumen responsabilidad por usos indebidos. Cualquier fork o contribución debe respetar estas condiciones.
+
+Nota legal: este repositorio se publica con licencias de uso no comercial (ver enlaces arriba).
 
 ## 🚀 Inicio rápido
 
