@@ -2400,3 +2400,203 @@ Identidad visual
 Portfolio profesional
 Presenta tu trabajo
 %%%
+121
+2494
+Universidad Peruana de Ciencias Aplicadas
+Gestión de Proyectos
+Desarrolla habilidades empresariales y de liderazgo
+NEGOCIOS
+Prof. Lucia Santos
+1.9939e-312
+5
+Planificación estratégica
+Define objetivos y metas
+Gestión de equipos
+Liderazgo efectivo
+Finanzas básicas
+Presupuestos y análisis
+Marketing y ventas
+Atrae y retén clientes
+Escalabilidad
+Haz crecer tu negocio
+%%%
+122
+2494
+Universidad Peruana de Ciencias Aplicadas
+Email Marketing - Módulo 1
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dr. Andrés Guerrero
+1.9939e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+123
+2494
+Universidad Peruana de Ciencias Aplicadas
+Email Marketing - Módulo 2
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dr. Andrés Guerrero
+1.9939e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+124
+2494
+Universidad Peruana de Ciencias Aplicadas
+Email Marketing - Módulo 3
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dr. Andrés Guerrero
+1.9939e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+125
+2494
+Universidad Peruana de Ciencias Aplicadas
+Email Marketing - Módulo 4
+Aprende las estrategias de marketing más efectivas
+MARKETING_DIGITAL
+Dr. Andrés Guerrero
+1.9939e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+126
+2494
+Universidad Peruana de Ciencias Aplicadas
+Marketing en Redes Sociales
+Domina las plataformas digitales para hacer crecer tu negocio
+MARKETING_DIGITAL
+Prof. Lucia Santos
+1.9939e-312
+5
+Estrategia digital
+Planifica tu presencia online
+Redes sociales
+Facebook, Instagram, LinkedIn
+SEO básico
+Optimización en buscadores
+Google Ads
+Publicidad pagada efectiva
+Analítica web
+Mide y optimiza resultados
+%%%
+127
+2494
+Universidad Peruana de Ciencias Aplicadas
+UX/UI Design - Módulo 1
+Domina las herramientas de diseño más utilizadas
+DISENO
+Prof. Valeria Ruiz
+1.9939e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+128
+2494
+Universidad Peruana de Ciencias Aplicadas
+UX/UI Design - Módulo 2
+Domina las herramientas de diseño más utilizadas
+DISENO
+Prof. Valeria Ruiz
+1.9939e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+129
+2494
+Universidad Peruana de Ciencias Aplicadas
+UX/UI Design - Módulo 3
+Domina las herramientas de diseño más utilizadas
+DISENO
+Prof. Valeria Ruiz
+1.9939e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
+130
+2494
+Universidad Peruana de Ciencias Aplicadas
+UX/UI Design - Módulo 4
+Domina las herramientas de diseño más utilizadas
+DISENO
+Prof. Valeria Ruiz
+1.9939e-312
+5
+Principios de diseño
+Teoría del color y composición
+Herramientas digitales
+Photoshop, Illustrator, Figma
+Diseño de interfaces
+UX/UI principles
+Branding y logotipos
+Identidad visual
+Portfolio profesional
+Presenta tu trabajo
+%%%
