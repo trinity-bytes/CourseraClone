@@ -7,13 +7,14 @@
 ![VS](https://img.shields.io/badge/IDE-Visual%20Studio%202022-purple.svg)
 ![Status](https://img.shields.io/badge/Status-Final-green.svg)
 ![License](https://img.shields.io/badge/License-Noncommercial-blue.svg)
+![Contributors](https://img.shields.io/github/contributors/trinity-bytes/CourseraClone)
 
 </div>
 
 Aplicación de consola en C++ que simula una plataforma educativa: gestión de cursos y especializaciones, inscripciones, pagos y certificados con QR, construida sobre estructuras de datos y algoritmos implementados desde cero.
 
 **Versión:** 2.0.0 (Final)  
-**Autores:** Fabrizio Santi, Mauricio Teran, Jahat Trinidad  
+**Autores:** [Fabrizio Santi](https://github.com/Santi2007939), [Mauricio Teran](https://github.com/mau-tz), [Jahat Trinidad](https://github.com/trinity-bytes)  
 **Curso:** Algoritmos y Estructura de Datos — UPC  
 **Finalizado:** Jul 2025
 
@@ -132,9 +133,25 @@ Documentos QR:
 
 ## 🤝 Equipo
 
-- Fabrizio Santi — Ordenamientos, DSA (AVL/Heap/PQ), LinkedList, inscripciones.
-- Mauricio Teran — Búsquedas, HashTable/BST.
-- Jahat Trinidad — Arquitectura, UI de consola, persistencia, utilidades, QR.
+<div align="center">
+
+<a href="https://github.com/Santi2007939" title="Fabrizio Santi">
+   <img src="https://github.com/Santi2007939.png?size=120" alt="Fabrizio Santi" width="96" height="96" />
+</a>
+&nbsp;&nbsp;
+<a href="https://github.com/mau-tz" title="Mauricio Teran">
+   <img src="https://github.com/mau-tz.png?size=120" alt="Mauricio Teran" width="96" height="96" />
+</a>
+&nbsp;&nbsp;
+<a href="https://github.com/trinity-bytes" title="Jahat Trinidad">
+   <img src="https://github.com/trinity-bytes.png?size=120" alt="Jahat Trinidad" width="96" height="96" />
+</a>
+
+</div>
+
+- [Fabrizio Santi](https://github.com/Santi2007939) — Ordenamientos, DSA (AVL/Heap/PQ), LinkedList, inscripciones.
+- [Mauricio Teran](https://github.com/mau-tz) — Búsquedas, HashTable/BST.
+- [Jahat Trinidad](https://github.com/trinity-bytes) — Arquitectura, UI de consola, persistencia, utilidades, QR.
 
 Proyecto académico (UPC) — Uso educativo.
 
