@@ -1,99 +1,90 @@
 // filepath: Headers/Utils/ConsoleConfig.hpp
-// Descripcion: Configuración de consola (fuente, cursor, paleta, etc.)
+// Descripcion: Configuración e inicialización del terminal (modo VT, tamaño, ciclo de vida)
 
 #ifndef COURSERACLONE_UTILS_CONSOLECONFIG_HPP
 #define COURSERACLONE_UTILS_CONSOLECONFIG_HPP
 
 #include <windows.h>
-#include <string>
+#include <cstdio>
+#include <cstdlib>
 #include <clocale>
+#include <iostream>
+#include <string>
+
 #include "ColorPalette.hpp"
 #include "ConsoleTypes.hpp"
+#include "ConsoleVT.hpp"
 
-// FUNCIONES DE CONFIGURACIÓN DE CONSOLA
+// TAMAÑO DE LA VENTANA
 
-/// @brief Establece una paleta de color en un índice específico
-inline void setPaletteColor(int index, const Color& color) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFOEX csbi;
-    csbi.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
-    
-    if (GetConsoleScreenBufferInfoEx(hConsole, &csbi)) {
-        csbi.ColorTable[index & 0xF] = RGB(color.r, color.g, color.b);
-        SetConsoleScreenBufferInfoEx(hConsole, &csbi);
-    }
-}
-
-/// @brief Configura toda la paleta de colores oficial de Coursera
-inline void configurarPaletaColores() {
-    // COLORES FUNDAMENTALES (Base de la identidad visual)
-    setPaletteColor(ColorIndex::FONDO_PRINCIPAL,        Palette::GRIS_100);
-    setPaletteColor(ColorIndex::TEXTO_PRIMARIO,         Palette::GRIS_900);
-    setPaletteColor(ColorIndex::AZUL_MARCA,             Palette::AZUL_COURSERA);
-    setPaletteColor(ColorIndex::BLANCO_PURO,            Palette::BLANCO_COURSERA);
-    
-    // COLORES DE INTERACCIÓN (Para mejor UX)
-    setPaletteColor(ColorIndex::HOVER_ESTADO,           Palette::AZUL_HOVER);
-    setPaletteColor(ColorIndex::LINK_COLOR,             Palette::AZUL_LINK);
-    setPaletteColor(ColorIndex::PRESIONADO,             Palette::AZUL_PRESIONADO);
-    setPaletteColor(ColorIndex::FONDO_AZUL_SUAVE,       Palette::AZUL_MUY_CLARO);
-    
-    // JERARQUÍA DE TEXTO (Legibilidad optimizada)
-    setPaletteColor(ColorIndex::TEXTO_SECUNDARIO,       Palette::GRIS_600);
-    setPaletteColor(ColorIndex::TEXTO_DESHABILITADO,    Palette::GRIS_500);
-    setPaletteColor(ColorIndex::TEXTO_IMPORTANTE,       Palette::GRIS_800);
-    setPaletteColor(ColorIndex::BORDES_SUTILES,         Palette::GRIS_300);
-    
-    // COLORES DE ESTADO (Semáforo universal)
-    setPaletteColor(ColorIndex::EXITO_COLOR,            Palette::VERDE_EXITO);
-    setPaletteColor(ColorIndex::ERROR_COLOR,            Palette::ROJO_ERROR);
-    setPaletteColor(ColorIndex::ATENCION_COLOR,         Palette::AMARILLO_ATENCION);
-    setPaletteColor(ColorIndex::INFO_COLOR,             Palette::AZUL_INFO);
-}
-
-/// @brief Configura la fuente de la consola
-inline void configurarFuente(const std::wstring& nombreFuente = L"Cascadia Code Semibold", int altoFuente = 22) 
+/// @brief Bloquea hasta que el terminal tenga el tamaño mínimo que la UI necesita.
+///
+/// Windows Terminal no permite que la aplicación redimensione su ventana, así que
+/// en vez de forzarlo se le pide cooperativamente y, si no alcanza, se le avisa al
+/// usuario y se espera. Devuelve true si hubo que mostrar el aviso.
+inline bool esperarTamanoMinimo(int anchoMinimo = ANCHO_CONSOLA, int altoMinimo = ALTO_CONSOLA)
 {
-    HANDLE hConsola = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_FONT_INFOEX cfi = { 0 };
-    cfi.cbSize = sizeof(cfi);
-    wcscpy_s(cfi.FaceName, nombreFuente.c_str());
-    cfi.dwFontSize.Y = altoFuente;
-    cfi.FontWeight = FW_NORMAL;
-    SetCurrentConsoleFontEx(hConsola, FALSE, &cfi);
+    int ancho = 0;
+    int alto = 0;
+    bool avisoMostrado = false;
+
+    while (VT::obtenerTamano(ancho, alto) && (ancho < anchoMinimo || alto < altoMinimo))
+    {
+        VT::aplicarColores(colorDeIndice(ColorIndex::TEXTO_PRIMARIO),
+                           colorDeIndice(ColorIndex::FONDO_PRINCIPAL));
+        VT::limpiarPantallaCompleta();
+
+        VT::moverCursor(0, 0);
+        std::cout << "La ventana del terminal es demasiado chica.";
+        VT::moverCursor(0, 2);
+        std::cout << "Necesito " << anchoMinimo << " x " << altoMinimo
+                  << "  ->  ahora tenes " << ancho << " x " << alto << "   ";
+        VT::moverCursor(0, 4);
+        VT::aplicarColorTexto(colorDeIndice(ColorIndex::TEXTO_SECUNDARIO));
+        std::cout << "Agranda la ventana (o baja el tamano de fuente con Ctrl + rueda).";
+
+        avisoMostrado = true;
+        Sleep(120);
+    }
+
+    return avisoMostrado;
+}
+
+// CICLO DE VIDA DEL TERMINAL
+
+/// @brief Configuración completa del terminal al arrancar la aplicación
+inline void configurarConsola()
+{
+    // Salida en UTF-8: el arte ASCII usa bloques y bordes Unicode
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+    setlocale(LC_ALL, "es_ES.UTF-8");
+
+    // Sin buffer: las secuencias VT y el texto comparten el mismo flujo, y el
+    // orden entre ambos tiene que respetarse siempre.
+    setvbuf(stdout, nullptr, _IONBF, 0);
+
+    VT::habilitarModoVT();
+    VT::entrarPantallaAlternativa();
+    std::atexit(VT::restaurarTerminal);
+
+    VT::mostrarCursor(false);
+    SetConsoleTitleW(L"Coursera Clone - Beta 2");
+
+    // Intento cooperativo de tamaño; si el terminal lo ignora, entra el aviso
+    VT::solicitarTamano(ANCHO_CONSOLA, ALTO_CONSOLA);
+    Sleep(60);
+    esperarTamanoMinimo();
+
+    VT::aplicarColores(colorDeIndice(ColorIndex::TEXTO_PRIMARIO),
+                       colorDeIndice(ColorIndex::FONDO_PRINCIPAL));
+    VT::limpiarPantallaCompleta();
 }
 
 /// @brief Oculta el cursor parpadeante
-inline void ocultarCursor() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(hConsole, &cursorInfo);
-    cursorInfo.bVisible = FALSE; // Ocultar el cursor
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
-}
-
-/// @brief Configuración completa de la consola
-inline void configurarConsola() {
-    // Configurar codificación UTF-8
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-
-    // Configurar locale para español
-    setlocale(LC_ALL, "es_ES.UTF-8");
-
-    // Configurar apariencia
-    ocultarCursor();
-    configurarFuente();
-    configurarPaletaColores();
-
-    // Establecer tamaño de ventana
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD bufferSize = { (SHORT)ANCHO_CONSOLA, (SHORT)ALTO_CONSOLA };
-    SetConsoleScreenBufferSize(hConsole, bufferSize);    SMALL_RECT windowSize = { 0, 0, (SHORT)(ANCHO_CONSOLA - 1), (SHORT)(ALTO_CONSOLA - 1) };
-    SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
-
-    // Título de la aplicación
-    SetConsoleTitle(L"Coursera Clone - Beta 2");
+inline void ocultarCursor()
+{
+    VT::mostrarCursor(false);
 }
 
 #endif // COURSERACLONE_UTILS_CONSOLECONFIG_HPP

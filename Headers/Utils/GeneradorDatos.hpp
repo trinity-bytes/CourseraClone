@@ -5,6 +5,7 @@
 #include "../Controllers/SessionManager.hpp"
 #include "ContentGenerator.hpp"
 #include "../Utils/ValidationUtils.hpp"
+#include "../Utils/InputUtils.hpp"
 
 class GeneradorDatos {
 
@@ -38,12 +39,12 @@ inline void GeneradorDatos::generarActividad(std::vector<std::string> empresas, 
             std::cout << "Pero encuentralo bien";
         }
         cout << nuevo << endl;
-        system("pause");
+        pausar();
 
         if (res == LoginStatus::SUCCESS) {
 
             std::cout << "POR?????";
-            system("pause");
+            pausar();
 
             for (int i = 0; i < cantidad; i++) {
                 std::string numero = std::to_string(i + 1);

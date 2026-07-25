@@ -202,7 +202,7 @@ inline void DashboardOrganizacionScreen::_cargarDatosDummy()
 // Dibujar interfaz completa
 inline void DashboardOrganizacionScreen::_dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_OrganizationDashboard();
 
     // Renderizar todas las secciones

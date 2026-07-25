@@ -260,7 +260,7 @@ inline void MostrarCursoScreen::_cargarDatosCurso() {
 // Dibujar interfaz completa
 inline void MostrarCursoScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_VistaCurso();
 
     _renderizarInformacionCurso();

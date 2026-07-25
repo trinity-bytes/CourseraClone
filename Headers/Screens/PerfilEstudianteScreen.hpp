@@ -131,7 +131,7 @@ inline void PerfilEstudianteScreen::_cargarDatosDummy()
 // Dibujar interfaz completa
 inline void PerfilEstudianteScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_UserProfile();
 
     renderizarDatosPerfil();

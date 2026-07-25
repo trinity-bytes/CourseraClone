@@ -770,8 +770,8 @@ inline void LandingPageScreen::renderizar()
 {
     if (_primeraRenderizacion)
     {
-		//system("pause"); // Pausa para leer los logs iniciales del sistema
-        system("cls");
+		//pausar(); // Pausa para leer los logs iniciales del sistema
+        limpiarPantalla();
         UI_LandingPage();
 
         /// @brief Renderizar todos los elementos interactivos

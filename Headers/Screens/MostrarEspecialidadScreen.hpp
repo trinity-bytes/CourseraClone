@@ -230,7 +230,7 @@ inline void MostrarEspecialidadScreen::_cargarDatosEspecializacion() {
 // Dibujar interfaz completa
 inline void MostrarEspecialidadScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_VistaEspecialidad();
 
     _renderizarInformacionEspecializacion();

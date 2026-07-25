@@ -199,7 +199,7 @@ inline void EstadisticasEmpresaScreen::_cargarDatos() {
 // Dibujar interfaz completa
 inline void EstadisticasEmpresaScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_EstadisticasEmpresa();
 
     _renderizarInformacionEmpresa();

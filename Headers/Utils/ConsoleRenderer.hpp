@@ -9,36 +9,37 @@
 #include <windows.h>
 #include "ColorPalette.hpp"
 #include "ConsoleTypes.hpp"
+#include "ConsoleVT.hpp"
+#include "ConsoleConfig.hpp"
 
 // FUNCIONES DE MANIPULACIÓN DE COLORES
 
-/// @brief Establece colores de texto y fondo con control de intensidad
-inline void setConsoleColor(int textColor, int backgroundColor = ColorIndex::FONDO_PRINCIPAL, 
+// Color vigente. Con VT no existe un "atributo actual" que se pueda consultar,
+// así que la app lleva su propio estado para poder cambiar solo el texto.
+inline int _indiceTextoActual = ColorIndex::TEXTO_PRIMARIO;
+inline int _indiceFondoActual = ColorIndex::FONDO_PRINCIPAL;
+
+/// @brief Establece colores de texto y fondo
+/// @note Los flags de intensidad quedan por compatibilidad con las llamadas
+///       existentes: con color RGB de 24 bits el matiz ya viene resuelto en la
+///       paleta, no hace falta el bit de brillo de conhost.
+inline void setConsoleColor(int textColor, int backgroundColor = ColorIndex::FONDO_PRINCIPAL,
                             bool intenseText = false, bool intenseBackground = false) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    
-    // Validar rangos (0-15)
-    textColor &= 0xF;
-    backgroundColor &= 0xF;
-    
-    WORD attributes = textColor | (backgroundColor << 4);
-    
-    if (intenseText) attributes |= FOREGROUND_INTENSITY;
-    if (intenseBackground) attributes |= BACKGROUND_INTENSITY;
-    
-    SetConsoleTextAttribute(hConsole, attributes);
+    (void)intenseText;
+    (void)intenseBackground;
+
+    _indiceTextoActual = textColor & 0xF;
+    _indiceFondoActual = backgroundColor & 0xF;
+
+    VT::aplicarColores(colorDeIndice(_indiceTextoActual), colorDeIndice(_indiceFondoActual));
 }
 
 /// @brief Establece solo el color del texto manteniendo el fondo actual
 inline void setTextColor(int color, bool intense = false) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(hConsole, &csbi);
-    
-    WORD attributes = (csbi.wAttributes & 0xF0) | (color & 0xF);
-    if (intense) attributes |= FOREGROUND_INTENSITY;
-    
-    SetConsoleTextAttribute(hConsole, attributes);
+    (void)intense;
+
+    _indiceTextoActual = color & 0xF;
+    VT::aplicarColorTexto(colorDeIndice(_indiceTextoActual));
 }
 
 /// @brief Restaura colores por defecto (texto primario sobre fondo principal)
@@ -46,13 +47,20 @@ inline void resetColor() {
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
 }
 
+/// @brief Limpia la pantalla pintándola con el fondo de la aplicación
+/// @note Reemplaza al viejo cls por proceso externo y, sobre todo,
+///       el borrado usa el fondo vigente en vez del negro del terminal.
+inline void limpiarPantalla() {
+    esperarTamanoMinimo();
+    resetColor();
+    VT::limpiarPantallaCompleta();
+}
+
 // FUNCIONES DE POSICIONAMIENTO
 
 /// @brief Mueve el cursor a una posición específica
 inline void gotoXY(int x, int y) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coord = { static_cast<SHORT>(x), static_cast<SHORT>(y) };
-    SetConsoleCursorPosition(hConsole, coord);
+    VT::moverCursor(x, y);
 }
 
 /// @brief Mueve el cursor usando estructura Posicion
@@ -246,12 +254,9 @@ inline void mostrarSeparadorElegante(int longitud = ANCHO_CONSOLA) {
 }
 
 /// @brief Configura la visibilidad del cursor en la consola
-inline void _configurarCursor(bool mostrar) 
+inline void _configurarCursor(bool mostrar)
 {
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-    cursorInfo.bVisible = mostrar;
-    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    VT::mostrarCursor(mostrar);
 }
 
 #endif // COURSERACLONE_UTILS_CONSOLERENDERER_HPP

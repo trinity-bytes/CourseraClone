@@ -79,6 +79,9 @@ std::string QRCodeGenerator::generateFromText(const std::string& text) {
             case ASCIIStyle::COURSERA_STYLE:
                 result = renderCourseraStyle(qr);
                 break;
+            case ASCIIStyle::HALF_BLOCK:
+                result = renderHalfBlock(qr);
+                break;
             default:
                 result = renderBasicASCII(qr);
                 break;
@@ -274,6 +277,106 @@ std::string QRCodeGenerator::renderCourseraStyle(const QrCode& qr) const {
     }
     
     return result.str();
+}
+
+std::string QRCodeGenerator::renderHalfBlock(const QrCode& qr) const {
+    const int size = qr.getSize();
+    const int inicio = -_config.borderSize;
+    const int fin = size + _config.borderSize;
+
+    // Fuera del QR está la zona silenciosa, que siempre es clara
+    auto esOscuro = [&](int x, int y) {
+        if (x < 0 || x >= size || y < 0 || y >= size) return false;
+        return qr.getModule(x, y);
+    };
+
+    std::string resultado;
+    resultado.reserve(static_cast<size_t>(fin - inicio) * (fin - inicio) * 2);
+
+    // Cada fila de texto carga dos filas de módulos: la de arriba va en el
+    // color de texto y la de abajo en el color de fondo.
+    for (int y = inicio; y < fin; y += 2) {
+        for (int x = inicio; x < fin; ++x) {
+            const bool arriba = esOscuro(x, y);
+            const bool abajo = (y + 1 < fin) && esOscuro(x, y + 1);
+
+            if (arriba && abajo)  resultado += "█";  // █ ambos módulos oscuros
+            else if (arriba)      resultado += "▀";  // ▀ solo el de arriba
+            else if (abajo)       resultado += "▄";  // ▄ solo el de abajo
+            else                  resultado += " ";       //   ambos claros
+        }
+        resultado += "\n";
+    }
+
+    return resultado;
+}
+
+QRAjustado QRCodeGenerator::generarAjustado(const std::string& texto,
+                                            int columnasDisponibles,
+                                            int filasDisponibles,
+                                            int borde) {
+    struct NivelCorreccion {
+        const char* nombre;
+        QrCode::Ecc valor;
+    };
+
+    // De más robusto a menos: nos quedamos con el primero que entre
+    const NivelCorreccion niveles[] = {
+        { "ALTA (30%)",     QrCode::Ecc::HIGH     },
+        { "MEDIA-ALTA (25%)", QrCode::Ecc::QUARTILE },
+        { "MEDIA (15%)",    QrCode::Ecc::MEDIUM   },
+        { "BAJA (7%)",      QrCode::Ecc::LOW      }
+    };
+
+    QRAjustado resultado;
+    QRConfig config;
+    config.style = ASCIIStyle::HALF_BLOCK;
+    config.borderSize = borde;
+    config.useColors = false;
+
+    for (const NivelCorreccion& nivel : niveles) {
+        try {
+            QrCode qr = QrCode::encodeText(texto.c_str(), nivel.valor);
+
+            const int lado = qr.getSize() + 2 * borde;
+            const int columnas = lado;
+            const int filas = (lado + 1) / 2;   // medio bloque: dos módulos por fila
+
+            if (columnas > columnasDisponibles || filas > filasDisponibles) continue;
+
+            QRCodeGenerator generador(config);
+            resultado.arte = generador.renderHalfBlock(qr);
+            resultado.modulos = qr.getSize();
+            resultado.columnas = columnas;
+            resultado.filas = filas;
+            resultado.correccion = nivel.nombre;
+            resultado.entra = true;
+            return resultado;
+        } catch (const std::exception&) {
+            // Este nivel no puede codificar el contenido: probamos el siguiente
+            continue;
+        }
+    }
+
+    return resultado;  // entra = false
+}
+
+void QRCodeGenerator::dibujarEnConsola(const QRAjustado& qr, int x, int y) {
+    if (!qr.entra) return;
+
+    // Negro sobre blanco puro: el contraste es lo que decide si un lector lo agarra
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::BLANCO_PURO);
+
+    std::istringstream lineas(qr.arte);
+    std::string linea;
+    int fila = 0;
+    while (std::getline(lineas, linea)) {
+        gotoXY(x, y + fila);
+        std::cout << linea;
+        ++fila;
+    }
+
+    resetColor();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════════

@@ -242,7 +242,7 @@ inline void LoginScreen::_renderizarBoton(const std::string& texto, int indice, 
 
 inline void LoginScreen::_dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_Login();
 
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);

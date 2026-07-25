@@ -6,6 +6,7 @@
 
 #include <conio.h>
 #include <windows.h>
+#include <iostream>
 
 // FUNCIONES DE ENTRADA DE USUARIO
 
@@ -31,6 +32,14 @@ inline bool esperarTecla(int teclaEsperada, int teclaEscape = 27) {
 inline int esperarCualquierTecla() {
     limpiarBuffer();
     return _getch();
+}
+
+/// @brief Pausa hasta que el usuario presione una tecla
+/// @note Reemplaza al viejo pause por proceso externo: no lanza cmd.exe ni escribe su propio
+///       mensaje en la pantalla alternativa del terminal.
+inline void pausar(const char* mensaje = "Presiona cualquier tecla para continuar...") {
+    if (mensaje != nullptr) std::cout << mensaje;
+    esperarCualquierTecla();
 }
 
 #endif // COURSERACLONE_UTILS_INPUTUTILS_HPP

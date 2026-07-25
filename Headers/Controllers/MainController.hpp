@@ -582,7 +582,7 @@ inline void MainController::run()
 
         case AccionPantalla::SALIR:
             _ejecutando = false;
-            system("cls");
+            limpiarPantalla();
             break;
         default:
             /// @brief Para acciones no implementadas aún, se regresa a landing page

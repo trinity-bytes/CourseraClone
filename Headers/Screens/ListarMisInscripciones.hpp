@@ -230,7 +230,7 @@ inline void ListarMisInscripcionesScreen::_cargarInscripcionesEstudiante()
 // Dibujar interfaz completa
 inline void ListarMisInscripcionesScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_ListarMisInscripciones();
 }
 

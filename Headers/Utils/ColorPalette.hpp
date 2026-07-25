@@ -83,6 +83,34 @@ namespace ColorIndex {
     constexpr int INFO_COLOR           = 15;  // Azul info - Información neutral
 }
 
+// TABLA DE RESOLUCIÓN ÍNDICE -> RGB
+// Windows Terminal ignora el remapeo de la ColorTable de conhost, así que los
+// 16 índices de ColorIndex ya no son ranuras del terminal: se resuelven aquí a
+// color RGB real y se emiten como secuencias VT de 24 bits.
+constexpr Color PALETA_CONSOLA[16] = {
+    Palette::GRIS_100,          //  0 FONDO_PRINCIPAL
+    Palette::GRIS_900,          //  1 TEXTO_PRIMARIO
+    Palette::AZUL_COURSERA,     //  2 AZUL_MARCA
+    Palette::BLANCO_COURSERA,   //  3 BLANCO_PURO
+    Palette::AZUL_HOVER,        //  4 HOVER_ESTADO
+    Palette::AZUL_LINK,         //  5 LINK_COLOR
+    Palette::AZUL_PRESIONADO,   //  6 PRESIONADO
+    Palette::AZUL_MUY_CLARO,    //  7 FONDO_AZUL_SUAVE
+    Palette::GRIS_600,          //  8 TEXTO_SECUNDARIO
+    Palette::GRIS_500,          //  9 TEXTO_DESHABILITADO
+    Palette::GRIS_800,          // 10 TEXTO_IMPORTANTE
+    Palette::GRIS_300,          // 11 BORDES_SUTILES
+    Palette::VERDE_EXITO,       // 12 EXITO_COLOR
+    Palette::ROJO_ERROR,        // 13 ERROR_COLOR
+    Palette::AMARILLO_ATENCION, // 14 ATENCION_COLOR
+    Palette::AZUL_INFO          // 15 INFO_COLOR
+};
+
+/// @brief Resuelve un índice de ColorIndex al color RGB que le corresponde
+constexpr const Color& colorDeIndice(int indice) {
+    return PALETA_CONSOLA[indice & 0xF];
+}
+
 // COMPATIBILIDAD CON CÓDIGO EXISTENTE
 // Aliases actualizados para mantener compatibilidad con Utils.h anterior
 namespace Colors {

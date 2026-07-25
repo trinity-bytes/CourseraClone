@@ -240,7 +240,7 @@ inline void RegistroScreen::_renderizarBoton(const std::string& texto, int indic
 
 inline void RegistroScreen::_dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_Signup();
 
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
@@ -450,7 +450,7 @@ inline ResultadoPantalla RegistroScreen::_procesarRegistro()
     _configurarCursor(false);  // Asegurar que el cursor esté oculto
     _limpiarEstado();
 	resetColor();
-    system("cls");
+    limpiarPantalla();
     return ResultadoPantalla(AccionPantalla::IR_A_LOGIN);
 }
 

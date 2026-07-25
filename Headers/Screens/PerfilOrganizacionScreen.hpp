@@ -110,7 +110,7 @@ inline void PerfilOrganizacionScreen::_cargarDatosDummy()
 // Dibujar interfaz completa
 inline void PerfilOrganizacionScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_OrganizationProfile();
 
     renderizarDatosPerfil();

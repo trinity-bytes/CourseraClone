@@ -235,7 +235,7 @@ inline void ListarContenidoScreen::_cargarContenidoOrganizacion()
 // Dibujar interfaz completa
 inline void ListarContenidoScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_ListarContenido();
 }
 

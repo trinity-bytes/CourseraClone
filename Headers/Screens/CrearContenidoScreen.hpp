@@ -154,7 +154,7 @@ inline void CrearContenidoScreen::_limpiarEstado()
 // Dibujar interfaz completa
 inline void CrearContenidoScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_CrearContenido();
     
     _renderizarCamposYBotones();

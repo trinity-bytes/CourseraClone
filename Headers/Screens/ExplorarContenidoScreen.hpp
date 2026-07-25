@@ -286,25 +286,19 @@ inline void ExplorarContenidoScreen::_limpiarEstado()
 // Mostrar cursor
 inline void ExplorarContenidoScreen::_mostrarCursor()
 {
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-    cursorInfo.bVisible = TRUE;
-    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    _configurarCursor(true);
 }
 
 // Ocultar cursor
 inline void ExplorarContenidoScreen::_ocultarCursor()
 {
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-    cursorInfo.bVisible = FALSE;
-    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+    _configurarCursor(false);
 }
 
 // Dibujar interfaz completa
 inline void ExplorarContenidoScreen::_dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
     UI_ExplorarContenido();
 

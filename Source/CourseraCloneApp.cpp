@@ -35,7 +35,7 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cerr << "ERROR en la aplicacion: " << e.what() << std::endl;
-		system("pause");
+		pausar();
 		return 1;
 	}
 

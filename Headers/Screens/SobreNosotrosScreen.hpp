@@ -124,7 +124,7 @@ inline void SobreNosotrosScreen::_renderizarBoton(const std::string& texto, int 
 // Dibuja la interfaz completa
 inline void SobreNosotrosScreen::_dibujarInterfazCompleta()
 {
-	system("cls");
+	limpiarPantalla();
 	UI_AboutUs();
 
 	// Renderizar todos los botones
@@ -187,9 +187,8 @@ inline void SobreNosotrosScreen::_procesarSeleccionBoton(int indice)
 		std::cout << "Abriendo enlace en el navegador...";
 		resetColor();
 
-		// Comando para abrir URL en el navegador predeterminado de Windows
-		std::string comando = "start " + _urlsBotones[indice];
-		system(comando.c_str());
+		// Abrir la URL en el navegador predeterminado sin pasar por cmd.exe
+		ShellExecuteA(nullptr, "open", _urlsBotones[indice].c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 
 		// Pequeña pausa para mostrar el mensaje
 		Sleep(1000);

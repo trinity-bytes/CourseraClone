@@ -81,8 +81,6 @@ private:
     
     /// @brief Métodos de QR para certificados
     inline void _mostrarQRCertificado(const Certificado& certificado);
-    inline void _configurarConsolaParaQR();
-    inline void _restaurarConsolaNormal();
     inline std::string _formatearCalificacion(double calificacion);
     inline std::string _formatearDuracion(int duracionHoras, bool esEspecializacion);
     
@@ -284,7 +282,7 @@ inline void VerCertificadosScreen::_cargarCertificadosEjemplo()
 // Dibujar interfaz completa
 inline void VerCertificadosScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_Certificados();
     
     _renderizarCertificadoActual();
@@ -500,94 +498,28 @@ inline std::string VerCertificadosScreen::_formatearDuracion(int duracionHoras, 
     return oss.str();
 }
 
-// Configurar consola específicamente para mostrar QR de certificados
-inline void VerCertificadosScreen::_configurarConsolaParaQR()
-{
-    // Configurar fuente más pequeña para que el QR quepa mejor
-    configurarFuente(L"Consolas", 6);  // Fuente pequeña para QR
-    
-    // Configurar tamaño de ventana grande para QR completo
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD bufferSize = { 300, 120 };  // Ventana grande
-    SetConsoleScreenBufferSize(hConsole, bufferSize);
-    
-    SMALL_RECT windowSize = { 0, 0, 299, 119 };
-    SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
-}
-
-// Restaurar configuración normal de consola
-inline void VerCertificadosScreen::_restaurarConsolaNormal()
-{
-    // Restaurar fuente normal
-    configurarFuente(L"Cascadia Code Semibold", 22);
-    
-    // Restaurar tamaño de ventana normal
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD bufferSize = { ANCHO_CONSOLA, ALTO_CONSOLA };
-    SetConsoleScreenBufferSize(hConsole, bufferSize);
-    
-    SMALL_RECT windowSize = { 0, 0, ANCHO_CONSOLA - 1, ALTO_CONSOLA - 1 };
-    SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
-}
-
-// Mostrar QR para el certificado seleccionado
+// Mostrar QR del certificado dentro del lienzo de 120x33
 inline void VerCertificadosScreen::_mostrarQRCertificado(const Certificado& certificado)
 {
-    // Configurar consola para mostrar QR óptimamente
-    _configurarConsolaParaQR();
-    
-    system("cls");
-    
-    // Coordenadas para layout del QR de certificado
-    const COORD coordsTituloQR = {120, 1};             // Centrado en ventana más ancha
-    const COORD coordsInfoCertificado = {5, 3};        // Información izquierda
-    const COORD coordsQR = {5, 15};                    // QR en la izquierda
-    const COORD coordsURL = {150, 3};                  // URL en la derecha
-    const COORD coordsJSON = {150, 10};                // JSON en la derecha, más abajo
-    const COORD coordsInstrucciones = {120, 110};      // Instrucciones al final
-    
-    // Título de la pantalla del QR - CENTRADO
-    gotoXY(coordsTituloQR.X, coordsTituloQR.Y);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "QR CERTIFICADO AUTOCONTENIDO - VERIFICAR EN WEB";
-    
-    // ===== SECCIÓN IZQUIERDA: INFORMACIÓN DEL CERTIFICADO =====
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y);
-    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== DATOS DEL CERTIFICADO ===";
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 2);
-    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Certificado ID: " << certificado.getIdCertificado();
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 3);
-    std::cout << "Estudiante: " << certificado.getNombreEstudiante();
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 4);
-    std::cout << "Curso: " << certificado.getNombreCurso();
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 5);
-    std::cout << "Tipo: " << certificado.getTipoCurso();
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 6);
-    std::cout << "Instructor: " << certificado.getInstructor();
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 7);
-    std::cout << "Fecha Finalización: " << certificado.getFechaFinalizacion();
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 8);
-    std::cout << "Fecha Emisión: " << certificado.getFechaEmision();
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 9);
-    std::cout << "Calificación: " << _formatearCalificacion(certificado.getCalificacion());
-    
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 10);
-    std::cout << "Duración: " << _formatearDuracion(certificado.getDuracionHoras(), certificado.getEsEspecializacion());
-    
-    // Convertir tipo de actividad
-    TipoActividad tipoActividad = certificado.getEsEspecializacion() ? TipoActividad::ESPECIALIZACION : TipoActividad::CURSO;
-    
-    // Generar URL con formato ESTÁNDAR para certificados
+    limpiarPantalla();
+
+    // Reparto del lienzo: el QR a la izquierda, los datos a la derecha
+    const int QR_X = 2;
+    const int QR_Y = 2;
+    const int QR_MAX_COLUMNAS = 58;
+    const int QR_MAX_FILAS = 29;
+    const int PANEL_X = 63;
+    const int PANEL_ANCHO = 55;
+
+    auto recortar = [](const std::string& texto, size_t maximo) {
+        if (texto.length() <= maximo) return texto;
+        return texto.substr(0, maximo - 1) + "…";
+    };
+
+    TipoActividad tipoActividad = certificado.getEsEspecializacion()
+        ? TipoActividad::ESPECIALIZACION
+        : TipoActividad::CURSO;
+
     std::string urlAutocontenida = CourseraClone::QR::AutocontainedQR::generarURLCertificadoEstandar(
         certificado.getId(),
         certificado.getNombreEstudiante(),
@@ -598,169 +530,103 @@ inline void VerCertificadosScreen::_mostrarQRCertificado(const Certificado& cert
         _formatearDuracion(certificado.getDuracionHoras(), certificado.getEsEspecializacion()),
         tipoActividad
     );
-    
-    // Mostrar evaluación del tamaño
-    gotoXY(coordsInfoCertificado.X, coordsInfoCertificado.Y + 12);
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << CourseraClone::QR::AutocontainedQR::evaluarTamaño(urlAutocontenida);
-    
-    // ===== SECCIÓN IZQUIERDA ABAJO: CÓDIGO QR =====
-    gotoXY(coordsQR.X, coordsQR.Y);
+
+    // ===== TÍTULO =====
+    gotoXY(QR_X, 0);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== CÓDIGO QR CERTIFICADO ===";
-    
-    gotoXY(coordsQR.X, coordsQR.Y + 1);
-    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Escanea para verificar certificado en web:";
-    
-    try {
-        // Usar configuración optimizada automática para el QR
-        CourseraClone::QR::QRConfig config = CourseraClone::QR::QRCodeGenerator::configuracionOptima(urlAutocontenida.length());
-        
-        // Forzar estilo básico para mejor legibilidad en consola
-        config.style = CourseraClone::QR::ASCIIStyle::BASIC;
-        config.useColors = false;
-        config.borderSize = 1;
-        
-        CourseraClone::QR::QRCodeGenerator generator(config);
-        
-        // Mostrar análisis del contenido
-        gotoXY(coordsQR.X, coordsQR.Y + 2);
-        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Análisis: URL de " << urlAutocontenida.length() << " caracteres - Optimización automática activa";
-        
-        std::string qrVisual = generator.generateFromText(urlAutocontenida);
-        
-        // Mostrar el QR línea por línea
-        gotoXY(coordsQR.X, coordsQR.Y + 4);
-        size_t pos = 0;
-        int lineaActual = 0;
-        while (pos < qrVisual.length() && lineaActual < 85) {  // Espacio disponible para QR
-            size_t finLinea = qrVisual.find('\n', pos);
-            if (finLinea == std::string::npos) {
-                finLinea = qrVisual.length();
-            }
-            
-            gotoXY(coordsQR.X, coordsQR.Y + 4 + lineaActual);
-            std::cout << qrVisual.substr(pos, finLinea - pos);
-            
-            pos = finLinea + 1;
-            lineaActual++;
-        }
-    }
-    catch (const std::exception& e) {
-        gotoXY(coordsQR.X, coordsQR.Y + 4);
+    std::cout << "QR DE CERTIFICADO  ·  escanealo para verificarlo en la web";
+
+    // ===== QR =====
+    CourseraClone::QR::QRAjustado qr = CourseraClone::QR::QRCodeGenerator::generarAjustado(
+        urlAutocontenida, QR_MAX_COLUMNAS, QR_MAX_FILAS);
+
+    if (qr.entra) {
+        CourseraClone::QR::QRCodeGenerator::dibujarEnConsola(qr, QR_X, QR_Y);
+    } else {
+        gotoXY(QR_X, QR_Y + 2);
         setConsoleColor(ColorIndex::ERROR_COLOR, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << "Error generando QR: " << e.what();
+        std::cout << "El contenido no entra como QR en este espacio.";
+        gotoXY(QR_X, QR_Y + 4);
+        setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+        std::cout << "Reduce el tamano de fuente (Ctrl + rueda) y volve a entrar.";
     }
-    
-    // ===== SECCIÓN DERECHA ARRIBA: URL COMPLETA =====
-    gotoXY(coordsURL.X, coordsURL.Y);
+
+    // ===== PANEL DERECHO: DATOS DEL CERTIFICADO =====
+    int fila = QR_Y;
+    gotoXY(PANEL_X, fila);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== URL CERTIFICADO AUTOCONTENIDA ===";
-    
-    gotoXY(coordsURL.X, coordsURL.Y + 1);
-    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Esta URL contiene TODOS los datos del certificado:";
-    
-    // Mostrar URL línea por línea
-    std::string urlFormateada = urlAutocontenida;
-    size_t maxLineLength = 140;
-    size_t pos = 0;
-    int lineNumber = 0;
-    
-    while (pos < urlFormateada.length() && lineNumber < 25) {
-        size_t endPos = pos + maxLineLength;
-        if (endPos >= urlFormateada.length()) {
-            endPos = urlFormateada.length();
-        } else {
-            // Buscar punto de corte apropiado
-            while (endPos > pos && urlFormateada[endPos] != '/' && 
-                   urlFormateada[endPos] != '&' && urlFormateada[endPos] != '=') {
-                endPos--;
-            }
-            if (endPos == pos) endPos = pos + maxLineLength;
-        }
-        
-        gotoXY(coordsURL.X, coordsURL.Y + 3 + lineNumber);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << urlFormateada.substr(pos, endPos - pos);
-        
-        pos = endPos;
-        lineNumber++;
-    }
-    
-    // ===== SECCIÓN DERECHA ABAJO: JSON DECODIFICADO =====
-    gotoXY(coordsJSON.X, coordsJSON.Y);
+    std::cout << "DATOS DEL CERTIFICADO";
+
+    fila += 2;
+    setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Certificado   #" << certificado.getIdCertificado();
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Estudiante    " << recortar(certificado.getNombreEstudiante(), 40);
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Curso         " << recortar(certificado.getNombreCurso(), 40);
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Tipo          " << recortar(certificado.getTipoCurso(), 40);
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Instructor    " << recortar(certificado.getInstructor(), 40);
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Emision       " << certificado.getFechaEmision();
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Calificacion  " << _formatearCalificacion(certificado.getCalificacion());
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Duracion      " << _formatearDuracion(certificado.getDuracionHoras(), certificado.getEsEspecializacion());
+
+    // ===== PANEL DERECHO: DETALLE DEL QR =====
+    fila += 1;
+    gotoXY(PANEL_X, fila);
     setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "=== DATOS JSON DEL CERTIFICADO ===";
-    
-    gotoXY(coordsJSON.X, coordsJSON.Y + 1);
+    std::cout << "DETALLE DEL CODIGO";
+
+    fila += 2;
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Datos que recibe la página web:";
-    
-    // Generar el JSON ESTÁNDAR para mostrar
-    std::string jsonDatos = CourseraClone::QR::AutocontainedQR::generarQRCertificadoEstandar(
-        certificado.getId(),
-        certificado.getNombreEstudiante(),
-        certificado.getNombreCurso(),
-        _convertirFechaAISO(certificado.getFechaFinalizacion()),
-        _convertirFechaAISO(certificado.getFechaEmision()),
-        _formatearCalificacion(certificado.getCalificacion()),
-        _formatearDuracion(certificado.getDuracionHoras(), certificado.getEsEspecializacion()),
-        tipoActividad
-    );
-    
-    // Mostrar JSON formateado
-    size_t jsonPos = 0;
-    int jsonLineNumber = 0;
-    
-    while (jsonPos < jsonDatos.length() && jsonLineNumber < 20) {
-        size_t jsonEndPos = jsonPos + 120;
-        if (jsonEndPos >= jsonDatos.length()) {
-            jsonEndPos = jsonDatos.length();
-        } else {
-            // Buscar punto de corte apropiado para JSON
-            while (jsonEndPos > jsonPos && jsonDatos[jsonEndPos] != ',' && 
-                   jsonDatos[jsonEndPos] != '"' && jsonDatos[jsonEndPos] != ':') {
-                jsonEndPos--;
-            }
-            if (jsonEndPos == jsonPos) jsonEndPos = jsonPos + 120;
-        }
-        
-        gotoXY(coordsJSON.X, coordsJSON.Y + 3 + jsonLineNumber);
-        setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);
-        std::cout << jsonDatos.substr(jsonPos, jsonEndPos - jsonPos);
-        
-        jsonPos = jsonEndPos;
-        jsonLineNumber++;
+
+    if (qr.entra) {
+        gotoXY(PANEL_X, fila++);
+        std::cout << "Modulos       " << qr.modulos << " x " << qr.modulos;
+
+        gotoXY(PANEL_X, fila++);
+        std::cout << "Correccion    " << qr.correccion;
     }
-    
-    // ===== INSTRUCCIONES AL FINAL =====
-    gotoXY(coordsInstrucciones.X, coordsInstrucciones.Y);
-    setConsoleColor(ColorIndex::EXITO_COLOR, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "▶ Formato JSON estándar para certificados (t=c)";
-    
-    gotoXY(coordsInstrucciones.X, coordsInstrucciones.Y + 1);
-    std::cout << "▶ Campos: t, i, s, c, cd, id, g, dur, ct (verificables en web)";
-    
-    gotoXY(coordsInstrucciones.X, coordsInstrucciones.Y + 2);
-    std::cout << "▶ Certificado completamente verificable con datos reales";
-    
-    gotoXY(coordsInstrucciones.X, coordsInstrucciones.Y + 3);
-    std::cout << "▶ URL: trinity-bytes.github.io/WebServices-for-CourseraClone";
-    
-    gotoXY(coordsInstrucciones.X, coordsInstrucciones.Y + 5);
+
+    gotoXY(PANEL_X, fila++);
+    std::cout << "Payload       " << urlAutocontenida.length() << " caracteres";
+
+    // ===== PANEL DERECHO: URL COMPLETA =====
+    fila += 1;
+    gotoXY(PANEL_X, fila);
+    setConsoleColor(ColorIndex::AZUL_MARCA, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "URL AUTOCONTENIDA";
+
+    fila += 1;
     setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
-    std::cout << "Presiona cualquier tecla para volver...";
-    
+
+    // La URL lleva todos los datos adentro: la web es estatica y no consulta nada
+    const int FILA_TOPE = ALTO_CONSOLA - 3;
+    for (size_t pos = 0; pos < urlAutocontenida.length() && fila < FILA_TOPE; pos += PANEL_ANCHO) {
+        gotoXY(PANEL_X, fila++);
+        std::cout << urlAutocontenida.substr(pos, PANEL_ANCHO);
+    }
+
+    // ===== PIE =====
+    gotoXY(QR_X, ALTO_CONSOLA - 1);
+    setConsoleColor(ColorIndex::TEXTO_SECUNDARIO, ColorIndex::FONDO_PRINCIPAL);
+    std::cout << "Cualquier tecla para volver";
+
     resetColor();
-    
-    // Esperar a que el usuario presione una tecla
     _getch();
-    
-    // Restaurar configuración normal de consola
-    _restaurarConsolaNormal();
 }
 
 // Método principal de ejecución

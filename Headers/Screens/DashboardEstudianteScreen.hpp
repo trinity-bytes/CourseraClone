@@ -241,7 +241,7 @@ inline void DashboardEstudianteScreen::_seleccionarFraseAleatoria()
 
 inline void DashboardEstudianteScreen::_dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_StudentDashboard();
 
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);

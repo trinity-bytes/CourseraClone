@@ -127,7 +127,7 @@ inline void EditarPerfilScreen::_cargarDatosDummy()
 // Dibujar interfaz completa
 inline void EditarPerfilScreen::dibujarInterfazCompleta()
 {
-    system("cls");
+    limpiarPantalla();
     UI_UserUpdateData();
 
     setConsoleColor(ColorIndex::TEXTO_PRIMARIO, ColorIndex::FONDO_PRINCIPAL);

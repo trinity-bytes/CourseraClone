@@ -28,7 +28,22 @@ namespace QR {
     enum class ASCIIStyle {
         BASIC,          ///< Caracteres básicos: ##/espacios
         BLOCKS,         ///< Bloques Unicode: █░
-        COURSERA_STYLE  ///< Estilo personalizado Coursera
+        COURSERA_STYLE, ///< Estilo personalizado Coursera
+        HALF_BLOCK      ///< Medio bloque (▀▄█): 2 módulos por celda, módulos cuadrados
+    };
+
+    /// @brief Un QR ya resuelto contra el espacio disponible de la terminal
+    ///
+    /// Una celda de terminal mide aproximadamente el doble de alto que de ancho.
+    /// Con medio bloque cada celda carga dos módulos verticales, así que el QR
+    /// queda con módulos cuadrados y ocupa la mitad de filas.
+    struct QRAjustado {
+        std::string arte;        ///< Líneas separadas por '\n', listas para imprimir
+        int modulos = 0;         ///< Lado del QR en módulos, sin la zona silenciosa
+        int columnas = 0;        ///< Ancho en celdas de terminal
+        int filas = 0;           ///< Alto en celdas de terminal
+        std::string correccion;  ///< Nivel de corrección de errores que se pudo usar
+        bool entra = false;      ///< false si ni el nivel más bajo entra en el espacio dado
     };
 
     /// @brief Configuración simplificada para la generación de códigos QR
@@ -51,6 +66,7 @@ namespace QR {
         std::string renderBasicASCII(const qrcodegen::QrCode& qr) const;
         std::string renderBlocksASCII(const qrcodegen::QrCode& qr) const;
         std::string renderCourseraStyle(const qrcodegen::QrCode& qr) const;
+        std::string renderHalfBlock(const qrcodegen::QrCode& qr) const;
 
     public:
         /// @brief Constructor con configuración personalizada
@@ -121,6 +137,28 @@ namespace QR {
         /// @param text Texto a codificar
         /// @return Mapa con diferentes versiones del QR
         std::map<std::string, std::string> generarVariaciones(const std::string& text);
+
+        // ========== RENDERIZADO AJUSTADO A LA TERMINAL ==========
+
+        /// @brief Genera el QR más robusto que entre en el espacio disponible
+        ///
+        /// Prueba los niveles de corrección de mayor a menor y se queda con el
+        /// primero que entra. Más corrección significa más módulos, o sea un QR
+        /// más grande: es la terminal la que manda, no una constante fija.
+        /// @param texto Contenido a codificar
+        /// @param columnasDisponibles Ancho máximo en celdas de terminal
+        /// @param filasDisponibles Alto máximo en celdas de terminal
+        /// @param borde Zona silenciosa en módulos (mínimo recomendado: 2)
+        static QRAjustado generarAjustado(const std::string& texto,
+                                          int columnasDisponibles,
+                                          int filasDisponibles,
+                                          int borde = 2);
+
+        /// @brief Dibuja un QR ajustado en la consola, negro sobre blanco
+        /// @param qr Resultado de generarAjustado
+        /// @param x Columna donde arranca el QR
+        /// @param y Fila donde arranca el QR
+        static void dibujarEnConsola(const QRAjustado& qr, int x, int y);
     };
 
 } // namespace QR
