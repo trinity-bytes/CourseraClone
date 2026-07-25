@@ -382,14 +382,22 @@ inline void FilesManager::escribirDebugLog(const std::string& mensaje) {
 
 inline bool FilesManager::createDirectoryIfNotExists(const std::string& path) {
     try {
-        if (!std::filesystem::exists(path)) {
-            bool created = std::filesystem::create_directories(path);
-            if (created) {
-                logInfo("Crear directorio", path);
-            }
-            return created;
+        if (std::filesystem::exists(path)) return true;
+
+        std::error_code ec;
+        std::filesystem::create_directories(path, ec);
+
+        // No se puede confiar en el valor de retorno de create_directories:
+        // cuando la ruta termina en '/' devuelve false aunque haya creado los
+        // directorios, porque el último componente del path queda vacío.
+        // Lo que importa es si el directorio existe después de la llamada.
+        if (std::filesystem::exists(path)) {
+            logInfo("Crear directorio", path);
+            return true;
         }
-        return true;
+
+        logError("Crear directorio", path, ec.message());
+        return false;
     } catch (const std::filesystem::filesystem_error& e) {
         logError("Crear directorio", path, e.what());
         return false;
@@ -410,7 +418,7 @@ inline bool FilesManager::inicializarSistemaArchivos() {
     success &= createDirectoryIfNotExists(DataPaths::Content::BASE);
     success &= createDirectoryIfNotExists(DataPaths::Financial::BASE);
     success &= createDirectoryIfNotExists(DataPaths::Logs::BASE);
-    success &= createDirectoryIfNotExists("Resources/Data/Index/");
+    success &= createDirectoryIfNotExists(DataPaths::Index::BASE);
     
     if (success) {
         _sistemaInicializado = true;
